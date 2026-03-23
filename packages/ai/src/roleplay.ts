@@ -62,6 +62,6 @@ After the consultation ends (when the doctor says "thank you" or "that's all"), 
   });
 
   const block = response.content[0];
-  if (block.type !== "text") throw new Error("Unexpected response type");
+  if (!block || block.type !== "text") throw new Error("Unexpected response type from AI");
   return block.text;
 }

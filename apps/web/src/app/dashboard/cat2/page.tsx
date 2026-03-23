@@ -50,6 +50,7 @@ export default function CAT2Page() {
           messages: newMessages,
         }),
       });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       setMessages([...newMessages, { role: "assistant", content: data.reply }]);
@@ -62,7 +63,8 @@ export default function CAT2Page() {
   }
 
   if (activeScenario !== null) {
-    const scenario = scenarios.find((s) => s.id === activeScenario)!;
+    const scenario = scenarios.find((s) => s.id === activeScenario);
+    if (!scenario) return null;;
     return (
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         <div className="flex items-center justify-between mb-4">

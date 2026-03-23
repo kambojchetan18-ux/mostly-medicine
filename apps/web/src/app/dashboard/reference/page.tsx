@@ -263,7 +263,7 @@ export default function ReferencePage() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [openEntries, setOpenEntries] = useState<Record<string, boolean>>({});
 
-  const book = referenceData.find((b) => b.id === activeBook)!;
+  const book = referenceData.find((b) => b.id === activeBook) ?? referenceData[0]!;
 
   function toggleSection(key: string) {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
