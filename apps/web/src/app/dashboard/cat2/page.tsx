@@ -41,17 +41,24 @@ export default function CAT2Page() {
     setInput("");
     setLoading(true);
 
-    const res = await fetch("/api/ai/roleplay", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        scenarioId: activeScenario,
-        messages: newMessages,
-      }),
-    });
-    const data = await res.json();
-    setMessages([...newMessages, { role: "assistant", content: data.reply }]);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/ai/roleplay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scenarioId: activeScenario,
+          messages: newMessages,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setMessages([...newMessages, { role: "assistant", content: `[Error: ${msg}]` }]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (activeScenario !== null) {

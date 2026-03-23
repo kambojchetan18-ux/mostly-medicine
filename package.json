@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@mostly-medicine/web",
+    "dev:mobile": "turbo run dev --filter=@mostly-medicine/mobile",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
