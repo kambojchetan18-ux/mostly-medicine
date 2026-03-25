@@ -1,0 +1,35 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  }
+
+  // Get note to find storage path
+  const { data: note } = await supabase
+    .from("user_notes")
+    .select("file_url, user_id")
+    .eq("id", id)
+    .single();
+
+  if (!note || note.user_id !== user.id) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // Extract storage path from URL
+  const url = new URL(note.file_url);
+  const pathParts = url.pathname.split("/user-notes/");
+  if (pathParts[1]) {
+    await supabase.storage.from("user-notes").remove([decodeURIComponent(pathParts[1])]);
+  }
+
+  // Delete from database
+  await supabase.from("user_notes").delete().eq("id", id);
+
+  return NextResponse.json({ success: true });
+}

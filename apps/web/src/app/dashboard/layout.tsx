@@ -1,9 +1,13 @@
 import Link from "next/link";
+import GlobalSearch from "@/components/GlobalSearch";
+import SearchTrigger from "@/components/SearchTrigger";
 
 const navItems = [
   { href: "/dashboard", label: "Home", icon: "🏠" },
   { href: "/dashboard/cat1", label: "AMC CAT 1", icon: "🧠" },
   { href: "/dashboard/cat2", label: "AMC CAT 2", icon: "🩺" },
+  { href: "/dashboard/library", label: "Library", icon: "📚" },
+  { href: "/dashboard/cases", label: "Cases", icon: "🏥" },
   { href: "/dashboard/reference", label: "Reference", icon: "📖" },
 ];
 
@@ -12,9 +16,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 py-6 px-4">
-        <div className="mb-8 px-2">
-          <h1 className="text-xl font-bold text-brand-700">Mostly Medicine</h1>
-          <p className="text-xs text-gray-400 mt-1">AMC Exam Prep</p>
+        <div className="flex items-center justify-between mb-8 px-2">
+          <div>
+            <h1 className="text-xl font-bold text-brand-700">Mostly Medicine</h1>
+            <p className="text-xs text-gray-400 mt-1">AMC Exam Prep</p>
+          </div>
+          <SearchTrigger />
         </div>
         <nav className="space-y-1">
           {navItems.map((item) => (
@@ -32,6 +39,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main content */}
       <main className="flex-1 p-6 md:p-8">{children}</main>
+
+      <GlobalSearch />
     </div>
   );
 }
