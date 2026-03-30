@@ -49,16 +49,19 @@ After the consultation ends (when the doctor says "thank you" or "that's all"), 
 4. Clinical pearls from Murtagh
 5. Overall score /10`;
 
+  const allMessages = messages
+    .filter((m) => m.role === "user" || m.role === "assistant")
+    .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+
+  // Anthropic requires messages to start with "user" — drop any leading assistant turns
+  const firstUserIdx = allMessages.findIndex((m) => m.role === "user");
+  const apiMessages = firstUserIdx >= 0 ? allMessages.slice(firstUserIdx) : allMessages;
+
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
     system: systemPrompt,
-    messages: messages
-      .filter((m) => m.role === "user" || m.role === "assistant")
-      .map((m) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      })),
+    messages: apiMessages,
   });
 
   const block = response.content[0];
