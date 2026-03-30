@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 py-6 px-4">
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 py-6 px-4 sticky top-0 h-screen overflow-y-auto">
         <div className="flex items-center justify-between mb-8 px-2">
           <div>
             <h1 className="text-xl font-bold text-brand-700">Mostly Medicine</h1>
