@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 
 const topics = [
   "Cardiovascular", "Respiratory", "Gastroenterology", "Neurology",
@@ -8,30 +8,99 @@ const topics = [
 
 export default function CAT1Screen() {
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16 }}>
-      <Text className="text-lg font-bold text-gray-900 mb-1">AMC CAT 1 — MCQ Practice</Text>
-      <Text className="text-sm text-gray-500 mb-5">Select a topic or start a mock exam</Text>
+    <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
+      <Text style={styles.title}>AMC CAT 1 — MCQ Practice</Text>
+      <Text style={styles.subtitle}>Select a topic or start a mock exam</Text>
 
-      <TouchableOpacity className="bg-brand-600 rounded-xl py-3 mb-3 items-center">
-        <Text className="text-white font-bold">Start Mock Exam (180 min)</Text>
+      <TouchableOpacity style={styles.primaryButton}>
+        <Text style={styles.primaryButtonText}>Start Mock Exam (180 min)</Text>
       </TouchableOpacity>
-      <TouchableOpacity className="border border-gray-300 rounded-xl py-3 mb-6 items-center">
-        <Text className="text-gray-700 font-semibold">Quick Quiz (20 questions)</Text>
+      <TouchableOpacity style={styles.secondaryButton}>
+        <Text style={styles.secondaryButtonText}>Quick Quiz (20 questions)</Text>
       </TouchableOpacity>
 
-      <Text className="text-sm font-semibold text-gray-600 mb-3">Practice by Topic</Text>
-      <View className="flex-row flex-wrap gap-3">
+      <Text style={styles.sectionLabel}>Practice by Topic</Text>
+      <View style={styles.topicGrid}>
         {topics.map((topic) => (
           <TouchableOpacity
             key={topic}
-            className="bg-white border border-gray-200 rounded-xl px-4 py-3"
-            style={{ minWidth: "45%" }}
+            style={[styles.topicCard, { minWidth: "45%" }]}
           >
-            <Text className="font-medium text-gray-800 text-sm">{topic}</Text>
-            <Text className="text-xs text-gray-400 mt-0.5">0 / 50 done</Text>
+            <Text style={styles.topicName}>{topic}</Text>
+            <Text style={styles.topicProgress}>0 / 50 done</Text>
           </TouchableOpacity>
         ))}
       </View>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#111827",
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 20,
+  },
+  primaryButton: {
+    backgroundColor: "#2563eb",
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  primaryButtonText: {
+    color: "#ffffff",
+    fontWeight: "bold",
+  },
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 12,
+    paddingVertical: 12,
+    marginBottom: 24,
+    alignItems: "center",
+  },
+  secondaryButtonText: {
+    color: "#374151",
+    fontWeight: "600",
+  },
+  sectionLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#4b5563",
+    marginBottom: 12,
+  },
+  topicGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  topicCard: {
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  topicName: {
+    fontWeight: "500",
+    color: "#1f2937",
+    fontSize: 14,
+  },
+  topicProgress: {
+    fontSize: 12,
+    color: "#9ca3af",
+    marginTop: 2,
+  },
+});

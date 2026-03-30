@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 
 const references = [
   {
@@ -29,25 +29,24 @@ const references = [
 
 export default function ReferenceScreen() {
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16 }}>
-      <Text className="text-lg font-bold text-gray-900 mb-1">Reference Library</Text>
-      <Text className="text-sm text-gray-500 mb-5">
+    <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
+      <Text style={styles.title}>Reference Library</Text>
+      <Text style={styles.subtitle}>
         Clinical guidelines grounding your AMC preparation.
       </Text>
 
       {references.map((ref) => (
         <View
           key={ref.title}
-          style={{ backgroundColor: ref.bg, borderColor: ref.border, borderWidth: 1 }}
-          className="rounded-2xl p-5 mb-4"
+          style={[styles.card, { backgroundColor: ref.bg, borderColor: ref.border }]}
         >
-          <Text className="text-3xl mb-2">{ref.icon}</Text>
-          <Text className="font-bold text-gray-900 text-base">{ref.title}</Text>
-          <Text className="text-sm text-gray-500 mb-3">{ref.subtitle}</Text>
-          <View className="flex-row flex-wrap gap-2">
+          <Text style={styles.cardIcon}>{ref.icon}</Text>
+          <Text style={styles.cardTitle}>{ref.title}</Text>
+          <Text style={styles.cardSubtitle}>{ref.subtitle}</Text>
+          <View style={styles.tagRow}>
             {ref.topics.map((t) => (
-              <View key={t} className="bg-white border border-gray-200 rounded-full px-3 py-1">
-                <Text className="text-xs text-gray-600">{t}</Text>
+              <View key={t} style={styles.tag}>
+                <Text style={styles.tagText}>{t}</Text>
               </View>
             ))}
           </View>
@@ -56,3 +55,58 @@ export default function ReferenceScreen() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#111827",
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 20,
+  },
+  card: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+  },
+  cardIcon: {
+    fontSize: 30,
+    marginBottom: 8,
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    color: "#111827",
+    fontSize: 16,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 12,
+  },
+  tagRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  tag: {
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  tagText: {
+    fontSize: 12,
+    color: "#4b5563",
+  },
+});

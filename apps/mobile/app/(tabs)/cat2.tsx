@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 const scenarios = [
@@ -20,9 +20,9 @@ export default function CAT2Screen() {
   const router = useRouter();
 
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16 }}>
-      <Text className="text-lg font-bold text-gray-900 mb-1">AMC CAT 2 — Clinical Role-Play</Text>
-      <Text className="text-sm text-gray-500 mb-5">
+    <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
+      <Text style={styles.title}>AMC CAT 2 — Clinical Role-Play</Text>
+      <Text style={styles.subtitle}>
         AI plays the patient. Receive examiner feedback based on AMC marking criteria.
       </Text>
 
@@ -30,10 +30,10 @@ export default function CAT2Screen() {
         <TouchableOpacity
           key={s.id}
           onPress={() => router.push(`/roleplay/${s.id}` as any)}
-          className="bg-white border border-gray-200 rounded-2xl p-4 mb-3"
+          style={styles.card}
         >
-          <View className="flex-row items-center justify-between mb-1">
-            <Text className="text-xl">🩺</Text>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardIcon}>🩺</Text>
             <View
               style={{
                 backgroundColor: difficultyStyle[s.difficulty].bg,
@@ -47,10 +47,53 @@ export default function CAT2Screen() {
               </Text>
             </View>
           </View>
-          <Text className="font-bold text-gray-900">{s.title}</Text>
-          <Text className="text-sm text-gray-500">{s.category}</Text>
+          <Text style={styles.cardTitle}>{s.title}</Text>
+          <Text style={styles.cardCategory}>{s.category}</Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#111827",
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 20,
+  },
+  card: {
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  cardIcon: {
+    fontSize: 20,
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    color: "#111827",
+  },
+  cardCategory: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+});

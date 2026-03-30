@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 const modules = [
@@ -35,25 +35,36 @@ export default function HomeScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16 }}>
-      <View className="mb-6">
-        <Text className="text-2xl font-bold text-gray-900">Mostly Medicine</Text>
-        <Text className="text-sm text-gray-500 mt-1">AMC Exam Prep for IMGs</Text>
+    <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Mostly Medicine</Text>
+        <Text style={styles.subtitle}>AMC Exam Prep for IMGs</Text>
       </View>
 
       {modules.map((m) => (
         <TouchableOpacity
           key={m.route}
           onPress={() => router.push(m.route as any)}
-          style={{ backgroundColor: m.bg, borderColor: m.border, borderWidth: 1 }}
-          className="rounded-2xl p-5 mb-4"
+          style={[styles.card, { backgroundColor: m.bg, borderColor: m.border }]}
         >
-          <Text className="text-3xl mb-2">{m.icon}</Text>
-          <Text className="text-lg font-bold text-gray-900">{m.title}</Text>
-          <Text className="text-sm text-gray-500">{m.subtitle}</Text>
-          <Text className="text-sm text-gray-600 mt-1">{m.desc}</Text>
+          <Text style={styles.cardIcon}>{m.icon}</Text>
+          <Text style={styles.cardTitle}>{m.title}</Text>
+          <Text style={styles.cardSubtitle}>{m.subtitle}</Text>
+          <Text style={styles.cardDesc}>{m.desc}</Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#f9fafb" },
+  header: { marginBottom: 24 },
+  title: { fontSize: 24, fontWeight: "bold", color: "#111827" },
+  subtitle: { fontSize: 14, color: "#6b7280", marginTop: 4 },
+  card: { borderRadius: 16, padding: 20, marginBottom: 16, borderWidth: 1 },
+  cardIcon: { fontSize: 30, marginBottom: 8 },
+  cardTitle: { fontSize: 18, fontWeight: "bold", color: "#111827" },
+  cardSubtitle: { fontSize: 14, color: "#6b7280" },
+  cardDesc: { fontSize: 14, color: "#4b5563", marginTop: 4 },
+});

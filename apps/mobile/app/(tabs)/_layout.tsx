@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router";
+import { Text } from "react-native";
 
 export default function TabsLayout() {
   return (
@@ -14,9 +15,9 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Mostly Medicine",
           tabBarLabel: "Home",
-          tabBarIcon: ({ color }) => <TabIcon emoji="🏠" color={color} />,
+          tabBarIcon: () => <Text style={{ fontSize: 20 }}>🏠</Text>,
         }}
       />
       <Tabs.Screen
@@ -24,7 +25,7 @@ export default function TabsLayout() {
         options={{
           title: "AMC CAT 1",
           tabBarLabel: "CAT 1",
-          tabBarIcon: ({ color }) => <TabIcon emoji="🧠" color={color} />,
+          tabBarIcon: () => <Text style={{ fontSize: 20 }}>🧠</Text>,
         }}
       />
       <Tabs.Screen
@@ -32,7 +33,15 @@ export default function TabsLayout() {
         options={{
           title: "AMC CAT 2",
           tabBarLabel: "CAT 2",
-          tabBarIcon: ({ color }) => <TabIcon emoji="🩺" color={color} />,
+          tabBarIcon: () => <Text style={{ fontSize: 20 }}>🩺</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="jobs"
+        options={{
+          title: "AU Jobs",
+          tabBarLabel: "Jobs",
+          tabBarIcon: () => <Text style={{ fontSize: 20 }}>💼</Text>,
         }}
       />
       <Tabs.Screen
@@ -40,14 +49,9 @@ export default function TabsLayout() {
         options={{
           title: "Reference",
           tabBarLabel: "Reference",
-          tabBarIcon: ({ color }) => <TabIcon emoji="📖" color={color} />,
+          tabBarIcon: () => <Text style={{ fontSize: 20 }}>📖</Text>,
         }}
       />
     </Tabs>
   );
-}
-
-function TabIcon({ emoji, color }: { emoji: string; color: string }) {
-  const { Text } = require("react-native");
-  return <Text style={{ fontSize: 20 }}>{emoji}</Text>;
 }

@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "Mostly Medicine",
+    "name": "mostlymedicine",
     "slug": "mostly-medicine",
     "version": "1.0.0",
+    "sdkVersion": "52.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "mostlymedicine",
@@ -21,11 +22,23 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0369a1"
       },
-      "package": "com.mostlymedicine.app"
+      "package": "com.mostlymedicine.app",
+      "newArchEnabled": false
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "920b217e-54c9-4a29-b24b-1b0cc58cfbb2"
+      }
+    },
+    "owner": "kamboj.chetan18"
   }
 }
