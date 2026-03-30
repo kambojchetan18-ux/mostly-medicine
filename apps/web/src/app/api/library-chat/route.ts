@@ -1,5 +1,4 @@
-import { createAnthropic } from "@ai-sdk/anthropic";
-import { streamText } from "ai";
+import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import {
   LIBRARY_CHAT_SYSTEM_PROMPT,
@@ -23,13 +22,44 @@ export async function POST(req: NextRequest) {
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
       : LIBRARY_CHAT_SYSTEM_PROMPT;
 
-  const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-  const result = streamText({
-    model: anthropic("claude-haiku-4-5-20251001"),
-    system: systemPrompt,
-    messages,
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        const response = await client.messages.create({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 1024,
+          system: systemPrompt,
+          messages: messages.map((m: { role: string; content: string }) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })),
+          stream: true,
+        });
+
+        for await (const event of response) {
+          if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+          ) {
+            controller.enqueue(new TextEncoder().encode(event.delta.text));
+          }
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unknown error";
+        controller.enqueue(new TextEncoder().encode(`Error: ${msg}`));
+      } finally {
+        controller.close();
+      }
+    },
   });
 
-  return result.toTextStreamResponse();
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
 }

@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@babel/runtime": "^7.29.2",
     "@expo/metro-runtime": "^6.1.2",
     "@mostly-medicine/content": "workspace:*",
     "@mostly-medicine/ui": "workspace:*",

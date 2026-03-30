@@ -2,7 +2,7 @@
 -- Run this in your Supabase SQL editor
 
 -- Enable UUID extension
-create extension if not exists "uuid-ossp";
+-- uuid-ossp not needed; using gen_random_uuid() (built-in since PG13)
 
 -- Profiles (extends Supabase auth.users)
 create table public.profiles (
@@ -52,7 +52,7 @@ create policy "Questions are publicly readable"
 
 -- User question attempts
 create table public.attempts (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid default gen_random_uuid() primary key,
   user_id uuid references public.profiles(id) on delete cascade not null,
   question_id text references public.questions(id) not null,
   selected_answer text not null,
@@ -69,7 +69,7 @@ create policy "Users can view their own attempts"
 
 -- Clinical role-play sessions (CAT 2)
 create table public.roleplay_sessions (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid default gen_random_uuid() primary key,
   user_id uuid references public.profiles(id) on delete cascade not null,
   scenario_id integer not null,
   messages jsonb not null default '[]',
