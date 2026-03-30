@@ -11,6 +11,14 @@ const navItems = [
   { href: "/dashboard/reference", label: "Reference", icon: "📖" },
 ];
 
+const jobNavItems = [
+  { href: "/dashboard/jobs", label: "Jobs Hub", icon: "💼" },
+  { href: "/dashboard/jobs/rmo", label: "RMO Pools", icon: "🗺️" },
+  { href: "/dashboard/jobs/gp", label: "GP Pathway", icon: "🩺" },
+  { href: "/dashboard/jobs/action-plan", label: "Action Plan", icon: "✅" },
+  { href: "/dashboard/jobs/tracker", label: "App Tracker", icon: "📋" },
+];
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -25,6 +33,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <nav className="space-y-1">
           {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition text-sm font-medium"
+            >
+              <span>{item.icon}</span>
+              {item.label}
+            </Link>
+          ))}
+          <div className="pt-3 pb-1">
+            <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Australian Jobs</p>
+          </div>
+          {jobNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
