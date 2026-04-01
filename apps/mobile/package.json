@@ -5,8 +5,8 @@
   "main": "expo-router/entry",
   "scripts": {
     "dev": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "build:ios": "eas build --platform ios",
     "build:android": "eas build --platform android",
     "typecheck": "tsc --noEmit"
@@ -16,6 +16,7 @@
     "@expo/metro-runtime": "^6.1.2",
     "@supabase/supabase-js": "^2.45.0",
     "expo": "~52.0.49",
+    "expo-build-properties": "^55.0.10",
     "expo-constants": "~17.0.8",
     "expo-linking": "^7.0.5",
     "expo-router": "~4.0.22",
