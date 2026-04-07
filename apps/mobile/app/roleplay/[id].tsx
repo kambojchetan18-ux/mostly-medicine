@@ -26,7 +26,7 @@ export default function RoleplayScreen() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: `Hello Doctor. I've come in today because I've been having ${scenario.title.toLowerCase()}. It started a few days ago...`,
+      content: `Hello Doctor. I've come in today because ${scenario.chiefComplaint}.`,
     },
   ]);
   const [input, setInput] = useState("");
