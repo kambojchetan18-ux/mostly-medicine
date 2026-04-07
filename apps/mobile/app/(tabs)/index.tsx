@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 
 const modules = [
   {
-    route: "/(tabs)/cat1",
+    route: "/(tabs)/cat1" as const,
     title: "AMC CAT 1",
     subtitle: "MCQ Practice",
     desc: "Practice questions with spaced repetition",
@@ -12,7 +12,7 @@ const modules = [
     border: "#bfdbfe",
   },
   {
-    route: "/(tabs)/cat2",
+    route: "/(tabs)/cat2" as const,
     title: "AMC CAT 2",
     subtitle: "AI Clinical Role-Play",
     desc: "OSCE simulation with AI patient and examiner feedback",
@@ -21,7 +21,7 @@ const modules = [
     border: "#bbf7d0",
   },
   {
-    route: "/(tabs)/reference",
+    route: "/(tabs)/reference" as const,
     title: "Reference",
     subtitle: "Murtagh · Red Book · AMC",
     desc: "Clinical guidelines and exam blueprints",
@@ -44,7 +44,7 @@ export default function HomeScreen() {
       {modules.map((m) => (
         <TouchableOpacity
           key={m.route}
-          onPress={() => router.push(m.route as any)}
+          onPress={() => router.push(m.route)}
           style={[styles.card, { backgroundColor: m.bg, borderColor: m.border }]}
         >
           <Text style={styles.cardIcon}>{m.icon}</Text>

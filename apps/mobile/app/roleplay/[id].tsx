@@ -11,15 +11,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-
-const scenarios = [
-  { id: 1, title: "Chest Pain", category: "Cardiovascular", difficulty: "Medium" },
-  { id: 2, title: "Shortness of Breath", category: "Respiratory", difficulty: "Hard" },
-  { id: 3, title: "Abdominal Pain", category: "Gastroenterology", difficulty: "Medium" },
-  { id: 4, title: "Headache", category: "Neurology", difficulty: "Easy" },
-  { id: 5, title: "Diabetes Follow-up", category: "Endocrinology", difficulty: "Easy" },
-  { id: 6, title: "Postnatal Depression", category: "Psychiatry", difficulty: "Hard" },
-];
+import { scenarios } from "@mostly-medicine/ai";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "https://mostlymedicine.com";
 
@@ -43,7 +35,7 @@ export default function RoleplayScreen() {
 
   useEffect(() => {
     navigation.setOptions({ title: scenario.title });
-  }, []);
+  }, [navigation, scenario.title]);
 
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);

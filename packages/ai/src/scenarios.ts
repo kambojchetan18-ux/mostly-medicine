@@ -2,6 +2,7 @@ export interface Scenario {
   id: number;
   title: string;
   category: string;
+  difficulty: "Easy" | "Medium" | "Hard";
   patientProfile: string;
   chiefComplaint: string;
   underlyingDiagnosis: string;
@@ -16,6 +17,7 @@ export const scenarios: Scenario[] = [
     id: 1,
     title: "Chest Pain",
     category: "Cardiovascular",
+    difficulty: "Medium",
     patientProfile: "55-year-old male, smoker, hypertensive",
     chiefComplaint: "central crushing chest pain radiating to left arm for 2 hours",
     underlyingDiagnosis: "Acute MI (STEMI)",
@@ -41,6 +43,7 @@ export const scenarios: Scenario[] = [
     id: 2,
     title: "Shortness of Breath",
     category: "Respiratory",
+    difficulty: "Hard",
     patientProfile: "68-year-old female with long-term smoking history",
     chiefComplaint: "worsening breathlessness over 3 days with productive cough",
     underlyingDiagnosis: "Acute exacerbation of COPD",
@@ -61,6 +64,7 @@ export const scenarios: Scenario[] = [
     id: 3,
     title: "Abdominal Pain",
     category: "Gastroenterology",
+    difficulty: "Medium",
     patientProfile: "32-year-old female",
     chiefComplaint: "right lower quadrant pain for 18 hours, nausea, low-grade fever",
     underlyingDiagnosis: "Appendicitis",
@@ -81,6 +85,7 @@ export const scenarios: Scenario[] = [
     id: 4,
     title: "Headache",
     category: "Neurology",
+    difficulty: "Easy",
     patientProfile: "29-year-old male",
     chiefComplaint: "sudden severe headache 'worst of my life' with neck stiffness",
     underlyingDiagnosis: "Subarachnoid haemorrhage",
@@ -101,6 +106,7 @@ export const scenarios: Scenario[] = [
     id: 5,
     title: "Diabetes Follow-up",
     category: "Endocrinology",
+    difficulty: "Easy",
     patientProfile: "58-year-old male, known T2DM on metformin",
     chiefComplaint: "routine follow-up, HbA1c 9.2%, feels 'a bit tired'",
     underlyingDiagnosis: "Poorly controlled T2DM with potential complications",
@@ -127,6 +133,7 @@ export const scenarios: Scenario[] = [
     id: 6,
     title: "Postnatal Depression",
     category: "Psychiatry",
+    difficulty: "Hard",
     patientProfile: "28-year-old female, 6 weeks postpartum, first baby",
     chiefComplaint: "feels overwhelmed, not bonding with baby, tearful most days",
     underlyingDiagnosis: "Postnatal depression",

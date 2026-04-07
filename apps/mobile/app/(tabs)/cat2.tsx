@@ -1,14 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
-
-const scenarios = [
-  { id: 1, title: "Chest Pain", category: "Cardiovascular", difficulty: "Medium" },
-  { id: 2, title: "Shortness of Breath", category: "Respiratory", difficulty: "Hard" },
-  { id: 3, title: "Abdominal Pain", category: "Gastroenterology", difficulty: "Medium" },
-  { id: 4, title: "Headache", category: "Neurology", difficulty: "Easy" },
-  { id: 5, title: "Diabetes Follow-up", category: "Endocrinology", difficulty: "Easy" },
-  { id: 6, title: "Postnatal Depression", category: "Psychiatry", difficulty: "Hard" },
-];
+import { useRouter, type Href } from "expo-router";
+import { scenarios } from "@mostly-medicine/ai";
 
 const difficultyStyle: Record<string, { bg: string; text: string }> = {
   Easy: { bg: "#dcfce7", text: "#15803d" },
@@ -29,7 +21,7 @@ export default function CAT2Screen() {
       {scenarios.map((s) => (
         <TouchableOpacity
           key={s.id}
-          onPress={() => router.push(`/roleplay/${s.id}` as any)}
+          onPress={() => router.push(`/roleplay/${s.id}` as Href)}
           style={styles.card}
         >
           <View style={styles.cardHeader}>

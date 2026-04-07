@@ -1,15 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-const scenarios = [
-  { id: 1, title: "Chest Pain", category: "Cardiovascular", difficulty: "Medium" },
-  { id: 2, title: "Shortness of Breath", category: "Respiratory", difficulty: "Hard" },
-  { id: 3, title: "Abdominal Pain", category: "Gastroenterology", difficulty: "Medium" },
-  { id: 4, title: "Headache", category: "Neurology", difficulty: "Easy" },
-  { id: 5, title: "Diabetes Follow-up", category: "Endocrinology", difficulty: "Easy" },
-  { id: 6, title: "Postnatal Depression", category: "Psychiatry", difficulty: "Hard" },
-];
+import { scenarios } from "@mostly-medicine/ai";
 
 const difficultyColor: Record<string, string> = {
   Easy: "bg-green-100 text-green-700",
@@ -29,7 +21,7 @@ export default function CAT2Page() {
     setMessages([
       {
         role: "assistant",
-        content: `Hello Doctor. I've come in today because I've been having ${scenario.title.toLowerCase()}. It started a few days ago...`,
+        content: `Hello Doctor. I've come in today because I've been having ${scenario.chiefComplaint}.`,
       },
     ]);
   }
@@ -50,9 +42,8 @@ export default function CAT2Page() {
           messages: newMessages,
         }),
       });
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);
       setMessages([...newMessages, { role: "assistant", content: data.reply }]);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Something went wrong";
@@ -64,7 +55,7 @@ export default function CAT2Page() {
 
   if (activeScenario !== null) {
     const scenario = scenarios.find((s) => s.id === activeScenario);
-    if (!scenario) return null;;
+    if (!scenario) return null;
     return (
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         <div className="flex items-center justify-between mb-4">
