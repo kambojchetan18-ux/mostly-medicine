@@ -3,7 +3,107 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-slate-50 text-gray-900 antialiased;
+  }
+
+  /* Rich custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #8b5cf6, #ec4899);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+}
+
+@layer components {
+  /* Gradient text utility */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #a78bfa 0%, #f472b6 60%, #fb923c 100%);
+  }
+
+  .gradient-text-cool {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
+  }
+
+  /* Glassmorphism card */
+  .glass {
+    @apply backdrop-blur-md border border-white/10;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-light {
+    @apply backdrop-blur-sm border border-white/20;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Noise grain overlay (applied with ::before) */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+    background-size: 200% auto;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Glow badge */
+  .badge-glow {
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5), inset 0 0 12px rgba(139, 92, 246, 0.05);
+  }
+
+  /* Nav active indicator */
+  .nav-active {
+    @apply bg-brand-600/15 text-brand-300;
+    border-left: 2px solid #8b5cf6;
+  }
+
+  /* Bento card base */
+  .bento-card {
+    @apply rounded-3xl p-6 border transition-all duration-300 hover:scale-[1.01] hover:shadow-card-hover;
+  }
+}
+
+@layer utilities {
+  /* Font display shorthand */
+  .font-display { font-family: var(--font-space-grotesk, "Space Grotesk", system-ui, sans-serif); }
+
+  /* Animated gradient blob */
+  .blob {
+    @apply absolute rounded-full blur-3xl opacity-30 pointer-events-none;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  /* Gradient borders via box-shadow */
+  .border-gradient-violet {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+  }
+
+  /* Text size clamp for responsive hero */
+  .text-hero {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+
+  .text-subhero {
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    line-height: 1.6;
   }
 }

@@ -29,6 +29,15 @@ const modules = [
     bg: "#faf5ff",
     border: "#e9d5ff",
   },
+  {
+    route: "/(tabs)/jobs" as const,
+    title: "AU Jobs",
+    subtitle: "RMO & GP Pathways",
+    desc: "Australian medical job picks and readiness tracker",
+    icon: "💼",
+    bg: "#fff7ed",
+    border: "#fed7aa",
+  },
 ];
 
 export default function HomeScreen() {

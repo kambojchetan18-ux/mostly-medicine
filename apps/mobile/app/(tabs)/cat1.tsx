@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from "react-native";
 
 const topics = [
   "Cardiovascular", "Respiratory", "Gastroenterology", "Neurology",
@@ -12,10 +12,10 @@ export default function CAT1Screen() {
       <Text style={styles.title}>AMC CAT 1 — MCQ Practice</Text>
       <Text style={styles.subtitle}>Select a topic or start a mock exam</Text>
 
-      <TouchableOpacity style={styles.primaryButton}>
+      <TouchableOpacity style={styles.primaryButton} onPress={() => Alert.alert("Coming Soon", "Mock exam mode is coming in a future update.")}>
         <Text style={styles.primaryButtonText}>Start Mock Exam (180 min)</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.secondaryButton}>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => Alert.alert("Coming Soon", "Quick quiz mode is coming in a future update.")}>
         <Text style={styles.secondaryButtonText}>Quick Quiz (20 questions)</Text>
       </TouchableOpacity>
 

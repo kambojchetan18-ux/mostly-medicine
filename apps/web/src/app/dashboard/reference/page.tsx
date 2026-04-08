@@ -193,6 +193,146 @@ const referenceData: {
     ],
   },
   {
+    id: "handbook",
+    title: "AMC Handbook",
+    subtitle: "AMC Handbook of Clinical Assessment — MCAT Performance Guidelines",
+    icon: "📙",
+    color: "border-orange-200 bg-orange-50",
+    sections: [
+      {
+        heading: "MCAT Structure & Format",
+        entries: [
+          {
+            title: "Overview",
+            content: "The AMC Multi-station Clinical Assessment Test (MCAT) is a 16-station OSCE. Each station: 2 minutes reading time + 8 minutes performance time. Candidates must pass 12 of 16 stations. Marked on a 4-point scale per domain.\n\nThe exam assesses whether internationally trained doctors can practise safely in the Australian healthcare system.",
+          },
+          {
+            title: "Station Categories",
+            content: "C — Clinical Communication (history taking, counselling, patient education, breaking bad news)\nD — Clinical Diagnosis (history + examination to reach a diagnosis)\nM — Clinical Management (investigations, treatment, follow-up)\nD/M — Integrated Diagnosis & Management\nLEO — Legal, Ethical & Organisational issues\n\nThe 16 stations span all five categories across 151 possible scenario conditions.",
+          },
+          {
+            title: "14 Assessment Domains",
+            content: "1. History-taking\n2. Physical examination\n3. Investigations\n4. Diagnosis\n5. Management\n6. Health promotion & disease prevention\n7. Communication\n8. Patient education\n9. Cultural sensitivity\n10. Medicolegal & ethical issues\n11. Emergency management\n12. Procedural skills\n13. Record keeping\n14. Teamwork & referral",
+          },
+          {
+            title: "4-Point Marking Scale",
+            content: "0 — Not attempted / completely inadequate\n1 — Below the expected standard (significant deficiencies)\n2 — At the expected standard (meets requirements with minor gaps)\n3 — Above the expected standard (exceeds requirements)\n\nEach station has a defined set of expected competencies. Critical errors = automatic fail for that station.",
+          },
+        ],
+      },
+      {
+        heading: "Performance Guidelines Structure",
+        entries: [
+          {
+            title: "Aims of Station",
+            content: "Each scenario has a stated Aims of Station that tells you what the examiner is actually testing. You must satisfy the aims to pass.\n\nCommon aims: 'To assess the candidate's ability to take a focused history and establish a probable diagnosis', 'To assess communication skills in delivering difficult news', 'To assess knowledge of management of [condition]'.",
+          },
+          {
+            title: "Examiner Instructions",
+            content: "Each station includes:\n• Opening statement — what the patient says first (verbatim)\n• Patient role notes — what the patient volunteers vs what they reveal only if asked\n• Patient questions — what the patient may ask the doctor\n• Physical examination findings — provided only if the candidate performs/requests examination",
+          },
+          {
+            title: "Expectations of Candidate Performance",
+            content: "Explicitly listed competencies examiners look for:\n• Data gathering: appropriate history, targeted questions\n• Clinical reasoning: correct diagnosis, relevant differentials\n• Management: appropriate investigations and treatment\n• Communication: empathy, explanation, non-judgmental attitude\n• Safety: recognising urgency, appropriate referral",
+          },
+          {
+            title: "Critical Errors",
+            content: "Actions that automatically fail a station regardless of other performance:\n• Missing an immediately life-threatening condition\n• Prescribing a contraindicated medication\n• Breaching patient confidentiality inappropriately\n• Performing an examination without consent\n• Missing mandatory notification requirements\n• Failing to recognise a safeguarding issue",
+          },
+        ],
+      },
+      {
+        heading: "Category C — Clinical Communication",
+        entries: [
+          {
+            title: "What is Tested",
+            content: "Communication-focused stations: counselling, patient education, breaking bad news, addressing concerns, sensitive histories (sexual health, mental health, substance use), informed consent.\n\nDiagnosis is usually already established — the task is what you say and how you say it.",
+          },
+          {
+            title: "Core Skills Required",
+            content: "• Establish rapport quickly (introduce, sit, eye contact)\n• Elicit ICE (Ideas, Concerns, Expectations) early\n• Explain in plain language — avoid jargon\n• Use teach-back: 'Can you tell me in your own words what we discussed?'\n• Address emotional cues: 'That sounds difficult — can you tell me more?'\n• Non-judgmental approach to sensitive topics\n• Involve patient in decision-making\n• Clear closure: summarise, safety-netting, written resources",
+          },
+          {
+            title: "Key Scenarios (from Handbook)",
+            content: "• Breastfeeding vs bottle-feeding counselling (C2)\n• SIDS counselling to bereaved parents (C5)\n• Alopecia areata — explaining diagnosis and impact (C6)\n• Globus pharyngeus — reassurance after organic causes excluded (C7)\n• Mumps orchitis — explaining fertility implications (C8)\n• Breaking bad news: malignancy, HIV, infertility\n• Informed consent for procedures\n• Alcohol use — brief intervention (FRAMES approach)",
+          },
+        ],
+      },
+      {
+        heading: "Category D — Clinical Diagnosis",
+        entries: [
+          {
+            title: "What is Tested",
+            content: "History taking and/or physical examination to arrive at a probable diagnosis. You must gather data systematically, identify red flags, and communicate your clinical impression to the patient.\n\nThink: What is the most likely diagnosis? What must I not miss?",
+          },
+          {
+            title: "History Framework",
+            content: "PC → HPC (SOCRATES for pain: Site, Onset, Character, Radiation, Associated symptoms, Timing, Exacerbating/relieving, Severity) → PMH → Medications + Allergies → Family History → Social History (smoking, alcohol, occupation, travel, relationships, stress) → Systems Review → ICE",
+          },
+          {
+            title: "Key Scenarios (from Handbook)",
+            content: "• Tremor — essential tremor vs alcoholic tremor (D33)\n• Headache — tension-type, migraine, SAH red flags (D34)\n• Lethargy — hypothyroidism (D35)\n• Syncope during exertion — aortic stenosis (D36)\n• Painful penile rash — genital herpes (D37)\n\nFor each: establish onset, character, associated symptoms, social context, relevant PMH and FHx. Elicit red flags and patient concerns.",
+          },
+          {
+            title: "Red Flags Across Presentations",
+            content: "Headache: thunderclap, fever, neck stiffness, focal neuro, papilloedema → SAH/meningitis\nChest pain: radiation to jaw/arm, diaphoresis, haemodynamic instability → ACS\nSyncope: exertional, associated chest pain, family history of sudden death → cardiac cause\nBack pain: bilateral leg weakness, bladder/bowel dysfunction, fever, cancer history → serious pathology\nWeight loss: >5% unexplained → malignancy/endocrine/GI workup",
+          },
+        ],
+      },
+      {
+        heading: "Category M — Clinical Management",
+        entries: [
+          {
+            title: "What is Tested",
+            content: "Given a known or stated diagnosis, manage the patient: order investigations, initiate treatment, arrange follow-up, safety-net. You may need to explain management to the patient.\n\nDemonstrate knowledge of Australian guidelines (Therapeutic Guidelines, RACGP, eTG).",
+          },
+          {
+            title: "Investigation Framework",
+            content: "Bedside first: obs, ECG, BGL, urine dipstick, peak flow\nBloods: FBC, UEC, LFT, CRP/ESR, TFTs, HbA1c, troponin, coags, LDH, beta-hCG\nImaging: CXR, USS abdomen/pelvis, CT (specify with/without contrast and area), MRI\nSpecialist: echo, spirometry, endoscopy, biopsy, swab/culture",
+          },
+          {
+            title: "Management Principles",
+            content: "• Acute: ABCDE, IV access, fluids, analgesia, specific treatment\n• Chronic: lifestyle first (diet, exercise, smoking cessation), then pharmacology\n• Always consider: contraindications, renal/hepatic adjustment, drug interactions, allergies\n• Escalation: when to admit, when to refer (urgently vs routine)\n• Safety-netting: what to watch for, when to return, emergency plan\n• Follow-up: specific timeframe and reason",
+          },
+        ],
+      },
+      {
+        heading: "Category LEO — Legal, Ethical & Organisational",
+        entries: [
+          {
+            title: "What is Tested",
+            content: "Professional and legal obligations in Australian medical practice: mandatory reporting, consent, confidentiality, capacity, duty of care, death certification, driving regulations, notifiable diseases.",
+          },
+          {
+            title: "Key Legal Obligations",
+            content: "Mandatory reporting:\n• Child abuse/neglect (all states)\n• Notifiable diseases (state health dept)\n• Impaired colleague (AHPRA)\n• Unfit-to-drive patient (VicRoads/RMS etc — varies by state)\n\nConfidentiality exceptions: risk of serious harm to patient or third party, court order, statutory duty.\n\nConsent: must be informed, voluntary, capacity-verified. For minors: Gillick competence applies.",
+          },
+          {
+            title: "Capacity Assessment",
+            content: "Patient has capacity if they can:\n1. Understand the information provided\n2. Retain the information long enough to make a decision\n3. Weigh up the information\n4. Communicate their decision\n\nLack of capacity does not mean you cannot treat — substitute decision-maker or best interests applies.",
+          },
+        ],
+      },
+      {
+        heading: "Exam Technique & Tips",
+        entries: [
+          {
+            title: "Reading Time (2 minutes)",
+            content: "Identify: category (C/D/M/LEO), your task, patient demographics, what you know vs what you need to find out.\n\nPlan your structure: opening → main task → ICE → close. For D stations: plan your history framework. For M stations: think investigations → management → follow-up.",
+          },
+          {
+            title: "Common Fail Reasons",
+            content: "• Spending too long on history — not getting to management or explanation\n• Missing ICE (patient's ideas, concerns, expectations)\n• Using medical jargon the patient doesn't understand\n• Missing a critical error (mandatory notification, contraindication)\n• Not safety-netting or providing a follow-up plan\n• Appearing dismissive of patient concerns",
+          },
+          {
+            title: "Passing Strategy",
+            content: "You need 12/16 stations. Prioritise:\n1. Never make a critical error\n2. Always address ICE\n3. Always safety-net and close\n4. Attempt every domain — partial marks count\n5. If you don't know the diagnosis, be honest and explain what you will do next\n6. Use Australian resources: eTG, MIMS, RACGP, state health department",
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: "amc",
     title: "AMC Exam Guidelines",
     subtitle: "CAT 1 & CAT 2 blueprints and marking criteria",

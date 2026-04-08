@@ -6,6 +6,47 @@ import type { Scenario } from "@mostly-medicine/ai";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 
+// ── Timer config ──────────────────────────────────────────────────────────────
+
+type TimerMode = "Standard" | "Beginner" | "Exam" | "Sprint";
+
+const MODE_DURATIONS: Record<TimerMode, number> = {
+  Standard: 480,  // 8 min
+  Beginner: 600,  // 10 min
+  Exam: 480,      // 8 min (hard stop)
+  Sprint: 300,    // 5 min
+};
+
+const WARNING1_SEC = 120;
+const WARNING2_SEC = 60;
+
+// Milestones are elapsed seconds into the session
+const DEFAULT_MILESTONES: Record<TimerMode, { time: number; prompt: string }[]> = {
+  Standard: [
+    { time: 60,  prompt: "Establish rapport — open question" },
+    { time: 240, prompt: "Focused history" },
+    { time: 360, prompt: "Explanation & management plan" },
+    { time: 450, prompt: "Safety-netting & close" },
+  ],
+  Beginner: [
+    { time: 90,  prompt: "Establish rapport — open question" },
+    { time: 300, prompt: "Focused history" },
+    { time: 450, prompt: "Explanation & management plan" },
+    { time: 540, prompt: "Safety-netting & close" },
+  ],
+  Exam: [
+    { time: 60,  prompt: "Establish rapport — open question" },
+    { time: 240, prompt: "Focused history" },
+    { time: 360, prompt: "Explanation & management plan" },
+    { time: 450, prompt: "Safety-netting & close" },
+  ],
+  Sprint: [
+    { time: 60,  prompt: "Open question" },
+    { time: 150, prompt: "Key history points" },
+    { time: 240, prompt: "Impression & plan" },
+  ],
+};
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function parsePatientProfile(profile: string) {
@@ -66,6 +107,14 @@ export default function CAT2Page() {
   const [loading, setLoading] = useState(false);
   const [examinerFeedback, setExaminerFeedback] = useState<string | null>(null);
 
+  // Timer state
+  const [timerMode, setTimerMode] = useState<TimerMode>("Standard");
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [milestone, setMilestone] = useState<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const elapsedRef = useRef(0);
+  const shownMilestonesRef = useRef<Set<number>>(new Set());
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -89,6 +138,59 @@ export default function CAT2Page() {
   const { gender, age } = activeScenarioData
     ? parsePatientProfile(activeScenarioData.patientProfile)
     : { gender: "unknown" as const, age: null };
+
+  function formatTime(sec: number) {
+    const m = String(Math.floor(sec / 60)).padStart(2, "0");
+    const s = String(sec % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  function timerColorClass(sec: number) {
+    if (sec <= WARNING2_SEC) return "text-red-500";
+    if (sec <= WARNING1_SEC) return "text-amber-500";
+    return "text-gray-700";
+  }
+
+  function startTimer(mode: TimerMode) {
+    if (timerRef.current) clearInterval(timerRef.current);
+    const duration = MODE_DURATIONS[mode];
+    elapsedRef.current = 0;
+    shownMilestonesRef.current = new Set();
+    setTimeLeft(duration);
+    setMilestone(null);
+
+    timerRef.current = setInterval(() => {
+      elapsedRef.current += 1;
+      const elapsed = elapsedRef.current;
+
+      // Check milestones
+      const milestones = DEFAULT_MILESTONES[mode];
+      for (let i = 0; i < milestones.length; i++) {
+        if (elapsed === milestones[i].time && !shownMilestonesRef.current.has(i)) {
+          shownMilestonesRef.current.add(i);
+          setMilestone(milestones[i].prompt);
+          setTimeout(() => setMilestone(null), 5000);
+        }
+      }
+
+      setTimeLeft(prev => {
+        const next = prev - 1;
+        if (next <= 0) {
+          clearInterval(timerRef.current!);
+          timerRef.current = null;
+          return 0;
+        }
+        return next;
+      });
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return;
@@ -137,9 +239,10 @@ export default function CAT2Page() {
     setExaminerFeedback(null);
     setActiveScenario(id);
     const scenario = scenarios.find(s => s.id === id)!;
-    const opening = `Hello Doctor. I've come in today because I've been having ${scenario.chiefComplaint}.`;
+    const opening = scenario.openingStatement;
     const openingMsg = { role: "assistant", content: opening };
     setMessages([openingMsg]);
+    startTimer(timerMode);
     setTimeout(() => {
       const { gender: g } = parsePatientProfile(scenario.patientProfile);
       speak(opening, g);
@@ -148,6 +251,9 @@ export default function CAT2Page() {
 
   function endSession() {
     stopSpeaking();
+    stopTimer();
+    setTimeLeft(0);
+    setMilestone(null);
     setActiveScenario(null);
     setMessages([]);
     setExaminerFeedback(null);
@@ -158,12 +264,52 @@ export default function CAT2Page() {
     return (
       <div>
         <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC CAT 2 — Clinical Role-Play</h2>
-        <p className="text-gray-500 text-sm mb-6">
+        <p className="text-gray-500 text-sm mb-4">
           AI plays the patient. Speak or type your responses. Receive examiner feedback at the end.
           {ttsSupported && micSupported !== false && (
             <span className="ml-2 text-green-600 font-medium">🎤 Voice enabled</span>
           )}
         </p>
+
+        {/* Source & compliance disclaimer */}
+        <div className="mb-5 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-xs text-amber-800">
+          <span className="text-base shrink-0 mt-0.5">📋</span>
+          <div className="leading-relaxed">
+            <span className="font-bold">Content source:</span> All scenarios are derived verbatim from the{" "}
+            <span className="font-semibold">AMC Handbook of Clinical Assessment</span> (Australian Medical
+            Council, 2007). The AI patient responds only to information explicitly stated in that handbook —
+            no clinical content is invented or extrapolated. Examiner feedback is bounded by the handbook&apos;s
+            own Performance Guidelines.{" "}
+            <span className="font-semibold">For exam preparation only — not medical advice.</span>
+          </div>
+        </div>
+
+        {/* Mode selector */}
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
+          <span className="text-sm font-medium text-gray-600">Mode:</span>
+          {(["Standard", "Beginner", "Exam", "Sprint"] as TimerMode[]).map(m => (
+            <button
+              key={m}
+              onClick={() => setTimerMode(m)}
+              className={`text-sm px-3 py-1.5 rounded-lg border transition font-medium ${
+                timerMode === m
+                  ? "bg-brand-600 text-white border-brand-600"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-brand-400"
+              }`}
+            >
+              {m}
+              <span className="ml-1.5 text-xs opacity-70">
+                {Math.floor(MODE_DURATIONS[m] / 60)}m
+              </span>
+            </button>
+          ))}
+          <span className="text-xs text-gray-400 ml-2">
+            {timerMode === "Exam" ? "Hard stop · no pausing" :
+             timerMode === "Sprint" ? "5 min drill" :
+             timerMode === "Beginner" ? "Extended time · milestones" :
+             "Standard AMC timing"}
+          </span>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {scenarios.map((s) => {
@@ -181,10 +327,11 @@ export default function CAT2Page() {
                   </span>
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-1">{s.title}</h3>
-                <p className="text-sm text-gray-500 mb-2">{s.category}</p>
+                <p className="text-sm text-gray-500 mb-2">{s.category} · Condition {s.mcatNumber}</p>
                 <p className="text-xs text-gray-400 italic leading-relaxed line-clamp-2">
-                  "{s.chiefComplaint}"
+                  "{s.openingStatement}"
                 </p>
+                <p className="text-[10px] text-gray-300 mt-2 truncate">📋 {s.source}</p>
               </button>
             );
           })}
@@ -245,6 +392,9 @@ export default function CAT2Page() {
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${difficultyColor[activeScenarioData?.difficulty ?? "Medium"]}`}>
                 {activeScenarioData?.difficulty}
               </span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
+                {timerMode}
+              </span>
             </div>
             <p className="text-xs text-gray-500">{activeScenarioData?.category} · {activeScenarioData?.patientProfile}</p>
             {speaking && (
@@ -255,7 +405,17 @@ export default function CAT2Page() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Countdown timer */}
+          <div className={`text-right font-mono font-bold text-xl tabular-nums transition-colors ${timerColorClass(timeLeft)}`}>
+            {formatTime(timeLeft)}
+            {timeLeft <= WARNING2_SEC && timeLeft > 0 && (
+              <div className="text-xs font-normal text-red-400 text-right">Wrap up!</div>
+            )}
+            {timeLeft <= WARNING1_SEC && timeLeft > WARNING2_SEC && (
+              <div className="text-xs font-normal text-amber-500 text-right">2 min left</div>
+            )}
+          </div>
           {speaking && (
             <button
               onClick={stopSpeaking}
@@ -272,6 +432,14 @@ export default function CAT2Page() {
           </button>
         </div>
       </div>
+
+      {/* Milestone banner */}
+      {milestone && (
+        <div className="mb-2 px-4 py-2 bg-brand-50 border border-brand-200 rounded-xl text-sm text-brand-700 font-medium flex items-center gap-2 animate-pulse">
+          <span>📍</span>
+          <span>{milestone}</span>
+        </div>
+      )}
 
       {/* Chat messages */}
       <div className="flex-1 bg-white border border-gray-200 rounded-2xl p-4 overflow-y-auto space-y-3 mb-3">
