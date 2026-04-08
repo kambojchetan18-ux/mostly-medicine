@@ -1,6 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+// API routes that don't require authentication
+const PUBLIC_API_ROUTES = [
+  "/api/auth/login",
+  "/api/auth/callback",
+  "/api/search",
+];
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -27,15 +34,26 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
+  const { pathname } = request.nextUrl;
+
+  // Protect dashboard routes — redirect to login
+  if (!user && pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
     return NextResponse.redirect(url);
+  }
+
+  // Protect API routes — return 401 JSON (skip public ones)
+  if (!user && pathname.startsWith("/api/")) {
+    const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+    if (!isPublic) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/api/:path*"],
 };
