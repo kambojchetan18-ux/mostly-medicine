@@ -15,4 +15,9 @@ config.resolver.nodeModulesPaths = [
   path.resolve(monorepoRoot, "node_modules"),
 ];
 
+// Ensure react-native field is preferred so workspace packages
+// (e.g. @mostly-medicine/ai) use their mobile entry point instead
+// of the Node.js entry point that imports @anthropic-ai/sdk.
+config.resolver.resolverMainFields = ["react-native", "browser", "main", "module"];
+
 module.exports = config;
