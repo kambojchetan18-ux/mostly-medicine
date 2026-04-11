@@ -43,37 +43,44 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     let cvText = formData.get("text") as string | null;
 
-    // Handle PDF/file upload
     const file = formData.get("file") as File | null;
-    if (file && !cvText) {
-      if (file.type === "application/pdf") {
-        // Dynamically import pdf-parse to avoid webpack issues
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const pdfParse = (await import("pdf-parse")) as any;
-        const fn = pdfParse.default ?? pdfParse;
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const parsed = await fn(buffer);
-        cvText = parsed.text;
-      } else {
-        // Plain text / Word doc — read as text
-        cvText = await file.text();
-      }
-    }
-
-    if (!cvText?.trim()) {
-      return NextResponse.json({ error: "No CV content provided" }, { status: 400 });
-    }
-
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
     }
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
-      system: SYSTEM,
-      messages: [{ role: "user", content: `CV TEXT:\n\n${cvText.slice(0, 8000)}` }],
-    });
+    let response;
+
+    if (file && !cvText && file.type === "application/pdf") {
+      // Send PDF directly to Claude — avoids pdfjs-dist browser-global issues entirely
+      const bytes = await file.arrayBuffer();
+      const base64 = Buffer.from(bytes).toString("base64");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      response = await (client.messages.create as any)({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        system: SYSTEM,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } },
+            { type: "text", text: "Extract the IMG profile fields from this CV document." },
+          ],
+        }],
+      });
+    } else {
+      // Text paste or non-PDF file
+      if (file && !cvText) cvText = await file.text();
+      if (!cvText?.trim()) {
+        return NextResponse.json({ error: "No CV content provided" }, { status: 400 });
+      }
+      const text: string = cvText;
+      response = await client.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        system: SYSTEM,
+        messages: [{ role: "user", content: `CV TEXT:\n\n${text.slice(0, 8000)}` }],
+      });
+    }
 
     const raw = response.content[0];
     if (!raw || raw.type !== "text") throw new Error("Unexpected AI response");
@@ -88,7 +95,7 @@ export async function POST(req: NextRequest) {
       .upsert({
         id: user.id,
         ...extracted,
-        cv_text: cvText.slice(0, 20000),
+        cv_text: cvText ? cvText.slice(0, 20000) : null,
         updated_at: new Date().toISOString(),
       });
 
