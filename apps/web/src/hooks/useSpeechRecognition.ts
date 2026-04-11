@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 
 type RecognitionState = "idle" | "recording";
 
-export function useSpeechRecognition() {
+export function useSpeechRecognition(onAutoEnd?: (transcript: string) => void) {
   const [state, setState] = useState<RecognitionState>("idle");
   const [displayTranscript, setDisplayTranscript] = useState("");
   const [supported, setSupported] = useState<boolean | null>(null);
@@ -11,6 +11,10 @@ export function useSpeechRecognition() {
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const liveTranscriptRef = useRef(""); // avoids stale closure in onresult
+  const userStoppedRef = useRef(false); // distinguishes manual stop from browser auto-stop
+  const onAutoEndRef = useRef(onAutoEnd);
+
+  useEffect(() => { onAutoEndRef.current = onAutoEnd; }, [onAutoEnd]);
 
   useEffect(() => {
     const SR = typeof window !== "undefined"
@@ -24,6 +28,7 @@ export function useSpeechRecognition() {
     if (!SR) return;
 
     liveTranscriptRef.current = "";
+    userStoppedRef.current = false;
     setDisplayTranscript("");
 
     const recognition = new SR();
@@ -52,6 +57,14 @@ export function useSpeechRecognition() {
 
     recognition.onend = () => {
       setState("idle");
+      // If the browser auto-stopped (silence timeout) rather than the user clicking
+      // stop, fire the callback so the caller can send whatever was captured.
+      if (!userStoppedRef.current) {
+        const final = liveTranscriptRef.current.trim();
+        liveTranscriptRef.current = "";
+        setDisplayTranscript("");
+        if (final) onAutoEndRef.current?.(final);
+      }
     };
 
     recognition.start();
@@ -60,6 +73,7 @@ export function useSpeechRecognition() {
   }, []);
 
   const stopRecording = useCallback((): string => {
+    userStoppedRef.current = true;
     recognitionRef.current?.stop();
     setState("idle");
     const final = liveTranscriptRef.current.trim();

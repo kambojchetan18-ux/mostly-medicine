@@ -117,20 +117,8 @@ export default function CAT2Page() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const {
-    state: recState,
-    displayTranscript,
-    supported: micSupported,
-    permissionDenied,
-    startRecording,
-    stopRecording,
-  } = useSpeechRecognition();
-
+  // Speech synthesis must come before sendMessage (sendMessage calls speak/stopSpeaking)
   const { speaking, speak, stop: stopSpeaking, supported: ttsSupported } = useSpeechSynthesis();
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
 
   const activeScenarioData = activeScenario !== null
     ? scenarios.find(s => s.id === activeScenario) ?? null
@@ -138,6 +126,53 @@ export default function CAT2Page() {
   const { gender, age } = activeScenarioData
     ? parsePatientProfile(activeScenarioData.patientProfile)
     : { gender: "unknown" as const, age: null };
+
+  // sendMessage must be defined before useSpeechRecognition so it can be passed as onAutoEnd
+  const sendMessage = useCallback(async (text: string) => {
+    if (!text.trim() || loading) return;
+    stopSpeaking();
+
+    const newMessages = [...messages, { role: "user", content: text }];
+    setMessages(newMessages);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/ai/roleplay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scenarioId: activeScenario, messages: newMessages }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);
+
+      if (isExaminerFeedback(data.reply, newMessages.length)) {
+        setExaminerFeedback(data.reply);
+      } else {
+        setMessages([...newMessages, { role: "assistant", content: data.reply }]);
+        if (ttsSupported) speak(data.reply, gender);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setMessages([...newMessages, { role: "assistant", content: `[Error: ${msg}]` }]);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, messages, activeScenario, gender, speak, stopSpeaking, ttsSupported]);
+
+  // Pass sendMessage as onAutoEnd so voice auto-sends when the browser stops listening
+  const {
+    state: recState,
+    displayTranscript,
+    supported: micSupported,
+    permissionDenied,
+    startRecording,
+    stopRecording,
+  } = useSpeechRecognition(sendMessage);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   function formatTime(sec: number) {
     const m = String(Math.floor(sec / 60)).padStart(2, "0");
@@ -191,38 +226,6 @@ export default function CAT2Page() {
       timerRef.current = null;
     }
   }
-
-  const sendMessage = useCallback(async (text: string) => {
-    if (!text.trim() || loading) return;
-    stopSpeaking();
-
-    const newMessages = [...messages, { role: "user", content: text }];
-    setMessages(newMessages);
-    setInput("");
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/ai/roleplay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenarioId: activeScenario, messages: newMessages }),
-      });
-      const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);
-
-      if (isExaminerFeedback(data.reply, newMessages.length)) {
-        setExaminerFeedback(data.reply);
-      } else {
-        setMessages([...newMessages, { role: "assistant", content: data.reply }]);
-        if (ttsSupported) speak(data.reply, gender);
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      setMessages([...newMessages, { role: "assistant", content: `[Error: ${msg}]` }]);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, messages, activeScenario, gender, speak, stopSpeaking, ttsSupported]);
 
   function handleMicButton() {
     if (recState === "recording") {
