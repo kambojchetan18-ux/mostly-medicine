@@ -17,6 +17,7 @@ const jobNavItems = [
   { href: "/dashboard/jobs/gp",          label: "GP Pathway",  icon: "🩺", hover: "hover:text-teal-300"   },
   { href: "/dashboard/jobs/action-plan", label: "Action Plan", icon: "✅", hover: "hover:text-green-300"  },
   { href: "/dashboard/jobs/tracker",     label: "App Tracker", icon: "📋", hover: "hover:text-orange-300" },
+  { href: "/dashboard/profile",          label: "My Profile",  icon: "👤", hover: "hover:text-rose-300"   },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
