@@ -227,6 +227,38 @@ export default function CAT2Page() {
     }
   }
 
+  // Auto-request feedback when timer reaches 0
+  const feedbackRequestedRef = useRef(false);
+  useEffect(() => {
+    if (timeLeft === 0 && activeScenario !== null && messages.length > 1 && !feedbackRequestedRef.current && !loading) {
+      feedbackRequestedRef.current = true;
+      requestExaminerFeedback();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft, activeScenario, messages.length]);
+
+  async function requestExaminerFeedback() {
+    if (loading || messages.length <= 1) return;
+    stopSpeaking();
+    stopTimer();
+    setLoading(true);
+    try {
+      const res = await fetch("/api/ai/roleplay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scenarioId: activeScenario, messages, requestFeedback: true }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);
+      setExaminerFeedback(data.reply);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setExaminerFeedback(`Could not retrieve feedback: ${msg}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function handleMicButton() {
     if (recState === "recording") {
       const transcript = stopRecording();
@@ -240,6 +272,7 @@ export default function CAT2Page() {
   async function startScenario(id: number) {
     stopSpeaking();
     setExaminerFeedback(null);
+    feedbackRequestedRef.current = false;
     setActiveScenario(id);
     const scenario = scenarios.find(s => s.id === id)!;
     const opening = scenario.openingStatement;
@@ -343,6 +376,24 @@ export default function CAT2Page() {
     );
   }
 
+  // ── Fetching feedback screen ──────────────────────────────────────────────
+  if (feedbackRequestedRef.current && loading && !examinerFeedback) {
+    return (
+      <div className="max-w-2xl mx-auto flex flex-col items-center justify-center py-24 gap-6">
+        <div className="text-5xl animate-bounce">📋</div>
+        <h2 className="text-xl font-bold text-gray-800">Generating examiner feedback…</h2>
+        <p className="text-sm text-gray-500 text-center">
+          Reviewing your consultation against AMC Handbook performance guidelines.
+        </p>
+        <div className="flex gap-1">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="w-2.5 h-2.5 bg-brand-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   // ── Examiner feedback screen ──────────────────────────────────────────────
   if (examinerFeedback) {
     return (
@@ -427,12 +478,22 @@ export default function CAT2Page() {
               ⏹ Stop
             </button>
           )}
-          <button
-            onClick={endSession}
-            className="text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"
-          >
-            End Session
-          </button>
+          {messages.length > 1 ? (
+            <button
+              onClick={() => { feedbackRequestedRef.current = true; requestExaminerFeedback(); }}
+              disabled={loading}
+              className="text-xs text-white bg-brand-600 hover:bg-brand-700 px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
+            >
+              End &amp; Get Feedback
+            </button>
+          ) : (
+            <button
+              onClick={endSession}
+              className="text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"
+            >
+              Exit
+            </button>
+          )}
         </div>
       </div>
 

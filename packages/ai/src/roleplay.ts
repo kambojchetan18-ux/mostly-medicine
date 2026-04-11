@@ -11,11 +11,13 @@ interface Message {
 interface RoleplayInput {
   scenarioId: number;
   messages: Message[];
+  requestFeedback?: boolean;
 }
 
 export async function createClinicalRoleplay({
   scenarioId,
   messages,
+  requestFeedback = false,
 }: RoleplayInput): Promise<string> {
   const scenario = getScenario(scenarioId);
   if (!scenario) throw new Error(`Scenario ${scenarioId} not found`);
@@ -143,6 +145,15 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
   // Anthropic requires messages to start with "user" — drop any leading assistant turns
   const firstUserIdx = allMessages.findIndex((m) => m.role === "user");
   const apiMessages = firstUserIdx >= 0 ? allMessages.slice(firstUserIdx) : allMessages;
+
+  // When the session ends (timer or manual), inject a closing message so the AI
+  // delivers structured examiner feedback regardless of what the doctor said.
+  if (requestFeedback) {
+    apiMessages.push({
+      role: "user",
+      content: "Thank you, that will be all. Please provide your full examiner feedback now.",
+    });
+  }
 
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
