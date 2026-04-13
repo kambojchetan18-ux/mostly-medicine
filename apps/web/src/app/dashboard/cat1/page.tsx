@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { seedQuestions } from "@mostly-medicine/content";
+import { allQuestions } from "@mostly-medicine/content";
 import type { MCQuestion } from "@mostly-medicine/content";
 
-const topics = [...new Set(seedQuestions.map((q) => q.topic))];
+const topics = [...new Set(allQuestions.map((q) => q.topic))].sort();
 
 type Mode = "menu" | "quiz" | "result";
 
@@ -19,8 +19,8 @@ export default function CAT1Page() {
 
   function startQuiz(topic: string | null) {
     const pool = topic
-      ? seedQuestions.filter((q) => q.topic === topic)
-      : [...seedQuestions].sort(() => Math.random() - 0.5).slice(0, 20);
+      ? allQuestions.filter((q) => q.topic === topic)
+      : [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 20);
     setQuestions(pool);
     setSelectedTopic(topic);
     setCurrent(0);
@@ -64,7 +64,7 @@ export default function CAT1Page() {
   }
 
   const topicCounts = useMemo(() =>
-    Object.fromEntries(topics.map((t) => [t, seedQuestions.filter((q) => q.topic === t).length])),
+    Object.fromEntries(topics.map((t) => [t, allQuestions.filter((q) => q.topic === t).length])),
     []
   );
 
@@ -87,7 +87,7 @@ export default function CAT1Page() {
             onClick={() => startQuiz(null)}
             className="border border-gray-300 text-gray-700 font-semibold px-5 py-2 rounded-lg text-sm hover:bg-gray-50 transition"
           >
-            All Questions ({seedQuestions.length} total)
+            All Questions ({allQuestions.length} total)
           </button>
         </div>
 
