@@ -183,7 +183,7 @@ export const paediatricsQuestions: MCQuestion[] = [
     explanation: "Bronchiolitis: age <2 years, winter, RSV most common (70%). Wheeze + crackles + first episode + young infant. Management: supportive — supplemental oxygen (target SpO2 ≥92%), adequate hydration (NG feeds if poor oral intake), no role for salbutamol/steroids/antibiotics routinely (multiple RCTs show no benefit). High-flow nasal cannula for moderate-severe. Admit if SpO2 <92%, RR >70, poor feeding, apnoea.",
     reference: "amc", difficulty: "easy",
   },
-,
+
   {
     id: "paeds-b1-001",
     topic: "Paediatrics",

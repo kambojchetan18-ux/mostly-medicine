@@ -155,7 +155,7 @@ export const renalQuestions: MCQuestion[] = [
     explanation: "Hyperkalaemic emergency with ECG changes (peaked T waves, widened QRS, sine wave): IV calcium gluconate 10 mL 10% over 2 minutes is FIRST — cardioprotective (stabilises myocardial membrane). Does NOT lower K+. Then: insulin (10 units actrapid) + 50 mL 50% dextrose (shifts K+ into cells, onset 30 min). Nebulised salbutamol (shifts K+). Remove K+: furosemide, calcium resonium, haemodialysis. Bicarbonate if metabolic acidosis.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "renal-b1-001",
     topic: "Renal",

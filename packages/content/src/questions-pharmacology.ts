@@ -169,7 +169,7 @@ export const pharmacologyQuestions: MCQuestion[] = [
     explanation: "Warfarin supratherapeutic INR 5–9, no bleeding: hold warfarin 1–2 doses + low-dose oral vitamin K 1–2 mg (partial correction — don't use IV K for mechanical valve as can cause warfarin resistance/over-correction). Recheck INR in 24h. For INR >9 or minor bleeding: oral vitamin K 5 mg + stop warfarin. Major bleeding: FFP + IV vitamin K 5–10 mg. Mechanical valve: avoid high-dose vitamin K (INR reversal increases valve thrombosis risk).",
     reference: "amc", difficulty: "hard",
   },
-,
+
   {
     id: "pharm-b1-001",
     topic: "Pharmacology",

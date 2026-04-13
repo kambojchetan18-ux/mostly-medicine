@@ -141,7 +141,7 @@ export const infectiousQuestions: MCQuestion[] = [
     explanation: "Cholera (Vibrio cholerae): profuse rice-water diarrhoea, no fever, no blood. Dehydration is the cause of death. Treatment: aggressive rehydration (ORS for mild-moderate; IV Hartmann's/saline for severe) is PARAMOUNT. Antibiotics shorten illness and reduce excretion: doxycycline 300 mg single dose (first-line adults) or azithromycin. Avoid anti-motility agents — can increase complications. WHO ORS formula. Case notification required.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "inf-b1-001",
     topic: "Infectious Disease",

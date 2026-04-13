@@ -183,7 +183,7 @@ export const endocrineQuestions: MCQuestion[] = [
     explanation: "Metabolic syndrome (IDF criteria): central obesity + ≥2 of: TG ≥1.7, HDL <1.0 (males), BP ≥130/85, FBG ≥5.6. This patient has all 5. Associated with 5× increased T2DM risk and 2× CVD risk. Treatment: lifestyle modification (weight loss 5–10%, exercise, diet) is cornerstone. Address individual components: statins, antihypertensives, metformin for pre-diabetes.",
     reference: "racgp-redbook", difficulty: "easy",
   },
-,
+
   {
     id: "endo-b1-001",
     topic: "Endocrinology",

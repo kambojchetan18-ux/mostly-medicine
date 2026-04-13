@@ -141,7 +141,7 @@ export const rheumatologyQuestions: MCQuestion[] = [
     explanation: "Septic arthritis: hot, red, swollen joint + fever = emergency. Joint aspiration is diagnostic and therapeutic: Gram stain (Gram-positive cocci = staph) + culture + cell count (WBC >50,000 + >75% PMN = septic until proven otherwise). Start IV antibiotics immediately after aspirating: IV flucloxacillin (staph coverage). IVDU: add anti-pseudomonal coverage. Washout arthroscopically if no improvement in 24–48h. Gout can coexist — crystals on microscopy don't exclude infection.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "rheum-b1-001",
     topic: "Rheumatology",

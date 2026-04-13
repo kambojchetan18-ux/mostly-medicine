@@ -6,7 +6,7 @@ export interface MCQuestion {
   options: { label: string; text: string }[];
   correctAnswer: string;
   explanation: string;
-  reference: "murtagh" | "amc" | "racgp-redbook" | "other";
+  reference: string;
   difficulty: "easy" | "medium" | "hard";
 }
 

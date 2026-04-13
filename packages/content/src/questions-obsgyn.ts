@@ -155,7 +155,7 @@ export const obsgynQuestions: MCQuestion[] = [
     explanation: "Postpartum endometritis: fever >38°C, uterine tenderness, offensive lochia, within 10 days of delivery. Risk factors: CS, prolonged labour/ROM, GBS colonisation. Treatment: IV broad-spectrum antibiotics (clindamycin + gentamicin is gold standard, or amoxicillin-clavulanate). Covers GAS, GBS, Gram-negatives, anaerobes. Usually responds within 48h — if not, consider retained products (USS).",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "og-b1-001",
     topic: "Obstetrics & Gynaecology",

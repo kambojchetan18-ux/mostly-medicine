@@ -169,7 +169,7 @@ export const emergencyQuestions: MCQuestion[] = [
     explanation: "HHS (Hyperosmolar Hyperglycaemic State): glucose >30, osmolality >320, minimal ketones, no significant acidosis. Elderly T2DM. Treatment: 0.9% saline to restore circulating volume SLOWLY (24–48h) — rapid correction risks cerebral oedema, central pontine myelinolysis. Target Na correction <10 mEq/L/day, osmolality <3 mOsm/kg/hour. Insulin after initial fluid (lower dose than DKA). LMWH for DVT prophylaxis (high thrombotic risk).",
     reference: "amc", difficulty: "hard",
   },
-,
+
   {
     id: "em-b1-001",
     topic: "Emergency Medicine",

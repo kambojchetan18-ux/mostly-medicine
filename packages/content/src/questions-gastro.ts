@@ -323,7 +323,7 @@ export const gastroQuestions: MCQuestion[] = [
     explanation: "High-risk stigmata (Forrest I-II): active bleeding or non-bleeding visible vessel → dual endoscopic therapy (adrenaline injection + thermal/mechanical clip). Adrenaline alone has high rebleed rate. Post-endoscopy: high-dose IV PPI (omeprazole 80 mg bolus then 8 mg/hr infusion for 72h) reduces rebleeding by 50%. H. pylori eradication mandatory. NSAID/anticoagulant review.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "gi-b2-001",
     topic: "Gastroenterology",

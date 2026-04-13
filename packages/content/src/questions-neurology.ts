@@ -253,7 +253,7 @@ export const neurologyQuestions: MCQuestion[] = [
     explanation: "MG: acetylcholine receptor antibodies block NMJ. Treatment: pyridostigmine (acetylcholinesterase inhibitor) for symptomatic relief + immunosuppression (prednisolone, azathioprine) for long-term. Thymectomy for non-elderly AChR+ generalised MG (improves remission rates). Plasma exchange or IVIg for myasthenic crisis. Avoid: aminoglycosides, beta-blockers, magnesium (worsen MG).",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "neuro-b1-001",
     topic: "Neurology",

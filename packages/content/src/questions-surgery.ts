@@ -141,7 +141,7 @@ export const surgeryQuestions: MCQuestion[] = [
     explanation: "Diabetic foot ulcer with reduced ABI (0.65 = moderate PAD): vascular assessment is the critical priority. Neuro-ischaemic ulcers will not heal without adequate perfusion. Assess with ABI, toe pressures (transcutaneous pO2 <30 mmHg = poor healing), arterial Doppler, CT angiography. Revascularisation (angioplasty/bypass) before debridement/wound care. Multidisciplinary diabetic foot team. Off-loading (total contact cast). Infection: Gram stain, probe-to-bone for osteomyelitis.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "surg-b1-001",
     topic: "Surgery",

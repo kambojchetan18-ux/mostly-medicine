@@ -323,7 +323,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     explanation: "RECOVERY trial: dexamethasone 6 mg/day × 10 days reduced 28-day mortality in COVID-19 patients requiring oxygen or ventilation. Number needed to treat: 8 for ventilated patients, 25 for those on O2 only. No benefit (possible harm) without oxygen requirement. Remdesivir reduces time to recovery. IL-6 inhibitors (tocilizumab) for rapid oxygen escalation.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "resp-b2-001",
     topic: "Respiratory",

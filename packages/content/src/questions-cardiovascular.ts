@@ -421,7 +421,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     explanation: "Complete (third-degree) heart block with symptoms (syncope, presyncope, heart failure) = class I indication for permanent pacemaker. Temporary pacing for acute management if haemodynamically unstable. Atropine for temporary stabilisation only. The underlying cause (ischaemia, drugs, infiltration) should also be addressed.",
     reference: "amc", difficulty: "easy",
   },
-,
+
   {
     id: "cv-b2-001",
     topic: "Cardiovascular",

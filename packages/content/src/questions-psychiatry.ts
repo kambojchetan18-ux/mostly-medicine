@@ -211,7 +211,7 @@ export const psychiatryQuestions: MCQuestion[] = [
     explanation: "Somatic symptom disorder (DSM-5): physical symptoms + excessive thoughts/feelings/behaviours about symptoms, causing significant distress. Key management: one consistent GP (avoid multiple providers), regular scheduled visits (not crisis-driven), explore psychosocial context, CBT (most evidence), low-dose antidepressants for pain/mood, avoid unnecessary investigations and opioids. Maintain therapeutic relationship.",
     reference: "amc", difficulty: "medium",
   },
-,
+
   {
     id: "psych-b1-001",
     topic: "Psychiatry",
