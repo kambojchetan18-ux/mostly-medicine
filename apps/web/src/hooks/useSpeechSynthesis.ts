@@ -28,40 +28,52 @@ export function useSpeechSynthesis() {
 
   const speak = useCallback((text: string, gender: "male" | "female" | "unknown") => {
     if (!supported || typeof window === "undefined") return;
+
+    // Cancel any in-progress speech and clear keepalive.
     window.speechSynthesis.cancel();
+    if (keepaliveRef.current) clearInterval(keepaliveRef.current);
+    setSpeaking(false);
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    const voices = voicesRef.current;
+    // On mobile Chrome, calling cancel() and immediately speak() can leave the
+    // synthesis engine in a broken state after 3-4 turns. A short delay lets the
+    // engine fully reset before the next utterance.
+    setTimeout(() => {
+      // Re-check supported after the delay (tab may have been hidden).
+      if (!window.speechSynthesis) return;
 
-    // Pick gender-appropriate Australian voice
-    const auVoices = voices.filter(v => v.lang === "en-AU" || v.lang === "en_AU");
-    const femaleVoice = auVoices.find(v => /karen|female/i.test(v.name)) ?? auVoices[0];
-    const maleVoice = auVoices.find(v => /lee|male/i.test(v.name)) ?? auVoices[0];
-    const fallback = voices.find(v => v.lang.startsWith("en")) ?? voices[0];
+      // Reload voices — on mobile they may not be cached yet.
+      const voices = window.speechSynthesis.getVoices();
+      const auVoices = voices.filter(v => v.lang === "en-AU" || v.lang === "en_AU");
+      const femaleVoice = auVoices.find(v => /karen|female/i.test(v.name)) ?? auVoices[0];
+      const maleVoice = auVoices.find(v => /lee|male/i.test(v.name)) ?? auVoices[0];
+      const fallback = voices.find(v => v.lang.startsWith("en")) ?? voices[0];
 
-    utterance.voice = gender === "female" ? (femaleVoice ?? fallback) : (maleVoice ?? fallback);
-    utterance.lang = "en-AU";
-    utterance.rate = 0.88;
-    utterance.pitch = gender === "female" ? 1.1 : 0.92;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = gender === "female" ? (femaleVoice ?? fallback) : (maleVoice ?? fallback);
+      utterance.lang = "en-AU";
+      utterance.rate = 0.88;
+      utterance.pitch = gender === "female" ? 1.1 : 0.92;
 
-    utterance.onstart = () => {
-      setSpeaking(true);
-      // Chrome TTS pause bug workaround: keepalive every 10s
-      keepaliveRef.current = setInterval(() => {
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
-      }, 10_000);
-    };
-    utterance.onend = () => {
-      setSpeaking(false);
-      if (keepaliveRef.current) clearInterval(keepaliveRef.current);
-    };
-    utterance.onerror = () => {
-      setSpeaking(false);
-      if (keepaliveRef.current) clearInterval(keepaliveRef.current);
-    };
+      const clearKeepalive = () => {
+        if (keepaliveRef.current) { clearInterval(keepaliveRef.current); keepaliveRef.current = null; }
+      };
 
-    window.speechSynthesis.speak(utterance);
+      utterance.onstart = () => {
+        setSpeaking(true);
+        // Chrome silently stops TTS after ~15s of continuous speech.
+        // Pause+resume every 8s keeps the engine alive.
+        keepaliveRef.current = setInterval(() => {
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+          }
+        }, 8_000);
+      };
+      utterance.onend = () => { setSpeaking(false); clearKeepalive(); };
+      utterance.onerror = () => { setSpeaking(false); clearKeepalive(); };
+
+      window.speechSynthesis.speak(utterance);
+    }, 80);
   }, [supported]);
 
   return { speaking, speak, stop, supported };

@@ -37,17 +37,19 @@ export function useSpeechRecognition(onAutoEnd?: (transcript: string) => void) {
     recognition.lang = "en-AU";
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      let final = "";
+      // Only process results that are new or updated (from resultIndex onward).
+      // Starting from 0 caused all prior finals to be re-concatenated on every
+      // event, producing doubled/garbled transcript (e.g. "hihi patienthi...").
       let interim = "";
-      for (let i = 0; i < event.results.length; i++) {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
+          liveTranscriptRef.current += event.results[i][0].transcript + " ";
         } else {
           interim += event.results[i][0].transcript;
         }
       }
-      liveTranscriptRef.current = final;
-      setDisplayTranscript(final || interim);
+      // Show accumulated finals + live interim so user sees real-time progress.
+      setDisplayTranscript((liveTranscriptRef.current + interim).trim());
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {

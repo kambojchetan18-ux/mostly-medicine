@@ -31,10 +31,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="flex items-center justify-between mb-6 px-2">
           <div>
-            <h1 className="font-display font-bold text-[1.1rem] leading-tight tracking-tight">
-              <span className="gradient-text">Mostly</span>
-              <span className="text-white"> Medicine</span>
-            </h1>
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <h1 className="font-display font-bold text-[1.1rem] leading-tight tracking-tight">
+                <span className="gradient-text">Mostly</span>
+                <span className="text-white"> Medicine</span>
+              </h1>
+            </Link>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shrink-0" />
               <p className="text-[9px] text-slate-500 font-semibold tracking-widest uppercase">AMC Prep 2026</p>
@@ -96,10 +98,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* ── Mobile top bar ────────────────────────────────────────────── */}
       <div className="md:hidden fixed top-0 inset-x-0 z-50 flex items-center justify-between px-4 py-3 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70">
-        <span className="font-display font-bold text-base">
+        <Link href="/" className="font-display font-bold text-base hover:opacity-80 transition-opacity">
           <span className="gradient-text">Mostly</span>
           <span className="text-white"> Medicine</span>
-        </span>
+        </Link>
         <div className="text-slate-400">
           <SearchTrigger />
         </div>
