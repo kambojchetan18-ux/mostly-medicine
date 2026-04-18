@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MostlyMedicine CAT2 Roleplays</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5f6b85;
+      --border: #d9e0ec;
+      --primary: #0b7a75;
+      --primary-dark: #075e5a;
+      --warning: #cc8a00;
+      --danger: #c0392b;
+      --shadow: 0 10px 25px rgba(23, 32, 51, 0.08);
+    }
+    body.dark {
+      --bg: #0f1722;
+      --card: #182231;
+      --text: #edf3ff;
+      --muted: #9fb0cf;
+      --border: #2a3850;
+      --primary: #27c2ba;
+      --primary-dark: #1da79f;
+      --warning: #ffb020;
+      --danger: #ff6b5f;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .sub {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .toggle {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0 14px;
+    }
+    .pill {
+      font-size: 12px;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(11, 122, 117, 0.10);
+      color: var(--primary);
+      border: 1px solid rgba(11, 122, 117, 0.18);
+    }
+    .profile, .ref, .milestones {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    button.mode, button.start, button.reset {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    button.mode.active, button.start {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    button.start:hover { background: var(--primary-dark); }
+    .timer {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    .timer.warning { color: var(--warning); }
+    .timer.danger { color: var(--danger); }
+    ul {
+      padding-left: 18px;
+      margin: 8px 0 0;
+    }
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>MostlyMedicine CAT2 Roleplays</h1>
+        <div class="sub">Timed roleplay sessions with Exam, Practice, and Drill modes</div>
+      </div>
+      <button class="toggle" id="themeToggle">Toggle theme</button>
+    </header>
+    <div id="app" class="grid"></div>
+  </div>
+
+  <script>
+    const app = document.getElementById('app');
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => document.body.classList.toggle('dark'));
+
+    const modeMap = {
+      Beginner: 'practiceDurationSec',
+      Standard: 'examDurationSec',
+      Exam: 'examDurationSec',
+      Sprint: 'drillDurationSec'
+    };
+
+    let timers = {};
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function renderCard(item) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.id = item.id;
+      card.dataset.mode = 'Standard';
+      const current = item.examDurationSec;
+
+      card.innerHTML = `
+        <h3>${item.title}</h3>
+        <div class="meta">
+          <span class="pill">${item.difficulty}</span>
+          ${item.tags.map(t => `<span class="pill">${t}</span>`).join('')}
+        </div>
+        <div class="profile"><strong>Patient:</strong> ${item.patientProfile}</div>
+        <div class="controls">
+          <button class="mode active" data-mode="Standard">Standard</button>
+          <button class="mode" data-mode="Beginner">Beginner</button>
+          <button class="mode" data-mode="Exam">Exam</button>
+          <button class="mode" data-mode="Sprint">Sprint</button>
+        </div>
+        <div class="controls">
+          <button class="start">Start</button>
+          <button class="reset">Reset</button>
+        </div>
+        <div class="timer">${formatTime(current)}</div>
+        <div class="small">Warnings at ${item.warning1Sec / 60} min and ${item.warning2Sec / 60} min remaining</div>
+        <div class="milestones"><strong>Milestones</strong>
+          <ul>${item.milestones.map(m => `<li>${Math.floor(m.time / 60)}:${String(m.time % 60).padStart(2,'0')} - ${m.prompt}</li>`).join('')}</ul>
+        </div>
+        <div class="ref"><strong>Ref:</strong> ${item.handbookRef}</div>
+      `;
+
+      const timerEl = card.querySelector('.timer');
+      const modeButtons = [...card.querySelectorAll('.mode')];
+      const startBtn = card.querySelector('.start');
+      const resetBtn = card.querySelector('.reset');
+
+      function getDuration() {
+        const mode = card.dataset.mode;
+        return item[modeMap[mode]];
+      }
+
+      function setTimerClass(sec) {
+        timerEl.classList.remove('warning', 'danger');
+        if (sec <= item.warning2Sec) timerEl.classList.add('danger');
+        else if (sec <= item.warning1Sec) timerEl.classList.add('warning');
+      }
+
+      function resetTimer() {
+        clearInterval(timers[item.id]);
+        const duration = getDuration();
+        timerEl.textContent = formatTime(duration);
+        setTimerClass(duration);
+        startBtn.textContent = 'Start';
+      }
+
+      modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modeButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          card.dataset.mode = btn.dataset.mode;
+          resetTimer();
+        });
+      });
+
+      startBtn.addEventListener('click', () => {
+        if (timers[item.id]) {
+          clearInterval(timers[item.id]);
+          timers[item.id] = null;
+          startBtn.textContent = 'Start';
+          return;
+        }
+        let remaining = parseInt(timerEl.textContent.split(':')[0], 10) * 60 + parseInt(timerEl.textContent.split(':')[1], 10);
+        startBtn.textContent = 'Pause';
+        timers[item.id] = setInterval(() => {
+          remaining -= 1;
+          if (remaining <= 0) {
+            clearInterval(timers[item.id]);
+            timers[item.id] = null;
+            remaining = 0;
+            startBtn.textContent = 'Start';
+            if (card.dataset.mode === 'Exam') alert(`${item.title}: Time is up`);
+          }
+          timerEl.textContent = formatTime(remaining);
+          setTimerClass(remaining);
+        }, 1000);
+      });
+
+      resetBtn.addEventListener('click', resetTimer);
+      setTimerClass(current);
+      return card;
+    }
+
+    fetch('./data/mostlymedicine_cat2_roleplays.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Could not load JSON data');
+        return res.json();
+      })
+      .then(data => {
+        app.innerHTML = '';
+        data.forEach(item => app.appendChild(renderCard(item)));
+      })
+      .catch(err => {
+        app.innerHTML = `<div class="card"><h3>Failed to load roleplays</h3><p>${err.message}</p><p class="small">Make sure the JSON file exists in ./data and that you are using a local server.</p></div>`;
+      });
+  </script>
+</body>
+</html>

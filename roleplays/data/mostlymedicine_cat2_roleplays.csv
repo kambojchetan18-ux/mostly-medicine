@@ -1,0 +1,6 @@
+id,title,difficulty,examDurationSec,patientProfile,tags,handbookRef
+1,Abdominal pain - acute appendicitis,Standard,480,"35yo male, right iliac fossa pain 12hrs, nausea, no vomiting","abdominal,acute,surgery,exam",AMC Handbook Station 1-3
+2,Chest pain - myocardial infarction,Advanced,480,"55yo female, central chest pain 2hrs, radiating to jaw, sweaty","cardiac,emergency,chest,exam",AMC Handbook Station 4-6
+3,Shortness of breath - asthma exacerbation,Standard,480,"28yo female, sudden SOB 4hrs, wheeze, known asthma","respiratory,acute,asthma,exam",AMC Handbook Station 7-9
+4,Headache - subarachnoid haemorrhage,Advanced,480,"42yo male, sudden severe headache 6hrs, vomiting, photophobia","neurology,emergency,headache,exam",AMC Handbook Station 10-12
+5,Fatigue - hypothyroidism,Standard,480,"32yo female, 3 months fatigue, weight gain 4kg, cold intolerance","endocrine,chronic,fatigue,exam",AMC Handbook Station 13-15

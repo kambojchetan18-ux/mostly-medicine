@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-// API routes that don't require authentication
 const PUBLIC_API_ROUTES = [
   "/api/auth/login",
   "/api/auth/callback",
@@ -55,5 +54,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/:path*"],
+  matcher: ["/dashboard/:path*", "/api/:path*", "/auth/callback"],
 };

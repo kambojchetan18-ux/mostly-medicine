@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
 const modules = [
   {
@@ -94,14 +95,27 @@ const quickStats = [
   { emoji: "🇦🇺", value: "100+", label: "Job Listings",     color: "text-amber-600"  },
 ];
 
-export default function DashboardHome() {
+export default async function DashboardHome() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  let firstName = "Doctor";
+  if (user) {
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+    const fullName = profile?.full_name ?? user.email?.split("@")[0] ?? "Doctor";
+    firstName = fullName.split(" ")[0];
+  }
+
   return (
     <div className="max-w-5xl mx-auto">
 
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="font-display text-3xl font-bold text-gray-900">Welcome back 👋</h2>
+          <h2 className="font-display text-3xl font-bold text-gray-900">Welcome back, {firstName} 👋</h2>
         </div>
         <p className="text-slate-500 text-sm">Choose a module to continue your AMC preparation.</p>
       </div>

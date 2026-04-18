@@ -1,6 +1,7 @@
 import Link from "next/link";
 import GlobalSearch from "@/components/GlobalSearch";
 import SearchTrigger from "@/components/SearchTrigger";
+import SidebarUserCard from "@/components/SidebarUserCard";
 
 const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-violet-300"  },
@@ -32,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="flex items-center justify-between mb-6 px-2">
           <div>
-            <Link href="/" className="hover:opacity-80 transition-opacity">
+            <Link href="/dashboard" className="hover:opacity-80 transition-opacity">
               <h1 className="font-display font-bold text-[1.1rem] leading-tight tracking-tight">
                 <span className="gradient-text">Mostly</span>
                 <span className="text-white"> Medicine</span>
@@ -82,8 +83,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
 
+        {/* User card + logout */}
+        <SidebarUserCard />
+
         {/* Bottom card */}
-        <div className="mt-4 pt-4 border-t border-slate-800/50">
+        <div className="mt-3 border-t border-slate-800/50 pt-3">
           <div className="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-violet-950/80 via-purple-950/60 to-pink-950/40 border border-violet-800/25">
             <div className="absolute -top-6 -right-6 w-20 h-20 bg-violet-500/20 rounded-full blur-2xl pointer-events-none" />
             <p className="text-[11px] font-bold text-violet-300 mb-1 relative">🎯 Handbook-Aligned</p>

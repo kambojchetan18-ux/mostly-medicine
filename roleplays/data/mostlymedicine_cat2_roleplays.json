@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "title": "Abdominal pain - acute appendicitis",
+    "difficulty": "Standard",
+    "examDurationSec": 480,
+    "practiceDurationSec": 600,
+    "drillDurationSec": 300,
+    "warning1Sec": 120,
+    "warning2Sec": 60,
+    "hardStop": true,
+    "showMilestones": true,
+    "patientProfile": "35yo male, right iliac fossa pain 12hrs, nausea, no vomiting",
+    "milestones": [
+      {"time": 60, "prompt": "Establish rapport, clarify agenda"},
+      {"time": 270, "prompt": "Focused abdominal history"},
+      {"time": 390, "prompt": "Explanation and management"},
+      {"time": 450, "prompt": "Safety-netting, close"}
+    ],
+    "tags": ["abdominal", "acute", "surgery", "exam"],
+    "handbookRef": "AMC Handbook Station 1-3"
+  },
+  {
+    "id": 2,
+    "title": "Chest pain - myocardial infarction",
+    "difficulty": "Advanced",
+    "examDurationSec": 480,
+    "practiceDurationSec": 600,
+    "drillDurationSec": 300,
+    "warning1Sec": 120,
+    "warning2Sec": 60,
+    "hardStop": true,
+    "showMilestones": true,
+    "patientProfile": "55yo female, central chest pain 2hrs, radiating to jaw, sweaty",
+    "milestones": [
+      {"time": 60, "prompt": "Open question, safety netting"},
+      {"time": 240, "prompt": "Cardiovascular risk factors"},
+      {"time": 360, "prompt": "Explanation of likely diagnosis"},
+      {"time": 450, "prompt": "Reassurance, next steps"}
+    ],
+    "tags": ["cardiac", "emergency", "chest", "exam"],
+    "handbookRef": "AMC Handbook Station 4-6"
+  },
+  {
+    "id": 3,
+    "title": "Shortness of breath - asthma exacerbation",
+    "difficulty": "Standard",
+    "examDurationSec": 480,
+    "practiceDurationSec": 600,
+    "drillDurationSec": 300,
+    "warning1Sec": 120,
+    "warning2Sec": 60,
+    "hardStop": true,
+    "showMilestones": true,
+    "patientProfile": "28yo female, sudden SOB 4hrs, wheeze, known asthma",
+    "milestones": [
+      {"time": 90, "prompt": "Trigger history, severity"},
+      {"time": 270, "prompt": "Past episodes, current meds"},
+      {"time": 390, "prompt": "Immediate management plan"},
+      {"time": 450, "prompt": "Follow-up and safety-netting"}
+    ],
+    "tags": ["respiratory", "acute", "asthma", "exam"],
+    "handbookRef": "AMC Handbook Station 7-9"
+  },
+  {
+    "id": 4,
+    "title": "Headache - subarachnoid haemorrhage",
+    "difficulty": "Advanced",
+    "examDurationSec": 480,
+    "practiceDurationSec": 600,
+    "drillDurationSec": 300,
+    "warning1Sec": 120,
+    "warning2Sec": 60,
+    "hardStop": true,
+    "showMilestones": true,
+    "patientProfile": "42yo male, sudden severe headache 6hrs, vomiting, photophobia",
+    "milestones": [
+      {"time": 60, "prompt": "Onset, character, associated symptoms"},
+      {"time": 240, "prompt": "Red flags, neurological symptoms"},
+      {"time": 360, "prompt": "Urgent referral explanation"},
+      {"time": 450, "prompt": "Immediate safety measures"}
+    ],
+    "tags": ["neurology", "emergency", "headache", "exam"],
+    "handbookRef": "AMC Handbook Station 10-12"
+  },
+  {
+    "id": 5,
+    "title": "Fatigue - hypothyroidism",
+    "difficulty": "Standard",
+    "examDurationSec": 480,
+    "practiceDurationSec": 600,
+    "drillDurationSec": 300,
+    "warning1Sec": 120,
+    "warning2Sec": 60,
+    "hardStop": true,
+    "showMilestones": true,
+    "patientProfile": "32yo female, 3 months fatigue, weight gain 4kg, cold intolerance",
+    "milestones": [
+      {"time": 90, "prompt": "Systemic review, PMH"},
+      {"time": 270, "prompt": "Endocrine symptoms"},
+      {"time": 390, "prompt": "Likely diagnosis, investigations"},
+      {"time": 450, "prompt": "Management plan, follow-up"}
+    ],
+    "tags": ["endocrine", "chronic", "fatigue", "exam"],
+    "handbookRef": "AMC Handbook Station 13-15"
+  }
+]
