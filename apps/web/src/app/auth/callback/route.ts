@@ -9,34 +9,44 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/dashboard";
 
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => cookieStore.getAll(),
-        setAll: (cookiesToSet: { name: string; value: string; options?: Parameters<typeof cookieStore.set>[2] }[]) =>
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options)),
-      },
-    }
-  );
+  // OAuth code exchange (Google SSO)
+  // Cookies must be set directly on the redirect response — not on cookieStore —
+  // otherwise the session is lost when the browser follows the redirect.
+  if (code) {
+    const redirectTo = NextResponse.redirect(`${origin}${next}`);
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookiesToSet: { name: string; value: string; options?: Parameters<typeof redirectTo.cookies.set>[2] }[]) =>
+            cookiesToSet.forEach(({ name, value, options }) => redirectTo.cookies.set(name, value, options ?? {})),
+        },
+      }
+    );
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) return redirectTo;
+  }
 
   // Email confirmation (signup / email change)
   if (token_hash && type) {
+    const cookieStore = await cookies();
+    const redirectTo = NextResponse.redirect(`${origin}/dashboard`);
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => cookieStore.getAll(),
+          setAll: (cookiesToSet: { name: string; value: string; options?: Parameters<typeof redirectTo.cookies.set>[2] }[]) =>
+            cookiesToSet.forEach(({ name, value, options }) => redirectTo.cookies.set(name, value, options ?? {})),
+        },
+      }
+    );
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" | "email" });
-    if (!error) {
-      return NextResponse.redirect(`${origin}/dashboard`);
-    }
+    if (!error) return redirectTo;
     return NextResponse.redirect(`${origin}/auth/login?error=email_confirmation_failed`);
-  }
-
-  // OAuth code exchange (Google SSO)
-  if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
-    }
   }
 
   return NextResponse.redirect(`${origin}/auth/login?error=auth_callback_failed`);
