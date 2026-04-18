@@ -3,18 +3,19 @@ import { useState, useRef, useEffect, useCallback } from "react";
 
 type RecognitionState = "idle" | "recording";
 
-export function useSpeechRecognition(onAutoEnd?: (transcript: string) => void) {
+// onResult fires for both manual stop and browser auto-stop (silence).
+// Transcript is read in onend so Chrome's final onresult events are included.
+export function useSpeechRecognition(onResult?: (transcript: string) => void) {
   const [state, setState] = useState<RecognitionState>("idle");
   const [displayTranscript, setDisplayTranscript] = useState("");
   const [supported, setSupported] = useState<boolean | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const liveTranscriptRef = useRef(""); // avoids stale closure in onresult
-  const userStoppedRef = useRef(false); // distinguishes manual stop from browser auto-stop
-  const onAutoEndRef = useRef(onAutoEnd);
+  const liveTranscriptRef = useRef("");
+  const onResultRef = useRef(onResult);
 
-  useEffect(() => { onAutoEndRef.current = onAutoEnd; }, [onAutoEnd]);
+  useEffect(() => { onResultRef.current = onResult; }, [onResult]);
 
   useEffect(() => {
     const SR = typeof window !== "undefined"
@@ -27,8 +28,13 @@ export function useSpeechRecognition(onAutoEnd?: (transcript: string) => void) {
     const SR = window.SpeechRecognition ?? window.webkitSpeechRecognition;
     if (!SR) return;
 
+    // Abort any existing session before starting a new one
+    if (recognitionRef.current) {
+      try { recognitionRef.current.abort(); } catch { /* ignore */ }
+      recognitionRef.current = null;
+    }
+
     liveTranscriptRef.current = "";
-    userStoppedRef.current = false;
     setDisplayTranscript("");
 
     const recognition = new SR();
@@ -37,9 +43,6 @@ export function useSpeechRecognition(onAutoEnd?: (transcript: string) => void) {
     recognition.lang = "en-AU";
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      // Only process results that are new or updated (from resultIndex onward).
-      // Starting from 0 caused all prior finals to be re-concatenated on every
-      // event, producing doubled/garbled transcript (e.g. "hihi patienthi...").
       let interim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
@@ -48,48 +51,39 @@ export function useSpeechRecognition(onAutoEnd?: (transcript: string) => void) {
           interim += event.results[i][0].transcript;
         }
       }
-      // Show accumulated finals + live interim so user sees real-time progress.
       setDisplayTranscript((liveTranscriptRef.current + interim).trim());
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       if (event.error === "not-allowed") setPermissionDenied(true);
-      setState("idle");
+      // onend will fire next and handle cleanup + callback
     };
 
     recognition.onend = () => {
       setState("idle");
-      // If the browser auto-stopped (silence timeout) rather than the user clicking
-      // stop, fire the callback so the caller can send whatever was captured.
-      if (!userStoppedRef.current) {
-        const final = liveTranscriptRef.current.trim();
-        liveTranscriptRef.current = "";
-        setDisplayTranscript("");
-        if (final) onAutoEndRef.current?.(final);
-      }
+      const final = liveTranscriptRef.current.trim();
+      liveTranscriptRef.current = "";
+      setDisplayTranscript("");
+      recognitionRef.current = null;
+      // Fire for both manual stop and auto-stop (silence/timeout)
+      if (final) onResultRef.current?.(final);
     };
 
-    recognition.start();
-    recognitionRef.current = recognition;
-    setState("recording");
+    try {
+      recognition.start();
+      recognitionRef.current = recognition;
+      setState("recording");
+    } catch {
+      setState("idle");
+    }
   }, []);
 
-  const stopRecording = useCallback((): string => {
-    userStoppedRef.current = true;
-    recognitionRef.current?.stop();
-    setState("idle");
-    const final = liveTranscriptRef.current.trim();
-    liveTranscriptRef.current = "";
-    setDisplayTranscript("");
-    return final;
+  // Just signals stop — transcript arrives via onResult callback in onend
+  const stopRecording = useCallback(() => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch { /* ignore */ }
+    }
   }, []);
 
-  return {
-    state,
-    displayTranscript,
-    supported,
-    permissionDenied,
-    startRecording,
-    stopRecording,
-  };
+  return { state, displayTranscript, supported, permissionDenied, startRecording, stopRecording };
 }

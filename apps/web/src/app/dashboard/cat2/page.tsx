@@ -261,8 +261,7 @@ export default function CAT2Page() {
 
   function handleMicButton() {
     if (recState === "recording") {
-      const transcript = stopRecording();
-      if (transcript) sendMessage(transcript);
+      stopRecording(); // transcript arrives via sendMessage callback in onend
     } else {
       stopSpeaking();
       startRecording();
