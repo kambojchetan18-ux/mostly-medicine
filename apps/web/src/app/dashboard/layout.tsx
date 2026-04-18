@@ -5,6 +5,7 @@ import SearchTrigger from "@/components/SearchTrigger";
 const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-violet-300"  },
   { href: "/dashboard/cat1",      label: "AMC CAT 1", icon: "🧠", hover: "hover:text-indigo-300" },
+  { href: "/dashboard/progress",  label: "My Progress", icon: "📊", hover: "hover:text-blue-300"  },
   { href: "/dashboard/cat2",      label: "AMC CAT 2", icon: "🩺", hover: "hover:text-pink-300"   },
   { href: "/dashboard/recalls",   label: "Recalls",   icon: "📝", hover: "hover:text-orange-300" },
   { href: "/dashboard/library",   label: "Library",   icon: "📚", hover: "hover:text-amber-300"  },
