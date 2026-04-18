@@ -212,7 +212,7 @@ export const states: State[] = [
         region: "Metro",
         demandScore: 9,
         url: "https://www.wslhd.health.nsw.gov.au/",
-        notes: "★ PRIORITY — Westmead is 10 min from Parramatta. Direct observership connection at Advance Medical Practice. Large IMG workforce, experienced at onboarding IMGs.",
+        notes: "Large IMG workforce, experienced at onboarding IMGs. Westmead is one of Australia's largest teaching hospitals.",
       },
       {
         name: "Nepean Blue Mountains LHD",
@@ -251,11 +251,11 @@ export const states: State[] = [
       },
     ],
     tips: [
-      "★ You are already in Parramatta — Western Sydney LHD (Westmead) is your highest-priority application",
-      "Your Westmead observership gives you a direct connection — use Dr Rebeka Parvez as referee/introduction",
-      "NSW Health uses ROB (Recruitment Online for Business) portal — create account and set job alerts",
-      "Liverpool Hospital (SWSLHD) values high-acuity experience like Medanta — strong fit",
-      "If metro takes >4 weeks, apply Western NSW rural in parallel — fast hire, builds local experience",
+      "Western Sydney LHD (Westmead, Blacktown) is a strong first target — large IMG workforce with structured onboarding",
+      "NSW Health uses the ROB (Recruitment Online for Business) portal — create account and set job alerts immediately",
+      "Liverpool Hospital (SWSLHD) is one of Australia's busiest trauma centres — excellent for high-acuity experience",
+      "If metro applications take >4 weeks, apply to Western NSW LHD rural pools in parallel — faster hire",
+      "Mid-year (Jul) intake is less competitive than Feb main round — good entry window for IMGs",
     ],
   },
   {
@@ -355,75 +355,3 @@ export const states: State[] = [
   },
 ];
 
-export const profileReadiness = {
-  amcCat1: { label: "AMC CAT1 (MCQ) — Aug 2024", cleared: true, weight: 20 },
-  amcCat2: { label: "AMC CAT2 (Clinical) — Dec 2025", cleared: true, weight: 25 },
-  ahpra: { label: "AHPRA Registration (Pending)", cleared: false, weight: 20 },
-  visa: { label: "482 Visa — Full Work Rights", cleared: true, weight: 15 },
-  pr190: { label: "190 PR Visa (NSW Nominated — pending grant)", cleared: true, weight: 5 },
-  observership: { label: "Westmead Clinical Observership — 2025", cleared: true, weight: 10 },
-  alsPals: { label: "ALS Level 1 + PALS (RACGP) — Jul 2025", cleared: true, weight: 5 },
-};
-
-export const nextSteps = [
-  {
-    step: 1,
-    title: "Apply for AHPRA Provisional Registration — Today",
-    urgency: "critical",
-    timeEstimate: "Apply now — takes 4–8 weeks to process",
-    description:
-      "This is the only remaining blocker. You have AMC CAT1 + CAT2, a 482 visa with full work rights, and an Australian observership. Apply for AHPRA Provisional Registration (Standard Pathway) immediately. Many NSW hospitals can issue conditional offers while your AHPRA is pending — don't wait for the certificate to start applying.",
-    link: "https://www.ahpra.gov.au/Registration/New-Registrants.aspx",
-    linkText: "Apply on AHPRA",
-  },
-  {
-    step: 2,
-    title: "Apply to NSW LHDs & Sydney-Area Hospitals Now",
-    urgency: "critical",
-    timeEstimate: "Start today — you're already in Parramatta",
-    description:
-      "You are already in Parramatta, NSW with full work rights. Apply to Western Sydney LHD (Westmead, Blacktown, Auburn), Nepean Blue Mountains LHD (just 45 min from Parramatta), and South Western Sydney LHD (Liverpool, Campbelltown). Your Westmead observership connection is a direct advantage with Western Sydney LHD.",
-    link: "https://www.wslhd.health.nsw.gov.au/",
-    linkText: "Western Sydney LHD Jobs",
-  },
-  {
-    step: 3,
-    title: "Leverage Your Westmead Observership Contact",
-    urgency: "critical",
-    timeEstimate: "Email this week",
-    description:
-      "Email Dr Rebeka Parvez at Advance Medical Practice (Westmead) and ask for a referral or introduction to the Westmead Hospital medical staffing team. A warm introduction from someone who has supervised you beats any cold application. Also ask if she can be a formal referee on your applications.",
-    link: "https://www.westmeadhosp.org.au/",
-    linkText: "Westmead Hospital",
-  },
-  {
-    step: 4,
-    title: "Register with Medrecruit & Wavelength — Same Day",
-    urgency: "high",
-    timeEstimate: "30 minutes each",
-    description:
-      "Register on Medrecruit and Wavelength International today. Tell them: AMC cleared, 482 visa with full work rights, AHPRA application pending, based in Parramatta NSW, available immediately. These agencies have exclusive NSW hospital relationships and can fast-track placement.",
-    link: "https://www.medrecruit.com.au/",
-    linkText: "Medrecruit",
-  },
-  {
-    step: 5,
-    title: "Apply to NT and WA Country Health as Backup",
-    urgency: "high",
-    timeEstimate: "This week",
-    description:
-      "Even while targeting NSW, apply to NT Health and WA Country Health Service in parallel. They hire year-round, accept conditional offers pending AHPRA, and your 482 visa means no sponsorship delay. Higher probability of fast placement if NSW takes longer.",
-    link: "https://wacountry.health.wa.gov.au/join-our-team",
-    linkText: "WACHS Jobs Portal",
-  },
-  {
-    step: 6,
-    title: "Chase Your 190 PR Visa Status",
-    urgency: "moderate",
-    timeEstimate: "Follow up now — pending since Jan 2025",
-    description:
-      "Your NSW-nominated Subclass 190 PR has been pending since January 2025 — over 14 months. Lodge a formal follow-up with the Department of Home Affairs. Once granted, you'll no longer need 482 sponsorship and your employability increases significantly. Consider contacting a registered migration agent.",
-    link: "https://immi.homeaffairs.gov.au/help-support/contact-us",
-    linkText: "Home Affairs Contact",
-  },
-];

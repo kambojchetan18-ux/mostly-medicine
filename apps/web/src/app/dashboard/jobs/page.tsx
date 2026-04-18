@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Stethoscope, ClipboardList, CheckCircle, AlertCircle, Upload } from "lucide-react";
+import { MapPin, Stethoscope, ClipboardList, CheckCircle, AlertCircle, Upload, Award } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { computeReadiness, PATHWAY_LABELS, type IMGProfile } from "@/lib/imgProfile";
 
@@ -32,12 +32,21 @@ const navCards = [
     salary:     null,
   },
   {
+    href:       "/dashboard/jobs/specialist",
+    icon:       <Award className="w-6 h-6 text-purple-700" />,
+    title:      "Specialist Pathway",
+    desc:       "OTS assessment, college recognition, AHPRA specialist registration",
+    badge:      "Consultants",
+    badgeColor: "bg-purple-100 text-purple-700",
+    salary:     "$220K–$500K+",
+  },
+  {
     href:       "/dashboard/jobs/tracker",
-    icon:       <ClipboardList className="w-6 h-6 text-purple-700" />,
+    icon:       <ClipboardList className="w-6 h-6 text-gray-600" />,
     title:      "Application Tracker",
     desc:       "Track RMO and GP job applications in one place",
     badge:      "Personal",
-    badgeColor: "bg-purple-100 text-purple-700",
+    badgeColor: "bg-gray-100 text-gray-600",
     salary:     null,
   },
 ];

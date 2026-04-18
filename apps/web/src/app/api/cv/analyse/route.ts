@@ -20,7 +20,9 @@ Extract the following fields and return ONLY valid JSON — no explanation, no m
   "visa_type": "482" | "485" | "189" | "190" | "491" | "pr" | "citizen" | "other" | "unknown",
   "english_test": "oet" | "ielts" | "exempt" | "not_done",
   "certifications": string[],
-  "location_preference": string[]
+  "location_preference": string[],
+  "doctor_type": "rmo" | "gp" | "specialist" | "non_doctor" | null,
+  "specialist_qualification": string | null
 }
 
 Rules:
@@ -32,6 +34,13 @@ Rules:
 - specialties: clinical departments/rotations/disciplines worked in (e.g. "Emergency Medicine", "General Surgery")
 - certifications: only include verifiable cert abbreviations like ALS, PALS, ATLS, BLS, ACLS
 - location_preference: Australian states/territories explicitly mentioned as preferred (NSW, VIC, QLD, WA, SA, TAS, NT, ACT)
+- doctor_type: classify the person as:
+  * "non_doctor" — no MBBS, MD, BDS, or equivalent medical/dental degree found; could be a nurse, allied health, admin, or non-medical person
+  * "specialist" — has a specialist postgraduate qualification beyond MBBS (e.g. FRCS, FRCP, DM, DNB specialist, MCh, MS, MD specialty, MRCP, MRCS, Fellowship of a college)
+  * "rmo" — MBBS/MD general with <5 years experience or explicitly seeking hospital RMO/internship roles
+  * "gp" — MBBS/MD seeking GP/primary care practice, or has GP training/FRACGP/FACRRM
+  * null — cannot determine
+- specialist_qualification: the specific specialist degree/fellowship if doctor_type is "specialist" (e.g. "FRCS Orthopaedics", "MD Cardiology", "DNB Psychiatry")
 - Return null for fields that cannot be determined`;
 
 export async function POST(req: NextRequest) {

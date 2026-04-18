@@ -2,24 +2,27 @@ export type AMCStatus   = "passed" | "scheduled" | "not_done";
 export type AHPRAStatus = "registered" | "pending" | "not_started";
 export type VisaType    = "482" | "485" | "189" | "190" | "491" | "pr" | "citizen" | "other" | "unknown";
 export type EnglishTest = "oet" | "ielts" | "exempt" | "not_done";
-export type Pathway     = "ready" | "need_ahpra" | "need_cat2" | "need_cat1" | "need_english" | "unknown";
+export type DoctorType  = "rmo" | "gp" | "specialist" | "non_doctor" | null;
+export type Pathway     = "ready" | "need_ahpra" | "need_cat2" | "need_cat1" | "need_english" | "specialist" | "non_doctor" | "unknown";
 
 export interface IMGProfile {
-  id:                  string;
-  name:                string | null;
-  degree_country:      string | null;
-  graduation_year:     number | null;
-  years_experience:    number | null;
-  specialties:         string[];
-  amc_cat1:            AMCStatus;
-  amc_cat2:            AMCStatus;
-  ahpra_status:        AHPRAStatus;
-  visa_type:           VisaType;
-  english_test:        EnglishTest;
-  certifications:      string[];
-  location_preference: string[];
-  cv_text:             string | null;
-  updated_at:          string;
+  id:                       string;
+  name:                     string | null;
+  degree_country:           string | null;
+  graduation_year:          number | null;
+  years_experience:         number | null;
+  specialties:              string[];
+  amc_cat1:                 AMCStatus;
+  amc_cat2:                 AMCStatus;
+  ahpra_status:             AHPRAStatus;
+  visa_type:                VisaType;
+  english_test:             EnglishTest;
+  certifications:           string[];
+  location_preference:      string[];
+  cv_text:                  string | null;
+  doctor_type:              DoctorType;
+  specialist_qualification: string | null;
+  updated_at:               string;
 }
 
 interface ReadinessItem {
@@ -80,7 +83,9 @@ export function computeReadiness(p: IMGProfile): {
   const blockers = items.filter(i => i.blocker && !i.cleared).map(i => i.label);
 
   let pathway: Pathway = "unknown";
-  if (p.english_test === "not_done")                       pathway = "need_english";
+  if (p.doctor_type === "non_doctor")                      pathway = "non_doctor";
+  else if (p.doctor_type === "specialist")                 pathway = "specialist";
+  else if (p.english_test === "not_done")                  pathway = "need_english";
   else if (p.amc_cat1 !== "passed")                        pathway = "need_cat1";
   else if (p.amc_cat2 !== "passed")                        pathway = "need_cat2";
   else if (p.ahpra_status !== "registered")                pathway = "need_ahpra";
@@ -90,6 +95,16 @@ export function computeReadiness(p: IMGProfile): {
 }
 
 export const PATHWAY_LABELS: Record<Pathway, { label: string; color: string; next: string }> = {
+  non_doctor: {
+    label: "Not a Medical Doctor",
+    color: "text-red-700 bg-red-50 border-red-200",
+    next:  "These job pools are for IMGs with MBBS or equivalent. Your CV doesn't show a medical degree — please re-upload or correct your profile.",
+  },
+  specialist: {
+    label: "Specialist Pathway",
+    color: "text-purple-700 bg-purple-50 border-purple-200",
+    next:  "Your qualifications indicate a specialist pathway. See the Specialist Pathway guide for AMC specialist assessment, college recognition, and AHPRA specialist registration.",
+  },
   need_english: {
     label: "Step 1 — English Proficiency",
     color: "text-red-700 bg-red-50 border-red-200",
@@ -111,7 +126,7 @@ export const PATHWAY_LABELS: Record<Pathway, { label: string; color: string; nex
     next:  "Apply at ahpra.gov.au with your AMC certificate, ID, and references. Processing takes 4–12 weeks.",
   },
   ready: {
-    label: "Ready to Apply 🎉",
+    label: "Ready to Apply",
     color: "text-green-700 bg-green-50 border-green-200",
     next:  "You meet the core requirements. Apply to RMO pools now or explore GP DWS positions for faster hire.",
   },
