@@ -4,6 +4,27 @@ import { useState, useMemo, useCallback } from "react";
 import { allQuestions } from "@mostly-medicine/content";
 import type { MCQuestion } from "@mostly-medicine/content";
 
+const TOPIC_REFERENCES: Record<string, { source: string; detail: string }> = {
+  "Cardiovascular":   { source: "NHFA/CSANZ Heart Failure Guidelines 2018; Cardiac Society AF Guidelines 2023", detail: "Therapeutic Guidelines: Cardiovascular, v7" },
+  "Respiratory":      { source: "Australian Asthma Handbook 2022 (NAC); COPD-X Plan 2023", detail: "Therapeutic Guidelines: Respiratory, v5" },
+  "Gastroenterology": { source: "GESA Clinical Guidelines; Gastroenterological Society of Australia", detail: "Therapeutic Guidelines: Gastrointestinal, v6" },
+  "Neurology":        { source: "Stroke Foundation Clinical Guidelines 2023; Epilepsy Society of Australia", detail: "Therapeutic Guidelines: Neurology, v4" },
+  "Endocrinology":    { source: "ADEA/ADS Type 2 Diabetes Guidelines 2023; Australian Thyroid Guidelines", detail: "Therapeutic Guidelines: Endocrinology, v5" },
+  "Psychiatry":       { source: "RANZCP Clinical Practice Guidelines; Australian Mental Health Standards", detail: "Therapeutic Guidelines: Psychotropic, v8" },
+  "Paediatrics":      { source: "NCIRS Immunisation Schedule 2024; Paediatric Emergency Guidelines (RCH)", detail: "Therapeutic Guidelines: Antibiotic — Paediatric, v16" },
+  "Obstetrics & Gynaecology": { source: "RANZCOG Clinical Guidelines; Australian Antenatal Care Guidelines", detail: "Therapeutic Guidelines: Obstetrics, v2" },
+  "Emergency Medicine": { source: "ACEM Clinical Guidelines; Advanced Life Support (ARC) 2021", detail: "Therapeutic Guidelines: Emergency, v2" },
+  "Renal":            { source: "KHA-CARI Guidelines; Australian CKD Guidelines 2023", detail: "Therapeutic Guidelines: Renal, v1" },
+  "Rheumatology":     { source: "APLAR/Australian Rheumatology Association Guidelines", detail: "Therapeutic Guidelines: Rheumatology, v2" },
+  "Infectious Disease": { source: "ASHM HIV Guidelines; Australasian Society for Infectious Diseases", detail: "Therapeutic Guidelines: Antibiotic, v16" },
+  "Surgery":          { source: "RACS Surgical Guidelines; Australian Colorectal Surgical Standards", detail: "AMC MCQ Handbook — Surgical Topics" },
+  "Pharmacology":     { source: "Australian Medicines Handbook (AMH) 2024", detail: "Therapeutic Guidelines: relevant specialty, current edition" },
+};
+
+function getReference(topic: string) {
+  return TOPIC_REFERENCES[topic] ?? { source: "AMC MCQ Handbook (current edition)", detail: "AMC Clinical Assessment" };
+}
+
 const topics = [...new Set(allQuestions.map((q) => q.topic))].sort();
 
 type Mode = "menu" | "quiz" | "result";
@@ -28,6 +49,8 @@ export default function CAT1Page() {
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [answers, setAnswers] = useState<{ id: string; correct: boolean; topic: string }[]>([]);
+  const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
 
   const topicCounts = useMemo(
     () => Object.fromEntries(topics.map((t) => [t, allQuestions.filter((q) => q.topic === t).length])),
@@ -44,6 +67,7 @@ export default function CAT1Page() {
     setSelected(null);
     setRevealed(false);
     setAnswers([]);
+    setDetailedExplanation(null);
     setMode("quiz");
   }
 
@@ -74,8 +98,31 @@ export default function CAT1Page() {
       setCurrent((c) => c + 1);
       setSelected(null);
       setRevealed(false);
+      setDetailedExplanation(null);
     }
   }, [selected, questions, current, answers]);
+
+  async function fetchDetailedExplanation() {
+    if (!selected) return;
+    const q = questions[current];
+    setDetailLoading(true);
+    const res = await fetch("/api/cat1/explain", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stem: q.stem,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        selectedAnswer: selected,
+        topic: q.topic,
+        subtopic: q.subtopic,
+        explanation: q.explanation,
+      }),
+    });
+    const data = await res.json();
+    setDetailedExplanation(data.explanation ?? "Could not load explanation.");
+    setDetailLoading(false);
+  }
 
   function reset() {
     setMode("menu");
@@ -277,13 +324,40 @@ export default function CAT1Page() {
       </div>
 
       {/* Explanation */}
-      {revealed && (
-        <div className={`rounded-xl p-4 mb-4 text-sm ${isCorrect ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
-          <p className="font-semibold mb-1">{isCorrect ? "✓ Correct!" : `✗ Answer: ${q.correctAnswer}`}</p>
-          <p className="text-gray-700 leading-relaxed">{q.explanation}</p>
-          <p className="text-xs text-gray-400 mt-2">📖 {q.reference}</p>
-        </div>
-      )}
+      {revealed && (() => {
+        const ref = getReference(q.topic);
+        return (
+          <div className={`rounded-xl p-4 mb-4 text-sm ${isCorrect ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
+            <p className="font-semibold mb-2">{isCorrect ? "✓ Correct!" : `✗ Correct answer: ${q.correctAnswer}`}</p>
+            <p className="text-gray-700 leading-relaxed">{q.explanation}</p>
+
+            {/* Cited reference */}
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Reference</p>
+              <p className="text-xs text-gray-600 font-medium">{ref.detail}</p>
+              <p className="text-xs text-gray-400">{ref.source}</p>
+            </div>
+
+            {/* Detailed AI explanation */}
+            {!detailedExplanation && (
+              <button
+                onClick={fetchDetailedExplanation}
+                disabled={detailLoading}
+                className="mt-3 text-xs font-semibold text-brand-600 hover:text-brand-800 underline disabled:opacity-50"
+              >
+                {detailLoading ? "Loading detailed explanation…" : "🔍 Explain in detail (why each option is right/wrong)"}
+              </button>
+            )}
+
+            {detailedExplanation && (
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Detailed Explanation</p>
+                <div className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{detailedExplanation}</div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Action button */}
       <div className="flex gap-3">
