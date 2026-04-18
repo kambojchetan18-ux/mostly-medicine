@@ -3,6 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 
 const PUBLIC_API_ROUTES = [
   "/api/auth/login",
+  "/api/auth/signup",
   "/api/auth/callback",
   "/api/search",
 ];
@@ -35,18 +36,33 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Protect dashboard routes — redirect to login
+  // Not logged in → redirect to login
   if (!user && pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
     return NextResponse.redirect(url);
   }
 
-  // Protect API routes — return 401 JSON (skip public ones)
+  // Not logged in → 401 for protected API routes
   if (!user && pathname.startsWith("/api/")) {
     const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
     if (!isPublic) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
+  // Logged in but email not confirmed → redirect to verify-email (blocks all dashboard + API)
+  if (user && !user.email_confirmed_at) {
+    if (pathname.startsWith("/dashboard")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/verify-email";
+      return NextResponse.redirect(url);
+    }
+    if (pathname.startsWith("/api/")) {
+      const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+      if (!isPublic) {
+        return NextResponse.json({ error: "Email not confirmed" }, { status: 403 });
+      }
     }
   }
 

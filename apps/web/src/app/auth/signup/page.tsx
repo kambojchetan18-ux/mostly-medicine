@@ -35,10 +35,14 @@ export default function SignupPage() {
     setError("");
     if (password !== confirmPassword) { setError("Passwords do not match."); return; }
     setLoading(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
-    if (error) { setError(error.message); setLoading(false); }
-    else { router.push("/dashboard"); router.refresh(); }
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, name }),
+    });
+    const data = await res.json();
+    if (!res.ok) { setError(data.error ?? "Signup failed."); setLoading(false); }
+    else { router.push("/auth/verify-email"); }
   }
 
   async function handleGoogle() {
