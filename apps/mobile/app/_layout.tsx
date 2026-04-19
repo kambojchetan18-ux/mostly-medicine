@@ -1,29 +1,52 @@
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { useRouter, useSegments } from 'expo-router';
+import { supabase } from '@/lib/supabase';
+import type { Session } from '@supabase/supabase-js';
+import { View, ActivityIndicator } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-class ErrorBoundary extends React.Component<{children: React.ReactNode}, {error: Error | null}> {
-  state = { error: null };
-  static getDerivedStateFromError(error: Error) { return { error }; }
-  render() {
-    if (this.state.error) {
-      return (
-        <View style={{ flex: 1, padding: 20, marginTop: 50 }}>
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'red' }}>App Error:</Text>
-          <ScrollView>
-            <Text style={{ marginTop: 10 }}>{String(this.state.error)}</Text>
-          </ScrollView>
-        </View>
-      );
-    }
-    return this.props.children;
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const segments = useSegments();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    const inAuth = segments[0] === 'auth';
+    if (!session && !inAuth) router.replace('/auth/login');
+    if (session && inAuth) router.replace('/(tabs)');
+  }, [session, loading, segments]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f172a' }}>
+        <ActivityIndicator color="#7c3aed" size="large" />
+      </View>
+    );
   }
+
+  return <>{children}</>;
 }
 
 export default function RootLayout() {
   return (
-    <ErrorBoundary>
-      <Stack screenOptions={{ headerShown: false }} />
-    </ErrorBoundary>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthGate>
+        <Stack screenOptions={{ headerShown: false }} />
+      </AuthGate>
+    </GestureHandlerRootView>
   );
 }
