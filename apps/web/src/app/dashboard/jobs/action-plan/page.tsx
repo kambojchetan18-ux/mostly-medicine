@@ -221,7 +221,7 @@ export default async function ActionPlanPage() {
           {[
             { name: "Medrecruit", url: "https://www.medrecruit.com.au/", note: "Largest IMG medical recruiter in Australia — strong rural and NT network" },
             { name: "Wavelength International", url: "https://www.wavelength.com.au/", note: "Specialises in locum and permanent IMG placement nationally" },
-            { name: "Health Workforce (Govt)", url: "https://www.health.gov.au/our-work/health-workforce", note: "Federal govt portal — DWS locator, rural incentives, workforce programs" },
+            { name: "Health Workforce Locator (Govt)", url: "https://www.health.gov.au/resources/apps-and-tools/health-workforce-locator", note: "Federal govt — interactive DWS map, find workforce shortage areas by specialty" },
             { name: "RDAA", url: "https://www.rdaa.com.au/", note: "Rural Doctors Association — rural GP support and placement across all states" },
             { name: "Rural Health West", url: "https://www.ruralhealthwest.com.au/", note: "WA-specific — places IMGs in WA rural and remote positions" },
             { name: "RWAV", url: "https://www.rwav.com.au/", note: "Rural Workforce Agency Victoria — VIC rural GP placement" },
