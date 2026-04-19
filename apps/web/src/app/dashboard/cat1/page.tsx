@@ -1,8 +1,15 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import { allQuestions } from "@mostly-medicine/content";
+import { useState, useCallback, useEffect } from "react";
 import type { MCQuestion } from "@mostly-medicine/content";
+
+// Static topic list — avoids importing the 5 MB allQuestions bundle on the client.
+// Question counts are fetched from the server API on menu load.
+const TOPIC_NAMES = [
+  "Cardiovascular", "Emergency Medicine", "Endocrinology", "Gastroenterology",
+  "Infectious Disease", "Neurology", "Obstetrics & Gynaecology", "Paediatrics",
+  "Pharmacology", "Psychiatry", "Renal", "Respiratory", "Rheumatology", "Surgery",
+];
 
 const TOPIC_REFERENCES: Record<string, { source: string; detail: string }> = {
   "Cardiovascular":   { source: "NHFA/CSANZ Heart Failure Guidelines 2018; Cardiac Society AF Guidelines 2023", detail: "Therapeutic Guidelines: Cardiovascular, v7" },
@@ -25,9 +32,7 @@ function getReference(topic: string) {
   return TOPIC_REFERENCES[topic] ?? { source: "AMC MCQ Handbook (current edition)", detail: "AMC Clinical Assessment" };
 }
 
-const topics = [...new Set(allQuestions.map((q) => q.topic))].sort();
-
-type Mode = "menu" | "quiz" | "result";
+type Mode = "menu" | "loading" | "quiz" | "result";
 
 async function saveAttempt(questionId: string, correct: boolean, topic: string) {
   try {
@@ -37,7 +42,7 @@ async function saveAttempt(questionId: string, correct: boolean, topic: string) 
       body: JSON.stringify({ questionId, correct, topic }),
     });
   } catch {
-    // silently fail — offline or unauthenticated
+    // silently fail — offline
   }
 }
 
@@ -51,24 +56,42 @@ export default function CAT1Page() {
   const [answers, setAnswers] = useState<{ id: string; correct: boolean; topic: string }[]>([]);
   const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
 
-  const topicCounts = useMemo(
-    () => Object.fromEntries(topics.map((t) => [t, allQuestions.filter((q) => q.topic === t).length])),
-    []
-  );
+  // Fetch topic counts once on menu mount — tiny payload from server
+  useEffect(() => {
+    fetch("/api/cat1/questions")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.topics) {
+          const map: Record<string, number> = {};
+          for (const t of d.topics) map[t.name] = t.count;
+          setTopicCounts(map);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
-  function startQuiz(topic: string | null, count = 20) {
-    const pool = topic
-      ? allQuestions.filter((q) => q.topic === topic)
-      : [...allQuestions].sort(() => Math.random() - 0.5).slice(0, count);
-    setQuestions(pool);
-    setSelectedTopic(topic);
-    setCurrent(0);
-    setSelected(null);
-    setRevealed(false);
-    setAnswers([]);
-    setDetailedExplanation(null);
-    setMode("quiz");
+  async function startQuiz(topic: string | null, count = 20) {
+    setMode("loading");
+    try {
+      const res = await fetch("/api/cat1/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, count }),
+      });
+      const data = await res.json();
+      setQuestions(data.questions ?? []);
+      setSelectedTopic(topic);
+      setCurrent(0);
+      setSelected(null);
+      setRevealed(false);
+      setAnswers([]);
+      setDetailedExplanation(null);
+      setMode("quiz");
+    } catch {
+      setMode("menu");
+    }
   }
 
   function handleSelect(label: string) {
@@ -86,7 +109,6 @@ export default function CAT1Page() {
     const q = questions[current];
     const correct = selected === q.correctAnswer;
 
-    // Save to DB + update SR card (fire-and-forget)
     saveAttempt(q.id, correct, q.topic);
 
     const newAnswers = [...answers, { id: q.id, correct, topic: q.topic }];
@@ -134,6 +156,16 @@ export default function CAT1Page() {
     setAnswers([]);
   }
 
+  // ── LOADING ─────────────────────────────────────────────────────────────────
+  if (mode === "loading") {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-4">
+        <div className="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-gray-500">Loading questions…</p>
+      </div>
+    );
+  }
+
   // ── MENU ────────────────────────────────────────────────────────────────────
   if (mode === "menu") {
     return (
@@ -166,14 +198,16 @@ export default function CAT1Page() {
 
         <h3 className="font-semibold text-gray-700 mb-3">Practice by Topic</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {topics.map((topic) => (
+          {TOPIC_NAMES.map((topic) => (
             <button
               key={topic}
               onClick={() => startQuiz(topic)}
               className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-brand-400 hover:bg-brand-50 transition group"
             >
               <p className="font-medium text-gray-800 text-sm group-hover:text-brand-700">{topic}</p>
-              <p className="text-xs text-gray-400 mt-1">{topicCounts[topic]} questions</p>
+              <p className="text-xs text-gray-400 mt-1">
+                {topicCounts[topic] ? `${topicCounts[topic]} questions` : "Practice →"}
+              </p>
             </button>
           ))}
         </div>
@@ -186,7 +220,6 @@ export default function CAT1Page() {
     const score = answers.filter((a) => a.correct).length;
     const pct = Math.round((score / answers.length) * 100);
 
-    // Topic breakdown
     const byTopic: Record<string, { correct: number; total: number }> = {};
     for (const a of answers) {
       if (!byTopic[a.topic]) byTopic[a.topic] = { correct: 0, total: 0 };
@@ -280,11 +313,10 @@ export default function CAT1Page() {
       <div className="h-1.5 bg-gray-100 rounded-full mb-5 overflow-hidden">
         <div
           className="h-1.5 bg-brand-500 rounded-full transition-all duration-300"
-          style={{ width: `${((current) / questions.length) * 100}%` }}
+          style={{ width: `${(current / questions.length) * 100}%` }}
         />
       </div>
 
-      {/* Question card */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-4 shadow-sm">
         <div className="flex gap-2 mb-3">
           <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
@@ -299,7 +331,6 @@ export default function CAT1Page() {
         <p className="text-gray-800 text-sm leading-relaxed font-medium">{q.stem}</p>
       </div>
 
-      {/* Options */}
       <div className="space-y-2 mb-4">
         {q.options.map((opt) => {
           let style = "bg-white border border-gray-200 text-gray-700 hover:border-brand-400 hover:bg-brand-50";
@@ -323,7 +354,6 @@ export default function CAT1Page() {
         })}
       </div>
 
-      {/* Explanation */}
       {revealed && (() => {
         const ref = getReference(q.topic);
         return (
@@ -331,14 +361,12 @@ export default function CAT1Page() {
             <p className="font-semibold mb-2">{isCorrect ? "✓ Correct!" : `✗ Correct answer: ${q.correctAnswer}`}</p>
             <p className="text-gray-700 leading-relaxed">{q.explanation}</p>
 
-            {/* Cited reference */}
             <div className="mt-3 pt-3 border-t border-gray-200">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Reference</p>
               <p className="text-xs text-gray-600 font-medium">{ref.detail}</p>
               <p className="text-xs text-gray-400">{ref.source}</p>
             </div>
 
-            {/* Detailed AI explanation */}
             {!detailedExplanation && (
               <button
                 onClick={fetchDetailedExplanation}
@@ -359,7 +387,6 @@ export default function CAT1Page() {
         );
       })()}
 
-      {/* Action button */}
       <div className="flex gap-3">
         {!revealed ? (
           <button
