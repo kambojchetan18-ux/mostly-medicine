@@ -194,14 +194,14 @@ export default function GPPathwayPage() {
         <h2 className="text-lg font-bold mb-4">GP Recruitment Agencies & Training Bodies</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            { name: "RACGP — PESCI & Fellowship", url: "https://www.racgp.org.au/education/imgs/fellowship-pathways/pesci", desc: "Apply for PESCI here. Also manages FRACGP fellowship training." },
+            { name: "RACGP — PESCI & Fellowship", url: "https://www.racgp.org.au/education/imgs/fellowship-pathways", desc: "Apply for PESCI here. Also manages FRACGP fellowship training." },
             { name: "ACRRM — Rural GP Fellowship", url: "https://www.acrrm.org.au/", desc: "Rural-focused fellowship. FACRRM is faster and more accessible for rural IMGs." },
             { name: "AGPT — GP Training", url: "https://www.agpt.com.au/", desc: "National GP training program — apply here for registrar training places." },
-            { name: "Health.gov.au — DWS/AoN Locator", url: "https://www.health.gov.au/our-work/health-workforce/programs/distribution-priority-area", desc: "Find Distribution Priority Areas — where you can work as GP without PESCI immediately." },
-            { name: "Rural Health West (WA GP)", url: "https://www.ruralhealthwest.com.au/gps/", desc: "WA rural GP placement — most vacancies in Kimberley and Pilbara." },
+            { name: "Health Workforce Locator — DWS Map", url: "https://www.health.gov.au/resources/apps-and-tools/health-workforce-locator", desc: "Interactive map — find DWS/Distribution Priority Areas where you can work as GP without PESCI." },
+            { name: "Rural Health West (WA GP)", url: "https://www.ruralhealthwest.com.au/", desc: "WA rural GP placement — most vacancies in Kimberley and Pilbara." },
             { name: "RDAA (Rural Doctors Assoc Australia)", url: "https://www.rdaa.com.au/", desc: "Rural GP support and placement across SA and all states." },
             { name: "RACGP GP Training", url: "https://www.racgp.org.au/gptraining", desc: "RACGP's GP training pathway — fellowship and registrar program info." },
-            { name: "IMG Connect Australia", url: "https://www.medrecruit.com.au/", desc: "Medrecruit — specialist IMG recruiter covering GP and RMO placements." },
+            { name: "Medrecruit", url: "https://medrecruit.medworld.com/", desc: "Specialist IMG recruiter — covering GP and RMO placements across Australia." },
           ].map((a) => (
             <a
               key={a.name}

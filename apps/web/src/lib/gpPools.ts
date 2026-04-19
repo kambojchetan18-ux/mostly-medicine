@@ -29,8 +29,8 @@ export const pesciSteps = [
     step: 3,
     title: "Choose Fellowship Stream",
     detail: "RACGP Fellowship (FRACGP) for general practice, or ACRRM Fellowship (FACRRM) for rural/remote. ACRRM is faster and more accessible for IMGs going rural.",
-    link: "https://www.acrrm.org.au/fellowship/pathways-to-fellowship/img-pathway",
-    linkText: "ACRRM IMG Pathway",
+    link: "https://www.acrrm.org.au/international-graduates/",
+    linkText: "ACRRM International Graduates",
   },
   {
     step: 4,
@@ -43,8 +43,8 @@ export const pesciSteps = [
     step: 5,
     title: "Area of Need (AoN) — Immediate Option",
     detail: "Even without completing PESCI/fellowship, you can work as a GP in an Area of Need (AoN) or District of Workforce Shortage (DWS). DoctorConnect lists these areas. This is the fastest pathway to GP income while completing fellowship.",
-    link: "https://www.health.gov.au/our-work/health-workforce/programs/distribution-priority-area",
-    linkText: "Health.gov.au — DPA/AoN Locator",
+    link: "https://www.health.gov.au/resources/apps-and-tools/health-workforce-locator",
+    linkText: "Health Workforce Locator — DWS Map",
   },
 ];
 
@@ -59,7 +59,7 @@ export const gpPools: GPPool[] = [
     salary: "AUD $180,000–$300,000+",
     pesciRequired: true,
     aaagpRequired: false,
-    url: "https://www.health.nsw.gov.au/workforce/Pages/rural-health.aspx",
+    url: "https://www.health.nsw.gov.au/careers/Pages/rural-health-workforce-incentive-scheme.aspx",
     notes: "Highest GP shortage in NSW is rural. AoN exemptions available immediately — no PESCI needed for DWS areas. Salary substantially higher than RMO.",
   },
   {
@@ -72,7 +72,7 @@ export const gpPools: GPPool[] = [
     salary: "AUD $200,000–$350,000+",
     pesciRequired: false,
     aaagpRequired: false,
-    url: "https://jobs.nt.gov.au/",
+    url: "https://healthjobs.nt.gov.au/",
     notes: "NT is entirely DWS — AoN exemptions apply everywhere. Fastest GP income pathway. Remote area allowances on top. ACRRM training available in Darwin.",
   },
   {
