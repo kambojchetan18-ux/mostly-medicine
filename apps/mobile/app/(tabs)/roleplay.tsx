@@ -2,10 +2,13 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform,
+  PermissionsAndroid, Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import Voice, { type SpeechResultsEvent, type SpeechErrorEvent } from '@react-native-voice/voice';
+import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
 import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
@@ -42,6 +45,24 @@ const MILESTONES = [
   { time: 450, label: 'Safety-netting & close' },
 ];
 
+async function requestMicPermission(): Promise<boolean> {
+  if (Platform.OS !== 'android') return true;
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      {
+        title: 'Microphone Permission',
+        message: 'Mostly Medicine needs microphone access to record your voice during roleplay.',
+        buttonPositive: 'Allow',
+        buttonNegative: 'Deny',
+      },
+    );
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
+  } catch {
+    return false;
+  }
+}
+
 export default function RoleplayScreen() {
   const [scenario, setScenario] = useState<Scenario | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -51,16 +72,109 @@ export default function RoleplayScreen() {
   const [fetchingFeedback, setFetchingFeedback] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [milestone, setMilestone] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const elapsedRef = useRef(0);
   const shownMilestonesRef = useRef<Set<number>>(new Set());
   const scrollRef = useRef<ScrollView>(null);
   const feedbackRequestedRef = useRef(false);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
 
+  // ── Voice setup ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    Voice.onSpeechStart = () => setIsRecording(true);
+    Voice.onSpeechEnd = () => setIsRecording(false);
+    Voice.onSpeechPartialResults = (e: SpeechResultsEvent) => {
+      const partial = e.value?.[0];
+      if (partial) setInput(partial);
+    };
+    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
+      const result = e.value?.[0];
+      if (result) {
+        setInput(result);
+        setIsRecording(false);
+      }
+    };
+    Voice.onSpeechError = (e: SpeechErrorEvent) => {
+      const msg = e.error?.message ?? 'Voice error';
+      // 7 = no match (user stopped without speaking) — silent ignore
+      if (!msg.includes('7')) setVoiceError(msg);
+      setIsRecording(false);
+    };
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  // ── TTS ──────────────────────────────────────────────────────────────────────
+  const speakPatient = useCallback((text: string, profile: string) => {
+    if (isMuted) return;
+    Speech.stop();
+    const isFemale = /female|woman/i.test(profile);
+    Speech.speak(text, {
+      language: 'en-AU',
+      rate: 0.88,
+      pitch: isFemale ? 1.1 : 0.9,
+      onStart: () => setIsSpeaking(true),
+      onDone: () => setIsSpeaking(false),
+      onStopped: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
+    });
+  }, [isMuted]);
+
+  function stopSpeaking() {
+    Speech.stop();
+    setIsSpeaking(false);
+  }
+
+  // Mic pulse animation when recording
+  useEffect(() => {
+    if (isRecording) {
+      pulseLoop.current = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, { toValue: 1.35, duration: 600, useNativeDriver: true }),
+          Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        ]),
+      );
+      pulseLoop.current.start();
+    } else {
+      pulseLoop.current?.stop();
+      pulseAnim.setValue(1);
+    }
+  }, [isRecording, pulseAnim]);
+
+  async function toggleRecording() {
+    setVoiceError(null);
+    if (isRecording) {
+      await Voice.stop();
+      setIsRecording(false);
+      return;
+    }
+    const ok = await requestMicPermission();
+    if (!ok) {
+      setVoiceError('Microphone permission denied');
+      return;
+    }
+    stopSpeaking();
+    setInput('');
+    try {
+      await Voice.start('en-AU'); // Australian English for AMC context
+    } catch (e) {
+      setVoiceError('Could not start voice recognition');
+    }
+  }
+
+  // ── Scroll ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages, loading]);
 
+  // ── Timer ───────────────────────────────────────────────────────────────────
   function startTimer() {
     if (timerRef.current) clearInterval(timerRef.current);
     elapsedRef.current = 0;
@@ -87,6 +201,7 @@ export default function RoleplayScreen() {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
   }
 
+  // ── API ─────────────────────────────────────────────────────────────────────
   async function getToken() {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token ?? '';
@@ -94,6 +209,9 @@ export default function RoleplayScreen() {
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading || !scenario) return;
+    // Stop any ongoing recording or TTS before sending
+    if (isRecording) await Voice.stop();
+    stopSpeaking();
     const newMsgs: Message[] = [...messages, { role: 'user', content: text }];
     setMessages(newMsgs);
     setInput('');
@@ -108,16 +226,18 @@ export default function RoleplayScreen() {
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
       setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
+      speakPatient(data.reply, scenario?.patientProfile ?? '');
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Error';
       setMessages([...newMsgs, { role: 'assistant', content: `[${msg}]` }]);
     } finally {
       setLoading(false);
     }
-  }, [loading, messages, scenario]);
+  }, [loading, messages, scenario, isRecording, speakPatient]);
 
   const getFeedback = useCallback(async () => {
     if (loading || messages.length <= 1 || !scenario) return;
+    if (isRecording) await Voice.stop();
     stopTimer();
     setFetchingFeedback(true);
     try {
@@ -135,9 +255,8 @@ export default function RoleplayScreen() {
     } finally {
       setFetchingFeedback(false);
     }
-  }, [loading, messages, scenario]);
+  }, [loading, messages, scenario, isRecording]);
 
-  // Auto-request feedback when timer hits 0
   useEffect(() => {
     if (timeLeft === 0 && scenario && messages.length > 1 && !feedbackRequestedRef.current && !loading) {
       feedbackRequestedRef.current = true;
@@ -145,25 +264,33 @@ export default function RoleplayScreen() {
     }
   }, [timeLeft, scenario, messages.length, loading, getFeedback]);
 
-  function startScenario(s: Scenario) {
+  function startScenario(sc: Scenario) {
     feedbackRequestedRef.current = false;
     setFeedback(null);
-    setMessages([{ role: 'assistant', content: s.openingStatement }]);
-    setScenario(s);
+    setMessages([{ role: 'assistant', content: sc.openingStatement }]);
+    setScenario(sc);
+    setInput('');
+    setVoiceError(null);
     startTimer();
+    // Patient greets you with their opening statement
+    setTimeout(() => speakPatient(sc.openingStatement, sc.patientProfile), 600);
   }
 
   function endSession() {
+    if (isRecording) Voice.stop();
+    stopSpeaking();
     stopTimer();
     setScenario(null);
     setMessages([]);
     setFeedback(null);
     setTimeLeft(0);
     setMilestone(null);
+    setInput('');
+    setVoiceError(null);
     feedbackRequestedRef.current = false;
   }
 
-  // ── Scenario list ──────────────────────────────────────────────────────────
+  // ── Scenario list ────────────────────────────────────────────────────────────
   if (!scenario) {
     return (
       <View style={s.bg}>
@@ -179,7 +306,7 @@ export default function RoleplayScreen() {
           </View>
           <View style={s.infoBox}>
             <Text style={s.infoText}>
-              📋 Scenarios from AMC Handbook of Clinical Assessment. AI plays the patient — ask questions, examine, explain. Get scored feedback at the end.
+              🎙️ Speak to the AI patient using your voice, or type. Scenarios from AMC Handbook of Clinical Assessment. Get scored feedback at the end.
             </Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 10 }}>
@@ -211,7 +338,7 @@ export default function RoleplayScreen() {
     );
   }
 
-  // ── Fetching feedback ─────────────────────────────────────────────────────
+  // ── Fetching feedback ────────────────────────────────────────────────────────
   if (fetchingFeedback) {
     return (
       <View style={[s.bg, s.center]}>
@@ -223,7 +350,7 @@ export default function RoleplayScreen() {
     );
   }
 
-  // ── Examiner feedback ─────────────────────────────────────────────────────
+  // ── Examiner feedback ────────────────────────────────────────────────────────
   if (feedback) {
     return (
       <View style={s.bg}>
@@ -253,9 +380,10 @@ export default function RoleplayScreen() {
     );
   }
 
-  // ── Active session ────────────────────────────────────────────────────────
+  // ── Active session ───────────────────────────────────────────────────────────
   const emoji = getEmoji(scenario.patientProfile);
   const timerColor = timeLeft <= 60 ? '#ef4444' : timeLeft <= 120 ? '#f59e0b' : '#f1f5f9';
+  const canSend = !!input.trim() && !loading;
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
@@ -272,7 +400,18 @@ export default function RoleplayScreen() {
             </View>
             <View style={s.sessionRight}>
               <Text style={[s.timer, { color: timerColor }]}>{fmt(timeLeft)}</Text>
-              <View style={{ flexDirection: 'row', gap: 6 }}>
+              <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+                {isSpeaking && (
+                  <View style={s.speakingIndicator}>
+                    <Text style={s.speakingDots}>●●●</Text>
+                  </View>
+                )}
+                <TouchableOpacity
+                  style={[s.exitBtn, isMuted && { borderColor: '#ef4444' }]}
+                  onPress={() => { setIsMuted(m => !m); if (isSpeaking) stopSpeaking(); }}
+                >
+                  <Ionicons name={isMuted ? 'volume-mute' : 'volume-medium'} size={16} color={isMuted ? '#ef4444' : '#64748b'} />
+                </TouchableOpacity>
                 {messages.length > 1 && (
                   <TouchableOpacity style={s.feedbackBtn} onPress={() => { feedbackRequestedRef.current = true; getFeedback(); }} disabled={loading}>
                     <Text style={s.feedbackBtnText}>Feedback</Text>
@@ -313,23 +452,65 @@ export default function RoleplayScreen() {
             )}
           </ScrollView>
 
-          {/* Input */}
+          {/* Voice error */}
+          {voiceError && (
+            <View style={s.voiceErrorBanner}>
+              <Text style={s.voiceErrorText}>⚠️ {voiceError}</Text>
+              <TouchableOpacity onPress={() => setVoiceError(null)}>
+                <Ionicons name="close" size={14} color="#fca5a5" />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Input row */}
           <View style={s.inputRow}>
+            {/* Mic button */}
+            <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+              <TouchableOpacity
+                style={[s.micBtn, isRecording && s.micBtnActive]}
+                onPress={toggleRecording}
+                disabled={loading}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={isRecording ? 'stop' : 'mic'}
+                  size={20}
+                  color={isRecording ? '#fff' : '#a78bfa'}
+                />
+              </TouchableOpacity>
+            </Animated.View>
+
+            {/* Text input */}
             <TextInput
               style={s.input}
               value={input}
               onChangeText={setInput}
-              placeholder="Speak to the patient…"
-              placeholderTextColor="#475569"
+              placeholder={isRecording ? 'Listening…' : 'Tap mic or type…'}
+              placeholderTextColor={isRecording ? '#a78bfa' : '#475569'}
               multiline
               returnKeyType="send"
               blurOnSubmit
-              onSubmitEditing={() => { sendMessage(input); }}
+              onSubmitEditing={() => sendMessage(input)}
+              editable={!isRecording}
             />
-            <TouchableOpacity style={[s.sendBtn, (!input.trim() || loading) && s.sendBtnDisabled]} onPress={() => sendMessage(input)} disabled={!input.trim() || loading}>
+
+            {/* Send button — only active when there's text */}
+            <TouchableOpacity
+              style={[s.sendBtn, !canSend && s.sendBtnDisabled]}
+              onPress={() => sendMessage(input)}
+              disabled={!canSend}
+            >
               <Ionicons name="send" size={18} color="#fff" />
             </TouchableOpacity>
           </View>
+
+          {/* Recording indicator strip */}
+          {isRecording && (
+            <View style={s.recordingStrip}>
+              <View style={s.recordingDot} />
+              <Text style={s.recordingText}>Recording… tap mic or send when done</Text>
+            </View>
+          )}
         </SafeAreaView>
       </View>
     </KeyboardAvoidingView>
@@ -356,7 +537,7 @@ const s = StyleSheet.create({
   taskRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
   taskChip: { backgroundColor: '#2e1065', borderRadius: 5, paddingHorizontal: 8, paddingVertical: 3 },
   taskChipText: { fontSize: 10, color: '#a78bfa', fontWeight: '600' },
-  // Session
+  // Session header
   sessionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 10, backgroundColor: '#1e293b', borderBottomWidth: 1, borderBottomColor: '#334155' },
   patientInfo: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
   sessionTitle: { fontSize: 13, fontWeight: '700', color: '#f1f5f9' },
@@ -366,8 +547,11 @@ const s = StyleSheet.create({
   feedbackBtn: { backgroundColor: '#7c3aed', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 },
   feedbackBtnText: { fontSize: 11, color: '#fff', fontWeight: '700' },
   exitBtn: { backgroundColor: '#1e293b', borderRadius: 8, padding: 5, borderWidth: 1, borderColor: '#334155' },
+  speakingIndicator: { backgroundColor: '#1e1b4b', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 3 },
+  speakingDots: { fontSize: 8, color: '#a78bfa', letterSpacing: 2 },
   milestoneBanner: { backgroundColor: '#1e1b4b', borderBottomWidth: 1, borderBottomColor: '#4c1d95', paddingHorizontal: 14, paddingVertical: 8 },
   milestoneText: { fontSize: 12, color: '#a78bfa', fontWeight: '600' },
+  // Messages
   msgRow: { flexDirection: 'row', gap: 8 },
   msgRowUser: { justifyContent: 'flex-end' },
   msgRowAI: { justifyContent: 'flex-start', alignItems: 'flex-end' },
@@ -378,10 +562,19 @@ const s = StyleSheet.create({
   bubbleLabel: { fontSize: 10, color: '#64748b', fontWeight: '700', marginBottom: 4 },
   bubbleTextUser: { fontSize: 14, color: '#fff', lineHeight: 20 },
   bubbleTextAI: { fontSize: 14, color: '#e2e8f0', lineHeight: 20 },
-  inputRow: { flexDirection: 'row', gap: 10, padding: 12, backgroundColor: '#1e293b', borderTopWidth: 1, borderTopColor: '#334155', alignItems: 'flex-end' },
+  // Input
+  inputRow: { flexDirection: 'row', gap: 8, padding: 10, backgroundColor: '#1e293b', borderTopWidth: 1, borderTopColor: '#334155', alignItems: 'flex-end' },
+  micBtn: { width: 44, height: 44, borderRadius: 14, backgroundColor: '#1e1b4b', borderWidth: 1, borderColor: '#4c1d95', alignItems: 'center', justifyContent: 'center' },
+  micBtnActive: { backgroundColor: '#7c3aed', borderColor: '#7c3aed' },
   input: { flex: 1, backgroundColor: '#0f172a', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, color: '#f1f5f9', borderWidth: 1, borderColor: '#334155', maxHeight: 100 },
-  sendBtn: { backgroundColor: '#7c3aed', borderRadius: 14, padding: 12 },
-  sendBtnDisabled: { opacity: 0.4 },
+  sendBtn: { width: 44, height: 44, backgroundColor: '#7c3aed', borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  sendBtnDisabled: { opacity: 0.35 },
+  // Voice feedback
+  voiceErrorBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#450a0a', paddingHorizontal: 14, paddingVertical: 8, borderTopWidth: 1, borderTopColor: '#7f1d1d' },
+  voiceErrorText: { fontSize: 12, color: '#fca5a5', flex: 1, marginRight: 8 },
+  recordingStrip: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#2e1065', paddingHorizontal: 14, paddingVertical: 6 },
+  recordingDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#ef4444' },
+  recordingText: { fontSize: 11, color: '#c4b5fd' },
   // Feedback
   feedbackBox: { backgroundColor: '#1e293b', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#334155', marginTop: 12 },
   feedbackText: { fontSize: 13, color: '#e2e8f0', lineHeight: 20 },
