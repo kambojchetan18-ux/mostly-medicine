@@ -10,10 +10,22 @@ const nextConfig = {
     "@mostly-medicine/ai",
     "@mostly-medicine/content",
   ],
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), geolocation=(), microphone=(self)" },
+        ],
+      },
+    ];
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Use the SDK-free mobile entry point for browser bundles —
-      // the full index.ts pulls in @anthropic-ai/sdk (Node.js only)
       config.resolve.alias["@mostly-medicine/ai"] = path.resolve(
         __dirname,
         "../../packages/ai/src/mobile.ts"

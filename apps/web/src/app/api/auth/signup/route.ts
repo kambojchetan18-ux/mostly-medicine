@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     recordFailedAttempt(key);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.error("[signup]", error.message);
+    return NextResponse.json({ error: "Signup failed. Please try again." }, { status: 400 });
   }
 
   return NextResponse.json({ success: true });

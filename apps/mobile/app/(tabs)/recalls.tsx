@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -61,13 +61,20 @@ export default function RecallsScreen() {
 
   async function handleRate(rating: Rating) {
     if (saving) return;
-    setSaving(true);
     const card = cards[idx];
-    const { interval, ease_factor, repetitions } = nextInterval(card, rating);
-    const due = new Date();
-    due.setDate(due.getDate() + interval);
-    await supabase.from('sr_cards').update({ interval, ease_factor, repetitions, due: due.toISOString() }).eq('id', card.id);
-    setSaving(false);
+    if (!card) { setDone(true); return; }
+    setSaving(true);
+    try {
+      const { interval, ease_factor, repetitions } = nextInterval(card, rating);
+      const due = new Date();
+      due.setDate(due.getDate() + interval);
+      const { error } = await supabase.from('sr_cards').update({ interval, ease_factor, repetitions, due: due.toISOString() }).eq('id', card.id);
+      if (error) Alert.alert('Error', 'Could not save card progress.');
+    } catch {
+      Alert.alert('Error', 'Could not save card progress.');
+    } finally {
+      setSaving(false);
+    }
     if (idx + 1 >= cards.length) {
       setDone(true);
     } else {

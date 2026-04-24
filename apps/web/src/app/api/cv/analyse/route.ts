@@ -112,8 +112,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ profile: extracted });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[cv/analyse]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/analyse]", err instanceof Error ? err.message : "Unknown error");
+    return NextResponse.json({ error: "Failed to analyse CV" }, { status: 500 });
   }
 }

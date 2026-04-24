@@ -39,8 +39,7 @@ export async function POST(req: NextRequest) {
     const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback });
     return NextResponse.json({ reply });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[roleplay API error]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[roleplay API error]", err instanceof Error ? err.message : "Unknown error");
+    return NextResponse.json({ error: "Roleplay service error" }, { status: 500 });
   }
 }

@@ -10,9 +10,11 @@ export async function POST(req: NextRequest) {
 
   const { topic, count = 20 } = await req.json();
 
+  const clampedCount = Math.max(1, Math.min(100, typeof count === "number" ? count : 20));
+
   const pool = topic
     ? [...allQuestions.filter((q) => q.topic === topic)].sort(() => Math.random() - 0.5)
-    : [...allQuestions].sort(() => Math.random() - 0.5).slice(0, count);
+    : [...allQuestions].sort(() => Math.random() - 0.5).slice(0, clampedCount);
 
   return NextResponse.json({ questions: pool });
 }
@@ -32,6 +34,6 @@ export async function GET() {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return NextResponse.json({ topics }, {
-    headers: { "Cache-Control": "public, max-age=3600" },
+    headers: { "Cache-Control": "private, max-age=3600" },
   });
 }

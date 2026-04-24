@@ -108,6 +108,8 @@ export default function RoleplayScreen() {
     };
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      Speech.stop();
     };
   }, []);
 

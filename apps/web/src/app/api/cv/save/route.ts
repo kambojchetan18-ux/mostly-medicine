@@ -7,7 +7,17 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const profile = await req.json();
+    const body = await req.json();
+    const allowedFields = [
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification", "cv_text",
+    ];
+    const profile: Record<string, unknown> = {};
+    for (const key of allowedFields) {
+      if (key in body) profile[key] = body[key];
+    }
     const { error } = await supabase
       .from("img_profiles")
       .upsert({ ...profile, id: user.id, updated_at: new Date().toISOString() });
@@ -15,7 +25,7 @@ export async function POST(req: NextRequest) {
     if (error) throw new Error(error.message);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/save]", err instanceof Error ? err.message : "Unknown error");
+    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
   }
 }

@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
           }
         }
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Unknown error";
-        controller.enqueue(new TextEncoder().encode(`Error: ${msg}`));
+        console.error("[library-chat]", err instanceof Error ? err.message : "Unknown error");
+        controller.enqueue(new TextEncoder().encode("Error: AI service temporarily unavailable."));
       } finally {
         controller.close();
       }
