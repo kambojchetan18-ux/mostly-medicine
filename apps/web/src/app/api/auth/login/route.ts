@@ -9,11 +9,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
   }
 
-  // Rate limit key: combine IP + email to prevent both credential stuffing and brute force
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const key = `${ip}:${email.toLowerCase()}`;
 
-  const { allowed, retryAfterMs } = checkRateLimit(key);
+  const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {
     const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
     return NextResponse.json(
@@ -26,7 +25,7 @@ export async function POST(req: NextRequest) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    const { locked, attemptsLeft } = recordFailedAttempt(key);
+    const { locked, attemptsLeft } = await recordFailedAttempt(key);
     if (locked) {
       return NextResponse.json(
         { error: "Too many failed attempts. Your account is locked for 15 minutes." },
@@ -40,6 +39,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  clearAttempts(key);
+  await clearAttempts(key);
   return NextResponse.json({ success: true });
 }

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   // Rate limit by IP — max 5 signup attempts per 15 min
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const key = `signup:${ip}`;
-  const { allowed, retryAfterMs } = checkRateLimit(key);
+  const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {
     const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
     return NextResponse.json(
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    recordFailedAttempt(key);
+    await recordFailedAttempt(key);
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
