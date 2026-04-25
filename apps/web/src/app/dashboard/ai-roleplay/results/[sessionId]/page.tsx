@@ -35,6 +35,16 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
   type Profile = { name: string };
   const profile = caseRow?.patient_profile as Profile | null;
 
+  // Load full transcript for inline display
+  const { data: msgs } = await supabase
+    .from("acrp_messages")
+    .select("id, role, content, created_at")
+    .eq("session_id", sessionId)
+    .order("created_at");
+  const transcript = (msgs ?? [])
+    .filter((m) => m.role === "user" || m.role === "assistant")
+    .map((m) => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content }));
+
   return (
     <ResultsClient
       sessionId={session.id}
@@ -46,6 +56,7 @@ export default async function ResultsPage({ params }: ResultsPageProps) {
       presentingComplaint={stem?.presentingComplaint ?? ""}
       initialFeedback={session.feedback as SessionFeedback | null}
       initialStatus={session.status}
+      transcript={transcript}
     />
   );
 }
