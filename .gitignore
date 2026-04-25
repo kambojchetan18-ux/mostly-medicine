@@ -9,3 +9,6 @@ dist
 .env.production
 .DS_Store
 .vercel
+
+# AI Clinical RolePlay source PDFs (metadata is extracted offline; PDFs themselves are not tracked)
+roleplays/source-pdfs/
