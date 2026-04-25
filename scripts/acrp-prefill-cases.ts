@@ -110,40 +110,33 @@ const CASE_VARIANT_SCHEMA = {
 
 const CASE_GENERATION_SYSTEM_PROMPT = `You are an AMC examiner creating a fresh original clinical roleplay case.
 
-You receive a blueprint describing a presentation family. You must generate ONE concrete case variant that:
-- Picks ONE hidden diagnosis from the blueprint's hiddenDiagnoses pool.
-- Differs in setting, demographics, wording, and clue arrangement from any other case using the same blueprint.
-- Builds a clue pool of at least 6 entries: a mix of "key" findings (point to the hidden diagnosis), "supporting" findings (consistent), and "distractor" findings (point to other differentials).
-- Sets one realistic emotional tone (anxious, frustrated, embarrassed, stoic, tearful, etc.).
-- Keeps the candidate task realistic for an 8-minute station.
-- Uses Australian medical context (PBS, Medicare, RACGP terminology, paracetamol not acetaminophen).
+You receive a blueprint describing a presentation family. Generate ONE concrete case variant that:
+- Picks ONE hidden diagnosis from hiddenDiagnoses.
+- Differs in setting, demographics, wording, and clue arrangement.
+- Builds a cluePool of at least 6 entries: mix of key / supporting / distractor.
+- Sets one realistic emotionalTone.
+- Uses Australian medical context (PBS, Medicare, RACGP, paracetamol not acetaminophen).
 
-═════════════════════════════════════════════════════════════════
-STEM FORMAT — this is what real AMC stations look like
-═════════════════════════════════════════════════════════════════
-Real AMC reading sheets present ONE narrative scenario paragraph. Candidates do NOT see "Setting / Patient / Presenting Complaint" as separate fields.
+STEM — single narrative paragraph in visiblePatientContext:
+- 3-6 sentences weaving setting, patient (name, age, brief demographic), presenting complaint in patient-natural language, immediately visible context (observations on arrival, who brought them, etc).
+- Never name the hidden diagnosis or use words that give it away.
+- presentingComplaint and setting are internal only — short labels.
 
-Therefore:
-- Put the COMPLETE scenario into "visiblePatientContext" as one flowing paragraph (3-6 sentences).
-- The narrative MUST naturally weave in: where the encounter is happening, who the patient is (name, age, brief demographic), why they presented (their complaint in patient-natural language), and any immediately visible context — observations on arrival, who brought them, time of day, brief social context.
-- "presentingComplaint" is internal-only — keep it short, do not duplicate as a visible field.
-- "setting" is a single internal label like "Rural ED, 11pm".
-
-═════════════════════════════════════════════════════════════════
-CANDIDATE TASK FORMAT — non-directive, realistic
-═════════════════════════════════════════════════════════════════
-The task must be SPECIFIC enough to focus the candidate but MUST NOT reveal or strongly hint at the diagnostic direction.
-
-✗ BAD: "Take a gynaecological and pregnancy history…", "Take a cardiac history…"
+TASK — non-directive (no diagnosis hints):
+✗ BAD: "Take a gynaecological history…"
 ✓ GOOD: "Take a focused history, perform an appropriate examination, explain your working diagnosis and differentials, and outline an immediate management plan."
+Steer the candidate via subtle clues in the STEM, never via the task wording.
 
-Use a generic non-directive pattern. Steer the candidate via SUBTLE CLUES IN THE STEM, never via the task wording.
+CLUE POOL — critical formatting rules (these get spoken by the patient at runtime):
+- Each "reveal" is the patient's spoken words ONLY — plain English, ≤2 sentences.
+- NEVER include stage directions in reveal text. No "*pauses*", "*sighs*", "*winces*", "*voice trembling*", "*takes a shaky breath*", or anything in asterisks.
+- NEVER include parenthetical action notes like "(crying)" or "(touches abdomen)".
+- The reveal should be SHORT — what a real exam patient would say in 1-2 short sentences. Save brevity; don't pre-empt other clues.
 
-Other rules:
-- DO NOT copy phrasing from any source. Generate fresh wording.
-- The seed string must be echoed back verbatim in the output.
-- "visiblePatientContext" must NEVER name the hidden diagnosis or use words that give it away. Plant subtle clues instead.
-- Each clue's "trigger" describes the question/action that unlocks it during roleplay.`;
+OTHER RULES:
+- DO NOT copy phrasing from any source.
+- Echo the seed string verbatim.
+- Each clue's "trigger" describes the question/action that unlocks it.`;
 
 interface BlueprintRow {
   id: string;
