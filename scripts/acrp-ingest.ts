@@ -28,7 +28,9 @@ import path from "path";
 // ── Config ──────────────────────────────────────────────────────────────
 const PDF_DIR = path.resolve(__dirname, "../roleplays/source-pdfs");
 const MODEL = "claude-sonnet-4-6";
-const MAX_PDF_BYTES = 30 * 1024 * 1024; // Anthropic 32MB ceiling, leave headroom
+// Anthropic API caps requests at 32MB. base64 inflates by ~33% so the raw
+// PDF must be under ~22MB to stay safely below the encoded ceiling.
+const MAX_PDF_BYTES = 22 * 1024 * 1024;
 
 const args = process.argv.slice(2);
 const flag = (name: string) => args.includes(`--${name}`);
