@@ -6,7 +6,10 @@ import { CASE_VARIANT_SCHEMA } from "./schemas";
 import { CASE_GENERATION_SYSTEM_PROMPT } from "./prompts";
 import type { CaseVariant, ClinicalBlueprint, Difficulty } from "./types";
 
-const MODEL = "claude-sonnet-4-6";
+// Haiku 4.5 for fast Random Case generation. Tool-use schema gives us
+// reliable structured output even from the smaller model. Sonnet 4.6 was
+// 5-8x slower and the perceived UX cost was high.
+const MODEL = "claude-haiku-4-5-20251001";
 
 let _client: Anthropic | null = null;
 function client(): Anthropic {

@@ -98,7 +98,13 @@ export default function PlayClient({
       setError(null);
 
       const localUser: Message = { id: tmpId(), role: "user", content };
-      setMessages((m) => [...m, localUser]);
+      const assistantId = tmpId();
+      setMessages((m) => [
+        ...m,
+        localUser,
+        // Empty assistant placeholder we'll fill as deltas arrive.
+        { id: assistantId, role: "assistant", content: "" },
+      ]);
       if (!textOverride) setDraft("");
       setSending(true);
 
@@ -108,16 +114,59 @@ export default function PlayClient({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content }),
         });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.error ?? "AI error");
-        const assistant: Message = { id: tmpId(), role: "assistant", content: json.reply };
-        setMessages((m) => [...m, assistant]);
-        if (voiceMode && ttsSupported) {
-          speak(json.reply, patientGender);
+        if (!res.ok || !res.body) {
+          let msg = "AI error";
+          try {
+            const j = await res.json();
+            msg = j.error ?? msg;
+          } catch {
+            /* ignore */
+          }
+          throw new Error(msg);
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let full = "";
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          // SSE frames are delimited by blank lines.
+          const frames = buffer.split("\n\n");
+          buffer = frames.pop() ?? "";
+          for (const frame of frames) {
+            const line = frame.split("\n").find((l) => l.startsWith("data: "));
+            if (!line) continue;
+            try {
+              const evt = JSON.parse(line.slice(6)) as
+                | { type: "delta"; text: string }
+                | { type: "done"; reply: string }
+                | { type: "error"; error: string };
+              if (evt.type === "delta") {
+                full += evt.text;
+                setMessages((m) =>
+                  m.map((x) => (x.id === assistantId ? { ...x, content: full } : x))
+                );
+              } else if (evt.type === "done") {
+                full = evt.reply;
+                setMessages((m) =>
+                  m.map((x) => (x.id === assistantId ? { ...x, content: full } : x))
+                );
+                if (voiceMode && ttsSupported) speak(full, patientGender);
+              } else if (evt.type === "error") {
+                throw new Error(evt.error);
+              }
+            } catch (err) {
+              if (err instanceof Error && err.message !== "AI error") throw err;
+            }
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Could not send message");
-        setMessages((m) => m.filter((x) => x.id !== localUser.id));
+        setMessages((m) => m.filter((x) => x.id !== localUser.id && x.id !== assistantId));
         if (!textOverride) setDraft(content);
       } finally {
         setSending(false);
