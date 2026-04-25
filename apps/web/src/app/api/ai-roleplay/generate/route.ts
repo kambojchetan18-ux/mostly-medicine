@@ -9,7 +9,15 @@ interface GenerateRequest {
   category?: string;
   difficulty?: Difficulty;
   random?: boolean;
+  // When true, force a fresh Claude generation even if cached cases exist.
+  // Default: false → reuse a random existing case for instant load + zero cost.
+  forceFresh?: boolean;
 }
+
+// Cache reuse threshold: if a blueprint already has >= this many cases,
+// return a random existing one instead of generating a new one. Cheaper +
+// instant. Above the threshold, content variety is plenty.
+const CACHE_REUSE_THRESHOLD = 3;
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -69,10 +77,35 @@ export async function POST(req: NextRequest) {
     sourceIds: picked.source_ids ?? [],
   };
 
-  // ─── Generate fresh CaseVariant ───────────────────────────────────────
-  const seed = randomSeed();
   const difficulty: Difficulty = body.difficulty ?? (picked.difficulty as Difficulty);
 
+  // ─── Cache reuse: if this blueprint already has enough cases, return a
+  //     random existing one instead of paying for a fresh Claude call.
+  if (!body.forceFresh) {
+    const { data: cached } = await supabase
+      .from("acrp_cases")
+      .select("id, blueprint_id, difficulty, station_stem, patient_profile, candidate_task, setting")
+      .eq("blueprint_id", picked.id)
+      .eq("difficulty", difficulty)
+      .limit(50);
+
+    if (cached && cached.length >= CACHE_REUSE_THRESHOLD) {
+      const hit = cached[Math.floor(Math.random() * cached.length)];
+      return NextResponse.json({
+        caseId: hit.id,
+        blueprintId: picked.id,
+        difficulty: hit.difficulty,
+        stationStem: hit.station_stem,
+        patientName: (hit.patient_profile as { name?: string } | null)?.name ?? "Patient",
+        candidateTask: hit.candidate_task,
+        setting: hit.setting,
+        cached: true,
+      });
+    }
+  }
+
+  // ─── Generate a fresh CaseVariant ─────────────────────────────────────
+  const seed = randomSeed();
   let variant;
   try {
     variant = await generateCase({ blueprint, difficulty, seed });
