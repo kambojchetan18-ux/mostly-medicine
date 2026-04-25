@@ -6,6 +6,8 @@ const PUBLIC_API_ROUTES = [
   "/api/auth/signup",
   "/api/auth/callback",
   "/api/search",
+  // Stripe webhook is signed (verified via STRIPE_WEBHOOK_SECRET); no user session.
+  "/api/billing/webhook",
 ];
 
 export async function middleware(request: NextRequest) {
