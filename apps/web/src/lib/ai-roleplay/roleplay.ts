@@ -14,7 +14,10 @@ import type { CaseVariant } from "./types";
 // Haiku 4.5 — fast + cheap chat-tier model. Patient turns are short and
 // emotional, not deep reasoning, so Haiku is the right tool.
 const MODEL = "claude-haiku-4-5-20251001";
-const MAX_TOKENS = 250;
+// 150 is enough for any realistic patient turn (~100 words). A real exam
+// patient gives short answers; longer outputs invite hallucination + waste
+// the 8-minute clock.
+const MAX_TOKENS = 150;
 
 let _client: Anthropic | null = null;
 function client(): Anthropic {
