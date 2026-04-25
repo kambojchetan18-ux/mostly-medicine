@@ -201,10 +201,16 @@ export default function BillingClient({ subscription, prices, flash }: Props) {
           <button
             type="button"
             onClick={() => checkout(proPrice, "Pro")}
-            disabled={loading === proPrice || subscription.plan === "pro"}
+            disabled={!proPrice || (loading !== null && loading === proPrice) || subscription.plan === "pro"}
             className="mt-6 w-full rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-bold text-white shadow hover:bg-amber-600 disabled:opacity-60"
           >
-            {subscription.plan === "pro" ? "Current plan" : loading === proPrice ? "Loading…" : "Upgrade to Pro"}
+            {subscription.plan === "pro"
+              ? "Current plan"
+              : !proPrice
+                ? "Coming soon"
+                : loading === proPrice
+                  ? "Loading…"
+                  : "Upgrade to Pro"}
           </button>
         </div>
 
@@ -224,10 +230,16 @@ export default function BillingClient({ subscription, prices, flash }: Props) {
           <button
             type="button"
             onClick={() => checkout(entPrice, "Enterprise")}
-            disabled={loading === entPrice || subscription.plan === "enterprise"}
+            disabled={!entPrice || (loading !== null && loading === entPrice) || subscription.plan === "enterprise"}
             className="mt-6 w-full rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow hover:bg-violet-700 disabled:opacity-60"
           >
-            {subscription.plan === "enterprise" ? "Current plan" : loading === entPrice ? "Loading…" : "Upgrade to Enterprise"}
+            {subscription.plan === "enterprise"
+              ? "Current plan"
+              : !entPrice
+                ? "Coming soon"
+                : loading === entPrice
+                  ? "Loading…"
+                  : "Upgrade to Enterprise"}
           </button>
         </div>
       </div>
