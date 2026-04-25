@@ -33,10 +33,9 @@ const num = (n: string, fallback: number) => {
   return v ? parseInt(v, 10) : fallback;
 };
 
-const PDF_PATH = arg(
-  "pdf",
-  "/Users/chetan_home/Downloads/02_medical-study/amc-resources/AMC_Handbook_of_Clinical_Assessment.pdf"
-)!;
+// Default to the pdftotext-extracted handbook. PDF route fails because
+// Anthropic caps document blocks at 600 pages; the handbook exceeds that.
+const TEXT_PATH = arg("text", "roleplays/data/amc-handbook.txt")!;
 const BATCH = num("batch", 6);
 const START = num("start", 1);
 const END = num("end", 151);
@@ -48,8 +47,9 @@ if (!KEY) {
   process.exit(1);
 }
 
-if (!fs.existsSync(PDF_PATH)) {
-  console.error(`PDF not found: ${PDF_PATH}`);
+if (!fs.existsSync(TEXT_PATH)) {
+  console.error(`Text not found: ${TEXT_PATH}`);
+  console.error('Generate it with: pdftotext -layout "<handbook.pdf>" roleplays/data/amc-handbook.txt');
   process.exit(1);
 }
 
@@ -174,11 +174,13 @@ interface ExtractedScenario {
   differentialDiagnosis: string[];
 }
 
-async function extractBatch(pdfBuf: Buffer, from: number, to: number): Promise<ExtractedScenario[]> {
+async function extractBatch(handbook: string, from: number, to: number): Promise<ExtractedScenario[]> {
   const range = Array.from({ length: to - from + 1 }, (_, i) => from + i)
     .map((n) => n.toString().padStart(3, "0"))
     .join(", ");
 
+  // Two cacheable system blocks: the static instruction + the full handbook
+  // text. Caching the handbook gets us 90% off on every batch after the first.
   const params = {
     model: MODEL,
     max_tokens: 8000,
@@ -187,6 +189,11 @@ async function extractBatch(pdfBuf: Buffer, from: number, to: number): Promise<E
       {
         type: "text",
         text: SYSTEM,
+        cache_control: { type: "ephemeral" },
+      },
+      {
+        type: "text",
+        text: `=== AMC HANDBOOK OF CLINICAL ASSESSMENT (full text) ===\n\n${handbook}`,
         cache_control: { type: "ephemeral" },
       },
     ],
@@ -201,17 +208,7 @@ async function extractBatch(pdfBuf: Buffer, from: number, to: number): Promise<E
     messages: [
       {
         role: "user",
-        content: [
-          {
-            type: "document",
-            source: { type: "base64", media_type: "application/pdf", data: pdfBuf.toString("base64") },
-            cache_control: { type: "ephemeral" },
-          },
-          {
-            type: "text",
-            text: `Extract conditions ${range}. Return them in order via the save_scenarios tool.`,
-          },
-        ],
+        content: `Extract conditions ${range} from the handbook above. Return them in order via the save_scenarios tool.`,
       },
     ],
   };
@@ -225,9 +222,9 @@ async function extractBatch(pdfBuf: Buffer, from: number, to: number): Promise<E
 }
 
 async function main() {
-  console.log(`Loading PDF: ${PDF_PATH}`);
-  const pdfBuf = fs.readFileSync(PDF_PATH);
-  console.log(`Size: ${(pdfBuf.byteLength / 1024 / 1024).toFixed(1)}MB`);
+  console.log(`Loading handbook text: ${TEXT_PATH}`);
+  const handbook = fs.readFileSync(TEXT_PATH, "utf8");
+  console.log(`Size: ${(handbook.length / 1024).toFixed(0)}KB`);
 
   // Resume support — load already-extracted scenarios if file exists.
   const outAbs = path.resolve(OUT_PATH);
@@ -251,7 +248,7 @@ async function main() {
 
     console.log(`\n→ Extracting conditions ${from}-${to}…`);
     try {
-      const batch = await extractBatch(pdfBuf, from, to);
+      const batch = await extractBatch(handbook, from, to);
       for (const s of batch) {
         if (have.has(s.mcatNumber)) continue;
         extracted.push(s);
