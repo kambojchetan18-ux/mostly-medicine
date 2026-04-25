@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 interface Props {
-  module: "acrp_solo" | "acrp_live";
+  module: "acrp_solo" | "acrp_live" | "roleplay";
   currentPlan: string;
 }
 
@@ -23,6 +23,15 @@ const COPY = {
       "AI examiner scores the doctor and rates patient portrayal",
     ],
     minPlan: "Enterprise",
+  },
+  roleplay: {
+    title: "AMC Handbook RolePlay — CAT 2",
+    bullets: [
+      "Practice with handbook-aligned AMC scenarios",
+      "Voice-enabled 8-minute consultations with the AI patient",
+      "Examiner-style feedback after every session",
+    ],
+    minPlan: "Pro",
   },
 } as const;
 
