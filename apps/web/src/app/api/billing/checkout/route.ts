@@ -27,6 +27,25 @@ export async function POST(req: NextRequest) {
 
   const customerId = await getOrCreateStripeCustomer(user.id, user.email);
 
+  // If user already has a non-cancelled subscription on this customer, send
+  // them to the Billing Portal instead of creating a duplicate checkout.
+  const existing = await stripe().subscriptions.list({
+    customer: customerId,
+    status: "all",
+    limit: 10,
+  });
+  const activeSub = existing.data.find((s) =>
+    ["active", "trialing", "past_due", "incomplete"].includes(s.status)
+  );
+  if (activeSub) {
+    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const portal = await stripe().billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${origin}/dashboard/billing`,
+    });
+    return NextResponse.json({ url: portal.url, alreadySubscribed: true });
+  }
+
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const session = await stripe().checkout.sessions.create({
     mode: "subscription",
