@@ -48,7 +48,7 @@ export default function UpgradeGate({ module, currentPlan }: Props) {
           ))}
         </ul>
         <Link
-          href="/dashboard/profile"
+          href="/dashboard/billing"
           className="mt-6 inline-block rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-violet-700"
         >
           View plans

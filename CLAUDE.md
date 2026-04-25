@@ -35,6 +35,25 @@ eas build -p android --profile production  # Play Store
 supabase start                             # local dev
 SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 
+# Stripe billing — required env vars (test-mode keys for dev, live for prod)
+#   STRIPE_SECRET_KEY                     # sk_test_... or sk_live_...
+#   STRIPE_WEBHOOK_SECRET                 # whsec_... (from dashboard webhook)
+#   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    # pk_test_... or pk_live_...
+#   STRIPE_PRICE_PRO_MONTHLY              # price_... (Pro monthly subscription)
+#   STRIPE_PRICE_PRO_YEARLY               # price_...
+#   STRIPE_PRICE_ENTERPRISE_MONTHLY       # price_...
+#   STRIPE_PRICE_ENTERPRISE_YEARLY        # price_...
+#
+# Stripe dashboard setup (one-time):
+#   1) Create products in Stripe (Pro, Enterprise) with monthly + yearly prices
+#   2) Copy each price_id into the env vars above (Vercel + .env.local)
+#   3) Add webhook endpoint: POST https://mostlymedicine.com/api/billing/webhook
+#      Subscribe to: checkout.session.completed,
+#                    customer.subscription.{created,updated,deleted},
+#                    invoice.payment_failed
+#      Copy the signing secret -> STRIPE_WEBHOOK_SECRET
+#   4) Test with Stripe test cards (4242 4242 4242 4242) before flipping to live mode
+
 # AI Clinical RolePlay — offline content build (run once, or after adding PDFs)
 # 1) Drop new PDFs into roleplays/source-pdfs/ (gitignored)
 # 2) Ingest each PDF into acrp_sources (metadata only, never the PDF text)
