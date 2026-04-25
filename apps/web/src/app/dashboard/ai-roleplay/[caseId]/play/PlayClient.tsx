@@ -44,7 +44,9 @@ export default function PlayClient({
   const [error, setError] = useState<string | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(ROLEPLAY_SECONDS);
   const [ended, setEnded] = useState(false);
-  const [voiceMode, setVoiceMode] = useState(false);
+  // Voice is the default — typing wastes 8-min station time. User can flip
+  // to text via the toggle if their browser/mic blocks STT.
+  const [voiceMode, setVoiceMode] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Voice — STT in, TTS out. The hook auto-fires its callback on stop/silence
