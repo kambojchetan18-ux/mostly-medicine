@@ -34,6 +34,15 @@ eas build -p android --profile production  # Play Store
 # Supabase
 supabase start                             # local dev
 SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
+
+# AI Clinical RolePlay — offline content build (run once, or after adding PDFs)
+# 1) Drop new PDFs into roleplays/source-pdfs/ (gitignored)
+# 2) Ingest each PDF into acrp_sources (metadata only, never the PDF text)
+ANTHROPIC_API_KEY=... NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
+  npx ts-node scripts/acrp-ingest.ts            # flags: --limit N --only foo --redo
+# 3) Synthesise blueprints from sources (one Claude call per category)
+ANTHROPIC_API_KEY=... NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
+  npx ts-node scripts/acrp-blueprints.ts        # flags: --category "..." --redo --difficulty easy|medium|hard
 ```
 
 ## Architecture
