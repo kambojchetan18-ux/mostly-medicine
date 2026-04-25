@@ -192,7 +192,7 @@ Synthesise 3-8 reusable blueprints covering distinct presentation families found
     FORCE_DIFFICULTY ? `Set difficulty to "${FORCE_DIFFICULTY}" for all blueprints.` : "Mix difficulties (easy/medium/hard) sensibly across the set."
   }`;
 
-  const response = await anthropic.messages.create({
+  const params = {
     model: MODEL,
     max_tokens: 8000,
     temperature: 0.3,
@@ -212,7 +212,10 @@ Synthesise 3-8 reusable blueprints covering distinct presentation families found
     ],
     tool_choice: { type: "tool", name: "save_blueprints" },
     messages: [{ role: "user", content: userMessage }],
-  });
+  };
+  const response = (await anthropic.messages.create(
+    params as unknown as Parameters<typeof anthropic.messages.create>[0]
+  )) as Anthropic.Message;
 
   const toolUse = response.content.find((b) => b.type === "tool_use");
   if (!toolUse || toolUse.type !== "tool_use") {

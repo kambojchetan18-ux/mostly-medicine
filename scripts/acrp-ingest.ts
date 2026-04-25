@@ -117,7 +117,9 @@ interface Extraction {
 
 // ── Per-PDF extraction ──────────────────────────────────────────────────
 async function extractMetadata(filename: string, buf: Buffer): Promise<Extraction> {
-  const response = await anthropic.messages.create({
+  // SDK 0.32 supports cache_control + PDF document blocks at runtime but the
+  // types lag — cast through unknown to avoid noisy errors. Drop on SDK upgrade.
+  const params = {
     model: MODEL,
     max_tokens: 1500,
     temperature: 0.2,
@@ -155,7 +157,10 @@ async function extractMetadata(filename: string, buf: Buffer): Promise<Extractio
         ],
       },
     ],
-  });
+  };
+  const response = (await anthropic.messages.create(
+    params as unknown as Parameters<typeof anthropic.messages.create>[0]
+  )) as Anthropic.Message;
 
   const toolUse = response.content.find((b) => b.type === "tool_use");
   if (!toolUse || toolUse.type !== "tool_use") {
