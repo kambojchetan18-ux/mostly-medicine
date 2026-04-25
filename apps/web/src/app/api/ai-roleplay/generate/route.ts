@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
+import { checkAIRateLimit } from "@/lib/rate-limit";
 
 interface GenerateRequest {
   blueprintId?: string;
@@ -24,6 +25,11 @@ export async function POST(req: NextRequest) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rateCheck = await checkAIRateLimit(auth.user.id, "ai-roleplay-generate");
+  if (!rateCheck.allowed) {
+    return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -54,7 +60,8 @@ export async function POST(req: NextRequest) {
 
   const { data: bps, error: bpErr } = await bpQuery;
   if (bpErr) {
-    return NextResponse.json({ error: bpErr.message }, { status: 500 });
+    console.error("[ai-roleplay/generate] blueprint error", bpErr.message);
+    return NextResponse.json({ error: "Failed to load blueprints." }, { status: 500 });
   }
   if (!bps || bps.length === 0) {
     return NextResponse.json({ error: "No matching blueprint found" }, { status: 404 });
@@ -110,9 +117,8 @@ export async function POST(req: NextRequest) {
   try {
     variant = await generateCase({ blueprint, difficulty, seed });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Generation failed";
-    console.error("[ai-roleplay/generate]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[ai-roleplay/generate]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Case generation failed. Please try again." }, { status: 500 });
   }
 
   // ─── Persist with service role (bypass RLS) so the case is reusable ──

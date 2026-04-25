@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { checkAIRateLimit } from "@/lib/rate-limit";
 
 const client = new Anthropic();
 
@@ -47,6 +48,11 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateCheck = await checkAIRateLimit(user.id, "cv-analyse");
+  if (!rateCheck.allowed) {
+    return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
+  }
 
   try {
     const formData = await req.formData();
@@ -112,8 +118,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ profile: extracted });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[cv/analyse]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/analyse]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "An error occurred analysing your CV." }, { status: 500 });
   }
 }

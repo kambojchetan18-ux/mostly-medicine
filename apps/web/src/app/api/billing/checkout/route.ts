@@ -37,8 +37,17 @@ export async function POST(req: NextRequest) {
   const activeSub = existing.data.find((s) =>
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
+  const rawOrigin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const allowedHosts = ["mostlymedicine.com", "www.mostlymedicine.com", "localhost:3000"];
+  let origin: string;
+  try {
+    const parsed = new URL(rawOrigin);
+    origin = allowedHosts.includes(parsed.host) ? rawOrigin : new URL(req.url).origin;
+  } catch {
+    origin = new URL(req.url).origin;
+  }
+
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
     const portal = await stripe().billingPortal.sessions.create({
       customer: customerId,
       return_url: `${origin}/dashboard/billing`,
@@ -46,7 +55,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: portal.url, alreadySubscribed: true });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const session = await stripe().checkout.sessions.create({
     mode: "subscription",
     customer: customerId,

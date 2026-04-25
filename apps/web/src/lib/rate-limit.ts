@@ -38,6 +38,10 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     return { allowed: true };
   }
 
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: WINDOW_MS };
+  }
+
   return { allowed: true };
 }
 
@@ -75,4 +79,51 @@ export async function recordFailedAttempt(key: string): Promise<{ locked: boolea
 export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
+}
+
+const AI_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const AI_MAX_REQUESTS = 60;
+
+export async function checkAIRateLimit(userId: string, endpoint: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const key = `ai:${endpoint}:${userId}`;
+  const supabase = serviceClient();
+
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (!data) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    return { allowed: true };
+  }
+
+  const windowExpired = Date.now() - new Date(data.first_attempt_at).getTime() > AI_WINDOW_MS;
+  if (windowExpired) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    return { allowed: true };
+  }
+
+  if (data.count >= AI_MAX_REQUESTS) {
+    const retryAfterMs = AI_WINDOW_MS - (Date.now() - new Date(data.first_attempt_at).getTime());
+    return { allowed: false, retryAfterMs };
+  }
+
+  await supabase.from("rate_limit_attempts").update({
+    count: data.count + 1,
+    updated_at: new Date().toISOString(),
+  }).eq("key", key);
+
+  return { allowed: true };
 }

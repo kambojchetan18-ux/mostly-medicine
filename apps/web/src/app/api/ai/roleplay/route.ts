@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClinicalRoleplay } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
+import { checkAIRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   let user = null;
@@ -26,12 +27,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const rateCheck = await checkAIRateLimit(user.id, "roleplay");
+  if (!rateCheck.allowed) {
+    return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
+  }
+
   try {
     const { scenarioId, messages, requestFeedback } = await req.json();
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
-        { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },
+        { error: "AI service not configured." },
         { status: 503 }
       );
     }
@@ -39,8 +45,7 @@ export async function POST(req: NextRequest) {
     const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback });
     return NextResponse.json({ reply });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[roleplay API error]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[roleplay API error]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "An error occurred processing your request." }, { status: 500 });
   }
 }

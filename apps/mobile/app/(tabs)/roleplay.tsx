@@ -175,8 +175,12 @@ export default function RoleplayScreen() {
   }, [messages, loading]);
 
   // ── Timer ───────────────────────────────────────────────────────────────────
+  const milestoneTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   function startTimer() {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (milestoneTimeoutRef.current) clearTimeout(milestoneTimeoutRef.current);
     elapsedRef.current = 0;
     shownMilestonesRef.current = new Set();
     setTimeLeft(480);
@@ -187,7 +191,8 @@ export default function RoleplayScreen() {
         if (elapsed === MILESTONES[i].time && !shownMilestonesRef.current.has(i)) {
           shownMilestonesRef.current.add(i);
           setMilestone(MILESTONES[i].label);
-          setTimeout(() => setMilestone(null), 4000);
+          if (milestoneTimeoutRef.current) clearTimeout(milestoneTimeoutRef.current);
+          milestoneTimeoutRef.current = setTimeout(() => setMilestone(null), 4000);
         }
       }
       setTimeLeft((prev) => {
@@ -199,7 +204,16 @@ export default function RoleplayScreen() {
 
   function stopTimer() {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    if (milestoneTimeoutRef.current) { clearTimeout(milestoneTimeoutRef.current); milestoneTimeoutRef.current = null; }
   }
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (milestoneTimeoutRef.current) clearTimeout(milestoneTimeoutRef.current);
+      if (openingTimeoutRef.current) clearTimeout(openingTimeoutRef.current);
+    };
+  }, []);
 
   // ── API ─────────────────────────────────────────────────────────────────────
   async function getToken() {
@@ -272,8 +286,8 @@ export default function RoleplayScreen() {
     setInput('');
     setVoiceError(null);
     startTimer();
-    // Patient greets you with their opening statement
-    setTimeout(() => speakPatient(sc.openingStatement, sc.patientProfile), 600);
+    if (openingTimeoutRef.current) clearTimeout(openingTimeoutRef.current);
+    openingTimeoutRef.current = setTimeout(() => speakPatient(sc.openingStatement, sc.patientProfile), 600);
   }
 
   function endSession() {

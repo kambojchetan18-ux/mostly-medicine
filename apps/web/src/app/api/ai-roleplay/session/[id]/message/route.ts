@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
+import { checkAIRateLimit } from "@/lib/rate-limit";
 
 // SSE-streamed roleplay turn. The browser reads chunks via fetch + getReader
 // and renders patient text token-by-token, dropping perceived latency from
@@ -23,6 +24,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateCheck = await checkAIRateLimit(user.id, "ai-roleplay-message");
+  if (!rateCheck.allowed) {
+    return Response.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json({ error: "AI service not configured" }, { status: 503 });
@@ -87,7 +93,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     .from("acrp_messages")
     .insert({ session_id: sessionId, role: "user", content: userMessage });
   if (insertUserErr) {
-    return Response.json({ error: insertUserErr.message }, { status: 500 });
+    console.error("[acrp/message] insert error", insertUserErr.message);
+    return Response.json({ error: "Failed to save message." }, { status: 500 });
   }
   if (session.status !== "roleplay") {
     await supabase
