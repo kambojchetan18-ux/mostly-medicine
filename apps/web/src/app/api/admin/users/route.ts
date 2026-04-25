@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -52,5 +53,15 @@ export async function PATCH(req: NextRequest) {
     console.error("[admin/users] update error", error.message);
     return NextResponse.json({ error: "Failed to update user." }, { status: 500 });
   }
+
+  const svc = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  await svc.from("admin_audit_log").insert({
+    admin_id: user.id,
+    action: "update_user",
+    target_type: "user_profile",
+    target_id: userId,
+    details: { plan: plan || undefined, role: role || undefined },
+  });
+
   return NextResponse.json({ success: true });
 }

@@ -36,37 +36,42 @@ export default function ProgressScreen() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setLoading(false); return; }
 
-      const [attRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).single(),
-        supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
-          .eq('user_id', user.id).lte('due', new Date().toISOString()),
-      ]);
+        const [attRes, streakRes, dueRes] = await Promise.all([
+          supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
+          supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).single(),
+          supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
+            .eq('user_id', user.id).lte('due', new Date().toISOString()),
+        ]);
 
-      const attempts = attRes.data ?? [];
-      setTotalAttempts(attempts.length);
-      setTotalCorrect(attempts.filter((a) => a.is_correct).length);
-      setStreak(streakRes.data?.current_streak ?? 0);
-      setDue(dueRes.count ?? 0);
+        if (attRes.error) console.error('[progress] attempts error', attRes.error.message);
+        const attempts = attRes.data ?? [];
+        setTotalAttempts(attempts.length);
+        setTotalCorrect(attempts.filter((a) => a.is_correct).length);
+        setStreak(streakRes.data?.current_streak ?? 0);
+        setDue(dueRes.count ?? 0);
 
-      const topicMap: Record<string, { done: number; correct: number }> = {};
-      for (const a of attempts) {
-        const q = allQuestions.find((q) => q.id === a.question_id);
-        if (!q) continue;
-        if (!topicMap[q.topic]) topicMap[q.topic] = { done: 0, correct: 0 };
-        topicMap[q.topic].done++;
-        if (a.is_correct) topicMap[q.topic].correct++;
+        const topicMap: Record<string, { done: number; correct: number }> = {};
+        for (const a of attempts) {
+          const q = allQuestions.find((q) => q.id === a.question_id);
+          if (!q) continue;
+          if (!topicMap[q.topic]) topicMap[q.topic] = { done: 0, correct: 0 };
+          topicMap[q.topic].done++;
+          if (a.is_correct) topicMap[q.topic].correct++;
+        }
+
+        setRows(TOPICS.map((t) => ({
+          topic: t,
+          total: allQuestions.filter((q) => q.topic === t).length,
+          done: topicMap[t]?.done ?? 0,
+          correct: topicMap[t]?.correct ?? 0,
+        })));
+      } catch (err) {
+        console.error('[progress] unexpected error', err);
       }
-
-      setRows(TOPICS.map((t) => ({
-        topic: t,
-        total: allQuestions.filter((q) => q.topic === t).length,
-        done: topicMap[t]?.done ?? 0,
-        correct: topicMap[t]?.correct ?? 0,
-      })));
       setLoading(false);
     }
     load();

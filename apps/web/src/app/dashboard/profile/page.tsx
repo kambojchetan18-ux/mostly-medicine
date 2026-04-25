@@ -49,6 +49,16 @@ export default function ProfilePage() {
   }
 
   function handleFile(file: File) {
+    const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+    const ALLOWED_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+    if (file.size > MAX_SIZE) {
+      setError("File too large. Maximum size is 10 MB.");
+      return;
+    }
+    if (!ALLOWED_TYPES.includes(file.type) && !file.name.match(/\.(pdf|doc|docx|txt)$/i)) {
+      setError("Unsupported file type. Please upload a PDF, Word, or text file.");
+      return;
+    }
     const fd = new FormData();
     fd.append("file", file);
     analyse(fd);

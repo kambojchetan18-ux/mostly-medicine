@@ -66,11 +66,16 @@ export default function QuizScreen() {
 
   async function saveAttempts(records: AttemptRecord[]) {
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from('attempts').insert(
-      records.map((r) => ({ ...r, user_id: user.id }))
-    );
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setSaving(false); return; }
+      const { error } = await supabase.from('attempts').insert(
+        records.map((r) => ({ ...r, user_id: user.id }))
+      );
+      if (error) console.error('[quiz] save error', error.message);
+    } catch (err) {
+      console.error('[quiz] save unexpected error', err);
+    }
     setSaving(false);
   }
 

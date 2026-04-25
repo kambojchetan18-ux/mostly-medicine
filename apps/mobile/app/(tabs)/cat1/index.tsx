@@ -16,23 +16,28 @@ export default function CAT1Screen() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from('attempts')
-        .select('question_id, is_correct')
-        .eq('user_id', user.id);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setLoading(false); return; }
+        const { data, error } = await supabase
+          .from('attempts')
+          .select('question_id, is_correct')
+          .eq('user_id', user.id);
 
-      if (data) {
-        const map: Record<string, { done: number; correct: number }> = {};
-        for (const a of data) {
-          const q = allQuestions.find((q) => q.id === a.question_id);
-          if (!q) continue;
-          if (!map[q.topic]) map[q.topic] = { done: 0, correct: 0 };
-          map[q.topic].done++;
-          if (a.is_correct) map[q.topic].correct++;
+        if (error) { console.error('[cat1] load error', error.message); setLoading(false); return; }
+        if (data) {
+          const map: Record<string, { done: number; correct: number }> = {};
+          for (const a of data) {
+            const q = allQuestions.find((q) => q.id === a.question_id);
+            if (!q) continue;
+            if (!map[q.topic]) map[q.topic] = { done: 0, correct: 0 };
+            map[q.topic].done++;
+            if (a.is_correct) map[q.topic].correct++;
+          }
+          setStats(map);
         }
-        setStats(map);
+      } catch (err) {
+        console.error('[cat1] unexpected error', err);
       }
       setLoading(false);
     }

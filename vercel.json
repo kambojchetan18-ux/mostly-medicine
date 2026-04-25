@@ -2,5 +2,13 @@
   "framework": "nextjs",
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build --filter=@mostly-medicine/web",
-  "outputDirectory": "apps/web/.next"
+  "outputDirectory": "apps/web/.next",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+      ]
+    }
+  ]
 }

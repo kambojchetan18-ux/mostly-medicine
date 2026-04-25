@@ -42,18 +42,23 @@ export default function RecallsScreen() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
-    const { data } = await supabase
-      .from('sr_cards')
-      .select('id, question_id, interval, ease_factor, repetitions')
-      .eq('user_id', user.id)
-      .lte('due', new Date().toISOString())
-      .limit(50);
-    setCards(data ?? []);
-    setIdx(0);
-    setRevealed(false);
-    setDone((data ?? []).length === 0);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+      const { data, error } = await supabase
+        .from('sr_cards')
+        .select('id, question_id, interval, ease_factor, repetitions')
+        .eq('user_id', user.id)
+        .lte('due', new Date().toISOString())
+        .limit(50);
+      if (error) console.error('[recalls] load error', error.message);
+      setCards(data ?? []);
+      setIdx(0);
+      setRevealed(false);
+      setDone((data ?? []).length === 0);
+    } catch (err) {
+      console.error('[recalls] unexpected error', err);
+    }
     setLoading(false);
   }, []);
 
@@ -62,18 +67,23 @@ export default function RecallsScreen() {
   async function handleRate(rating: Rating) {
     if (saving) return;
     setSaving(true);
-    const card = cards[idx];
-    const { interval, ease_factor, repetitions } = nextInterval(card, rating);
-    const due = new Date();
-    due.setDate(due.getDate() + interval);
-    await supabase.from('sr_cards').update({ interval, ease_factor, repetitions, due: due.toISOString() }).eq('id', card.id);
-    setSaving(false);
-    if (idx + 1 >= cards.length) {
-      setDone(true);
-    } else {
-      setIdx((i) => i + 1);
-      setRevealed(false);
+    try {
+      const card = cards[idx];
+      const { interval, ease_factor, repetitions } = nextInterval(card, rating);
+      const due = new Date();
+      due.setDate(due.getDate() + interval);
+      const { error } = await supabase.from('sr_cards').update({ interval, ease_factor, repetitions, due: due.toISOString() }).eq('id', card.id);
+      if (error) console.error('[recalls] rate error', error.message);
+      if (idx + 1 >= cards.length) {
+        setDone(true);
+      } else {
+        setIdx((i) => i + 1);
+        setRevealed(false);
+      }
+    } catch (err) {
+      console.error('[recalls] rate unexpected error', err);
     }
+    setSaving(false);
   }
 
   const card = cards[idx];
