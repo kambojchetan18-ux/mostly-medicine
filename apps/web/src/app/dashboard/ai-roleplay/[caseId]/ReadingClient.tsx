@@ -87,25 +87,14 @@ export default function ReadingClient({
         </div>
       </div>
 
-      {/* Reading card */}
+      {/* Reading card — single scenario paragraph + task pill, AMC-style */}
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 border-b border-gray-100 pb-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Setting</p>
-          <p className="mt-1 text-sm text-gray-900">{stationStem.setting || setting}</p>
-        </div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Scenario</p>
+        <p className="mt-2 whitespace-pre-line text-base leading-relaxed text-gray-900">
+          {stationStem.visiblePatientContext}
+        </p>
 
-        <div className="mb-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Patient</p>
-          <p className="mt-1 text-sm font-medium text-gray-900">{patientName}</p>
-          <p className="mt-1 text-sm text-gray-700">{stationStem.visiblePatientContext}</p>
-        </div>
-
-        <div className="mb-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Presenting complaint</p>
-          <p className="mt-1 text-sm text-gray-900">{stationStem.presentingComplaint}</p>
-        </div>
-
-        <div className="rounded-xl bg-amber-50 border border-amber-200 p-3">
+        <div className="mt-5 rounded-xl bg-amber-50 border border-amber-200 p-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">Your task</p>
           <p className="mt-1 text-sm font-medium text-amber-900">
             {stationStem.candidateTask || candidateTask}

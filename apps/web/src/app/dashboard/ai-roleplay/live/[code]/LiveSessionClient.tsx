@@ -467,13 +467,10 @@ export default function LiveSessionClient({
 function DoctorStem({ stem }: { stem: LiveCaseStem }) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Setting</p>
-      <p className="mt-1 text-sm text-gray-900">{stem.setting}</p>
-      <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Patient</p>
-      <p className="mt-1 text-sm font-medium text-gray-900">{stem.patientName}</p>
-      <p className="mt-1 text-sm text-gray-700">{stem.visiblePatientContext}</p>
-      <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Presenting complaint</p>
-      <p className="mt-1 text-sm text-gray-900">{stem.presentingComplaint}</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Scenario</p>
+      <p className="mt-2 whitespace-pre-line text-base leading-relaxed text-gray-900">
+        {stem.visiblePatientContext}
+      </p>
       <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">Your task</p>
         <p className="mt-1 text-sm font-medium text-amber-900">{stem.candidateTask}</p>

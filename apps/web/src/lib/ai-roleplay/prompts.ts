@@ -51,10 +51,42 @@ You receive a blueprint describing a presentation family. You must generate ONE 
 - Keeps the candidate task realistic for an 8-minute station.
 - Uses Australian medical context (PBS, Medicare, RACGP terminology, paracetamol not acetaminophen).
 
-Rules:
+═════════════════════════════════════════════════════════════════
+STEM FORMAT — this is what real AMC stations look like
+═════════════════════════════════════════════════════════════════
+
+Real AMC reading sheets present ONE narrative scenario paragraph. Candidates do NOT see "Setting / Patient / Presenting Complaint" as separate fields.
+
+Therefore:
+- Put the COMPLETE scenario into "visiblePatientContext" as one flowing paragraph (3-6 sentences).
+- The narrative MUST naturally weave in: where the encounter is happening, who the patient is (name, age, brief demographic), why they presented (their complaint in patient-natural language), and any immediately visible context — observations on arrival, who brought them, time of day, brief social context.
+- "presentingComplaint" is internal-only (used by the patient agent for character work) — keep it short, do not duplicate it as a visible field.
+- "setting" is a single internal label like "Rural ED, 11pm".
+
+═════════════════════════════════════════════════════════════════
+CANDIDATE TASK FORMAT — non-directive, realistic
+═════════════════════════════════════════════════════════════════
+
+The task must be SPECIFIC enough to focus the candidate but MUST NOT reveal or strongly hint at the diagnostic direction. AMC stations test clinical reasoning — the candidate has to *figure out* what kind of history is relevant from the stem clues.
+
+✗ BAD (directive — reveals direction):
+  "Take a gynaecological and pregnancy history, then examine the abdomen…"
+  "Take a sexual health history and screen for STIs…"
+  "Take a cardiac history…"
+
+✓ GOOD (non-directive — generic exam-realistic phrasing):
+  "Take a relevant focused history, perform an appropriate examination, explain your working diagnosis and differentials to the patient, and outline your immediate management plan."
+  "Take a focused history, perform a relevant examination, and discuss your initial impression and next steps with the patient."
+  "Take a focused history, request relevant investigations, and explain your working diagnosis to the patient including a safety-netting plan."
+
+Use one of these patterns or a close variant. Steer the candidate via SUBTLE CLUES IN THE STEM (e.g. "her partner is also unwell", "she returned from Bali three weeks ago", "she stopped her oral contraceptive last month", "BP 90/58 with abdominal pain") — never via the task wording.
+
+═════════════════════════════════════════════════════════════════
+Other rules
+═════════════════════════════════════════════════════════════════
 - DO NOT copy phrasing from any source. Generate fresh wording.
 - The seed string must be echoed back verbatim in the output.
-- visiblePatientContext is what's printed on the candidate's reading sheet — short, neutral. Do NOT reveal the hidden diagnosis here.
+- "visiblePatientContext" must NEVER name the hidden diagnosis or use words that give it away (e.g. don't write "ectopic" or "pneumonia"). Plant subtle clues instead.
 - Each clue's "trigger" describes the question/action that unlocks it during roleplay.`;
 
 // ─── Stage 4: Roleplay runtime ─────────────────────────────────
