@@ -217,8 +217,17 @@ async function extractBatch(handbook: string, from: number, to: number): Promise
   )) as Anthropic.Message;
   const tool = response.content.find((b) => b.type === "tool_use");
   if (!tool || tool.type !== "tool_use") throw new Error("No tool_use in response");
-  const out = tool.input as { scenarios: ExtractedScenario[] };
-  return out.scenarios;
+  const raw = tool.input as { scenarios?: ExtractedScenario[] } | ExtractedScenario[];
+  // Claude occasionally returns the array directly or under a different key.
+  let scenarios: ExtractedScenario[] | undefined;
+  if (Array.isArray(raw)) scenarios = raw;
+  else if (Array.isArray((raw as { scenarios?: ExtractedScenario[] }).scenarios))
+    scenarios = (raw as { scenarios: ExtractedScenario[] }).scenarios;
+  if (!scenarios) {
+    console.error(`   raw tool input keys: ${Object.keys(raw as object).join(", ")}`);
+    throw new Error(`No scenarios array — stop_reason=${response.stop_reason}`);
+  }
+  return scenarios;
 }
 
 async function main() {
