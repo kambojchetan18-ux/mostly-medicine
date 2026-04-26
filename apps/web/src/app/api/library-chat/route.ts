@@ -5,6 +5,8 @@ import {
   LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC,
 } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
+import { checkEndpointRate } from "@/lib/rate-limit";
+import { MODELS } from "@/lib/models";
 
 export const maxDuration = 30;
 
@@ -22,6 +24,14 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  const rl = await checkEndpointRate(user.id, "library-chat", 60_000, 15);
+  if (!rl.allowed) {
+    return new Response(JSON.stringify({ error: "Too many requests." }), {
+      status: 429,
+      headers: { "Content-Type": "application/json", "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) },
+    });
+  }
+
   const { messages, topicTitle, topicContent } = await req.json();
 
   const systemPrompt =
@@ -35,7 +45,7 @@ export async function POST(req: NextRequest) {
     async start(controller) {
       try {
         const response = await client.messages.create({
-          model: "claude-haiku-4-5-20251001",
+          model: MODELS.FAST,
           max_tokens: 1024,
           system: systemPrompt,
           messages: messages.map((m: { role: string; content: string }) => ({

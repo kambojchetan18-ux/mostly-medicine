@@ -666,7 +666,7 @@ export const respiratoryQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "resp-b2-001",
+    id: "resp-b10-001",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 19-year-old woman presents to the emergency department with acute breathlessness and wheeze that began 2 hours ago after visiting a friend's house with a cat. She has a known history of asthma and uses salbutamol PRN. On examination, she is speaking in full sentences, RR 22/min, SpO2 95% on room air, HR 105 bpm, and widespread expiratory wheeze is heard bilaterally. Peak expiratory flow rate (PEFR) is 65% of her predicted best. Which of the following is the most appropriate initial management?",
@@ -683,7 +683,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b2-002",
+    id: "resp-b10-002",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 68-year-old male ex-smoker (40 pack-years, quit 5 years ago) presents to his GP with progressive dyspnoea on exertion over 2 years, now limiting him to walking less than 100 metres on flat ground. He has a chronic productive cough with white sputum. Spirometry shows FEV1/FVC of 0.58 post-bronchodilator, FEV1 42% predicted. He uses salbutamol PRN but has had 3 exacerbations requiring oral prednisolone in the past 12 months. Which of the following is the most appropriate escalation of his maintenance therapy?",
@@ -700,7 +700,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-003",
+    id: "resp-b10-003",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 72-year-old woman is brought to the emergency department by her family with 3 days of fever, productive cough with rust-coloured sputum, and confusion. She lives in a residential aged care facility. On examination: T 38.9°C, BP 100/70 mmHg, RR 28/min, HR 112 bpm, SpO2 91% on room air, and she is confused (MMSE not formally tested). CXR shows right lower lobe consolidation. Blood cultures are pending. Her CURB-65 score is calculated. Which of the following is the most appropriate initial antibiotic regimen?",
@@ -717,7 +717,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-004",
+    id: "resp-b10-004",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 45-year-old woman presents to the emergency department with sudden onset pleuritic chest pain and dyspnoea 10 days after a right total hip replacement. She has no past history of VTE. On examination: HR 110 bpm, RR 22/min, SpO2 94% on room air, BP 128/82 mmHg. ECG shows sinus tachycardia. CXR is normal. A CT pulmonary angiogram (CTPA) confirms bilateral pulmonary emboli. She has no contraindications to anticoagulation. Which of the following is the most appropriate initial anticoagulation regimen?",
@@ -734,7 +734,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-005",
+    id: "resp-b10-005",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 63-year-old male smoker (35 pack-years) presents with a 3-month history of progressive cough, 8 kg unintentional weight loss, and right shoulder pain. On examination, he has right-sided ptosis, miosis, and anhidrosis. CXR shows a right apical mass. CT chest confirms a 4 cm spiculated mass at the right lung apex with mediastinal lymphadenopathy. Which of the following best describes this clinical syndrome and its most likely histological subtype?",
@@ -751,7 +751,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-006",
+    id: "resp-b10-006",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 58-year-old male with known malignant mesothelioma presents with progressive dyspnoea. CXR shows a large left-sided pleural effusion occupying two-thirds of the hemithorax. Diagnostic thoracentesis confirms exudative effusion with malignant cells. The effusion re-accumulates within 2 weeks of aspiration. He is otherwise well with good performance status (ECOG 1). Which of the following is the most appropriate definitive management for his recurrent symptomatic pleural effusion?",
@@ -768,7 +768,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b2-007",
+    id: "resp-b10-007",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 32-year-old male refugee from Myanmar presents with a 3-month history of cough productive of blood-tinged sputum, night sweats, and 10 kg weight loss. CXR shows upper lobe cavitary infiltrates bilaterally. Three sputum samples are sent; Ziehl-Neelsen stain is positive for acid-fast bacilli. He lives in shared accommodation with 6 others. Which of the following is the most appropriate immediate action in addition to commencing anti-tuberculosis therapy?",
@@ -785,7 +785,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b2-008",
+    id: "resp-b10-008",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 52-year-old male truck driver presents at his wife's insistence with excessive daytime sleepiness, witnessed apnoeas, and loud snoring. He has a BMI of 36 kg/m², neck circumference of 44 cm, and hypertension managed with amlodipine. Epworth Sleepiness Scale score is 16/24. Overnight polysomnography shows an apnoea-hypopnoea index (AHI) of 38 events/hour with oxygen desaturation nadir of 78%. Which of the following is the single most important initial intervention?",
@@ -802,7 +802,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-009",
+    id: "resp-b10-009",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 38-year-old woman with a 10-year history of bronchiectasis (confirmed on HRCT) presents with a 5-day history of increased cough, change in sputum colour from white to green, increased sputum volume, and mild dyspnoea. Temperature is 37.6°C, HR 88 bpm, SpO2 97% on room air. Her most recent sputum culture from 3 months ago grew Pseudomonas aeruginosa sensitive to ciprofloxacin. Which of the following is the most appropriate antibiotic management?",
@@ -819,7 +819,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-010",
+    id: "resp-b10-010",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 67-year-old male retired carpenter presents with a 2-year history of progressive exertional dyspnoea and dry cough. He has never smoked. On examination, bilateral fine inspiratory crackles (Velcro) are heard at both lung bases, and clubbing is present. PFTs show a restrictive pattern with FVC 68% predicted and DLCO 52% predicted. HRCT chest shows bilateral basal-predominant honeycombing with traction bronchiectasis and minimal ground-glass opacity. Bronchoalveolar lavage shows lymphocyte predominance of 8%. Which of the following is the most likely diagnosis?",
@@ -836,7 +836,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b2-011",
+    id: "resp-b10-011",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 14-year-old boy with known asthma is brought to the emergency department obtunded and unable to complete sentences. He is using accessory muscles of respiration, with marked intercostal and subcostal recession. RR is 32/min, HR 130 bpm, SpO2 88% on high-flow oxygen. PEFR cannot be measured. Chest auscultation reveals a silent chest bilaterally. ABG shows pH 7.28, PaCO2 52 mmHg, PaO2 58 mmHg. Which of the following is the correct classification and management priority?",
@@ -853,7 +853,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b2-012",
+    id: "resp-b10-012",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 74-year-old male with COPD (FEV1 35% predicted) presents with worsening dyspnoea, increased sputum volume with yellow discolouration, and fever of 38.2°C for 3 days. He is managed as an outpatient on tiotropium and fluticasone/salmeterol. SpO2 is 89% on room air. CXR shows hyperinflation but no new consolidation. ABG: pH 7.34, PaCO2 58 mmHg, PaO2 52 mmHg, HCO3 30 mmol/L. He is admitted to the ward. Which of the following is the most important respiratory intervention in his acute management?",
@@ -870,7 +870,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-013",
+    id: "resp-b10-013",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 35-year-old previously healthy male Aboriginal Australian from a remote community presents with a 1-week history of high fever, headache, dry cough, and myalgia. His CXR shows diffuse bilateral interstitial infiltrates. WCC is 7.2 × 10⁹/L, with lymphopenia. Cold agglutinin titre is positive at 1:64. He does not respond to 48 hours of IV benzylpenicillin. Which of the following is the most likely causative organism?",
@@ -887,7 +887,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b2-014",
+    id: "resp-b10-014",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 28-year-old woman who is 34 weeks pregnant presents to the emergency department with sudden onset dyspnoea and right-sided pleuritic chest pain. She has no past history of VTE. HR 108 bpm, RR 20/min, SpO2 96% on room air, BP 118/78 mmHg. Lower limb compression ultrasound reveals a right femoral deep vein thrombosis. CTPA is being considered. Which of the following statements regarding investigation and management is most accurate in this context?",
@@ -904,7 +904,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-015",
+    id: "resp-b10-015",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 70-year-old male with a 50 pack-year smoking history undergoes a routine health check. He has no respiratory symptoms. CXR is reported as normal. His GP is considering lung cancer screening. Which of the following best represents the current Australian evidence-based position on lung cancer screening for high-risk individuals?",
@@ -921,7 +921,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b2-016",
+    id: "resp-b10-016",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 22-year-old tall, thin male presents to the emergency department with sudden onset right-sided chest pain and mild dyspnoea that began while sitting at his desk. He has no past medical history and does not smoke. SpO2 is 97% on room air, HR 90 bpm, BP 126/78 mmHg. Breath sounds are reduced on the right. CXR confirms a primary spontaneous pneumothorax (PSP) with a visible rim of 3 cm at the level of the hilum. He is not haemodynamically compromised. Which of the following is the most appropriate management?",
@@ -938,7 +938,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b2-017",
+    id: "resp-b10-017",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 45-year-old male healthcare worker who emigrated from the Philippines 6 months ago undergoes routine tuberculosis screening with a tuberculin skin test (TST). The induration measures 12 mm at 48–72 hours. He has no symptoms, a normal CXR, and has previously received BCG vaccination. Which of the following is the most appropriate next step?",
@@ -955,7 +955,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-018",
+    id: "resp-b10-018",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 48-year-old woman with a BMI of 24 kg/m² presents with excessive daytime sleepiness, morning headaches, and her partner reports she snores loudly despite appearing non-obese. She has hypothyroidism managed with levothyroxine (TSH normal on recent testing). Overnight oximetry shows intermittent desaturations to 84% with an oxygen desaturation index of 22/hour. Which of the following investigation should be performed next?",
@@ -972,7 +972,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b2-019",
+    id: "resp-b10-019",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 25-year-old male presents with a lifelong history of recurrent sino-pulmonary infections, chronic productive cough since childhood, and infertility. HRCT chest shows cylindrical bronchiectasis predominantly in the middle and lower lobes bilaterally, with bronchial wall thickening. Situs inversus is noted incidentally on CXR. Nasal nitric oxide is markedly reduced at 18 ppb. Which of the following is the most likely underlying diagnosis?",
@@ -989,7 +989,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b2-020",
+    id: "resp-b10-020",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 55-year-old female nurse presents with a 6-month history of dyspnoea, dry cough, and fever occurring 4–8 hours after her work shifts. She works in a composting facility. Her symptoms improve significantly on weekends. HRCT chest shows bilateral mid and upper zone ground-glass opacification and poorly defined centrilobular nodules. Bronchoalveolar lavage (BAL) shows a markedly elevated lymphocyte fraction of 42%. Serum precipitins to Aspergillus fumigatus and thermophilic actinomycetes are positive. Which of the following is the most appropriate management?",
@@ -1348,7 +1348,7 @@ export const respiratoryQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "resp-b3-001",
+    id: "resp-b11-001",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 24-year-old woman presents to the emergency department with acute shortness of breath and wheeze that started 2 hours ago. She has a known history of asthma and uses salbutamol PRN and budesonide/formoterol maintenance inhaler. On examination, her respiratory rate is 28/min, SpO2 is 91% on room air, she is speaking in short sentences, and has widespread expiratory wheeze bilaterally. Peak expiratory flow rate (PEFR) is 45% of her predicted value. She has already used her salbutamol inhaler 4 times at home without significant relief. What is the most appropriate immediate management?",
@@ -1365,7 +1365,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b3-002",
+    id: "resp-b11-002",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 68-year-old man with a 50 pack-year smoking history presents to his GP with worsening exertional dyspnoea over 12 months. He reports a chronic productive cough most mornings. Examination reveals a barrel-shaped chest, prolonged expiratory phase, and scattered wheeze. Spirometry shows FEV1/FVC ratio of 0.58, FEV1 52% predicted with no significant post-bronchodilator reversibility. He is currently on no respiratory medications. What is the most appropriate initial pharmacological management?",
@@ -1382,7 +1382,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b3-003",
+    id: "resp-b11-003",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 72-year-old man with type 2 diabetes and congestive cardiac failure presents with a 3-day history of fever (38.8°C), productive cough with rust-coloured sputum, and right-sided pleuritic chest pain. On examination, he has dullness to percussion and bronchial breathing at the right base. CXR shows right lower lobe consolidation. Bloods reveal WCC 18.2 x10⁹/L, CRP 210 mg/L, urea 9.1 mmol/L, sodium 132 mmol/L, and creatinine 105 µmol/L. His respiratory rate is 26/min and SpO2 is 92% on room air. What is the most appropriate management setting based on his clinical scoring?",
@@ -1399,7 +1399,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-004",
+    id: "resp-b11-004",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 38-year-old woman presents to the ED with sudden-onset pleuritic chest pain and mild dyspnoea 10 days after a long-haul flight from Europe. She takes the combined oral contraceptive pill. On examination, HR is 105 bpm, BP 124/78 mmHg, RR 20/min, SpO2 96% on room air, and her left calf is mildly swollen and tender. ECG shows sinus tachycardia. D-dimer is 3.2 µg/mL (elevated). What is the most appropriate next investigation to confirm the diagnosis?",
@@ -1416,7 +1416,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b3-005",
+    id: "resp-b11-005",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 64-year-old male ex-smoker (40 pack-years, quit 8 years ago) presents with a 6-week history of persistent dry cough, 7 kg unintentional weight loss, and fatigue. He denies haemoptysis. CXR reveals a 3.2 cm spiculated mass in the right upper lobe. Bloods show sodium 128 mmol/L, potassium 4.1 mmol/L, and plasma osmolality 268 mOsm/kg with urine sodium of 65 mmol/L and urine osmolality 480 mOsm/kg. What is the most likely underlying diagnosis and its cause?",
@@ -1433,7 +1433,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-006",
+    id: "resp-b11-006",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 55-year-old man with known rheumatoid arthritis on methotrexate presents with progressive dyspnoea over 3 weeks. He denies fever or chest pain. Examination reveals dullness to percussion and absent breath sounds at the left base. CXR shows a moderate left pleural effusion. Diagnostic thoracentesis is performed: fluid appears straw-coloured, pH 7.22, protein 48 g/L (serum protein 70 g/L), LDH 380 U/L (serum LDH 180 U/L), glucose 1.8 mmol/L (serum glucose 6.0 mmol/L). Which of the following is the most likely diagnosis?",
@@ -1450,7 +1450,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-007",
+    id: "resp-b11-007",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 32-year-old man recently arrived from India presents with a 2-month history of progressive productive cough with occasional haemoptysis, night sweats, and 8 kg weight loss. Temperature is 37.9°C. CXR shows right upper lobe infiltrates with cavitation. Three sputum smears are sent for AFB microscopy and all are positive. He is otherwise well and HIV negative. What is the correct initial treatment regimen according to Australian guidelines?",
@@ -1467,7 +1467,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b3-008",
+    id: "resp-b11-008",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 48-year-old obese man (BMI 36 kg/m²) is referred by his GP with a history of loud snoring, witnessed apnoeas reported by his partner, and excessive daytime sleepiness (Epworth Sleepiness Scale score 16/24). He works as a truck driver. He has hypertension managed with amlodipine. Polysomnography shows an Apnoea-Hypopnoea Index (AHI) of 38 events/hour with oxygen desaturation index of 34. What is the most appropriate primary treatment and an important medicolegal consideration?",
@@ -1484,7 +1484,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-009",
+    id: "resp-b11-009",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 42-year-old woman with a childhood history of severe recurrent pneumonias presents with a 5-year history of daily productive cough with large volumes of purulent sputum (approximately 100 mL/day), intermittent haemoptysis, and 3 hospitalisations in the past year for infective exacerbations. HRCT chest confirms bilateral lower lobe bronchiectasis. Sputum cultures repeatedly grow Pseudomonas aeruginosa. Spirometry shows FEV1 58% predicted. What is the most appropriate long-term management strategy for her recurrent exacerbations and Pseudomonas colonisation?",
@@ -1501,7 +1501,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-010",
+    id: "resp-b11-010",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 67-year-old male retired shipyard worker presents with a 3-year progressive history of exertional dyspnoea and dry cough. He has never smoked. Examination reveals bilateral fine end-inspiratory 'Velcro' crackles at both bases and clubbing. PFTs show a restrictive pattern: FVC 62% predicted, FEV1 65% predicted, FEV1/FVC 0.88, and DLCO 48% predicted. HRCT shows bilateral basal-predominant subpleural reticular opacities, honeycombing with traction bronchiectasis, and no ground-glass opacities. What is the most likely diagnosis?",
@@ -1518,7 +1518,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-011",
+    id: "resp-b11-011",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 16-year-old girl with a known history of mild persistent asthma presents for a routine review. She uses salbutamol PRN approximately 4 times per week and reports nocturnal symptoms twice weekly. She currently uses no preventer therapy. Her spirometry is normal today. According to the Australian Asthma Handbook, which is the most appropriate step-up in management?",
@@ -1535,7 +1535,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b3-012",
+    id: "resp-b11-012",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 74-year-old woman with severe COPD (FEV1 28% predicted, GOLD Grade 4) on triple inhaled therapy (LAMA + LABA + ICS) presents for assessment of home oxygen therapy. She reports dyspnoea at rest and ankle oedema. ABG on room air shows: PaO2 54 mmHg, PaCO2 52 mmHg, pH 7.37, SaO2 87%. She has been clinically stable for the past 6 weeks with no recent exacerbation. What is the most appropriate recommendation?",
@@ -1552,7 +1552,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-013",
+    id: "resp-b11-013",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 52-year-old man is diagnosed with a submassive pulmonary embolism (bilateral proximal PE) confirmed on CTPA after presenting with pleuritic chest pain and dyspnoea. His haemodynamics are stable: BP 128/82 mmHg, HR 94 bpm. Echocardiography shows mild right ventricular dilatation without severe dysfunction. Troponin I is mildly elevated at 0.08 µg/L. He has no contraindications to anticoagulation and no recent surgery or bleeding history. What is the most appropriate initial anticoagulation strategy?",
@@ -1569,7 +1569,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-014",
+    id: "resp-b11-014",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 58-year-old woman, never-smoker, presents with a 3-month history of cough, progressive dyspnoea, and left shoulder pain. CXR reveals a left apical mass. CT chest confirms a 5 cm left upper lobe mass with brachial plexus involvement and ipsilateral mediastinal lymphadenopathy. She has ptosis of the left eyelid, miosis, and anhidrosis of the left face. Which of the following best describes her clinical syndrome and the most appropriate next diagnostic step?",
@@ -1586,7 +1586,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b3-015",
+    id: "resp-b11-015",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 45-year-old man presents to the ED with sudden-onset right-sided sharp chest pain and dyspnoea that began while lifting heavy boxes at work. He is tall and thin (BMI 19 kg/m²) with no significant past medical history and does not smoke. On examination, RR 20/min, HR 100 bpm, BP 122/78 mmHg, SpO2 96% on room air. Breath sounds are absent on the right side. CXR confirms a right-sided pneumothorax with 20% lung collapse (estimated >2 cm rim of air). What is the most appropriate management?",
@@ -1603,7 +1603,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-016",
+    id: "resp-b11-016",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 28-year-old nursing student is found to have a positive QuantiFERON-TB Gold test on routine occupational health screening. She is asymptomatic. CXR is normal. She has no history of active TB. She was born in Australia, has not travelled to high-prevalence countries, and has not received BCG vaccination. She has no known TB contacts. HIV test is negative. What is the most appropriate next step in management?",
@@ -1620,7 +1620,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b3-017",
+    id: "resp-b11-017",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 35-year-old woman presents with excessive daytime sleepiness, fatigue, and morning headaches for 8 months. Her partner reports that she snores but does not observe apnoeas. Her BMI is 22 kg/m², neck circumference is 35 cm, and she has no obvious tonsillar hypertrophy or retrognathia. Epworth Sleepiness Scale score is 13. She has hypothyroidism managed with thyroxine 100 mcg daily and her TSH is 2.1 mU/L. What is the most appropriate next investigation?",
@@ -1637,7 +1637,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b3-018",
+    id: "resp-b11-018",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 28-year-old man presents with a lifelong history of recurrent sinopulmonary infections, chronic productive cough, and bilateral lower lobe bronchiectasis on HRCT. He also has situs inversus (confirmed on CXR). His sputum regularly grows Haemophilus influenzae. Saccharin nasal clearance test result is markedly prolonged at >60 minutes (normal <30 minutes). What is the most likely underlying diagnosis?",
@@ -1654,7 +1654,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b3-019",
+    id: "resp-b11-019",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 52-year-old woman with seropositive rheumatoid arthritis (RA) diagnosed 10 years ago presents with a 6-month history of progressive exertional dyspnoea and dry cough. She takes methotrexate 20 mg weekly and leflunomide. She is a lifetime non-smoker. HRCT shows bilateral subpleural ground-glass opacities with fine reticulation in the lower lobes, mild traction bronchiectasis, and no honeycombing. Bronchoalveolar lavage (BAL) shows lymphocytosis. PFTs show restrictive pattern with FVC 68% predicted and DLCO 55% predicted. What is the most likely ILD pattern and an important initial management consideration?",
@@ -1671,7 +1671,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b3-020",
+    id: "resp-b11-020",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 71-year-old male smoker (50 pack-years, still smoking) presents with a 4-month history of haemoptysis and worsening dyspnoea. Bronchoscopy with biopsy of a central right main bronchus mass reveals squamous cell carcinoma. CT staging confirms the tumour is 4.5 cm, located centrally with involvement of the right main bronchus 1.5 cm from the carina, with ipsilateral hilar lymph node involvement (N1) and no distant metastases. His ECOG performance status is 1. Spirometry: FEV1 1.6 L (55% predicted). A multidisciplinary team (MDT) meeting reviews his case. What is the most appropriate treatment approach?",
@@ -3053,7 +3053,7 @@ export const respiratoryQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "resp-b10-001",
+    id: "resp-b20-001",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 24-year-old woman presents to the emergency department with acute shortness of breath and wheeze that started 2 hours ago. She has a known history of asthma and uses salbutamol PRN and budesonide/formoterol maintenance inhaler. On examination, she is speaking in short sentences, RR 28/min, HR 112 bpm, SpO2 94% on room air, and has widespread expiratory wheeze bilaterally. Peak expiratory flow rate (PEFR) is 45% of her predicted value. Which of the following is the MOST appropriate immediate management?",
@@ -3070,7 +3070,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b10-002",
+    id: "resp-b20-002",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 68-year-old male ex-smoker (50 pack-year history) presents for routine review. He reports increasing dyspnoea on exertion over the past year, now limiting him to walking one block on the flat. He has a chronic productive cough with clear sputum. Spirometry shows FEV1/FVC 0.58 post-bronchodilator, FEV1 52% predicted. He currently uses salbutamol PRN only. Which of the following is the MOST appropriate next step in pharmacological management according to COPD-X guidelines?",
@@ -3087,7 +3087,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b10-003",
+    id: "resp-b20-003",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 72-year-old woman with type 2 diabetes and mild cardiac failure presents with a 4-day history of fever, productive cough with rusty sputum, and right-sided pleuritic chest pain. On examination, T 38.9°C, HR 98 bpm, RR 22/min, BP 118/76 mmHg, SpO2 91% on room air. Chest X-ray demonstrates right lower lobe consolidation. Blood tests show WBC 18.2 × 10⁹/L, creatinine 105 µmol/L, urea 9.8 mmol/L. Using the CURB-65 score, what is the MOST appropriate site of care?",
@@ -3104,7 +3104,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-004",
+    id: "resp-b20-004",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 38-year-old woman presents with sudden onset right-sided pleuritic chest pain and mild dyspnoea. She returned from a 14-hour flight from London 5 days ago and takes the combined oral contraceptive pill. On examination, HR 105 bpm, RR 20/min, BP 128/82 mmHg, SpO2 95% on room air. ECG shows sinus tachycardia only. Her D-dimer is elevated at 1.2 µg/mL. Using the Wells PE score, she scores 5 points (moderate-high probability). What is the MOST appropriate next investigation?",
@@ -3121,7 +3121,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-005",
+    id: "resp-b20-005",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 63-year-old male with a 40 pack-year smoking history presents with a 3-month history of progressive haemoptysis, weight loss of 8 kg, and hoarseness of voice. Chest X-ray reveals a 4 cm right hilar mass. CT chest/abdomen/pelvis confirms a right upper lobe mass with mediastinal lymphadenopathy and no evidence of distant metastases. Bronchoscopy with biopsy shows squamous cell carcinoma. Which of the following findings on further staging workup would MOST strongly preclude curative surgical resection?",
@@ -3138,7 +3138,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-006",
+    id: "resp-b20-006",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 55-year-old male presents with progressive exertional dyspnoea and dull right-sided chest ache over 6 weeks. He worked as an insulation installer for 20 years and quit smoking 10 years ago. On examination, dullness to percussion and reduced breath sounds at the right base. CXR shows a moderate right pleural effusion. Diagnostic thoracentesis yields straw-coloured fluid: protein 42 g/L (serum protein 68 g/L), LDH 380 U/L (serum LDH 210 U/L), pH 7.35, glucose 5.2 mmol/L, no malignant cells on cytology. What is the MOST likely diagnosis?",
@@ -3155,7 +3155,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-007",
+    id: "resp-b20-007",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 34-year-old man born in Vietnam, who migrated to Australia 8 months ago, presents with a 6-week history of night sweats, productive cough, low-grade fever, and 5 kg weight loss. CXR shows right upper lobe infiltrate with early cavitation. Three sputum samples are sent for AFB smear and culture. The first sputum smear returns as smear-positive for acid-fast bacilli. Which of the following is the MOST appropriate immediate action?",
@@ -3172,7 +3172,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b10-008",
+    id: "resp-b20-008",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 52-year-old male accountant presents at the request of his wife who is concerned about loud snoring and witnessed apnoeas during sleep. He reports unrefreshing sleep and excessive daytime somnolence, falling asleep at his desk and while watching television. His Epworth Sleepiness Scale score is 16/24. BMI is 34 kg/m², neck circumference 42 cm, BP 152/94 mmHg. Examination reveals a crowded oropharynx. Overnight home-based sleep study shows an apnoea-hypopnoea index (AHI) of 32 events/hour with minimum SpO2 of 82%. What is the FIRST-LINE treatment for this patient?",
@@ -3189,7 +3189,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b10-009",
+    id: "resp-b20-009",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 45-year-old woman with a history of recurrent lower respiratory tract infections since childhood presents with a chronic daily productive cough yielding large volumes of purulent sputum, worse in the mornings. She reports three hospital admissions for pneumonia in the past 2 years. HRCT chest shows cylindrical bronchial dilatation with bronchial wall thickening predominantly in the left lower lobe. Sputum culture grows Pseudomonas aeruginosa. Spirometry shows a mild obstructive pattern. Which of the following investigations is MOST important to identify a potentially treatable underlying cause?",
@@ -3206,7 +3206,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-010",
+    id: "resp-b20-010",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 67-year-old male non-smoker presents with progressive exertional dyspnoea and dry cough over 18 months. On examination, he has bilateral basal fine inspiratory crackles ('Velcro' crackles) and finger clubbing. Pulmonary function tests show FVC 68% predicted, FEV1 71% predicted, FEV1/FVC 0.84, and DLCO 52% predicted. HRCT chest demonstrates bilateral basal-predominant, subpleural reticular opacities with honeycombing and traction bronchiectasis. What is the MOST likely diagnosis?",
@@ -3223,7 +3223,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b10-011",
+    id: "resp-b20-011",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 16-year-old male presents with poorly controlled asthma despite using fluticasone 250 mcg twice daily and salbutamol PRN (using it 4-5 times per week). He reports nocturnal symptoms twice a week and limitation of usual sport activities. Adherence to inhaler technique is confirmed to be excellent. He has no eosinophilia and total IgE is 45 IU/mL. What is the MOST appropriate next step in management according to the Australian Asthma Handbook?",
@@ -3240,7 +3240,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-012",
+    id: "resp-b20-012",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 74-year-old male with known severe COPD (FEV1 28% predicted) presents with increased dyspnoea, increased sputum volume and change to yellow-green colour, and fever over 48 hours. He uses tiotropium, salmeterol/fluticasone, and salbutamol PRN. SpO2 on room air is 85%, improving to 92% on 2L/min nasal prong oxygen. ABG on 2L/min O2: pH 7.32, PaCO2 62 mmHg, PaO2 68 mmHg, bicarbonate 28 mmol/L. Which of the following is the MOST appropriate immediate intervention?",
@@ -3257,7 +3257,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-013",
+    id: "resp-b20-013",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 78-year-old nursing home resident with dementia and dysphagia develops fever, cough productive of foul-smelling sputum, and declining conscious state over 3 days. His carer reports episodes of choking on food. CXR shows right lower lobe infiltrate predominantly in the posterior segment. He is not for resuscitation per his advance care directive. He has a penicillin allergy (rash). Which antibiotic regimen is MOST appropriate for aspiration pneumonia in this patient?",
@@ -3274,7 +3274,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-014",
+    id: "resp-b20-014",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 44-year-old woman is diagnosed with a right segmental pulmonary embolism by CTPA. She is haemodynamically stable, SpO2 96% on room air, with no right ventricular dysfunction on echocardiography. She has no active bleeding risk, normal renal function (eGFR 88 mL/min), and no history of prior VTE. She is not pregnant. Which of the following anticoagulation regimens represents FIRST-LINE treatment for this patient according to current Australian guidelines?",
@@ -3291,7 +3291,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-015",
+    id: "resp-b20-015",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 58-year-old female non-smoker presents with a 10-week history of worsening dyspnoea and dry cough. CXR shows a left-sided pleural effusion. CT chest reveals a peripheral left lower lobe mass with ipsilateral malignant pleural effusion and bilateral adrenal deposits. Pleural fluid cytology confirms adenocarcinoma. Molecular testing on the biopsy specimen returns EGFR mutation positive (exon 19 deletion). Which of the following is the MOST appropriate first-line systemic treatment?",
@@ -3308,7 +3308,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b10-016",
+    id: "resp-b20-016",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 65-year-old male presents with acute onset severe left-sided pleuritic chest pain and dyspnoea after vigorous coughing. He is tall and thin (BMI 19 kg/m²) and has never smoked. On examination, trachea is deviated to the right, absent breath sounds over the left hemithorax, HR 128 bpm, BP 100/70 mmHg, RR 28/min, and SpO2 88% on room air. What is the MOST appropriate immediate management?",
@@ -3325,7 +3325,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b10-017",
+    id: "resp-b20-017",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 29-year-old male healthcare worker undergoes routine annual occupational health screening. He is asymptomatic and has no history of prior TB treatment. QuantiFERON-TB Gold In-Tube (IGRA) test returns positive. CXR is normal. He has no symptoms of active TB. He has no known immunosuppression and is not on any medications. What is the MOST appropriate management?",
@@ -3342,7 +3342,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b10-018",
+    id: "resp-b20-018",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 46-year-old male truck driver presents for his commercial driver's licence renewal medical. His wife reports he snores loudly and she has witnessed him stop breathing during sleep on multiple occasions. He reports excessive daytime sleepiness with an Epworth Sleepiness Scale score of 14/24. He is concerned about losing his licence. An in-lab polysomnography is arranged and returns an AHI of 22 events/hour (moderate OSA) with minimum SpO2 of 86%. He commences CPAP therapy. What is the MINIMUM period of demonstrated adequate CPAP use (typically ≥4 hours/night) required before he can return to commercial vehicle driving in Australia, per AUSTROADS guidelines?",
@@ -3359,7 +3359,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b10-019",
+    id: "resp-b20-019",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 38-year-old woman with established bronchiectasis due to childhood pertussis presents with her third infective exacerbation in 12 months. She produces approximately 30 mL of purulent sputum daily on a good day. Between exacerbations, sputum culture consistently grows Haemophilus influenzae. Her FEV1 is 72% predicted. She uses regular airway clearance physiotherapy. To reduce her exacerbation frequency, which of the following long-term antibiotic strategies is MOST supported by evidence in Australian guidelines for bronchiectasis?",
@@ -3376,7 +3376,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b10-020",
+    id: "resp-b20-020",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 52-year-old male farmer presents with progressive breathlessness, dry cough, and fatigue over 4 months. He works in a grain storage facility and reports symptoms worsening during and shortly after work periods, with partial improvement on weekends away from work. HRCT shows bilateral mid-to-upper zone predominant ground-glass opacities and poorly defined centrilobular nodules without honeycombing. Spirometry shows a restrictive pattern with FVC 72% predicted. Bronchoalveolar lavage shows lymphocytosis 48%. Serum precipitins to Aspergillus and thermophilic actinomycetes are positive. What is the MOST important management recommendation?",
@@ -3394,7 +3394,7 @@ export const respiratoryQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "resp-b11-001",
+    id: "resp-b21-001",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 19-year-old woman presents to the emergency department with acute shortness of breath and wheeze that began 2 hours ago. She has a known history of asthma and uses a salbutamol inhaler PRN. On examination, she is speaking in short sentences, respiratory rate is 28/min, SpO2 is 91% on room air, heart rate is 112 bpm, and there is diffuse expiratory wheeze on auscultation. Peak expiratory flow rate (PEFR) is 45% of predicted. Which of the following best classifies the severity of this acute asthma attack?",
@@ -3411,7 +3411,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b11-002",
+    id: "resp-b21-002",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 68-year-old man with a 50 pack-year smoking history presents for review of his chronic obstructive pulmonary disease (COPD). He reports breathlessness on moderate exertion (walking on level ground after 100 metres) but is not limited at rest. He has had two exacerbations requiring antibiotics in the past year. Spirometry shows FEV1 42% predicted, FEV1/FVC ratio 0.58. He is currently on salbutamol PRN only. According to GOLD classification, which pharmacological regimen is most appropriate to initiate?",
@@ -3428,7 +3428,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-003",
+    id: "resp-b21-003",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 74-year-old man presents to the emergency department with a 3-day history of cough productive of rust-coloured sputum, fever of 38.9°C, and pleuritic chest pain. He has type 2 diabetes and chronic kidney disease (eGFR 35 mL/min). On examination, he is confused (new onset), respiratory rate is 30/min, blood pressure is 95/65 mmHg, and oxygen saturation is 88% on room air. CXR shows right lower lobe consolidation. Which of the following is the most appropriate initial management?",
@@ -3445,7 +3445,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-004",
+    id: "resp-b21-004",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 38-year-old woman presents with sudden onset pleuritic chest pain and dyspnoea 10 days after a long-haul flight from London to Melbourne. She is on the combined oral contraceptive pill. Examination reveals a respiratory rate of 22/min, heart rate of 104 bpm, BP 122/78 mmHg, SpO2 95% on room air, and mild left calf tenderness. ECG shows sinus tachycardia. A Wells score for PE is calculated. Which of the following is the next most appropriate step?",
@@ -3462,7 +3462,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-005",
+    id: "resp-b21-005",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 63-year-old man with a 40 pack-year smoking history presents with a 3-month history of progressive hoarseness, left-sided shoulder pain, and a 6 kg unintentional weight loss. On examination, there is ptosis and miosis of the left eye with anhidrosis of the left face. CXR shows a left apical mass. Which of the following syndromes best explains his eye findings?",
@@ -3479,7 +3479,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b11-006",
+    id: "resp-b21-006",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 55-year-old man with no significant past medical history presents with 2 weeks of progressive left-sided pleuritic chest pain and dyspnoea. He is a non-smoker who works as an insulation installer. CXR shows a large left-sided pleural effusion. Pleural fluid analysis reveals: protein 48 g/L (serum protein 72 g/L), LDH 280 U/L (serum LDH 190 U/L), pH 7.32, glucose 4.1 mmol/L, and cytology showing atypical mesothelial cells. Which is the most likely diagnosis?",
@@ -3496,7 +3496,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-007",
+    id: "resp-b21-007",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 28-year-old man who migrated from India 6 months ago presents with a 6-week history of productive cough, night sweats, and 5 kg weight loss. He has no known TB contacts. CXR shows right upper lobe infiltrates with cavitation. Three sputum samples are sent for smear microscopy and culture. Smear microscopy shows acid-fast bacilli (AFB) on two samples. He is commenced on standard quadruple anti-tuberculosis therapy. Which combination of drugs should be used in the initial phase?",
@@ -3513,7 +3513,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b11-008",
+    id: "resp-b21-008",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 52-year-old obese man (BMI 36 kg/m²) is brought to his GP by his wife, who reports he has loud snoring, witnessed apnoeas, and appears unrefreshed in the morning. He reports excessive daytime sleepiness (Epworth Sleepiness Score 16/24) and difficulty concentrating at work. He is a truck driver. His blood pressure is 158/96 mmHg. Which of the following is the most appropriate next step in management?",
@@ -3530,7 +3530,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-009",
+    id: "resp-b21-009",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 45-year-old woman with a history of recurrent chest infections since childhood presents with chronic daily productive cough yielding large volumes of purulent sputum, particularly in the mornings. She has had 4 hospital admissions for pneumonia in the past 2 years. HRCT chest confirms bilateral lower lobe bronchiectasis. Sputum culture grows Pseudomonas aeruginosa. Which of the following is the most important long-term management strategy to reduce exacerbation frequency?",
@@ -3547,7 +3547,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-010",
+    id: "resp-b21-010",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 67-year-old retired carpenter presents with a 2-year history of progressive exertional dyspnoea and dry cough. He is a non-smoker and takes no medications. On examination, he has bilateral fine late-inspiratory crackles at the lung bases and clubbing of the fingers. Pulmonary function tests show FVC 62% predicted, FEV1 65% predicted, FEV1/FVC 0.84, and DLCO 48% predicted. HRCT chest shows bilateral subpleural, basal-predominant reticulation with honeycombing and traction bronchiectasis. Which of the following is the most likely diagnosis?",
@@ -3564,7 +3564,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-011",
+    id: "resp-b21-011",
     topic: "Respiratory",
     subtopic: "Asthma",
     stem: "A 32-year-old woman with mild persistent asthma is currently using salbutamol PRN on most days of the week and wakes at night with cough approximately once a week. She uses no preventer medication. Her ACQ (Asthma Control Questionnaire) score is 2.1. Spirometry is normal. Which of the following is the most appropriate step in her management according to Australian Asthma Handbook guidelines?",
@@ -3581,7 +3581,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b11-012",
+    id: "resp-b21-012",
     topic: "Respiratory",
     subtopic: "Pulmonary Embolism",
     stem: "A 71-year-old woman is diagnosed with a large bilateral pulmonary embolism causing haemodynamic compromise (BP 82/50 mmHg, HR 118 bpm). She is commenced on unfractionated heparin infusion and resuscitation measures. Her troponin is elevated and echocardiogram shows right heart strain. She has no contraindications to thrombolysis. Which of the following is the most appropriate next intervention?",
@@ -3598,7 +3598,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-013",
+    id: "resp-b21-013",
     topic: "Respiratory",
     subtopic: "COPD",
     stem: "A 72-year-old man with known severe COPD (FEV1 28% predicted) is admitted with an acute exacerbation. He is commenced on controlled oxygen therapy, nebulised salbutamol and ipratropium, IV hydrocortisone, and oral doxycycline. On review 2 hours later, his arterial blood gas shows: pH 7.28, PaCO2 72 mmHg, PaO2 62 mmHg, HCO3 32 mmol/L on 28% FiO2. He remains alert and cooperative. Which is the most appropriate next intervention?",
@@ -3615,7 +3615,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-014",
+    id: "resp-b21-014",
     topic: "Respiratory",
     subtopic: "Lung Cancer",
     stem: "A 59-year-old woman, a never-smoker, presents with a 4-month history of progressive dyspnoea and non-productive cough. She has never smoked but was a passenger in a car for 30 years with a heavy smoker. CXR shows a 4 cm right lower lobe mass. CT-guided biopsy confirms adenocarcinoma. Molecular testing reveals an EGFR exon 19 deletion mutation. Staging CT and PET show no metastatic disease (Stage IIA). Which of the following is the most appropriate treatment?",
@@ -3632,7 +3632,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b11-015",
+    id: "resp-b21-015",
     topic: "Respiratory",
     subtopic: "Tuberculosis",
     stem: "A 35-year-old healthcare worker is found to have a positive QuantiFERON-TB Gold test during routine screening following a known TB exposure at work. She has no symptoms, and CXR is normal. She has no prior BCG vaccination documented. She is otherwise healthy and takes no medications. What is the most appropriate management?",
@@ -3649,7 +3649,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "resp-b11-016",
+    id: "resp-b21-016",
     topic: "Respiratory",
     subtopic: "Pleural Disease",
     stem: "A 42-year-old man presents to the emergency department with sudden onset left-sided chest pain and dyspnoea after lifting heavy boxes at work. He is tall and thin (BMI 19 kg/m²). He is a non-smoker with no past medical history. On examination, he is in mild distress, with decreased breath sounds and hyper-resonance on the left side. He is haemodynamically stable (BP 128/76 mmHg, HR 92 bpm, SpO2 96% on room air). CXR confirms a 30% left-sided pneumothorax with no mediastinal shift. What is the most appropriate initial management?",
@@ -3666,7 +3666,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b11-017",
+    id: "resp-b21-017",
     topic: "Respiratory",
     subtopic: "OSA",
     stem: "A 48-year-old man diagnosed with severe obstructive sleep apnoea (AHI 52 events/hour) has been trialled on CPAP for 3 months but reports inability to tolerate the device due to claustrophobia. He is a non-smoker with a BMI of 29 kg/m² and has a Class II malocclusion. His Epworth Sleepiness Score remains 14/24. He is not a commercial driver. Which of the following is the most appropriate alternative treatment?",
@@ -3683,7 +3683,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-018",
+    id: "resp-b21-018",
     topic: "Respiratory",
     subtopic: "Bronchiectasis",
     stem: "A 35-year-old man is newly diagnosed with bronchiectasis. He presents with sinus disease, infertility (azoospermia), and a history of recurrent respiratory tract infections since childhood. His HRCT shows bilateral bronchiectasis with a right-sided heart (dextrocardia). Nasal nitric oxide levels are very low (8 ppb). What is the most likely underlying diagnosis?",
@@ -3700,7 +3700,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "resp-b11-019",
+    id: "resp-b21-019",
     topic: "Respiratory",
     subtopic: "Interstitial Lung Disease",
     stem: "A 52-year-old female nurse presents with a 6-month history of progressive dyspnoea, dry cough, and low-grade fever. She denies smoking. She has a pet budgerigar at home. Examination reveals fine inspiratory crackles mid-zones bilaterally and mild finger clubbing. HRCT shows bilateral upper and mid-zone ground-glass opacification with mosaic attenuation and no honeycombing. BAL shows lymphocytosis (42%). Lung biopsy shows granulomata and lymphocytic infiltrates. Which is the most appropriate initial treatment?",
@@ -3717,7 +3717,7 @@ export const respiratoryQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "resp-b11-020",
+    id: "resp-b21-020",
     topic: "Respiratory",
     subtopic: "Pneumonia",
     stem: "A 78-year-old man residing in an aged care facility is brought to hospital with a 4-day history of fever, confusion, and productive cough. He has dysphagia following a stroke 8 months ago and requires pureed diet and thickened fluids. CXR shows right lower lobe infiltrate consistent with aspiration pneumonia. He has a penicillin allergy documented as 'anaphylaxis'. What is the most appropriate antibiotic regimen according to Therapeutic Guidelines: Antibiotic?",

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { MODELS } from "@/lib/models";
 
 const client = new Anthropic();
 
@@ -45,7 +46,7 @@ Cite the specific Australian guideline, AMC Handbook chapter, or Therapeutic Gui
 Keep the total response under 350 words. Use plain language suitable for an AMC candidate.`;
 
   const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: MODELS.FAST,
     max_tokens: 600,
     messages: [{ role: "user", content: prompt }],
   });

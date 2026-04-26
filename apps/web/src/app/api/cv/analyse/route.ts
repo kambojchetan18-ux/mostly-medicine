@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { checkEndpointRate } from "@/lib/rate-limit";
+import { MODELS } from "@/lib/models";
 
 const client = new Anthropic();
 
@@ -48,6 +50,14 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const rl = await checkEndpointRate(user.id, "cv/analyse", 60_000, 5);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
+
   try {
     const formData = await req.formData();
     let cvText = formData.get("text") as string | null;
@@ -65,7 +75,7 @@ export async function POST(req: NextRequest) {
       const base64 = Buffer.from(bytes).toString("base64");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       response = await (client.messages.create as any)({
-        model: "claude-sonnet-4-6",
+        model: MODELS.DEFAULT,
         max_tokens: 1024,
         system: SYSTEM,
         messages: [{
@@ -84,7 +94,7 @@ export async function POST(req: NextRequest) {
       }
       const text: string = cvText;
       response = await client.messages.create({
-        model: "claude-sonnet-4-6",
+        model: MODELS.DEFAULT,
         max_tokens: 1024,
         system: SYSTEM,
         messages: [{ role: "user", content: `CV TEXT:\n\n${text.slice(0, 8000)}` }],

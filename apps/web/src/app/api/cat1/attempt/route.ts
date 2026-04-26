@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
+import { checkEndpointRate } from "@/lib/rate-limit";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
@@ -15,6 +16,14 @@ export async function POST(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await checkEndpointRate(user.id, "cat1/attempt", 60_000, 60);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
 
   const { questionId, correct, topic } = await req.json();
   if (!questionId || correct === undefined || !topic) {

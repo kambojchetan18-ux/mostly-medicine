@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
+import { checkEndpointRate } from "@/lib/rate-limit";
+import { MODELS } from "@/lib/models";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
@@ -33,7 +35,7 @@ async function generateSummary(text: string): Promise<string> {
   if (!process.env.ANTHROPIC_API_KEY) return "";
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: MODELS.FAST,
     max_tokens: 256,
     messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
   });
@@ -47,6 +49,14 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  }
+
+  const rl = await checkEndpointRate(user.id, "notes/upload", 60_000, 10);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   const formData = await req.formData();
