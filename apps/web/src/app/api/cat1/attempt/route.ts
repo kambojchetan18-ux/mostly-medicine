@@ -88,8 +88,9 @@ export async function POST(req: NextRequest) {
     updated_at: new Date().toISOString(),
   }, { onConflict: "user_id,topic" });
 
-  // Update streak
+  // Update streak (conditional update prevents race conditions)
   const today = new Date().toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
   const { data: streak } = await supabase
     .from("study_streaks")
     .select("*")
@@ -97,21 +98,21 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (!streak) {
-    await supabase.from("study_streaks").insert({
+    await supabase.from("study_streaks").upsert({
       user_id: user.id,
       current_streak: 1,
       longest_streak: 1,
       last_study_date: today,
-    });
+    }, { onConflict: "user_id" });
   } else if (streak.last_study_date !== today) {
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
     const newStreak = streak.last_study_date === yesterday ? streak.current_streak + 1 : 1;
+    // Only update if last_study_date hasn't changed since we read it (prevents race)
     await supabase.from("study_streaks").update({
       current_streak: newStreak,
       longest_streak: Math.max(newStreak, streak.longest_streak),
       last_study_date: today,
       updated_at: new Date().toISOString(),
-    }).eq("user_id", user.id);
+    }).eq("user_id", user.id).eq("last_study_date", streak.last_study_date);
   }
 
   return NextResponse.json({ ok: true, due: next.due });

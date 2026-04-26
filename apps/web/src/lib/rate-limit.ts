@@ -76,3 +76,54 @@ export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
 }
+
+// General-purpose endpoint rate limiter (sliding window via DB).
+// Use for billing, AI generation, and other cost-sensitive routes.
+export async function checkEndpointRate(
+  userId: string,
+  endpoint: string,
+  windowMs = 60_000,
+  maxRequests = 10
+): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const key = `ep:${endpoint}:${userId}`;
+  const supabase = serviceClient();
+  const now = Date.now();
+
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (!data) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    return { allowed: true };
+  }
+
+  const windowStart = new Date(data.first_attempt_at).getTime();
+  if (now - windowStart > windowMs) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    return { allowed: true };
+  }
+
+  if (data.count >= maxRequests) {
+    return { allowed: false, retryAfterMs: windowMs - (now - windowStart) };
+  }
+
+  await supabase.from("rate_limit_attempts").update({
+    count: data.count + 1,
+    updated_at: new Date().toISOString(),
+  }).eq("key", key);
+
+  return { allowed: true };
+}

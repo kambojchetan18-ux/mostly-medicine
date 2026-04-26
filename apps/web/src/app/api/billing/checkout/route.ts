@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, priceCatalog } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
+import { checkEndpointRate } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -10,6 +11,14 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
   if (!user || !user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await checkEndpointRate(user.id, "billing/checkout", 60_000, 5);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   let body: { priceId?: string };

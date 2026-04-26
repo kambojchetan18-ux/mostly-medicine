@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -66,12 +66,18 @@ export default function QuizScreen() {
 
   async function saveAttempts(records: AttemptRecord[]) {
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from('attempts').insert(
-      records.map((r) => ({ ...r, user_id: user.id }))
-    );
-    setSaving(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { error } = await supabase.from('attempts').insert(
+        records.map((r) => ({ ...r, user_id: user.id }))
+      );
+      if (error) throw error;
+    } catch {
+      Alert.alert('Save failed', 'Your quiz results could not be saved. Please check your connection.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!q && phase !== 'done') {

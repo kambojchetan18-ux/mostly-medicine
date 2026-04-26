@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const { topic, count = 20 } = await req.json();
 
   const pool = topic
-    ? [...allQuestions.filter((q) => q.topic === topic)].sort(() => Math.random() - 0.5)
+    ? [...allQuestions.filter((q) => q.topic === topic)].sort(() => Math.random() - 0.5).slice(0, count)
     : [...allQuestions].sort(() => Math.random() - 0.5).slice(0, count);
 
   return NextResponse.json({ questions: pool });

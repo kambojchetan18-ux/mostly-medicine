@@ -13,7 +13,10 @@ import { supabase } from '@/lib/supabase';
 import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+if (!API_URL) {
+  console.warn('EXPO_PUBLIC_API_URL is not set — roleplay API calls will fail.');
+}
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -217,6 +220,7 @@ export default function RoleplayScreen() {
     setInput('');
     setLoading(true);
     try {
+      if (!API_URL) throw new Error('API not configured');
       const token = await getToken();
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
@@ -241,6 +245,7 @@ export default function RoleplayScreen() {
     stopTimer();
     setFetchingFeedback(true);
     try {
+      if (!API_URL) throw new Error('API not configured');
       const token = await getToken();
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
