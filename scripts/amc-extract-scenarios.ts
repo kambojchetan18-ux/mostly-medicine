@@ -178,13 +178,26 @@ interface ExtractedScenario {
   differentialDiagnosis: string[];
 }
 
-async function extractBatch(handbook: string, from: number, to: number): Promise<ExtractedScenario[]> {
+function sliceForRange(handbookLines: string[], from: number, to: number): string {
+  // Estimate line range for the requested case numbers. The handbook is roughly
+  // uniformly distributed across 151 conditions; we send a generous window to
+  // ensure full coverage including overlapping sections (Candidate Info,
+  // Performance Guidelines, Details all reference the same condition).
+  const TOTAL = handbookLines.length;
+  const PER_CASE = TOTAL / 151;
+  const BUFFER_BEFORE = Math.floor(PER_CASE * 1.5);
+  const BUFFER_AFTER = Math.floor(PER_CASE * 1.5);
+  const start = Math.max(0, Math.floor((from - 1) * PER_CASE) - BUFFER_BEFORE);
+  const end = Math.min(TOTAL, Math.ceil(to * PER_CASE) + BUFFER_AFTER);
+  return handbookLines.slice(start, end).join("\n");
+}
+
+async function extractBatch(handbookLines: string[], from: number, to: number): Promise<ExtractedScenario[]> {
   const range = Array.from({ length: to - from + 1 }, (_, i) => from + i)
     .map((n) => n.toString().padStart(3, "0"))
     .join(", ");
+  const slice = sliceForRange(handbookLines, from, to);
 
-  // Two cacheable system blocks: the static instruction + the full handbook
-  // text. Caching the handbook gets us 90% off on every batch after the first.
   const params = {
     model: MODEL,
     max_tokens: 8000,
@@ -193,11 +206,6 @@ async function extractBatch(handbook: string, from: number, to: number): Promise
       {
         type: "text",
         text: SYSTEM,
-        cache_control: { type: "ephemeral" },
-      },
-      {
-        type: "text",
-        text: `=== AMC HANDBOOK OF CLINICAL ASSESSMENT (full text) ===\n\n${handbook}`,
         cache_control: { type: "ephemeral" },
       },
     ],
@@ -212,7 +220,7 @@ async function extractBatch(handbook: string, from: number, to: number): Promise
     messages: [
       {
         role: "user",
-        content: `Extract conditions ${range} from the handbook above. Return them in order via the save_scenarios tool.`,
+        content: `=== AMC HANDBOOK SLICE (covers conditions ${range} and surrounding context) ===\n\n${slice}\n\n=== END SLICE ===\n\nExtract conditions ${range}. Return them in order via the save_scenarios tool.`,
       },
     ],
   };
@@ -237,7 +245,8 @@ async function extractBatch(handbook: string, from: number, to: number): Promise
 async function main() {
   console.log(`Loading handbook text: ${TEXT_PATH}`);
   const handbook = fs.readFileSync(TEXT_PATH, "utf8");
-  console.log(`Size: ${(handbook.length / 1024).toFixed(0)}KB`);
+  const handbookLines = handbook.split("\n");
+  console.log(`Size: ${(handbook.length / 1024).toFixed(0)}KB, ${handbookLines.length} lines`);
 
   // Resume support — load already-extracted scenarios if file exists.
   const outAbs = path.resolve(OUT_PATH);
@@ -261,7 +270,7 @@ async function main() {
 
     console.log(`\n→ Extracting conditions ${from}-${to}…`);
     try {
-      const batch = await extractBatch(handbook, from, to);
+      const batch = await extractBatch(handbookLines, from, to);
       for (const s of batch) {
         if (have.has(s.mcatNumber)) continue;
         extracted.push(s);
