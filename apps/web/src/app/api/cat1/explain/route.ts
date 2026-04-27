@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { checkAIRateLimit } from "@/lib/rate-limit";
+
+export const maxDuration = 15;
 
 const client = new Anthropic();
 
@@ -8,6 +11,11 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { allowed, retryAfterMs } = await checkAIRateLimit(user.id, "cat1-explain");
+  if (!allowed) {
+    return NextResponse.json({ error: "Rate limited. Try again shortly." }, { status: 429, headers: { "Retry-After": String(Math.ceil((retryAfterMs ?? 60000) / 1000)) } });
+  }
 
   const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = await req.json();
 

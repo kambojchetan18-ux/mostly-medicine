@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
 
+export const maxDuration = 30;
+
 // SSE-streamed roleplay turn. The browser reads chunks via fetch + getReader
 // and renders patient text token-by-token, dropping perceived latency from
 // ~3-5s (full reply blocking) to ~600ms (first token).

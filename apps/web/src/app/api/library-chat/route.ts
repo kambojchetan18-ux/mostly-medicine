@@ -5,6 +5,7 @@ import {
   LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC,
 } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
+import { checkAIRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
 
@@ -13,6 +14,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await checkAIRateLimit(user.id, "library-chat");
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited. Try again shortly." }, { status: 429 });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {

@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
+import { checkAIRateLimit } from "@/lib/rate-limit";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
+
+export const maxDuration = 30;
 
 interface GenerateRequest {
   blueprintId?: string;
@@ -31,6 +34,11 @@ export async function POST(req: NextRequest) {
       { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },
       { status: 503 }
     );
+  }
+
+  const rl = await checkAIRateLimit(auth.user.id, "acrp-generate");
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited. Try again shortly." }, { status: 429 });
   }
 
   let body: GenerateRequest;

@@ -80,3 +80,47 @@ export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
 }
+
+const AI_WINDOW_MS = 60 * 1000; // 1 minute
+const AI_MAX_REQUESTS = 10;
+
+export async function checkAIRateLimit(userId: string, endpoint: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const key = `ai:${endpoint}:${userId}`;
+  const supabase = serviceClient();
+
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (!data) {
+    await supabase.from("rate_limit_attempts").insert({
+      key,
+      count: 1,
+      first_attempt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    return { allowed: true };
+  }
+
+  const elapsed = Date.now() - new Date(data.first_attempt_at).getTime();
+  if (elapsed > AI_WINDOW_MS) {
+    await supabase.from("rate_limit_attempts").update({
+      count: 1,
+      first_attempt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }).eq("key", key);
+    return { allowed: true };
+  }
+
+  if (data.count >= AI_MAX_REQUESTS) {
+    return { allowed: false, retryAfterMs: AI_WINDOW_MS - elapsed };
+  }
+
+  await supabase.from("rate_limit_attempts").update({
+    count: data.count + 1,
+    updated_at: new Date().toISOString(),
+  }).eq("key", key);
+  return { allowed: true };
+}
