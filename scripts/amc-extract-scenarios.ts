@@ -36,7 +36,9 @@ const num = (n: string, fallback: number) => {
 // Default to the pdftotext-extracted handbook. PDF route fails because
 // Anthropic caps document blocks at 600 pages; the handbook exceeds that.
 const TEXT_PATH = arg("text", "roleplays/data/amc-handbook.txt")!;
-const BATCH = num("batch", 6);
+// 3 cases per batch keeps output under 8000 token cap. Sonnet was hitting
+// stop_reason=max_tokens at batch=6 and truncating JSON.
+const BATCH = num("batch", 3);
 const START = num("start", 1);
 const END = num("end", 151);
 const OUT_PATH = arg("out", "roleplays/data/amc-handbook-extracted.json")!;
