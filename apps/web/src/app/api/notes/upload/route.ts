@@ -35,6 +35,13 @@ async function generateSummary(text: string): Promise<string> {
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
+    system: [
+      {
+        type: "text",
+        text: "You are a medical study note summariser for AMC exam preparation.",
+        cache_control: { type: "ephemeral" },
+      },
+    ],
     messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
   });
   const block = message.content[0];
@@ -65,7 +72,8 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const storagePath = `${user.id}/${Date.now()}_${file.name}`;
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
+  const storagePath = `${user.id}/${Date.now()}_${safeName}`;
 
   // Upload to Supabase Storage
   const { error: uploadError } = await supabase.storage
@@ -76,7 +84,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
   }
 
-  const { data: { publicUrl } } = supabase.storage.from("user-notes").getPublicUrl(storagePath);
+  const { data: signedUrlData } = await supabase.storage
+    .from("user-notes")
+    .createSignedUrl(storagePath, 60 * 60 * 24 * 365);
+  const fileUrl = signedUrlData?.signedUrl ?? storagePath;
 
   // Extract text
   let extractedText = "";
@@ -98,7 +109,7 @@ export async function POST(req: NextRequest) {
     .insert({
       user_id: user.id,
       filename: file.name,
-      file_url: publicUrl,
+      file_url: fileUrl,
       extracted_text: extractedText,
       ai_summary: aiSummary,
       page_count: pageCount,

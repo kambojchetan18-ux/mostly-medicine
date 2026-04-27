@@ -47,6 +47,13 @@ Keep the total response under 350 words. Use plain language suitable for an AMC 
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 600,
+    system: [
+      {
+        type: "text",
+        text: "You are an expert AMC (Australian Medical Council) exam tutor providing detailed MCQ explanations.",
+        cache_control: { type: "ephemeral" },
+      },
+    ],
     messages: [{ role: "user", content: prompt }],
   });
 
