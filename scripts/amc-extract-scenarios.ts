@@ -56,7 +56,9 @@ if (!fs.existsSync(TEXT_PATH)) {
 }
 
 const anthropic = new Anthropic({ apiKey: KEY });
-const MODEL = "claude-sonnet-4-6";
+// Haiku 4.5 — 5x cheaper than Sonnet, plenty for structured extraction.
+// Sonnet was costing ~$0.12/batch in cache reads alone with the 1.6MB handbook.
+const MODEL = "claude-haiku-4-5-20251001";
 
 // ── Schema ──────────────────────────────────────────────────────────────
 const SCENARIO_SCHEMA = {
