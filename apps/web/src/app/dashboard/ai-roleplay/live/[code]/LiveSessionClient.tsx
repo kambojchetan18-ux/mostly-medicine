@@ -123,6 +123,11 @@ export default function LiveSessionClient({
   const [sttChunkCount, setSttChunkCount] = useState(0);
   const [sttLastChunk, setSttLastChunk] = useState<string>("");
   const [sttError, setSttError] = useState<string | null>(null);
+  // Which TURN provider actually got wired into the RTCPeerConnection. Lets
+  // the diagnostic pill say "Cloudflare TURN" / "self-hosted" / "fallback".
+  const [turnProvider, setTurnProvider] = useState<"cloudflare" | "self-hosted" | "fallback">(
+    HAS_PRIVATE_TURN ? "self-hosted" : "fallback"
+  );
 
   const supabase = useMemo(() => createClient(), []);
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -265,7 +270,38 @@ export default function LiveSessionClient({
           }
         }
 
-        const pc = new RTCPeerConnection(RTC_CONFIG);
+        // Try to fetch fresh per-session TURN credentials from Cloudflare
+        // first. If the env vars are set on the server, this returns a
+        // short-lived (24h) credential pair that's far more reliable than
+        // the public Open Relay. If not configured / errors, fall back to
+        // the static RTC_CONFIG (self-hosted coturn or Open Relay).
+        let rtcConfig: RTCConfiguration = RTC_CONFIG;
+        try {
+          const res = await fetch("/api/turn-credentials", { cache: "no-store" });
+          if (res.ok) {
+            const cf = await res.json();
+            if (cf?.iceServers) {
+              const cfServers = Array.isArray(cf.iceServers) ? cf.iceServers : [cf.iceServers];
+              rtcConfig = {
+                iceServers: [
+                  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+                  ...cfServers,
+                ],
+                iceTransportPolicy: "all",
+              };
+              setTurnProvider("cloudflare");
+              console.info("[live/rtc] using Cloudflare TURN credentials");
+            }
+          } else if (res.status === 503) {
+            console.info("[live/rtc] Cloudflare TURN not configured, using fallback");
+          } else {
+            console.warn("[live/rtc] Cloudflare TURN fetch failed", res.status);
+          }
+        } catch (err) {
+          console.warn("[live/rtc] Cloudflare TURN fetch error", err);
+        }
+
+        const pc = new RTCPeerConnection(rtcConfig);
         pcRef.current = pc;
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
@@ -746,11 +782,22 @@ export default function LiveSessionClient({
               ⚠️ {sttError.slice(0, 60)}
             </span>
           )}
-          {!HAS_PRIVATE_TURN && (
-            <span className="ml-auto rounded-full bg-amber-50 px-2 py-0.5 text-amber-700" title="Self-hosted TURN not configured — using Open Relay (best-effort).">
-              fallback TURN
-            </span>
-          )}
+          <span
+            className={`ml-auto rounded-full px-2 py-0.5 ${
+              turnProvider === "cloudflare"
+                ? "bg-emerald-50 text-emerald-700"
+                : turnProvider === "self-hosted"
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-amber-50 text-amber-700"
+            }`}
+            title="Which TURN relay is wired into the peer connection."
+          >
+            {turnProvider === "cloudflare"
+              ? "Cloudflare TURN"
+              : turnProvider === "self-hosted"
+                ? "self-hosted TURN"
+                : "fallback TURN"}
+          </span>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
