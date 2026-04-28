@@ -160,6 +160,13 @@ export function useSpeechSynthesis() {
   // speak() is silently rejected. Workaround: call a tiny silent utterance
   // synchronously during the user's click — this primes the engine so later
   // speak() calls (from async stream handlers) are permitted.
+  //
+  // Earlier we cancelled() right after speak() to "clean up". That cancel
+  // works on Safari/WebKit but on Chromium (Chrome, Edge, Comet, Brave) it
+  // tears down the synthesis state, so the next speak() — which is no
+  // longer inside a user gesture — gets rejected. The patient stays silent.
+  // Fix: do NOT cancel; let the silent utterance complete on its own
+  // (rate=10 + " " finishes in <100ms anyway).
   const primedRef = useRef(false);
   const prime = useCallback(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -169,8 +176,6 @@ export function useSpeechSynthesis() {
       u.volume = 0;
       u.rate = 10;
       window.speechSynthesis.speak(u);
-      // Cancel immediately — we just needed the user-gesture activation.
-      window.speechSynthesis.cancel();
       primedRef.current = true;
     } catch {
       /* ignore */
@@ -207,7 +212,13 @@ export function useSpeechSynthesis() {
         clearInterval(keepaliveRef.current);
         keepaliveRef.current = null;
       }
-      window.speechSynthesis.cancel();
+      // Only cancel if we're actually speaking. On Chromium an unconditional
+      // cancel() tears down the activation state established by prime(),
+      // which is exactly why the patient was silent on Chrome / Comet /
+      // Edge — Safari (WebKit) tolerated it but Chromium does not.
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+        window.speechSynthesis.cancel();
+      }
       setSpeaking(false);
 
       let attempts = 0;
@@ -295,8 +306,10 @@ export function useSpeechSynthesis() {
         });
       };
 
-      // Initial 80ms reset delay then attempt to speak.
-      pendingRef.current = setTimeout(trySpeak, 80);
+      // Try synchronously first — on Chromium this preserves the user-
+      // gesture activation chain primed seconds earlier. If voices aren't
+      // ready yet we'll fall through to the trySpeak retry loop's setTimeout.
+      trySpeak();
     },
     [supported]
   );
