@@ -59,7 +59,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
       if (!res.ok) {
         if (json.error === "upgrade_required") {
           setError(
-            "Live RolePlay needs the Enterprise plan. Upgrade at /dashboard/billing to join."
+            "AMC Peer RolePlay needs the Enterprise plan. Upgrade at /dashboard/billing to join."
           );
           return;
         }
@@ -85,7 +85,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
         <Link href="/dashboard/ai-roleplay" className="text-xs text-white/70 hover:text-white">
           ← Solo mode
         </Link>
-        <h1 className="mt-2 text-2xl font-bold">Live RolePlay (2-player)</h1>
+        <h1 className="mt-2 text-2xl font-bold">AMC Peer RolePlay</h1>
         <p className="mt-1 text-sm text-white/80">
           Practice with a partner over video. One plays the doctor, one plays the patient. AI gives feedback after.
         </p>

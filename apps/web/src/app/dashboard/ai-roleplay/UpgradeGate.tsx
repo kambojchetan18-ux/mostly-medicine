@@ -16,7 +16,7 @@ const COPY = {
     minPlan: "Pro",
   },
   acrp_live: {
-    title: "AMC Clinical AI RolePlay — Live (2-player)",
+    title: "AMC Peer RolePlay",
     bullets: [
       "Practice with a real partner over video + audio",
       "One plays doctor, one plays patient — both get briefings",

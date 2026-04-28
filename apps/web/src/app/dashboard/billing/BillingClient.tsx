@@ -40,7 +40,7 @@ const FEATURES = {
   ],
   enterprise: [
     "Everything in Pro",
-    "AMC Clinical AI RolePlay — Live (2-player video)",
+    "AMC Peer RolePlay (live video with a partner)",
     "Practice with a partner over video + audio",
     "Higher daily limits",
     "Priority support",

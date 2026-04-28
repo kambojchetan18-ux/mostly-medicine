@@ -131,7 +131,7 @@ export default function LandingClient({
             href="/dashboard/ai-roleplay/live"
             className="rounded-xl bg-gradient-to-r from-fuchsia-500 to-pink-500 px-4 py-2 text-sm font-bold text-white shadow hover:from-fuchsia-600 hover:to-pink-600"
           >
-            🎥 Live 2-player
+            🎥 AMC Peer RolePlay
           </Link>
           <Link
             href="/dashboard/cat2"

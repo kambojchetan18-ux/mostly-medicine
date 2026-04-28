@@ -3,7 +3,7 @@ import { checkModulePermission } from "@/lib/permissions";
 import UpgradeGate from "../UpgradeGate";
 import LiveLandingClient, { type BlueprintRow } from "./LiveLandingClient";
 
-export const metadata = { title: "Live RolePlay — Mostly Medicine" };
+export const metadata = { title: "AMC Peer RolePlay — Mostly Medicine" };
 
 export default async function LiveLandingPage() {
   const supabase = await createClient();

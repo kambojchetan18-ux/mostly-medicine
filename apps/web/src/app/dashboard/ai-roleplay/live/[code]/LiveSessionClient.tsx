@@ -401,7 +401,7 @@ export default function LiveSessionClient({
   function shareWhatsApp() {
     const url = inviteUrl();
     const msg = encodeURIComponent(
-      `Join me for a Live Roleplay practice on Mostly Medicine 🩺\n\nClick the link to join (or use code ${inviteCode}):\n${url}`
+      `Join me for an AMC Peer RolePlay practice on Mostly Medicine 🩺\n\nClick the link to join (or use code ${inviteCode}):\n${url}`
     );
     window.open(`https://wa.me/?text=${msg}`, "_blank");
   }
@@ -413,8 +413,8 @@ export default function LiveSessionClient({
     }
     navigator
       .share({
-        title: "Mostly Medicine — Live Roleplay",
-        text: `Join me for a Live Roleplay session. Code: ${inviteCode}`,
+        title: "Mostly Medicine — AMC Peer RolePlay",
+        text: `Join me for an AMC Peer RolePlay session. Code: ${inviteCode}`,
         url: inviteUrl(),
       })
       .catch(() => {
@@ -432,7 +432,7 @@ export default function LiveSessionClient({
     const guestJoined = Boolean(liveGuestId);
     return (
       <div className="mx-auto max-w-lg py-8">
-        <h1 className="text-center text-xl font-bold text-gray-900">🎬 Live RolePlay — Waiting Room</h1>
+        <h1 className="text-center text-xl font-bold text-gray-900">🎬 AMC Peer RolePlay — Waiting Room</h1>
         <p className="mt-1 text-center text-sm text-gray-600">
           You'll play <span className="font-semibold capitalize text-violet-700">{myRole}</span>
           {isHost && <span className="ml-1 text-xs text-gray-400">(host)</span>}
