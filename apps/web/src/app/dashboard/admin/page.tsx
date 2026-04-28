@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 
 interface UserProfile {
@@ -20,12 +21,12 @@ interface ModulePermission {
   daily_limit: number | null;
 }
 
-const MODULES = ["cat1", "cat2", "library", "cases", "jobs", "reference", "recalls", "progress"];
+const MODULES = ["cat1", "cat2", "library", "jobs", "reference", "progress"];
 const PLANS   = ["free", "pro"];
 
 const MODULE_LABELS: Record<string, string> = {
-  cat1: "AMC CAT 1", cat2: "AMC CAT 2", library: "Library", cases: "Cases",
-  jobs: "Jobs", reference: "Reference", recalls: "Recalls", progress: "Progress",
+  cat1: "AMC CAT 1", cat2: "AMC CAT 2", library: "Library",
+  jobs: "Jobs", reference: "Reference", progress: "Progress",
 };
 
 export default function AdminPage() {
@@ -128,9 +129,17 @@ export default function AdminPage() {
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">⚙️ Admin Panel</h1>
-        <p className="text-sm text-gray-500">{users.length} users · Manage access and freemium limits</p>
+      <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">⚙️ Admin Panel</h1>
+          <p className="text-sm text-gray-500">{users.length} users · Manage access and freemium limits</p>
+        </div>
+        <Link
+          href="/dashboard/admin/users"
+          className="text-sm font-semibold px-3 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
+        >
+          Manage Users →
+        </Link>
       </div>
 
       {/* Tabs */}
