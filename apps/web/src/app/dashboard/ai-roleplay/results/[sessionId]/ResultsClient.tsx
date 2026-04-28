@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { SessionFeedback } from "@/lib/ai-roleplay/types";
+import FunLoading from "@/components/FunLoading";
 
 interface TranscriptItem {
   id: string;
@@ -129,7 +130,15 @@ export default function ResultsClient({
           ) : (
             <>
               <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
-              <p className="mt-4 text-sm text-gray-600">Marking your session…</p>
+              <div className="mt-4 flex justify-center">
+                <FunLoading
+                  pool={[
+                    "📝 Marking your session…",
+                    "🎓 Channeling AMC examiner…",
+                    "🧐 Cross-checking against the rubric…",
+                  ]}
+                />
+              </div>
               <p className="mt-1 text-xs text-gray-400">
                 Comparing your transcript against the case rubric
               </p>

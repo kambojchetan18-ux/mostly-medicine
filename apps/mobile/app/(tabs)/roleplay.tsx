@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
-  StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform,
+  StyleSheet, KeyboardAvoidingView, Platform,
   PermissionsAndroid, Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
 import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
+import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
 
@@ -345,7 +346,13 @@ export default function RoleplayScreen() {
         <Text style={{ fontSize: 48, marginBottom: 16 }}>📋</Text>
         <Text style={s.title}>Generating feedback…</Text>
         <Text style={[s.sub, { textAlign: 'center', marginTop: 8 }]}>Reviewing against AMC performance guidelines</Text>
-        <ActivityIndicator color="#7c3aed" style={{ marginTop: 24 }} size="large" />
+        <FunLoading
+          style={{ marginTop: 24 }}
+          pool={[
+            '🤔 Patient is thinking…',
+            '💭 Recalling symptoms…',
+          ]}
+        />
       </View>
     );
   }
@@ -446,7 +453,12 @@ export default function RoleplayScreen() {
               <View style={s.msgRowAI}>
                 <Text style={s.msgEmoji}>{emoji}</Text>
                 <View style={s.bubbleAI}>
-                  <ActivityIndicator color="#7c3aed" size="small" />
+                  <FunLoading
+                    pool={[
+                      '🤔 Patient is thinking…',
+                      '💭 Recalling symptoms…',
+                    ]}
+                  />
                 </View>
               </View>
             )}

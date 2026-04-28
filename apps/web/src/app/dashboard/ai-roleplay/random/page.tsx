@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FunLoading from "@/components/FunLoading";
 
 // Server-side redirect would also work, but the generate route is a POST
 // behind the user's session — running it client-side keeps cookies attached
@@ -48,7 +49,15 @@ export default function RandomCasePage() {
       ) : (
         <>
           <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
-          <p className="mt-4 text-sm text-gray-600">Generating a fresh case…</p>
+          <div className="mt-4 flex justify-center">
+            <FunLoading
+              pool={[
+                "🎲 Spinning up a fresh case…",
+                "🩺 Picking a tricky one for you…",
+                "📋 Drafting a stem…",
+              ]}
+            />
+          </div>
         </>
       )}
     </div>

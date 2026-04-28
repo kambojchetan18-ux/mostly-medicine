@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FunLoading from "@/components/FunLoading";
 
 export interface BlueprintRow {
   id: string;
@@ -75,6 +76,13 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
       </header>
 
       {error && <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">⚠️ {error}</p>}
+
+      {pending && (
+        <FunLoading
+          pool={["🎬 Wiring up the camera…", "🎥 Hailing your partner…", "📞 Dialling…"]}
+          className="mt-3 text-xs text-gray-500"
+        />
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Host */}

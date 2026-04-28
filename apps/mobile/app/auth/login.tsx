@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, ActivityIndicator, ScrollView, Alert,
+  KeyboardAvoidingView, Platform, ScrollView, Alert,
 } from 'react-native';
 import { Link } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
+import FunLoading from '@/components/FunLoading';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -69,7 +70,12 @@ export default function LoginScreen() {
               disabled={loading}
             >
               {loading
-                ? <ActivityIndicator color="#fff" />
+                ? <FunLoading
+                    pool={[
+                      '🔑 Unlocking your account…',
+                      '👋 Saying hello to Supabase…',
+                    ]}
+                  />
                 : <Text style={styles.btnText}>Log In</Text>}
             </TouchableOpacity>
 

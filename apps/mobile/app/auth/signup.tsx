@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, ActivityIndicator, ScrollView, Alert,
+  KeyboardAvoidingView, Platform, ScrollView, Alert,
 } from 'react-native';
 import { Link } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
+import FunLoading from '@/components/FunLoading';
 
 export default function SignupScreen() {
   const [name, setName] = useState('');
@@ -79,7 +80,16 @@ export default function SignupScreen() {
             ))}
 
             <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleSignup} disabled={loading}>
-              {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Sign Up Free</Text>}
+              {loading ? (
+                <FunLoading
+                  pool={[
+                    '🔑 Unlocking your account…',
+                    '👋 Saying hello to Supabase…',
+                  ]}
+                />
+              ) : (
+                <Text style={styles.btnText}>Sign Up Free</Text>
+              )}
             </TouchableOpacity>
 
             <View style={styles.footer}>

@@ -4,10 +4,10 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   Dimensions,
   ScrollView,
 } from 'react-native';
+import FunLoading from '@/components/FunLoading';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -483,7 +483,13 @@ export default function Cat1DeckScreen() {
     return (
       <View style={styles.bg}>
         <SafeAreaView style={styles.center}>
-          <ActivityIndicator color="#7c3aed" size="large" />
+          <FunLoading
+            pool={[
+              '🧠 Picking a fresh question…',
+              '🃏 Reshuffling the deck…',
+              '🔍 Hunting in the bank…',
+            ]}
+          />
         </SafeAreaView>
       </View>
     );

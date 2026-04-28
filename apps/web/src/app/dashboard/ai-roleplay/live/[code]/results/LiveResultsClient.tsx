@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { SessionFeedback } from "@/lib/ai-roleplay/types";
+import FunLoading from "@/components/FunLoading";
 
 function ScorePill({ label, score }: { label: string; score: number }) {
   const tone =
@@ -75,7 +76,14 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
           ) : (
             <>
               <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-violet-200 border-t-violet-600" />
-              <p className="mt-4 text-sm text-gray-600">Marking the session…</p>
+              <div className="mt-4 flex justify-center">
+                <FunLoading
+                  pool={[
+                    "📝 Marking the session…",
+                    "🎓 Channeling AMC examiner…",
+                  ]}
+                />
+              </div>
             </>
           )}
         </div>

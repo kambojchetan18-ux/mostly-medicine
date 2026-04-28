@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import type { MCQuestion } from "@mostly-medicine/content";
+import FunLoading from "@/components/FunLoading";
 
 // Static topic list — avoids importing the 5 MB allQuestions bundle on the client.
 // Question counts are fetched from the server API on menu load.
@@ -420,6 +421,14 @@ export default function CAT1Page() {
                   <div className="h-2.5 bg-gray-200 rounded w-9/12" />
                   <div className="h-2.5 bg-gray-200 rounded w-7/12" />
                 </div>
+                <FunLoading
+                  pool={[
+                    "🤔 Working out why you got tripped…",
+                    "📚 Looking it up in eTG…",
+                    "🩺 Deconstructing the trap…",
+                  ]}
+                  className="mt-2 text-xs text-gray-500"
+                />
               </div>
             )}
 

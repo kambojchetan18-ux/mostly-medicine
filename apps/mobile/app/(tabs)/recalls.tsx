@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import FunLoading from '@/components/FunLoading';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -81,7 +82,12 @@ export default function RecallsScreen() {
 
   if (loading) return (
     <View style={[s.bg, { justifyContent: 'center', alignItems: 'center' }]}>
-      <ActivityIndicator color="#7c3aed" size="large" />
+      <FunLoading
+        pool={[
+          '⏳ Spaced-repetition is doing its thing…',
+          '🧠 Strengthening the memory trace…',
+        ]}
+      />
     </View>
   );
 

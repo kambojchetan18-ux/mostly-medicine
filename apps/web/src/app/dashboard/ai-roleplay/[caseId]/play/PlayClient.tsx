@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
+import FunLoading from "@/components/FunLoading";
 
 const ROLEPLAY_SECONDS = 8 * 60;
 
@@ -306,7 +307,7 @@ export default function PlayClient({
           ))
         )}
         {sending && (
-          <div className="flex justify-start">
+          <div className="flex flex-col items-start gap-1">
             <div className="rounded-2xl rounded-bl-sm border border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
               <span className="inline-flex gap-1">
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]" />
@@ -314,6 +315,14 @@ export default function PlayClient({
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
               </span>
             </div>
+            <FunLoading
+              pool={[
+                "🤔 Patient is thinking…",
+                "💭 Recalling symptoms…",
+                "😟 Gathering courage to speak…",
+              ]}
+              className="text-xs text-gray-500"
+            />
           </div>
         )}
       </div>

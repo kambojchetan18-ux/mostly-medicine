@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FunLoading from "@/components/FunLoading";
 
 export interface BlueprintRow {
   id: string;
@@ -113,7 +114,18 @@ export default function LandingClient({
             onClick={() => generate({ random: true })}
             className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 shadow hover:bg-brand-50 disabled:cursor-wait disabled:opacity-70"
           >
-            {pending ? "Generating…" : "🎲 Random Case"}
+            {pending ? (
+              <FunLoading
+                pool={[
+                  "🎲 Spinning up a fresh case…",
+                  "🩺 Picking a tricky one for you…",
+                  "📋 Drafting a stem…",
+                  "🧠 Loading the patient's mind…",
+                ]}
+              />
+            ) : (
+              "🎲 Random Case"
+            )}
           </button>
           <Link
             href="/dashboard/ai-roleplay/live"

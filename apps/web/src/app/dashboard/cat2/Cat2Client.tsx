@@ -6,6 +6,7 @@ import type { Scenario } from "@mostly-medicine/ai";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
+import FunLoading from "@/components/FunLoading";
 
 // ── Timer config ──────────────────────────────────────────────────────────────
 
@@ -547,10 +548,16 @@ export default function Cat2Client() {
         {loading && (
           <div className="flex justify-start">
             <div className="text-2xl mr-2 self-end mb-1">{emoji}</div>
-            <div className="bg-gray-100 rounded-2xl px-4 py-3 flex items-center gap-1">
-              {[0, 1, 2].map(i => (
-                <div key={i} className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
-              ))}
+            <div className="bg-gray-100 rounded-2xl px-4 py-3 flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                {[0, 1, 2].map(i => (
+                  <div key={i} className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
+                ))}
+              </div>
+              <FunLoading
+                pool={["🤔 Patient is thinking…", "💭 Recalling symptoms…", "🩺 Searching memory for the right words…"]}
+                className="text-xs text-gray-500"
+              />
             </div>
           </div>
         )}

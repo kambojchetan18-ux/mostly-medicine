@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import type { RealtimeChannel } from "@supabase/supabase-js";
+import FunLoading from "@/components/FunLoading";
 
 const READING_SECONDS = 120;
 const ROLEPLAY_SECONDS = 8 * 60;
@@ -329,6 +330,12 @@ export default function LiveSessionClient({
         )}
         {!isHost && (
           <p className="mt-6 text-sm text-gray-600">Waiting for the host to start…</p>
+        )}
+        {!partnerOnline && (
+          <FunLoading
+            pool={["⏳ Waiting for partner to connect…", "📨 Sending vibes through the wires…"]}
+            className="mt-2 text-xs text-gray-500"
+          />
         )}
         {error && <p className="mt-3 text-xs text-rose-600">⚠️ {error}</p>}
       </div>
