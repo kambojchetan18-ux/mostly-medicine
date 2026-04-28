@@ -1,0 +1,213 @@
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+type RecognitionState = "idle" | "recording";
+
+// Same surface area as useSpeechRecognition so we can swap between the two
+// without touching any call site. Internally this records 5s WebM/Opus
+// chunks via MediaRecorder and ships each chunk to /api/stt/transcribe,
+// which forwards to Groq's whisper-large-v3-turbo.
+//
+// Performance notes:
+//   - We don't await each upload — fire and forget, with a small in-flight
+//     cap so a temporarily slow Groq response can't pile up an unbounded
+//     queue. If > MAX_INFLIGHT chunks are outstanding we drop the new one
+//     (the user's next chunk will catch the missing context anyway).
+//   - The mic stream is owned by this hook (separate getUserMedia call) so
+//     the WebRTC video stream and the STT stream stay independent — pausing
+//     STT shouldn't tear down the call.
+const CHUNK_MS = 5000;
+const MAX_INFLIGHT = 3;
+const TRANSCRIBE_URL = "/api/stt/transcribe";
+
+// Pick the first MediaRecorder mime type the browser actually supports.
+// Chrome/Android: audio/webm;codecs=opus. iOS Safari 17+: audio/mp4.
+function pickMimeType(): string | null {
+  if (typeof MediaRecorder === "undefined") return null;
+  const candidates = [
+    "audio/webm;codecs=opus",
+    "audio/webm",
+    "audio/mp4",
+    "audio/ogg;codecs=opus",
+  ];
+  for (const mime of candidates) {
+    try {
+      if (MediaRecorder.isTypeSupported(mime)) return mime;
+    } catch {
+      /* ignore */
+    }
+  }
+  return null;
+}
+
+export function useWhisperSTT(onTranscript?: (text: string) => void) {
+  const [state, setState] = useState<RecognitionState>("idle");
+  const [displayTranscript, setDisplayTranscript] = useState("");
+  const [supported, setSupported] = useState<boolean | null>(null);
+  const [permissionDenied, setPermissionDenied] = useState(false);
+
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const inflightRef = useRef(0);
+  // Keep a ref to the running transcript so we can append without re-rendering
+  // for every interim chunk and so we can read it from the recorder closure.
+  const fullTranscriptRef = useRef("");
+  const onTranscriptRef = useRef(onTranscript);
+
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript;
+  }, [onTranscript]);
+
+  // Capability detection — runs once on mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hasMediaDevices =
+      typeof navigator !== "undefined" &&
+      typeof navigator.mediaDevices?.getUserMedia === "function";
+    const hasRecorder = typeof window.MediaRecorder !== "undefined";
+    const hasMime = pickMimeType() !== null;
+    setSupported(hasMediaDevices && hasRecorder && hasMime);
+  }, []);
+
+  const uploadChunk = useCallback(async (blob: Blob) => {
+    if (blob.size === 0) return;
+    if (inflightRef.current >= MAX_INFLIGHT) {
+      // Back-pressure: drop rather than queue forever. Whisper is robust to
+      // missing 5s windows; queuing would just push latency to many seconds.
+      return;
+    }
+    inflightRef.current += 1;
+    const form = new FormData();
+    form.append("audio", blob, "chunk.webm");
+    try {
+      const res = await fetch(TRANSCRIBE_URL, { method: "POST", body: form });
+      if (!res.ok) return;
+      const payload = (await res.json()) as { text?: string };
+      const text = (payload.text ?? "").trim();
+      if (!text) return;
+      fullTranscriptRef.current = (
+        fullTranscriptRef.current
+          ? `${fullTranscriptRef.current} ${text}`
+          : text
+      ).trim();
+      setDisplayTranscript(fullTranscriptRef.current);
+      onTranscriptRef.current?.(text);
+    } catch {
+      /* network blip — next chunk will catch up */
+    } finally {
+      inflightRef.current = Math.max(0, inflightRef.current - 1);
+    }
+  }, []);
+
+  const cleanupStream = useCallback(() => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  }, []);
+
+  const startRecording = useCallback(async () => {
+    if (recorderRef.current) return;
+    const mime = pickMimeType();
+    if (!mime) {
+      setSupported(false);
+      return;
+    }
+
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      // Most likely "NotAllowedError" — the user clicked "Block".
+      const name = (err as { name?: string } | null)?.name;
+      if (name === "NotAllowedError" || name === "SecurityError") {
+        setPermissionDenied(true);
+      }
+      return;
+    }
+
+    streamRef.current = stream;
+    fullTranscriptRef.current = "";
+    setDisplayTranscript("");
+
+    let recorder: MediaRecorder;
+    try {
+      recorder = new MediaRecorder(stream, { mimeType: mime });
+    } catch {
+      cleanupStream();
+      setSupported(false);
+      return;
+    }
+
+    recorder.ondataavailable = (ev: BlobEvent) => {
+      if (ev.data && ev.data.size > 0) {
+        // Fire-and-forget upload. Errors are swallowed inside uploadChunk.
+        void uploadChunk(ev.data);
+      }
+    };
+
+    recorder.onerror = () => {
+      // Surface as idle; the caller can re-start.
+      setState("idle");
+      cleanupStream();
+      recorderRef.current = null;
+    };
+
+    recorder.onstop = () => {
+      setState("idle");
+      cleanupStream();
+      recorderRef.current = null;
+    };
+
+    try {
+      // Timeslice arg makes ondataavailable fire every CHUNK_MS while
+      // recording is still active — exactly what we need for streaming
+      // 5s windows to Groq.
+      recorder.start(CHUNK_MS);
+      recorderRef.current = recorder;
+      setState("recording");
+    } catch {
+      cleanupStream();
+      recorderRef.current = null;
+      setState("idle");
+    }
+  }, [cleanupStream, uploadChunk]);
+
+  const stopRecording = useCallback(() => {
+    const recorder = recorderRef.current;
+    if (!recorder) {
+      cleanupStream();
+      return;
+    }
+    try {
+      if (recorder.state !== "inactive") recorder.stop();
+    } catch {
+      /* ignore */
+    }
+    // onstop handler clears recorderRef and the stream
+  }, [cleanupStream]);
+
+  // Belt and braces: if the component unmounts while recording, drop the
+  // mic so the indicator goes away on Android Chrome.
+  useEffect(() => {
+    return () => {
+      try {
+        if (recorderRef.current && recorderRef.current.state !== "inactive") {
+          recorderRef.current.stop();
+        }
+      } catch {
+        /* ignore */
+      }
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      recorderRef.current = null;
+      streamRef.current = null;
+    };
+  }, []);
+
+  return {
+    state,
+    displayTranscript,
+    supported,
+    permissionDenied,
+    startRecording,
+    stopRecording,
+  };
+}

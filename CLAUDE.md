@@ -54,6 +54,16 @@ SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 #      Copy the signing secret -> STRIPE_WEBHOOK_SECRET
 #   4) Test with Stripe test cards (4242 4242 4242 4242) before flipping to live mode
 
+# Peer RolePlay — server-side STT (Groq Whisper)
+#   GROQ_API_KEY                          # gsk_... (from console.groq.com/keys)
+#
+# The /api/stt/transcribe route forwards 5s WebM chunks from the live mode
+# browser to Groq's whisper-large-v3-turbo (~$0.04/hour, $1/mo free credit).
+# This replaces the unreliable Web Speech API on Android Chrome / iOS Safari.
+# Set in Vercel → Project → Settings → Environment Variables (Production +
+# Preview). If missing, the route returns 503 and the live transcript stays
+# blank — handy as a kill-switch.
+
 # AI Clinical RolePlay — offline content build (run once, or after adding PDFs)
 # 1) Drop new PDFs into roleplays/source-pdfs/ (gitignored)
 # 2) Ingest each PDF into acrp_sources (metadata only, never the PDF text)

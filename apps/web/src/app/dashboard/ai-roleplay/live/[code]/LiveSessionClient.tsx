@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useWhisperSTT } from "@/hooks/useWhisperSTT";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import FunLoading from "@/components/FunLoading";
 
@@ -140,7 +140,7 @@ export default function LiveSessionClient({
     },
     [sessionId]
   );
-  const stt = useSpeechRecognition(handleSttFinal);
+  const stt = useWhisperSTT(handleSttFinal);
 
   // ─── Subscribe to session row + message stream ───────────────────────
   useEffect(() => {
