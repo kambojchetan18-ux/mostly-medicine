@@ -33,7 +33,9 @@ function getReference(topic: string) {
   return TOPIC_REFERENCES[topic] ?? { source: "AMC MCQ Handbook (current edition)", detail: "AMC Clinical Assessment" };
 }
 
-type Mode = "menu" | "loading" | "quiz" | "result";
+type Mode = "menu" | "reading" | "loading" | "quiz" | "result";
+
+const READING_SECONDS = 120; // 2 minutes
 
 async function saveAttempt(questionId: string, correct: boolean, topic: string) {
   try {
@@ -61,6 +63,11 @@ export default function Cat1Client() {
   const [smartLoading, setSmartLoading] = useState(false);
   const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
 
+  // Pending request that travels through reading → loading → quiz
+  const [pendingTopic, setPendingTopic] = useState<string | null>(null);
+  const [pendingCount, setPendingCount] = useState<number>(20);
+  const [readingSecondsLeft, setReadingSecondsLeft] = useState(READING_SECONDS);
+
   // Fetch topic counts once on menu mount — tiny payload from server
   useEffect(() => {
     fetch("/api/cat1/questions")
@@ -75,7 +82,16 @@ export default function Cat1Client() {
       .catch(() => {});
   }, []);
 
-  async function startQuiz(topic: string | null, count = 20) {
+  // Step 1: menu → reading. Sets up the pending request and starts the 2-min timer.
+  function startQuiz(topic: string | null, count = 20) {
+    setPendingTopic(topic);
+    setPendingCount(count);
+    setReadingSecondsLeft(READING_SECONDS);
+    setMode("reading");
+  }
+
+  // Step 2: reading → loading → quiz. Fires the actual fetch.
+  const runQuiz = useCallback(async (topic: string | null, count: number) => {
     setMode("loading");
     try {
       const res = await fetch("/api/cat1/questions", {
@@ -95,7 +111,18 @@ export default function Cat1Client() {
     } catch {
       setMode("menu");
     }
-  }
+  }, []);
+
+  // Reading-screen countdown — auto-redirects to loading when it hits 0.
+  useEffect(() => {
+    if (mode !== "reading") return;
+    if (readingSecondsLeft <= 0) {
+      runQuiz(pendingTopic, pendingCount);
+      return;
+    }
+    const t = setTimeout(() => setReadingSecondsLeft((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [mode, readingSecondsLeft, pendingTopic, pendingCount, runQuiz]);
 
   function handleSelect(label: string) {
     if (revealed) return;
@@ -179,6 +206,86 @@ export default function Cat1Client() {
     setSelected(null);
     setRevealed(false);
     setAnswers([]);
+  }
+
+  // ── READING (2-min intro screen) ────────────────────────────────────────────
+  if (mode === "reading") {
+    const mm = Math.floor(readingSecondsLeft / 60).toString().padStart(2, "0");
+    const ss = (readingSecondsLeft % 60).toString().padStart(2, "0");
+    const pct = (readingSecondsLeft / READING_SECONDS) * 100;
+
+    const topicLabel = pendingTopic ?? "Mixed";
+    const isMockExam = !pendingTopic && pendingCount === 50;
+
+    let scenarioBody: string;
+    if (pendingTopic) {
+      scenarioBody = `You are about to attempt ${pendingCount} AMC-style MCQs in ${pendingTopic}. The questions test core clinical knowledge across this specialty as expected of a junior doctor in Australia. References include eTG / RACGP / AMC Handbook 2026.`;
+    } else if (isMockExam) {
+      scenarioBody = `You are about to attempt ${pendingCount} mixed AMC-style MCQs across all 14 clinical specialties. The questions test core clinical knowledge expected of a junior doctor in Australia. References include eTG / RACGP / AMC Handbook 2026.\n\nThis 50-question Mock Exam mirrors the breadth and pacing of AMC CAT 1.`;
+    } else {
+      scenarioBody = `You are about to attempt ${pendingCount} mixed AMC-style MCQs across all 14 clinical specialties. The questions test core clinical knowledge expected of a junior doctor in Australia. References include eTG / RACGP / AMC Handbook 2026.`;
+    }
+
+    return (
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setMode("menu")}
+            className="text-xs text-gray-500 hover:text-gray-700"
+          >
+            ← Back
+          </button>
+          <span className="rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-600">
+            {pendingCount} questions · {topicLabel}
+          </span>
+        </div>
+
+        {/* Timer card */}
+        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Reading time</p>
+              <p className="mt-0.5 text-3xl font-bold tabular-nums text-brand-900">
+                {mm}:{ss}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => runQuiz(pendingTopic, pendingCount)}
+              className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+            >
+              Start MCQ Quiz →
+            </button>
+          </div>
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-100">
+            <div
+              className="h-full bg-brand-600 transition-[width] duration-1000 ease-linear"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Scenario card */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Scenario</p>
+          <p className="mt-2 whitespace-pre-line text-base leading-relaxed text-gray-900">
+            {scenarioBody}
+          </p>
+
+          <div className="mt-5 rounded-xl bg-amber-50 border border-amber-200 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">Your task</p>
+            <p className="mt-1 text-sm font-medium text-amber-900">
+              Read each stem carefully, eliminate distractors, choose the best single answer. Aim for 70%+ accuracy and use the explanation after each question to consolidate weak areas.
+            </p>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-gray-500">
+          When the timer ends you will move to the quiz automatically. You can also start early.
+        </p>
+      </div>
+    );
   }
 
   // ── LOADING ─────────────────────────────────────────────────────────────────
