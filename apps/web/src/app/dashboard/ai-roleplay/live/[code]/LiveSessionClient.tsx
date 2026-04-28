@@ -68,7 +68,11 @@ export default function LiveSessionClient({
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
   const [liveGuestId, setLiveGuestId] = useState<string | null>(guestUserId);
-  const [partnerOnline, setPartnerOnline] = useState(false);
+  // Partner is "online" once both host and guest IDs are filled in and we're
+  // past the waiting phase. The DB row is the source of truth; presence-sync
+  // events were unreliable.
+  const [presencePartnerOnline, setPresencePartnerOnline] = useState(false);
+  const partnerOnline = presencePartnerOnline || (Boolean(liveGuestId) && status !== "waiting");
   const [readingLeft, setReadingLeft] = useState(READING_SECONDS);
   const [roleplayLeft, setRoleplayLeft] = useState(ROLEPLAY_SECONDS);
   const [transcript, setTranscript] = useState<TranscriptItem[]>([]);
@@ -285,7 +289,7 @@ export default function LiveSessionClient({
             const others = Object.values(state)
               .flat()
               .some((p) => (p as { user?: string }).user !== myUserId);
-            setPartnerOnline(others);
+            setPresencePartnerOnline(others);
             // When partner becomes online, host (re)sends offer to handle the
             // case where the offer was sent before the guest's presence.
             if (others) sendHostOffer();
