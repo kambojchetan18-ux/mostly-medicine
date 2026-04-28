@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 // Whitelist redirect targets to in-app paths only — prevents open-redirect
 // abuse if an attacker crafts ?next=https://evil.com or ?next=//evil.com
 // (protocol-relative). Mirrors apps/web/src/app/auth/login/page.tsx safeNext.
+const ALLOWED_AUTH_PATHS = new Set(["/auth/reset-password"]);
 function safeNext(raw: string | null): string {
   if (!raw) return "/dashboard";
   if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
@@ -16,13 +17,22 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = safeNext(searchParams.get("next"));
+  const rawNext = searchParams.get("next");
+  const next = safeNext(rawNext);
 
-  // OAuth code exchange (Google SSO)
+  // Password recovery overrides any default /dashboard redirect — the user
+  // must land on /auth/reset-password with the live session in cookies so
+  // updateUser({ password }) succeeds.
+  const isRecovery =
+    type === "recovery" ||
+    (rawNext != null && ALLOWED_AUTH_PATHS.has(rawNext));
+  const codeRedirectPath = isRecovery ? "/auth/reset-password" : next;
+
+  // OAuth code exchange (Google SSO) and PKCE recovery flow
   // Cookies must be set directly on the redirect response — not on cookieStore —
   // otherwise the session is lost when the browser follows the redirect.
   if (code) {
-    const redirectTo = NextResponse.redirect(`${origin}${next}`);
+    const redirectTo = NextResponse.redirect(`${origin}${codeRedirectPath}`);
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -38,10 +48,11 @@ export async function GET(request: NextRequest) {
     if (!error) return redirectTo;
   }
 
-  // Email confirmation (signup / email change)
+  // Email confirmation (signup / email change) and recovery OTP
   if (token_hash && type) {
     const cookieStore = await cookies();
-    const redirectTo = NextResponse.redirect(`${origin}/dashboard`);
+    const otpRedirectPath = type === "recovery" ? "/auth/reset-password" : "/dashboard";
+    const redirectTo = NextResponse.redirect(`${origin}${otpRedirectPath}`);
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -53,7 +64,7 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-    const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" | "email" });
+    const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" | "email" | "recovery" });
     if (!error) return redirectTo;
     return NextResponse.redirect(`${origin}/auth/login?error=email_confirmation_failed`);
   }
