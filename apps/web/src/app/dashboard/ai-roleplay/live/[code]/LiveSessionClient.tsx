@@ -116,6 +116,14 @@ export default function LiveSessionClient({
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Visible diagnostic state — shown to the user above the videos so they
+  // know in real time whether STT and WebRTC are healthy. Mobile users can't
+  // open DevTools easily; this replaces "is it broken?" with concrete signal.
+  const [iceState, setIceState] = useState<string>("idle");
+  const [sttChunkCount, setSttChunkCount] = useState(0);
+  const [sttLastChunk, setSttLastChunk] = useState<string>("");
+  const [sttError, setSttError] = useState<string | null>(null);
+
   const supabase = useMemo(() => createClient(), []);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -128,14 +136,21 @@ export default function LiveSessionClient({
   // ─── STT — capture local speech, POST to message API ─────────────────
   const handleSttFinal = useCallback(
     async (final: string) => {
+      setSttChunkCount((c) => c + 1);
+      setSttLastChunk(final);
+      setSttError(null);
       try {
-        await fetch(`/api/ai-roleplay/live/${sessionId}/message`, {
+        const res = await fetch(`/api/ai-roleplay/live/${sessionId}/message`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content: final }),
         });
-      } catch {
-        /* swallow — Realtime will surface anything that lands */
+        if (!res.ok) {
+          const body = await res.text().catch(() => "");
+          setSttError(`message POST failed: ${res.status} ${body.slice(0, 80)}`);
+        }
+      } catch (err) {
+        setSttError(err instanceof Error ? err.message : "message POST failed");
       }
     },
     [sessionId]
@@ -177,13 +192,14 @@ export default function LiveSessionClient({
     };
   }, [supabase, sessionId]);
 
-  // ─── Fallback poll for any pre-roleplay phase ───────────────────────
-  // Realtime can drop events on Vercel cold starts; poll every 2.5s during
-  // 'waiting' and 'reading' so both host and guest reliably see partner-joined
-  // and status transitions (waiting -> reading -> roleplay) even if the
-  // realtime broadcast was missed. Stops once we hit roleplay/completed.
+  // ─── Fallback poll across every active phase ────────────────────────
+  // Realtime can drop events on Vercel cold starts. We poll every 2.5s during
+  // ALL active phases (waiting → reading → roleplay) so partner-joined and
+  // status transitions land reliably. Crucially, this also catches the
+  // roleplay → completed flip when one peer ends — without it the other peer
+  // would stay stuck on their own video while the ender already navigated away.
   useEffect(() => {
-    if (status !== "waiting" && status !== "reading") return;
+    if (status === "completed" || status === "abandoned") return;
     const t = setInterval(async () => {
       const { data } = await supabase
         .from("acrp_live_sessions")
@@ -264,13 +280,17 @@ export default function LiveSessionClient({
           }
         };
 
-        // Diagnose hung handshakes: log every state transition so we can tell
-        // whether ICE / DTLS / signalling is the failure point. Most "black
-        // remote" reports are ICE failed with no TURN relay reachable.
+        // Diagnose hung handshakes: surface every state transition into the
+        // visible diagnostic pill above the videos so the user can see in
+        // real time whether ICE / DTLS / signalling is the failure point.
+        // Most "black remote" reports are ICE failed with no TURN relay
+        // reachable — the pill makes that obvious instead of silent.
         pc.oniceconnectionstatechange = () => {
-          console.info("[live/rtc] iceConnectionState", pc.iceConnectionState);
-          if (pc.iceConnectionState === "failed") {
-            setError("Connection failed — your network is blocking the video relay. Try switching networks (different Wi-Fi, mobile data) or refresh.");
+          const s = pc.iceConnectionState;
+          console.info("[live/rtc] iceConnectionState", s);
+          setIceState(s);
+          if (s === "failed") {
+            setError("Connection failed — your network is blocking the video relay. Try switching networks (different Wi-Fi vs mobile data) or refresh.");
           }
         };
         pc.onconnectionstatechange = () => {
@@ -437,6 +457,16 @@ export default function LiveSessionClient({
     await advance("completed");
     router.push(`/dashboard/ai-roleplay/live/${inviteCode}/results`);
   }
+
+  // Auto-redirect the OTHER peer when the session flips to completed —
+  // either via Realtime (the ender's DB row update broadcasts to us) or via
+  // the polling fallback. Without this, the partner stays on a stale
+  // roleplay UI watching their own video while the ender already left.
+  useEffect(() => {
+    if (status === "completed") {
+      router.push(`/dashboard/ai-roleplay/live/${inviteCode}/results`);
+    }
+  }, [status, inviteCode, router]);
 
   function inviteUrl() {
     return typeof window !== "undefined"
@@ -681,6 +711,46 @@ export default function LiveSessionClient({
               End session
             </button>
           </div>
+        </div>
+
+        {/* Visible health diagnostics — replaces "is it broken?" with concrete
+            signal for users who can't open DevTools (mobile, non-technical). */}
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs shadow-sm">
+          <span
+            className={`rounded-full px-2 py-0.5 font-semibold ${
+              iceState === "connected" || iceState === "completed"
+                ? "bg-emerald-100 text-emerald-800"
+                : iceState === "failed" || iceState === "disconnected"
+                  ? "bg-rose-100 text-rose-800"
+                  : "bg-amber-100 text-amber-800"
+            }`}
+            title="WebRTC peer connection state"
+          >
+            📡 {iceState}
+          </span>
+          <span
+            className={`rounded-full px-2 py-0.5 font-semibold ${
+              sttChunkCount > 0 ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-600"
+            }`}
+            title="Number of speech chunks transcribed by Groq Whisper"
+          >
+            🎤 {sttChunkCount} chunks
+          </span>
+          {sttLastChunk && (
+            <span className="truncate text-gray-500" title={sttLastChunk}>
+              last: &ldquo;{sttLastChunk.slice(0, 40)}{sttLastChunk.length > 40 ? "…" : ""}&rdquo;
+            </span>
+          )}
+          {sttError && (
+            <span className="rounded-full bg-rose-100 px-2 py-0.5 font-semibold text-rose-800" title={sttError}>
+              ⚠️ {sttError.slice(0, 60)}
+            </span>
+          )}
+          {!HAS_PRIVATE_TURN && (
+            <span className="ml-auto rounded-full bg-amber-50 px-2 py-0.5 text-amber-700" title="Self-hosted TURN not configured — using Open Relay (best-effort).">
+              fallback TURN
+            </span>
+          )}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
