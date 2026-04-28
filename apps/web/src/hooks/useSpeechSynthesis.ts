@@ -273,6 +273,11 @@ export function useSpeechSynthesis() {
           .replace(/\([^)\n]+\)/g, "")
           .replace(/\[[^\]\n]+\]/g, "")
           .replace(/[`#>~]+/g, "")
+          // Strip quote marks that some Chromium voices announce literally
+          // ("double quote", "open quote") — straight + curly variants.
+          // Apostrophes ('don't', "I'm") are NOT stripped: they're needed
+          // for natural contraction pronunciation.
+          .replace(/["“”«»]/g, "")
           .replace(/\s{2,}/g, " ")
           .trim();
         if (!speakable) return;
