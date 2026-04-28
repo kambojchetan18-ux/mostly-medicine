@@ -10,8 +10,27 @@ import FunLoading from "@/components/FunLoading";
 
 const READING_SECONDS = 120;
 const ROLEPLAY_SECONDS = 8 * 60;
+// STUN handles ~80% of NAT cases. The remaining cases (mobile data ↔ Wi-Fi
+// across symmetric NATs, corporate firewalls) need a TURN relay or the peers
+// just see each other as "online" with permanently black video. Open Relay
+// Project (Metered.ca) ships free, open-access TURN credentials with no
+// signup — fine for early users; we can swap to a self-hosted coturn later
+// if usage spikes. Both UDP/443 and TCP/443 are listed so corporate firewalls
+// that only allow outbound HTTPS still get a path.
 const RTC_CONFIG: RTCConfiguration = {
-  iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }],
+  iceServers: [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80",
+        "turn:openrelay.metered.ca:443",
+        "turn:openrelay.metered.ca:443?transport=tcp",
+      ],
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+  ],
+  iceTransportPolicy: "all",
 };
 
 export interface LiveCaseStem {
@@ -197,14 +216,46 @@ export default function LiveSessionClient({
           return;
         }
         localStreamRef.current = stream;
-        if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+        const tracks = stream.getTracks().map((t) => ({ kind: t.kind, label: t.label, enabled: t.enabled }));
+        console.info("[live/rtc] local stream acquired", { tracks });
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+          // Android Chrome ignores autoPlay on some devices unless we call
+          // play() explicitly after srcObject is set. Without this, the
+          // local video panel stays black even though the camera is live.
+          try {
+            await localVideoRef.current.play();
+          } catch (err) {
+            console.warn("[live/rtc] local video play() rejected", err);
+          }
+        }
 
         const pc = new RTCPeerConnection(RTC_CONFIG);
         pcRef.current = pc;
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
         pc.ontrack = (ev) => {
-          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = ev.streams[0];
+          console.info("[live/rtc] remote ontrack fired", { kind: ev.track.kind });
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = ev.streams[0];
+            // Same play() workaround for the remote element.
+            remoteVideoRef.current.play().catch((err) => {
+              console.warn("[live/rtc] remote video play() rejected", err);
+            });
+          }
+        };
+
+        // Diagnose hung handshakes: log every state transition so we can tell
+        // whether ICE / DTLS / signalling is the failure point. Most "black
+        // remote" reports are ICE failed with no TURN relay reachable.
+        pc.oniceconnectionstatechange = () => {
+          console.info("[live/rtc] iceConnectionState", pc.iceConnectionState);
+          if (pc.iceConnectionState === "failed") {
+            setError("Connection failed — your network is blocking the video relay. Try switching networks (different Wi-Fi, mobile data) or refresh.");
+          }
+        };
+        pc.onconnectionstatechange = () => {
+          console.info("[live/rtc] connectionState", pc.connectionState);
         };
 
         const rtcChannel = supabase.channel(`acrp_live_rtc_${sessionId}`, {
@@ -585,6 +636,11 @@ export default function LiveSessionClient({
   if (status === "roleplay") {
     return (
       <div className="mx-auto max-w-5xl space-y-4">
+        {error && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 shadow-sm">
+            ⚠️ {error}
+          </div>
+        )}
         <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm">
           <div className="text-sm">
             <span className="font-semibold capitalize text-gray-900">You: {myRole}</span>
