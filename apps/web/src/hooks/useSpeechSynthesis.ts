@@ -154,6 +154,29 @@ export function useSpeechSynthesis() {
     return best ?? null;
   }
 
+  // Mobile Chrome / iOS Safari require speechSynthesis.speak() to be called
+  // inside a user gesture (button click / tap). Async streaming responses
+  // arrive AFTER the gesture token has expired, so the actual patient reply
+  // speak() is silently rejected. Workaround: call a tiny silent utterance
+  // synchronously during the user's click — this primes the engine so later
+  // speak() calls (from async stream handlers) are permitted.
+  const primedRef = useRef(false);
+  const prime = useCallback(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    if (primedRef.current) return;
+    try {
+      const u = new SpeechSynthesisUtterance(" ");
+      u.volume = 0;
+      u.rate = 10;
+      window.speechSynthesis.speak(u);
+      // Cancel immediately — we just needed the user-gesture activation.
+      window.speechSynthesis.cancel();
+      primedRef.current = true;
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const stop = useCallback(() => {
     if (typeof window === "undefined") return;
     if (pendingRef.current) {
@@ -358,6 +381,7 @@ export function useSpeechSynthesis() {
     speaking,
     speak,
     stop,
+    prime,
     supported,
     muted: settings.muted,
     volume: settings.volume,

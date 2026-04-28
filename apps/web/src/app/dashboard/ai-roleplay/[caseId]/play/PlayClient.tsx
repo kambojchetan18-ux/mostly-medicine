@@ -59,6 +59,7 @@ export default function PlayClient({
     speak,
     stop: stopSpeaking,
     speaking,
+    prime: primeTts,
     supported: ttsSupported,
     muted,
     volume,
@@ -110,6 +111,10 @@ export default function PlayClient({
       const content = (textOverride ?? draft).trim();
       if (!content || sending || ended) return;
       setError(null);
+
+      // Prime mobile TTS while we still have a user-gesture token. Without
+      // this, mobile Chrome / iOS Safari silently refuse the later speak().
+      if (voiceMode && ttsSupported) primeTts();
 
       const localUser: Message = { id: tmpId(), role: "user", content };
       const assistantId = tmpId();
@@ -186,7 +191,7 @@ export default function PlayClient({
         setSending(false);
       }
     },
-    [draft, sending, ended, sessionId, voiceMode, ttsSupported, speak, patientGender]
+    [draft, sending, ended, sessionId, voiceMode, ttsSupported, speak, primeTts, patientGender]
   );
 
   // Keep the latest send function reachable from the STT callback.

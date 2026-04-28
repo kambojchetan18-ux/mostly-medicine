@@ -125,6 +125,7 @@ export default function Cat2Client() {
     speaking,
     speak,
     stop: stopSpeaking,
+    prime: primeTts,
     supported: ttsSupported,
     muted,
     volume,
@@ -143,6 +144,8 @@ export default function Cat2Client() {
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return;
     stopSpeaking();
+    // Prime mobile TTS while we still have a user-gesture token.
+    if (ttsSupported) primeTts();
 
     const newMessages = [...messages, { role: "user", content: text }];
     setMessages(newMessages);
