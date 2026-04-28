@@ -90,7 +90,7 @@ export default function LandingClient({
   if (!isAuthenticated) {
     return (
       <div className="mx-auto max-w-3xl py-12 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">AI Clinical RolePlay Cases</h1>
+        <h1 className="text-2xl font-bold text-gray-900">AMC Clinical AI RolePlay Cases</h1>
         <p className="mt-2 text-sm text-gray-600">
           Please <Link href="/auth/login" className="text-brand-600 underline">log in</Link> to start a roleplay session.
         </p>
@@ -102,7 +102,7 @@ export default function LandingClient({
     <div className="space-y-10">
       {/* Hero */}
       <section className="rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-8 text-white shadow-lg">
-        <h1 className="text-2xl font-bold sm:text-3xl">AI Clinical RolePlay Cases</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">AMC Clinical AI RolePlay Cases</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/85 sm:text-base">
           Original AI-generated AMC-style practice cases inspired by broader clinical patterns. 2 minutes reading, 8
           minutes interaction, structured feedback.
@@ -137,7 +137,7 @@ export default function LandingClient({
             href="/dashboard/cat2"
             className="rounded-xl border border-white/30 px-4 py-2 text-sm font-medium text-white/90 hover:bg-white/10"
           >
-            AMC Handbook RolePlay →
+            AMC Handbook AI RolePlay →
           </Link>
         </div>
         {error && <p className="mt-3 text-sm text-rose-100">⚠️ {error}</p>}

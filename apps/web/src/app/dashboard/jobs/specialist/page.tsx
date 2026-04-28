@@ -188,7 +188,7 @@ export default async function SpecialistPathwayPage() {
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
         <p className="font-semibold text-amber-900 text-sm">Important</p>
         <ul className="text-sm text-amber-800 space-y-1">
-          <li>• You do NOT need to sit AMC CAT 1 or CAT 2 if you get a &quot;Comparable&quot; outcome from your specialist college</li>
+          <li>• You do NOT need to sit AMC MCQ or AMC Handbook AI RolePlay if you get a &quot;Comparable&quot; outcome from your specialist college</li>
           <li>• You still need English proficiency (OET B or IELTS 7.0) for AHPRA registration</li>
           <li>• Some colleges require supervised practice periods before granting comparability</li>
           <li>• Locum specialist positions are available even before full registration in some states under supervised conditions</li>

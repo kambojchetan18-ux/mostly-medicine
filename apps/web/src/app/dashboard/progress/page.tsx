@@ -67,7 +67,7 @@ export default async function ProgressPage() {
       <div className="max-w-xl mx-auto py-16 text-center">
         <div className="text-5xl mb-4">📊</div>
         <h2 className="text-xl font-bold text-gray-900 mb-2">No progress yet</h2>
-        <p className="text-gray-500 text-sm mb-6">Complete a CAT 1 quiz to start tracking your progress and weak areas.</p>
+        <p className="text-gray-500 text-sm mb-6">Complete an AMC MCQ quiz to start tracking your progress and weak areas.</p>
         <Link
           href="/dashboard/cat1"
           className="inline-block bg-brand-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-brand-700 transition text-sm"
@@ -82,7 +82,7 @@ export default async function ProgressPage() {
     <div className="max-w-3xl mx-auto">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-1">My Progress</h2>
-        <p className="text-gray-500 text-sm">CAT 1 performance across all topics · spaced repetition tracking</p>
+        <p className="text-gray-500 text-sm">AMC MCQ performance across all topics · spaced repetition tracking</p>
       </div>
 
       {/* Top stats */}

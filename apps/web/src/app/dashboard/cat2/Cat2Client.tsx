@@ -322,7 +322,7 @@ export default function Cat2Client() {
   if (activeScenario === null) {
     return (
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC CAT 2 — Clinical Role-Play</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC Handbook AI RolePlay</h2>
         <p className="text-gray-500 text-sm mb-4">
           AI plays the patient. Speak or type your responses. Receive examiner feedback at the end.
           {ttsSupported && micSupported !== false && (

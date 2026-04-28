@@ -7,7 +7,7 @@ type Message = { role: "user" | "assistant"; content: string };
 const STARTER_PROMPTS = [
   "What's the first-line treatment for ACS according to eTG?",
   "How do I approach a patient with sepsis?",
-  "What are the AMC CAT 2 communication domains?",
+  "What are the AMC Handbook AI RolePlay communication domains?",
   "Summarise the RACGP approach to hypertension",
 ];
 

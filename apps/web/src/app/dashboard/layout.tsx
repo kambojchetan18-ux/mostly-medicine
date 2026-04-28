@@ -5,11 +5,11 @@ import SidebarUserCard from "@/components/SidebarUserCard";
 
 const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-violet-300"  },
-  { href: "/dashboard/cat1",      label: "AMC CAT 1", icon: "🧠", hover: "hover:text-indigo-300" },
+  { href: "/dashboard/cat1",      label: "AMC MCQ", icon: "🧠", hover: "hover:text-indigo-300" },
   { href: "/dashboard/progress",  label: "My Progress", icon: "📊", hover: "hover:text-blue-300"  },
   { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆", hover: "hover:text-amber-300" },
-  { href: "/dashboard/cat2",      label: "AMC CAT 2", icon: "🩺", hover: "hover:text-pink-300"   },
-  { href: "/dashboard/ai-roleplay", label: "AI RolePlay", icon: "🎙️", hover: "hover:text-fuchsia-300" },
+  { href: "/dashboard/cat2",      label: "AMC Handbook AI RolePlay", icon: "🩺", hover: "hover:text-pink-300"   },
+  { href: "/dashboard/ai-roleplay", label: "AMC Clinical AI RolePlay", icon: "🎙️", hover: "hover:text-fuchsia-300" },
   { href: "/dashboard/ai-roleplay/live", label: "Live (2-player)", icon: "🎥", hover: "hover:text-pink-300" },
   { href: "/dashboard/library",   label: "Library",   icon: "📚", hover: "hover:text-amber-300"  },
   { href: "/dashboard/reference", label: "Reference", icon: "📖", hover: "hover:text-emerald-300"},

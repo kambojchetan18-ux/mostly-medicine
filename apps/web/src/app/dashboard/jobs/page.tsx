@@ -53,8 +53,8 @@ const navCards = [
 
 const AMC_STEPS = [
   { step: "1", title: "English Proficiency", detail: "OET (recommended) or IELTS Academic. OET is medical-specific and preferred by AHPRA.", time: "~3–6 months prep" },
-  { step: "2", title: "AMC CAT 1 — MCQ Exam", detail: "Computer-based, 150 questions, 3.5 hours. Tests clinical knowledge across all major specialties.", time: "~6–12 months prep" },
-  { step: "3", title: "AMC CAT 2 — Clinical Exam", detail: "16 OSCE stations × 8 min. Tests clinical skills, communication, and management.", time: "~3–6 months prep" },
+  { step: "2", title: "AMC MCQ — Exam", detail: "Computer-based, 150 questions, 3.5 hours. Tests clinical knowledge across all major specialties.", time: "~6–12 months prep" },
+  { step: "3", title: "AMC Handbook AI RolePlay — Clinical Exam", detail: "16 OSCE stations × 8 min. Tests clinical skills, communication, and management.", time: "~3–6 months prep" },
   { step: "4", title: "AHPRA Registration", detail: "Apply online with your AMC certificate, identity documents, and referee reports.", time: "4–12 weeks processing" },
   { step: "5", title: "Intern Year (if needed)", detail: "Required if you have <2 years postgraduate experience. Many IMGs are exempt.", time: "1 year" },
   { step: "6", title: "RMO / GP Application", detail: "Apply to state RMO pools or DWS/AoN GP positions. NT, WA, and rural areas hire fastest.", time: "Ongoing" },

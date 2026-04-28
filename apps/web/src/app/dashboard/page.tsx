@@ -7,7 +7,7 @@ const modules = [
     emoji:    "🧠",
     tag:      "AMC PART 1",
     tagColor: "text-indigo-600 bg-indigo-50 border-indigo-200",
-    title:    "AMC CAT 1",
+    title:    "AMC MCQ",
     subtitle: "Multiple Choice Questions",
     desc:     "3 000+ MCQs with spaced repetition, weak-area targeting, and AI-powered explanations.",
     gradient: "from-indigo-50 to-violet-50",
@@ -21,7 +21,7 @@ const modules = [
     emoji:    "🩺",
     tag:      "AMC PART 2",
     tagColor: "text-pink-600 bg-pink-50 border-pink-200",
-    title:    "AMC CAT 2 — Clinical",
+    title:    "AMC Handbook AI RolePlay",
     subtitle: "AI Patient Role-Play",
     desc:     "Simulate OSCE consultations with an AI patient. Handbook-aligned scenarios. Examiner feedback.",
     gradient: "from-pink-50 to-rose-50",
@@ -158,7 +158,7 @@ export default async function DashboardHome() {
       <div className="mt-8 rounded-3xl p-5 bg-gradient-to-r from-violet-50 to-pink-50 border border-violet-100 flex items-center gap-4">
         <span className="text-3xl shrink-0">💡</span>
         <div>
-          <p className="font-semibold text-gray-800 text-sm">Pro tip — start with CAT 2 roleplays</p>
+          <p className="font-semibold text-gray-800 text-sm">Pro tip — start with AMC Handbook AI RolePlay</p>
           <p className="text-xs text-slate-500 mt-0.5">
             The AMC MCAT is an 8-minute OSCE. Practising with AI patients builds speed and confidence faster than MCQs alone.
           </p>

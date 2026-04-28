@@ -1,5 +1,60 @@
 import Link from "next/link";
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What is the AMC exam?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The Australian Medical Council (AMC) exam is the assessment pathway for International Medical Graduates (IMGs) seeking medical registration in Australia. It has two parts: AMC MCQ (a 150-question MCQ exam) and AMC Handbook AI RolePlay (a multi-station clinical assessment, also called the MCAT).",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do I prepare for AMC MCQ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "AMC MCQ covers all clinical disciplines. Effective preparation includes high-volume MCQ practice (3,000+ questions), spaced repetition for retention, and reviewing core texts like Murtagh's General Practice and the RACGP Red Book. Mostly Medicine offers an AI-powered MCQ bank with explanations and weak-area targeting.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the AMC Handbook AI RolePlay (MCAT) clinical exam?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "AMC Handbook AI RolePlay is a multi-station OSCE-style clinical exam (around 16 stations) that tests applied clinical skills: history-taking, examination, counselling, procedural skills, and clinical reasoning. Mostly Medicine provides 151+ AI-driven patient roleplays based on official MCAT blueprints with examiner-grade feedback.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is Mostly Medicine free?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Mostly Medicine offers a free tier with sample MCQs, limited clinical roleplays, and full reference library access. No credit card is required to start. Pro and Enterprise plans unlock the complete MCQ bank and unlimited AI roleplays.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Who is Mostly Medicine for?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Mostly Medicine is built for International Medical Graduates (IMGs) preparing for AMC registration in Australia — including doctors trained in India, Pakistan, Sri Lanka, Bangladesh, the Philippines, the Middle East, and elsewhere outside Australia/New Zealand.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is the content aligned with the AMC Handbook 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. All MCQ content and clinical roleplay scenarios are aligned with the AMC Handbook of Multiple Choice Questions and the official MCAT blueprint, updated for the 2026 examination cycle.",
+      },
+    },
+  ],
+};
+
 const stats = [
   { value: "151",   label: "MCAT scenarios"     },
   { value: "3000+", label: "Practice MCQs"      },
@@ -13,7 +68,7 @@ const features = [
     emoji:    "🧠",
     tag:      "AMC PART 1",
     tagColor: "text-indigo-300 bg-indigo-900/40 border-indigo-700/40",
-    title:    "AMC CAT 1",
+    title:    "AMC MCQ",
     desc:     "3 000+ MCQs with spaced repetition, AI explanations, and weak-area targeting. Train smarter, not harder.",
     gradient: "from-indigo-950/80 via-violet-950/60 to-slate-900/80",
     border:   "border-indigo-800/30",
@@ -26,7 +81,7 @@ const features = [
     emoji:    "🩺",
     tag:      "AMC PART 2",
     tagColor: "text-pink-300 bg-pink-900/40 border-pink-700/40",
-    title:    "AMC CAT 2 — Clinical",
+    title:    "AMC Handbook AI RolePlay",
     desc:     "AI patient roleplays. Official MCAT scenarios. Examiner-grade feedback after every consultation.",
     gradient: "from-pink-950/80 via-rose-950/60 to-slate-900/80",
     border:   "border-pink-800/30",
@@ -78,6 +133,11 @@ const features = [
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
 
       {/* Ambient blobs */}
       <div className="pointer-events-none select-none" aria-hidden>

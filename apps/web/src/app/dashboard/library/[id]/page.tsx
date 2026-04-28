@@ -53,11 +53,14 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
               {topic.difficulty}
             </span>
           )}
-          {topic.amc_exam_type?.map((type: string) => (
-            <span key={type} className="text-xs px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 font-medium">
-              {type}
-            </span>
-          ))}
+          {topic.amc_exam_type?.map((type: string) => {
+            const label = type === "CAT 1" ? "AMC MCQ" : type === "CAT 2" ? "AMC Handbook AI RolePlay" : type;
+            return (
+              <span key={type} className="text-xs px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 font-medium">
+                {label}
+              </span>
+            );
+          })}
         </div>
         <h1 className="text-2xl font-bold text-gray-900">{topic.title}</h1>
         <p className="text-gray-500 mt-2">{topic.summary}</p>

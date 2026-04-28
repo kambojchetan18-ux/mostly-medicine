@@ -40,39 +40,39 @@ const sections: Section[] = [
   {
     id: "cat1",
     emoji: "🧠",
-    title: "AMC CAT 1 — MCQ Exam",
+    title: "AMC MCQ — Exam",
     tag: "STEP 2",
     tagColor: "text-indigo-300 bg-indigo-900/40 border-indigo-700/40",
     gradient: "from-indigo-950/80 via-violet-950/60 to-slate-900/80",
     border: "border-indigo-800/30",
     items: [
-      { id: "c1a", text: "Read the AMC CAT 1 Examination Handbook (latest edition)", note: "Available free on amc.org.au" },
+      { id: "c1a", text: "Read the AMC MCQ Examination Handbook (latest edition)", note: "Available free on amc.org.au" },
       { id: "c1b", text: "Download and study the AMC Content Outline (blueprint)", note: "Tells you exactly what topics are tested and their weighting" },
-      { id: "c1c", text: "Complete at least 3,000 practice MCQs across all systems", note: "Use Mostly Medicine CAT 1 for spaced repetition" },
+      { id: "c1c", text: "Complete at least 3,000 practice MCQs across all systems", note: "Use Mostly Medicine AMC MCQ for spaced repetition" },
       { id: "c1d", text: "Cover all major systems: Cardiology, Respiratory, Gastro, Neurology, Endocrinology, O&G, Paediatrics, Psychiatry, Surgery, MSK, Dermatology" },
       { id: "c1e", text: "Study eTG (Therapeutic Guidelines) for Australian treatment protocols" },
       { id: "c1f", text: "Learn Australian drug names, doses, and first-line choices" },
       { id: "c1g", text: "Focus on population health, screening, and preventive care (RACGP Red Book)" },
       { id: "c1h", text: "Review ethics — AMC Good Medical Practice framework" },
       { id: "c1i", text: "Practice timed mock exams (150 questions in 3.5 hours)" },
-      { id: "c1j", text: "Book CAT 1 exam at a Pearson VUE test centre in Australia" },
+      { id: "c1j", text: "Book AMC MCQ exam at a Pearson VUE test centre in Australia" },
       { id: "c1k", text: "Confirm test centre location and bring valid photo ID on exam day" },
-      { id: "c1l", text: "Receive CAT 1 result (pass/fail) — allows progression to CAT 2" },
+      { id: "c1l", text: "Receive AMC MCQ result (pass/fail) — allows progression to AMC Handbook AI RolePlay" },
     ],
   },
   {
     id: "cat2",
     emoji: "🩺",
-    title: "AMC CAT 2 — Clinical Exam",
+    title: "AMC Handbook AI RolePlay — Clinical Exam",
     tag: "STEP 3",
     tagColor: "text-pink-300 bg-pink-900/40 border-pink-700/40",
     gradient: "from-pink-950/80 via-rose-950/60 to-slate-900/80",
     border: "border-pink-800/30",
     items: [
-      { id: "c2a", text: "Read the AMC CAT 2 Clinical Examination Handbook thoroughly" },
+      { id: "c2a", text: "Read the AMC Handbook AI RolePlay Clinical Examination Handbook thoroughly" },
       { id: "c2b", text: "Understand the OSCE format: 16 stations × 8 minutes each", note: "Each station has a 2-min reading time outside the door" },
       { id: "c2c", text: "Learn the 7 clinical domains: History, Physical Exam, Diagnosis, Investigations, Management, Communication, Procedural" },
-      { id: "c2d", text: "Study all 151 official MCAT cases across clinical categories", note: "Available in Mostly Medicine CAT 2 roleplays" },
+      { id: "c2d", text: "Study all 151 official MCAT cases across clinical categories", note: "Available in Mostly Medicine AMC Handbook AI RolePlay" },
       { id: "c2e", text: "Practise structured clinical consultations out loud — don't just read" },
       { id: "c2f", text: "Master the Calgary-Cambridge communication model for patient-centred consultations" },
       { id: "c2g", text: "Practise breaking bad news using SPIKES / ABCDE framework" },
@@ -81,7 +81,7 @@ const sections: Section[] = [
       { id: "c2j", text: "Learn key procedural steps: suturing, IV cannulation, airway management, CPR" },
       { id: "c2k", text: "Do mock OSCE sessions with a partner — simulate exam conditions" },
       { id: "c2l", text: "Receive AI feedback after each Mostly Medicine roleplay session" },
-      { id: "c2m", text: "Book CAT 2 exam at AMC Clinical Examination Centre (Melbourne or Adelaide)" },
+      { id: "c2m", text: "Book AMC Handbook AI RolePlay exam at AMC Clinical Examination Centre (Melbourne or Adelaide)" },
     ],
   },
   {
@@ -93,7 +93,7 @@ const sections: Section[] = [
     gradient: "from-emerald-950/80 to-slate-900/80",
     border: "border-emerald-800/30",
     items: [
-      { id: "r1", text: "Receive AMC Certificate (issued after passing both CAT 1 and CAT 2)" },
+      { id: "r1", text: "Receive AMC Certificate (issued after passing both AMC MCQ and AMC Handbook AI RolePlay)" },
       { id: "r2", text: "Apply for General Registration with AHPRA (ahpra.gov.au)" },
       { id: "r3", text: "Submit AHPRA application: AMC Certificate, identity documents, English proficiency (if required), criminal history check" },
       { id: "r4", text: "Obtain Professional Indemnity Insurance before starting work" },
@@ -132,14 +132,14 @@ const sections: Section[] = [
     border: "border-cyan-800/30",
     items: [
       { id: "t1", text: "MQA assessment: allow 3–6 months from submission to outcome" },
-      { id: "t2", text: "CAT 1 preparation: most candidates study 4–9 months" },
-      { id: "t3", text: "CAT 1 → CAT 2 gap: minimum 6 weeks; most candidates allow 3–6 months" },
-      { id: "t4", text: "CAT 2 preparation: most candidates dedicate 3–6 months of focused OSCE practice" },
+      { id: "t2", text: "AMC MCQ preparation: most candidates study 4–9 months" },
+      { id: "t3", text: "AMC MCQ → AMC Handbook AI RolePlay gap: minimum 6 weeks; most candidates allow 3–6 months" },
+      { id: "t4", text: "AMC Handbook AI RolePlay preparation: most candidates dedicate 3–6 months of focused OSCE practice" },
       { id: "t5", text: "AHPRA registration: 4–8 weeks after submitting complete application" },
       { id: "t6", text: "RMO start date: February (main intake) — apply the preceding year" },
-      { id: "t7", text: "Budget for exam fees: MQA + CAT 1 + CAT 2 combined is approximately AUD $3,000–$4,000" },
+      { id: "t7", text: "Budget for exam fees: MQA + AMC MCQ + AMC Handbook AI RolePlay combined is approximately AUD $3,000–$4,000" },
       { id: "t8", text: "Join IMG support groups (Facebook, Reddit r/medicine_australia) for peer support" },
-      { id: "t9", text: "Find a study partner for CAT 2 roleplay practice — consistency is key" },
+      { id: "t9", text: "Find a study partner for AMC Handbook AI RolePlay practice — consistency is key" },
     ],
   },
 ];
@@ -332,7 +332,7 @@ export default function AMCChecklistPage() {
               href="/dashboard/cat1"
               className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all backdrop-blur-sm"
             >
-              Practice CAT 1 MCQs →
+              Practice AMC MCQ questions →
             </Link>
           </div>
           <p className="text-xs text-slate-600 mt-5">No credit card · Instant access · Cancel anytime</p>

@@ -4,7 +4,7 @@ import LandingClient, { type BlueprintRow, type RecentAttempt } from "./LandingC
 import UpgradeGate from "./UpgradeGate";
 
 export const metadata = {
-  title: "AI Clinical RolePlay Cases — Mostly Medicine",
+  title: "AMC Clinical AI RolePlay Cases — Mostly Medicine",
   description: "Original AI-generated AMC-style practice cases inspired by broader clinical patterns",
 };
 

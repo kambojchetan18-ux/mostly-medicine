@@ -7,7 +7,7 @@ interface Props {
 
 const COPY = {
   acrp_solo: {
-    title: "AI Clinical RolePlay — Solo",
+    title: "AMC Clinical AI RolePlay — Solo",
     bullets: [
       "Unlimited AI-generated AMC-style cases",
       "Voice-driven 8-minute consultations with TTS responses",
@@ -16,7 +16,7 @@ const COPY = {
     minPlan: "Pro",
   },
   acrp_live: {
-    title: "AI Clinical RolePlay — Live (2-player)",
+    title: "AMC Clinical AI RolePlay — Live (2-player)",
     bullets: [
       "Practice with a real partner over video + audio",
       "One plays doctor, one plays patient — both get briefings",
@@ -25,7 +25,7 @@ const COPY = {
     minPlan: "Enterprise",
   },
   roleplay: {
-    title: "AMC Handbook RolePlay — CAT 2",
+    title: "AMC Handbook AI RolePlay",
     bullets: [
       "Practice with handbook-aligned AMC scenarios",
       "Voice-enabled 8-minute consultations with the AI patient",
@@ -34,7 +34,7 @@ const COPY = {
     minPlan: "Pro",
   },
   mcq: {
-    title: "AMC CAT 1 — MCQ Practice",
+    title: "AMC MCQ — Practice",
     bullets: [
       "3,000+ AMC-style MCQs across 14 topics",
       "Spaced-repetition recalls + smart explanations",

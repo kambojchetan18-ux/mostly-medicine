@@ -7,11 +7,11 @@ const anthropic = new Anthropic();
 const SYSTEM_PROMPT = `You are a social media content creator for MostlyMedicine — an AMC exam prep platform for International Medical Graduates (IMGs) in Australia.
 
 Built by Dr. Amandeep Kamboj (IMG herself, co-founder) and her husband Chetan (tech co-founder).
-Key features: CAT 1 MCQ practice, CAT 2 AI-powered roleplay scenarios.
+Key features: AMC MCQ practice, AMC Handbook AI RolePlay scenarios.
 Website: mostlymedicine.com. Mobile app coming soon.
 
 Voice: Authentic, warm, doctor-to-doctor. Real struggles, real empathy. Never salesy.
-Target: IMGs preparing for AMC CAT 1 and CAT 2 exams in Australia.`;
+Target: IMGs preparing for AMC MCQ and AMC Handbook AI RolePlay exams in Australia.`;
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -95,8 +95,8 @@ Distribution across the month:
 Monthly theme arc:
 Week 1 (days 1-7): MostlyMedicine introduction and launch
 Week 2 (days 8-14): IMG struggles — paperwork, finances, isolation, recognition
-Week 3 (days 15-21): CAT 1 prep — MCQ format, reasoning vs recall, strategies
-Week 4 (days 22-28): CAT 2 prep — roleplay anxiety, communication, AI practice
+Week 3 (days 15-21): AMC MCQ prep — MCQ format, reasoning vs recall, strategies
+Week 4 (days 22-28): AMC Handbook AI RolePlay prep — roleplay anxiety, communication, AI practice
 Days 29+: Community, feedback, mobile app teaser
 
 Captions max 250 words. Authentic, not salesy. Hashtags max 10.

@@ -4,7 +4,7 @@ import { checkModulePermission } from "@/lib/permissions";
 import UpgradeGate from "../ai-roleplay/UpgradeGate";
 import Cat2Client from "./Cat2Client";
 
-export const metadata = { title: "AMC CAT 2 — Mostly Medicine" };
+export const metadata = { title: "AMC Handbook AI RolePlay — Mostly Medicine" };
 
 export default async function Cat2Page() {
   const supabase = await createClient();

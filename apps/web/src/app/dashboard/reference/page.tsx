@@ -335,12 +335,12 @@ const referenceData: {
   {
     id: "amc",
     title: "AMC Exam Guidelines",
-    subtitle: "CAT 1 & CAT 2 blueprints and marking criteria",
+    subtitle: "AMC MCQ & AMC Handbook AI RolePlay blueprints and marking criteria",
     icon: "📘",
     color: "border-blue-200 bg-blue-50",
     sections: [
       {
-        heading: "AMC CAT 1 — Computer Adaptive Test",
+        heading: "AMC MCQ — Computer Adaptive Test",
         entries: [
           {
             title: "Format",
@@ -357,7 +357,7 @@ const referenceData: {
         ],
       },
       {
-        heading: "AMC CAT 2 — Clinical Examination",
+        heading: "AMC Handbook AI RolePlay — Clinical Examination",
         entries: [
           {
             title: "Format",

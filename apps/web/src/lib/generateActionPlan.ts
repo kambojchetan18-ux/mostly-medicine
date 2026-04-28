@@ -38,7 +38,7 @@ export function generateActionPlan(profile: IMGProfile): ActionStep[] {
       title: "Choose: AMC Specialist Pathway or Standard Pathway",
       urgency: "critical",
       timeEstimate: "Decision — make this first",
-      description: `You hold ${qual}. In Australia, overseas specialists can either (a) go through the AMC Standard Pathway (CAT1 + CAT2 + AHPRA General Registration) and then apply for specialist positions, or (b) apply directly to the relevant specialist college for overseas-trained specialist (OTS) assessment. Option (b) is faster and leads to AHPRA Specialist Registration. Most college assessments take 3–6 months.`,
+      description: `You hold ${qual}. In Australia, overseas specialists can either (a) go through the AMC Standard Pathway (AMC MCQ + AMC Handbook AI RolePlay + AHPRA General Registration) and then apply for specialist positions, or (b) apply directly to the relevant specialist college for overseas-trained specialist (OTS) assessment. Option (b) is faster and leads to AHPRA Specialist Registration. Most college assessments take 3–6 months.`,
       link: "/dashboard/jobs/specialist",
       linkText: "View Specialist Pathway Guide",
     });
@@ -89,39 +89,39 @@ export function generateActionPlan(profile: IMGProfile): ActionStep[] {
     });
   }
 
-  // AMC CAT 1
+  // AMC MCQ
   if (profile.amc_cat1 !== "passed") {
     add({
       title: profile.amc_cat1 === "scheduled"
-        ? "AMC CAT 1 — Scheduled. Keep Preparing."
-        : "Register for AMC CAT 1 (MCQ Exam)",
+        ? "AMC MCQ — Scheduled. Keep Preparing."
+        : "Register for AMC MCQ Exam",
       urgency: profile.english_test === "not_done" ? "high" : "critical",
       timeEstimate: profile.amc_cat1 === "scheduled"
         ? "Exam date already booked — continue daily practice"
         : "Register today — exam available year-round at Pearson VUE centres",
       description: profile.amc_cat1 === "scheduled"
-        ? "You have scheduled your AMC CAT 1 — great. The exam is 150 MCQs over 3.5 hours covering all major specialties using Australian clinical guidelines. Use Mostly Medicine's CAT 1 practice bank daily. Focus on emergency presentations, pharmacology, and common chronic disease management."
-        : "The AMC CAT 1 is a 150-question computer-adaptive MCQ exam covering all major medical specialties. It tests clinical knowledge using Australian guidelines and is a prerequisite for AHPRA registration. Register at amc.org.au → 'AMC Computer Adaptive Test'. Use Mostly Medicine's 3,000+ question bank — built specifically for this exam.",
+        ? "You have scheduled your AMC MCQ — great. The exam is 150 MCQs over 3.5 hours covering all major specialties using Australian clinical guidelines. Use Mostly Medicine's AMC MCQ practice bank daily. Focus on emergency presentations, pharmacology, and common chronic disease management."
+        : "The AMC MCQ is a 150-question computer-adaptive MCQ exam covering all major medical specialties. It tests clinical knowledge using Australian guidelines and is a prerequisite for AHPRA registration. Register at amc.org.au → 'AMC Computer Adaptive Test'. Use Mostly Medicine's 3,000+ question bank — built specifically for this exam.",
       link: "https://www.amc.org.au/assessment/amc-computer-adaptive-test/",
-      linkText: "AMC CAT 1 Info",
+      linkText: "AMC MCQ Info",
     });
   }
 
-  // AMC CAT 2
+  // AMC Handbook AI RolePlay
   if (profile.amc_cat1 === "passed" && profile.amc_cat2 !== "passed") {
     add({
       title: profile.amc_cat2 === "scheduled"
-        ? "AMC CAT 2 — Scheduled. Practice OSCE Skills Daily."
-        : "Register for AMC CAT 2 (Clinical Exam)",
+        ? "AMC Handbook AI RolePlay — Scheduled. Practice OSCE Skills Daily."
+        : "Register for AMC Handbook AI RolePlay (Clinical Exam)",
       urgency: "critical",
       timeEstimate: profile.amc_cat2 === "scheduled"
         ? "Exam booked — intensive OSCE prep now"
         : "Register at amc.org.au — limited exam spots, book early",
       description: profile.amc_cat2 === "scheduled"
-        ? "You have scheduled your AMC CAT 2. This is a 16-station OSCE (8 min each) testing clinical skills, communication, and management with Australian standards. Focus on: handover, breaking bad news, obtaining consent, and common emergency scenarios. Practice speaking out loud — examiners assess communication as much as clinical content."
-        : "AMC CAT 2 is a 16-station OSCE held in Melbourne and Sydney. Each station is 8 minutes. Stations include history-taking, physical examination, communication, and management planning. Register at amc.org.au. Once booked, start structured OSCE practice — Mostly Medicine's CAT 2 modules follow the official exam blueprint.",
+        ? "You have scheduled your AMC Handbook AI RolePlay. This is a 16-station OSCE (8 min each) testing clinical skills, communication, and management with Australian standards. Focus on: handover, breaking bad news, obtaining consent, and common emergency scenarios. Practice speaking out loud — examiners assess communication as much as clinical content."
+        : "AMC Handbook AI RolePlay is a 16-station OSCE held in Melbourne and Sydney. Each station is 8 minutes. Stations include history-taking, physical examination, communication, and management planning. Register at amc.org.au. Once booked, start structured OSCE practice — Mostly Medicine's AMC Handbook AI RolePlay modules follow the official exam blueprint.",
       link: "https://www.amc.org.au/assessment/clinical-examination/",
-      linkText: "AMC CAT 2 Info",
+      linkText: "AMC Handbook AI RolePlay Info",
     });
   }
 

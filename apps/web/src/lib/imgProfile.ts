@@ -46,13 +46,13 @@ export function computeReadiness(p: IMGProfile): {
       blocker: true,
     },
     {
-      label:   "AMC CAT 1 (MCQ)",
+      label:   "AMC MCQ",
       cleared: p.amc_cat1 === "passed",
       weight:  15,
       blocker: true,
     },
     {
-      label:   "AMC CAT 2 (Clinical)",
+      label:   "AMC Handbook AI RolePlay (Clinical)",
       cleared: p.amc_cat2 === "passed",
       weight:  20,
       blocker: true,
@@ -111,12 +111,12 @@ export const PATHWAY_LABELS: Record<Pathway, { label: string; color: string; nex
     next:  "Sit OET (recommended) or IELTS Academic. OET is medical-specific and preferred by AHPRA.",
   },
   need_cat1: {
-    label: "Step 2 — AMC CAT 1 (MCQ)",
+    label: "Step 2 — AMC MCQ",
     color: "text-orange-700 bg-orange-50 border-orange-200",
-    next:  "Register at amc.org.au. Computer-based, 150 MCQs over 3.5 hours. Mostly Medicine CAT 1 practice helps here.",
+    next:  "Register at amc.org.au. Computer-based, 150 MCQs over 3.5 hours. Mostly Medicine AMC MCQ practice helps here.",
   },
   need_cat2: {
-    label: "Step 3 — AMC CAT 2 (Clinical)",
+    label: "Step 3 — AMC Handbook AI RolePlay (Clinical)",
     color: "text-amber-700 bg-amber-50 border-amber-200",
     next:  "OSCE-style exam, 16 stations × 8 min. Practice here with AI roleplays based on the official AMC handbook.",
   },

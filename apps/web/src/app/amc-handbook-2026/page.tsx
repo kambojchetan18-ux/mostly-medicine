@@ -5,7 +5,7 @@ const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-handbook-2026`;
 const TITLE = "AMC Handbook 2026 Summary — Subjects, Weighting, Recent Changes";
 const DESCRIPTION =
-  "A clinician's summary of the AMC Handbook 2026 for International Medical Graduates: subject areas, blueprint weighting, recent changes for 2026, and how to use the Handbook as a structured study spine for AMC CAT 1 and CAT 2.";
+  "A clinician's summary of the AMC Handbook 2026 for International Medical Graduates: subject areas, blueprint weighting, recent changes for 2026, and how to use the Handbook as a structured study spine for AMC MCQ and AMC Handbook AI RolePlay.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -57,7 +57,7 @@ const faqSchema = {
       name: "What is the AMC Handbook?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The AMC Handbook is the Australian Medical Council's official examination reference. It comes in two editions: the Handbook of Multiple Choice Questions (covering AMC CAT 1) and the Handbook of Clinical Assessment (covering AMC CAT 2 / MCAT). Together they describe the blueprint, sample items, marking domains, and the breadth of clinical conditions an Australian intern is expected to handle.",
+        text: "The AMC Handbook is the Australian Medical Council's official examination reference. It comes in two editions: the Handbook of Multiple Choice Questions (covering AMC MCQ) and the Handbook of Clinical Assessment (covering AMC Handbook AI RolePlay / MCAT). Together they describe the blueprint, sample items, marking domains, and the breadth of clinical conditions an Australian intern is expected to handle.",
       },
     },
     {
@@ -65,7 +65,7 @@ const faqSchema = {
       name: "How is the AMC Handbook structured?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Each Handbook is organised by clinical discipline (internal medicine, surgery, paediatrics, O&G, psychiatry, general practice, emergency, population health) with sub-chapters for major condition categories. Sample MCQs appear with worked answers in the CAT 1 Handbook; sample stations with marking criteria appear in the CAT 2 Handbook.",
+        text: "Each Handbook is organised by clinical discipline (internal medicine, surgery, paediatrics, O&G, psychiatry, general practice, emergency, population health) with sub-chapters for major condition categories. Sample MCQs appear with worked answers in the AMC MCQ Handbook; sample stations with marking criteria appear in the AMC Handbook AI RolePlay handbook.",
       },
     },
     {
@@ -86,7 +86,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Is the AMC Handbook enough on its own to pass CAT 1?",
+      name: "Is the AMC Handbook enough on its own to pass AMC MCQ?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "No. The Handbook defines the scope but does not provide the depth needed to actually pass. You still need a primary text (Murtagh's General Practice), guideline references (RACGP Red Book, Therapeutic Guidelines), and at least 3,000 practice MCQs. The Handbook is the spine; the rest is the body.",
@@ -158,12 +158,12 @@ export default function AmcHandbook2026Page() {
             <li>
               <strong>Handbook of Multiple Choice Questions</strong> — defines
               the scope, blueprint, and sample items for{" "}
-              <Link href="/amc-cat1">AMC CAT 1 (MCQ)</Link>.
+              <Link href="/amc-cat1">AMC MCQ</Link>.
             </li>
             <li>
               <strong>Handbook of Clinical Assessment</strong> — defines the
               station blueprint, marking domains, and sample stations for{" "}
-              <Link href="/amc-cat2">AMC CAT 2 (Clinical / MCAT)</Link>.
+              <Link href="/amc-cat2">AMC Handbook AI RolePlay (Clinical / MCAT)</Link>.
             </li>
           </ul>
           <p>
@@ -179,8 +179,8 @@ export default function AmcHandbook2026Page() {
           <p>
             Each Handbook is organised by clinical discipline. Within each
             discipline, sub-chapters cluster conditions by system or theme.
-            The same disciplines and weightings apply to both CAT 1 and
-            CAT 2:
+            The same disciplines and weightings apply to both AMC MCQ and
+            AMC Handbook AI RolePlay:
           </p>
           <ul>
             <li>
@@ -217,8 +217,8 @@ export default function AmcHandbook2026Page() {
             </li>
           </ul>
           <p>
-            The CAT 1 Handbook prints sample MCQs with worked explanations.
-            The CAT 2 Handbook prints sample station vignettes, the
+            The AMC MCQ Handbook prints sample MCQs with worked explanations.
+            The AMC Handbook AI RolePlay handbook prints sample station vignettes, the
             simulated-patient instructions, and the marking criteria mapped
             to the four domains (data gathering, clinical reasoning,
             communication, professionalism).
@@ -237,7 +237,7 @@ export default function AmcHandbook2026Page() {
             content has been expanded across all disciplines, not just the
             population health chapter. Expect items on culturally safe
             consultations, the social determinants of health, and the
-            rheumatic heart disease screening framework. CAT 2 stations
+            rheumatic heart disease screening framework. AMC Handbook AI RolePlay stations
             increasingly include Aboriginal simulated patients with explicit
             cultural-safety marking criteria.
           </p>
@@ -289,10 +289,10 @@ export default function AmcHandbook2026Page() {
               them, your readiness in that discipline is overstated.
             </li>
             <li>
-              <strong>Map CAT 2 stations to the same chapters.</strong> The
+              <strong>Map AMC Handbook AI RolePlay stations to the same chapters.</strong> The
               clinical Handbook&apos;s station blueprints align with the same
               disciplines. Run a roleplay against the corresponding sample
-              station immediately after finishing your CAT 1 block.
+              station immediately after finishing your AMC MCQ block.
             </li>
             <li>
               <strong>Review changes annually.</strong> Confirm you are on
@@ -324,8 +324,8 @@ export default function AmcHandbook2026Page() {
               like Mostly Medicine&apos;s does this automatically.
             </li>
             <li>
-              <strong>Roleplay rehearsal.</strong> CAT 2 sample stations are
-              read material; passing CAT 2 needs spoken, timed, feedback-loop
+              <strong>Roleplay rehearsal.</strong> AMC Handbook AI RolePlay sample stations are
+              read material; passing AMC Handbook AI RolePlay needs spoken, timed, feedback-loop
               roleplay.
             </li>
           </ul>
@@ -343,13 +343,13 @@ export default function AmcHandbook2026Page() {
           <ul>
             <li>
               <Link href="/dashboard/cat1">
-                <strong>3,000+ AMC CAT 1 MCQs</strong>
+                <strong>3,000+ AMC MCQ questions</strong>
               </Link>{" "}
               tagged to AMC blueprint disciplines and Handbook sub-topics.
             </li>
             <li>
               <Link href="/dashboard/cat2">
-                <strong>151+ AMC CAT 2 roleplays</strong>
+                <strong>151+ AMC Handbook AI RolePlay scenarios</strong>
               </Link>{" "}
               mapped to clinical Handbook station archetypes with examiner-
               grade feedback against the four domains.
@@ -385,8 +385,8 @@ export default function AmcHandbook2026Page() {
 
           <h3>What is the AMC Handbook?</h3>
           <p>
-            The AMC&apos;s official two-volume blueprint covering CAT 1 (MCQ)
-            and CAT 2 (Clinical) — disciplines, sub-topics, sample items,
+            The AMC&apos;s official two-volume blueprint covering AMC MCQ
+            and AMC Handbook AI RolePlay (Clinical) — disciplines, sub-topics, sample items,
             and marking criteria.
           </p>
 

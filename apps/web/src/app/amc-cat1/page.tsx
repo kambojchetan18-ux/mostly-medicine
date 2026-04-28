@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-cat1`;
-const TITLE = "AMC CAT 1 (MCQ) Exam 2026 — Format, Syllabus, Pass Mark, Strategy";
+const TITLE = "AMC MCQ (MCQ) Exam 2026 — Format, Syllabus, Pass Mark, Strategy";
 const DESCRIPTION =
-  "Definitive guide to AMC CAT 1, the Australian Medical Council MCQ exam for IMGs. Format, syllabus weighting, sample question patterns, Angoff pass mark, study schedule, common pitfalls, and AMC Handbook references. Updated for 2026.";
+  "Definitive guide to AMC MCQ, the Australian Medical Council MCQ exam for IMGs. Format, syllabus weighting, sample question patterns, Angoff pass mark, study schedule, common pitfalls, and AMC Handbook references. Updated for 2026.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -32,7 +32,7 @@ const articleSchema = {
   dateModified: "2026-04-27",
   inLanguage: "en-AU",
   about: [
-    { "@type": "Thing", name: "AMC CAT 1" },
+    { "@type": "Thing", name: "AMC MCQ" },
     { "@type": "Thing", name: "Multiple Choice Question Examination" },
     { "@type": "Thing", name: "International Medical Graduate" },
   ],
@@ -44,7 +44,7 @@ const breadcrumbSchema = {
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
     { "@type": "ListItem", position: 2, name: "AMC Exam Guide", item: `${SITE_URL}/amc` },
-    { "@type": "ListItem", position: 3, name: "AMC CAT 1", item: PAGE_URL },
+    { "@type": "ListItem", position: 3, name: "AMC MCQ", item: PAGE_URL },
   ],
 };
 
@@ -54,15 +54,15 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "How many questions are on the AMC CAT 1 exam?",
+      name: "How many questions are on the AMC MCQ exam?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "AMC CAT 1 contains 150 A-type single-best-answer multiple-choice questions delivered in a single computer-based session lasting 3.5 hours. All questions are scored; there are no pilot/unscored items disclosed to the candidate.",
+        text: "AMC MCQ contains 150 A-type single-best-answer multiple-choice questions delivered in a single computer-based session lasting 3.5 hours. All questions are scored; there are no pilot/unscored items disclosed to the candidate.",
       },
     },
     {
       "@type": "Question",
-      name: "How is the AMC CAT 1 pass mark determined?",
+      name: "How is the AMC MCQ pass mark determined?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "The AMC uses a modified Angoff standard-setting process. A panel of expert clinicians estimates the probability that a borderline-competent intern would answer each question correctly. The aggregated estimate becomes the criterion-referenced cut score, so the pass mark is fixed by content difficulty rather than by candidate ranking.",
@@ -70,15 +70,15 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "What subjects are covered in AMC CAT 1?",
+      name: "What subjects are covered in AMC MCQ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "AMC CAT 1 covers internal medicine, surgery, paediatrics, obstetrics and gynaecology, psychiatry, general practice, emergency medicine, and population/preventive health. Approximately 25% of items have a population-health or RACGP preventive-care emphasis, which catches many IMGs trained in tertiary-only systems.",
+        text: "AMC MCQ covers internal medicine, surgery, paediatrics, obstetrics and gynaecology, psychiatry, general practice, emergency medicine, and population/preventive health. Approximately 25% of items have a population-health or RACGP preventive-care emphasis, which catches many IMGs trained in tertiary-only systems.",
       },
     },
     {
       "@type": "Question",
-      name: "How long should I study for AMC CAT 1?",
+      name: "How long should I study for AMC MCQ?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Most successful candidates spend 4 to 8 months on focused preparation, completing 3,000 or more practice MCQs. Candidates with recent clinical exposure to Australian primary care often pass in the lower end of that range; those who have been out of clinical practice for over two years should plan for 8 months or longer.",
@@ -86,7 +86,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "What is the AMC CAT 1 pass rate?",
+      name: "What is the AMC MCQ pass rate?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Reported pass rates vary by sitting but typically fall between 50% and 70%. First-attempt candidates from non-English primary medical programmes have lower pass rates than UK or US-trained IMGs, largely because of unfamiliarity with Australian therapeutic guidelines.",
@@ -94,7 +94,7 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can I retake AMC CAT 1 if I fail?",
+      name: "Can I retake AMC MCQ if I fail?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Yes. There is no formal cap on the number of attempts, and resits can be scheduled at the next available test window (typically every 2 to 3 months). The AMC encourages candidates who fail to use their score report to identify weak topic areas before re-sitting.",
@@ -102,10 +102,10 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Is AMC CAT 1 a computer adaptive test?",
+      name: "Is AMC MCQ a computer adaptive test?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Despite the name 'CAT', AMC CAT 1 is not currently item-adaptive in the same way as the GRE. All candidates see 150 fixed-form items in a single session. The 'CAT' label is retained for historical/branding consistency with the AMC's computerised testing platform.",
+        text: "Despite the name 'CAT', AMC MCQ is not currently item-adaptive in the same way as the GRE. All candidates see 150 fixed-form items in a single session. The 'CAT' label is retained for historical/branding consistency with the AMC's computerised testing platform.",
       },
     },
   ],
@@ -142,10 +142,10 @@ export default function AmcCat1Page() {
       <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-violet-400 hover:prose-a:text-violet-300">
         <header className="mt-8 mb-12">
           <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
-            AMC CAT 1 Deep Dive · Updated 2026
+            AMC MCQ Deep Dive · Updated 2026
           </p>
           <h1 className="font-display font-bold mb-4">
-            AMC CAT 1: The Complete MCQ Exam Guide for IMGs
+            AMC MCQ: The Complete MCQ Exam Guide for IMGs
           </h1>
           <p className="text-slate-400 text-lg leading-relaxed">
             Format, syllabus weighting, sample question patterns, Angoff pass-mark
@@ -155,9 +155,9 @@ export default function AmcCat1Page() {
         </header>
 
         <section>
-          <h2>What is AMC CAT 1?</h2>
+          <h2>What is AMC MCQ?</h2>
           <p>
-            <strong>AMC CAT 1</strong> is the Australian Medical Council&apos;s
+            <strong>AMC MCQ</strong> is the Australian Medical Council&apos;s
             computer-based multiple-choice examination — the first of two
             assessments International Medical Graduates (IMGs) must clear to
             obtain general medical registration with the Medical Board of
@@ -166,9 +166,9 @@ export default function AmcCat1Page() {
             Australian intern at the start of postgraduate year one (PGY1).
           </p>
           <p>
-            CAT 1 is a <strong>knowledge gate</strong>. Passing it unlocks the
+            AMC MCQ is a <strong>knowledge gate</strong>. Passing it unlocks the
             right to sit{" "}
-            <Link href="/amc-cat2">AMC CAT 2 (the clinical/MCAT exam)</Link>,
+            <Link href="/amc-cat2">AMC Handbook AI RolePlay (the clinical/MCAT exam)</Link>,
             which assesses applied clinical performance.
           </p>
         </section>
@@ -250,7 +250,7 @@ export default function AmcCat1Page() {
         <section>
           <h2>Sample question patterns</h2>
           <p>
-            CAT 1 stems are clinical vignettes — never bare-fact recall. Expect
+            AMC MCQ stems are clinical vignettes — never bare-fact recall. Expect
             two recurring patterns:
           </p>
           <h3>Pattern A: Most likely diagnosis</h3>
@@ -285,7 +285,7 @@ export default function AmcCat1Page() {
         <section>
           <h2>How the pass mark is set</h2>
           <p>
-            AMC CAT 1 uses a <strong>modified Angoff standard-setting</strong>{" "}
+            AMC MCQ uses a <strong>modified Angoff standard-setting</strong>{" "}
             method. Expert clinicians independently estimate the proportion of
             borderline-competent interns who would answer each item correctly.
             The aggregated estimate per item is summed to produce the criterion
@@ -385,7 +385,7 @@ export default function AmcCat1Page() {
           <h2>Official AMC Handbook references</h2>
           <p>
             The two official references published by the AMC remain the
-            backbone of CAT 1 preparation:
+            backbone of AMC MCQ preparation:
           </p>
           <ul>
             <li>
@@ -396,7 +396,7 @@ export default function AmcCat1Page() {
             <li>
               <strong>Anthology of Medical Conditions</strong> — the AMC&apos;s
               own condensed reference covering the conditions most likely to
-              appear on CAT 1; use it as a checklist after question-bank
+              appear on AMC MCQ; use it as a checklist after question-bank
               review.
             </li>
           </ul>
@@ -410,9 +410,9 @@ export default function AmcCat1Page() {
         </section>
 
         <section>
-          <h2>How Mostly Medicine accelerates CAT 1 prep</h2>
+          <h2>How Mostly Medicine accelerates AMC MCQ prep</h2>
           <p>
-            Mostly Medicine is built for IMGs sitting CAT 1, not a general
+            Mostly Medicine is built for IMGs sitting AMC MCQ, not a general
             medical question bank with an Australia toggle. Every question is
             written against the AMC blueprint and current Australian
             guidelines.
@@ -420,7 +420,7 @@ export default function AmcCat1Page() {
           <ul>
             <li>
               <Link href="/dashboard/cat1">
-                <strong>3,000+ AMC CAT 1 MCQs</strong>
+                <strong>3,000+ AMC MCQ MCQs</strong>
               </Link>{" "}
               with AI explanations, spaced repetition, and weak-area analytics.
             </li>
@@ -444,7 +444,7 @@ export default function AmcCat1Page() {
               href="/auth/signup"
               className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
-              Start CAT 1 prep free →
+              Start AMC MCQ prep free →
             </Link>
           </p>
         </section>
@@ -452,7 +452,7 @@ export default function AmcCat1Page() {
         <section>
           <h2>Frequently asked questions</h2>
 
-          <h3>How many questions are on AMC CAT 1?</h3>
+          <h3>How many questions are on AMC MCQ?</h3>
           <p>
             150 A-type single-best-answer MCQs in a 3.5-hour computer-based
             session.
@@ -477,7 +477,7 @@ export default function AmcCat1Page() {
             available window. Use your score report to target weak domains.
           </p>
 
-          <h3>Is CAT 1 actually computer adaptive?</h3>
+          <h3>Is AMC MCQ actually computer adaptive?</h3>
           <p>
             No. All candidates receive a 150-item fixed-form paper. The
             &quot;CAT&quot; label refers to AMC&apos;s computer-based testing
@@ -494,7 +494,7 @@ export default function AmcCat1Page() {
         <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
-            For official AMC CAT 1 examination information, refer to{" "}
+            For official AMC MCQ examination information, refer to{" "}
             <a href="https://www.amc.org.au" target="_blank" rel="noopener">
               amc.org.au
             </a>

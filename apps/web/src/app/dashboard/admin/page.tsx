@@ -25,7 +25,7 @@ const MODULES = ["cat1", "cat2", "library", "jobs", "reference", "progress"];
 const PLANS   = ["free", "pro"];
 
 const MODULE_LABELS: Record<string, string> = {
-  cat1: "AMC CAT 1", cat2: "AMC CAT 2", library: "Library",
+  cat1: "AMC MCQ", cat2: "AMC Handbook AI RolePlay", library: "Library",
   jobs: "Jobs", reference: "Reference", progress: "Progress",
 };
 

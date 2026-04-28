@@ -29,7 +29,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   const perm = await checkModulePermission(supabase, "acrp_solo");
   if (!perm.allowed) {
     return Response.json(
-      { error: "Your plan does not include AI Clinical RolePlay." },
+      { error: "Your plan does not include AMC Clinical AI RolePlay." },
       { status: 403 }
     );
   }

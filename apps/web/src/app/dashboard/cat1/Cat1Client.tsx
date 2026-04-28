@@ -195,7 +195,7 @@ export default function Cat1Client() {
   if (mode === "menu") {
     return (
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC CAT 1 — MCQ Practice</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC MCQ — Practice</h2>
         <p className="text-gray-500 text-sm mb-6">
           3,000+ questions across 14 topics. Your progress is saved and spaced repetition adapts to your weak areas.
         </p>

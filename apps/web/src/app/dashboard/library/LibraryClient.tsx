@@ -46,6 +46,13 @@ const SOURCE_COLORS: Record<string, string> = {
   AMC: "bg-brand-100 text-brand-700",
 };
 
+// Display labels for AMC exam types (DB values stay as "CAT 1" / "CAT 2")
+const EXAM_TYPE_LABELS: Record<string, string> = {
+  "All": "All",
+  "CAT 1": "AMC MCQ",
+  "CAT 2": "AMC Handbook AI RolePlay",
+};
+
 export default function LibraryClient({
   topics,
   notes: initialNotes,
@@ -301,7 +308,7 @@ export default function LibraryClient({
                         selectedExamType === type ? "bg-brand-50 text-brand-700 font-medium" : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
-                      {type}
+                      {EXAM_TYPE_LABELS[type] ?? type}
                     </button>
                   ))}
                 </div>
@@ -347,7 +354,7 @@ export default function LibraryClient({
                       <div className="flex gap-1">
                         {topic.amc_exam_type?.map((type) => (
                           <span key={type} className="text-xs px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 font-medium">
-                            {type}
+                            {EXAM_TYPE_LABELS[type] ?? type}
                           </span>
                         ))}
                       </div>

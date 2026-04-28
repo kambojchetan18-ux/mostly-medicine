@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       );
     }
     return NextResponse.json(
-      { error: "Your plan does not include AI Clinical RolePlay. Upgrade to continue." },
+      { error: "Your plan does not include AMC Clinical AI RolePlay. Upgrade to continue." },
       { status: 403 }
     );
   }

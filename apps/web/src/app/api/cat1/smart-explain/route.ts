@@ -11,7 +11,7 @@ function client(): Anthropic {
   return _client;
 }
 
-const SMART_EXPLAIN_SYSTEM_PROMPT = `You are an Australian medical exam tutor for IMGs preparing for the AMC CAT 1 MCQ exam.
+const SMART_EXPLAIN_SYSTEM_PROMPT = `You are an Australian medical exam tutor for IMGs preparing for the AMC MCQ exam.
 
 Your job: when a student gets an MCQ wrong, write a short, personalised explanation that helps them remember the right answer next time.
 

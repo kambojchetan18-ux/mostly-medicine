@@ -43,7 +43,7 @@ export default function RandomCasePage() {
             href="/dashboard/ai-roleplay"
             className="mt-4 inline-block text-sm text-brand-600 underline"
           >
-            Back to AI Clinical RolePlay
+            Back to AMC Clinical AI RolePlay
           </Link>
         </>
       ) : (

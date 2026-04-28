@@ -8,8 +8,8 @@ import { computeReadiness, PATHWAY_LABELS } from "@/lib/imgProfile";
 type Step = "upload" | "processing" | "review" | "saved";
 
 const FIELD_LABELS: Record<string, string> = {
-  amc_cat1:     "AMC CAT 1 (MCQ)",
-  amc_cat2:     "AMC CAT 2 (Clinical)",
+  amc_cat1:     "AMC MCQ",
+  amc_cat2:     "AMC Handbook AI RolePlay (Clinical)",
   ahpra_status: "AHPRA Registration",
   visa_type:    "Visa Type",
   english_test: "English Test",
