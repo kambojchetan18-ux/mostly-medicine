@@ -8,6 +8,7 @@ export interface CurrentSubscription {
   hasCustomerId: boolean;
   status: string | null;
   periodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
 }
 
 interface Prices {
@@ -106,12 +107,23 @@ export default function BillingClient({ subscription, prices, flash }: Props) {
         {subscription.status && (
           <p className="mt-1 text-xs text-gray-500">
             Subscription status: <span className="font-medium">{subscription.status}</span>
-            {subscription.periodEnd && (
+            {subscription.periodEnd && !subscription.cancelAtPeriodEnd && (
               <> · renews {new Date(subscription.periodEnd).toLocaleDateString()}</>
             )}
           </p>
         )}
       </header>
+
+      {subscription.cancelAtPeriodEnd && subscription.periodEnd && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          <p className="font-semibold">⏳ Your {subscription.plan.toUpperCase()} plan is scheduled to end</p>
+          <p className="mt-0.5 text-xs text-amber-800">
+            You'll keep access until{" "}
+            <span className="font-semibold">{new Date(subscription.periodEnd).toLocaleDateString()}</span>,
+            then drop to Free. Reactivate anytime via the Billing Portal.
+          </p>
+        </div>
+      )}
 
       {flash === "success" && (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900">

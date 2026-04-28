@@ -45,6 +45,7 @@ interface SyncInput {
   priceId: string | null;
   status: string | null;
   periodEnd: number | null; // unix seconds
+  cancelAtPeriodEnd?: boolean;
 }
 
 export async function syncSubscriptionToProfile(input: SyncInput): Promise<void> {
@@ -75,16 +76,24 @@ export async function syncSubscriptionToProfile(input: SyncInput): Promise<void>
 
   const effectivePlan = isActive ? plan : "free";
 
+  const updates: Record<string, unknown> = {
+    stripe_subscription_id: input.subscriptionId,
+    subscription_status: input.status,
+    subscription_period_end: input.periodEnd
+      ? new Date(input.periodEnd * 1000).toISOString()
+      : null,
+    plan: effectivePlan,
+    updated_at: new Date().toISOString(),
+  };
+  // Only touch cancel_at_period_end when the caller knew it (subscription
+  // events). Skipping it for invoice-only events avoids stomping a true
+  // value with a default false.
+  if (input.cancelAtPeriodEnd !== undefined) {
+    updates.subscription_cancel_at_period_end = input.cancelAtPeriodEnd;
+  }
+
   await sb
     .from("user_profiles")
-    .update({
-      stripe_subscription_id: input.subscriptionId,
-      subscription_status: input.status,
-      subscription_period_end: input.periodEnd
-        ? new Date(input.periodEnd * 1000).toISOString()
-        : null,
-      plan: effectivePlan,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updates)
     .eq("stripe_customer_id", input.customerId);
 }

@@ -2,5 +2,11 @@
   "framework": "nextjs",
   "installCommand": "cd ../.. && pnpm install",
   "buildCommand": "cd ../.. && pnpm build --filter=@mostly-medicine/web",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/billing-resync",
+      "schedule": "0 4 * * *"
+    }
+  ]
 }

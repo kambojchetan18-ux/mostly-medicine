@@ -71,6 +71,7 @@ export async function POST(req: NextRequest) {
         if (subId) {
           const sub = (await stripe().subscriptions.retrieve(subId)) as unknown as Stripe.Subscription & {
             current_period_end: number;
+            cancel_at_period_end: boolean;
           };
           await syncSubscriptionToProfile({
             customerId: sub.customer as string,
@@ -78,6 +79,7 @@ export async function POST(req: NextRequest) {
             priceId: sub.items.data[0]?.price.id ?? null,
             status: sub.status,
             periodEnd: sub.current_period_end,
+            cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
           });
         }
         break;
@@ -85,13 +87,19 @@ export async function POST(req: NextRequest) {
       case "customer.subscription.created":
       case "customer.subscription.updated":
       case "customer.subscription.deleted": {
-        const sub = event.data.object as Stripe.Subscription & { current_period_end: number };
+        const sub = event.data.object as Stripe.Subscription & {
+          current_period_end: number;
+          cancel_at_period_end: boolean;
+        };
         await syncSubscriptionToProfile({
           customerId: sub.customer as string,
           subscriptionId: sub.id,
           priceId: sub.items.data[0]?.price.id ?? null,
           status: event.type === "customer.subscription.deleted" ? "canceled" : sub.status,
           periodEnd: sub.current_period_end,
+          // A subscription scheduled to cancel at period end stays "active"
+          // until the period ends — this flag is what tells the UI to warn.
+          cancelAtPeriodEnd: event.type === "customer.subscription.deleted" ? false : (sub.cancel_at_period_end ?? false),
         });
         break;
       }

@@ -18,7 +18,7 @@ export default async function BillingPage({ searchParams }: PageProps) {
 
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("plan, role, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_period_end")
+    .select("plan, role, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_period_end, subscription_cancel_at_period_end")
     .eq("id", user.id)
     .single();
 
@@ -28,6 +28,7 @@ export default async function BillingPage({ searchParams }: PageProps) {
     hasCustomerId: Boolean(profile?.stripe_customer_id),
     status: profile?.subscription_status ?? null,
     periodEnd: profile?.subscription_period_end ?? null,
+    cancelAtPeriodEnd: Boolean(profile?.subscription_cancel_at_period_end),
   };
 
   // Price IDs are public (they show up in checkout URLs anyway). Pass them
