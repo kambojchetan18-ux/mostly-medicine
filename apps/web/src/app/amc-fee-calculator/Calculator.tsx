@@ -91,7 +91,7 @@ export default function Calculator() {
                 onClick={() => setCat1Attempts(n)}
                 className={`flex-1 py-3 rounded-xl font-display font-bold transition-all ${
                   cat1Attempts === n
-                    ? "bg-violet-600 text-white shadow-glow-violet"
+                    ? "bg-brand-600 text-white shadow-glow-teal"
                     : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
                 }`}
                 aria-pressed={cat1Attempts === n}
@@ -166,7 +166,7 @@ export default function Calculator() {
             role="switch"
             aria-checked={includeEpic}
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              includeEpic ? "bg-violet-600" : "bg-slate-700"
+              includeEpic ? "bg-brand-600" : "bg-slate-700"
             }`}
           >
             <span
@@ -188,7 +188,7 @@ export default function Calculator() {
             role="switch"
             aria-checked={includeAhpra}
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              includeAhpra ? "bg-violet-600" : "bg-slate-700"
+              includeAhpra ? "bg-brand-600" : "bg-slate-700"
             }`}
           >
             <span

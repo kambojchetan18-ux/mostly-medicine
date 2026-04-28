@@ -58,7 +58,7 @@ const MILESTONES: Milestone[] = [
     label: "MCQ revision phase",
     detail: "Target weak areas. Spaced repetition for high-yield facts. 1,500+ more MCQs.",
     emoji: "🔁",
-    color: "from-violet-900/40 to-violet-950/30 border-violet-800/40",
+    color: "from-brand-900/40 to-brand-950/30 border-brand-800/40",
   },
   {
     id: "mcq-mocks",
@@ -67,7 +67,7 @@ const MILESTONES: Milestone[] = [
     label: "Full mock exams",
     detail: "Sit at least 3 timed full-length 150-question mocks (3.5 hours) under exam conditions.",
     emoji: "⏱️",
-    color: "from-violet-900/40 to-violet-950/30 border-violet-800/40",
+    color: "from-brand-900/40 to-brand-950/30 border-brand-800/40",
   },
   {
     id: "cat1-exam",
@@ -171,7 +171,7 @@ export default function Planner() {
               type="date"
               value={cat1Date}
               onChange={(e) => setCat1Date(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white font-medium focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30 transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white font-medium focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors"
             />
           </div>
           <div>
@@ -205,7 +205,7 @@ export default function Planner() {
                 className={`absolute -left-[2.45rem] top-2 w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
                   past
                     ? "bg-slate-800 border-slate-700 text-slate-500"
-                    : "bg-violet-600 border-violet-400 text-white"
+                    : "bg-brand-600 border-brand-400 text-white"
                 }`}
                 aria-hidden
               >
@@ -219,7 +219,7 @@ export default function Planner() {
                     <span className="text-2xl">{m.emoji}</span>
                     <h3 className="font-display font-bold text-white text-lg">{m.label}</h3>
                   </div>
-                  <p className={`text-sm font-mono ${past ? "text-slate-500 line-through" : "text-violet-200"}`}>
+                  <p className={`text-sm font-mono ${past ? "text-slate-500 line-through" : "text-brand-200"}`}>
                     {fmtDate(m.date)}
                   </p>
                 </div>

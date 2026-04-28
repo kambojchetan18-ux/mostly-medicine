@@ -176,7 +176,7 @@ export default function HomePage() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-violet hover:shadow-[0_0_40px_rgba(139,92,246,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
@@ -187,8 +187,8 @@ export default function HomePage() {
       <section className="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 pt-16 pb-24 text-center">
 
         {/* Badge */}
-        <div className="inline-flex items-center gap-2.5 bg-violet-900/30 border border-violet-700/40 rounded-full px-5 py-2 text-xs text-violet-300 font-semibold mb-10 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-pulse shrink-0" />
+        <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-10 backdrop-blur-sm">
+          <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
           AMC Handbook 2026 · AI-Powered Roleplays · Official MCAT Scenarios
         </div>
 

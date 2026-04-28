@@ -47,7 +47,7 @@ function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
   return (
     <article className="not-prose mb-8 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
       <div className="mb-3 flex items-center gap-3">
-        <span className="rounded-full bg-violet-900/40 border border-violet-700/40 text-violet-300 text-xs font-bold uppercase tracking-widest px-3 py-1">
+        <span className="rounded-full bg-brand-900/40 border border-brand-700/40 text-brand-300 text-xs font-bold uppercase tracking-widest px-3 py-1">
           Question {index + 1}
         </span>
         <span className="text-xs uppercase tracking-widest text-slate-500">
@@ -79,7 +79,7 @@ function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
         })}
       </ol>
       <details className="group rounded-lg border border-slate-800 bg-slate-950/60 p-4">
-        <summary className="cursor-pointer list-none text-sm font-bold text-violet-300 group-open:text-violet-200">
+        <summary className="cursor-pointer list-none text-sm font-bold text-brand-300 group-open:text-brand-200">
           Show explanation
         </summary>
         <p className="mt-3 text-sm leading-relaxed text-slate-300">
@@ -187,9 +187,9 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
         </Link>
       </nav>
 
-      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-violet-400 hover:prose-a:text-violet-300">
+      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
         <header className="mt-8 mb-12">
-          <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
             AMC MCQ · {spec.name}
           </p>
           <h1 className="font-display font-bold mb-4">

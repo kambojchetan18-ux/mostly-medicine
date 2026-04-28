@@ -308,7 +308,7 @@ export default function Wizard() {
               <button
                 key={opt.id}
                 onClick={() => choose(opt.id)}
-                className="w-full text-left px-5 py-4 rounded-2xl border border-slate-700 bg-slate-900/70 hover:bg-slate-800/80 hover:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all"
+                className="w-full text-left px-5 py-4 rounded-2xl border border-slate-700 bg-slate-900/70 hover:bg-slate-800/80 hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all"
               >
                 <p className="font-semibold text-white text-base">{opt.label}</p>
                 {opt.detail && <p className="text-xs text-slate-400 mt-1">{opt.detail}</p>}
@@ -354,13 +354,13 @@ export default function Wizard() {
           </div>
 
           <div className="mt-7">
-            <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
+            <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
               Recommended next steps
             </p>
             <ul className="space-y-2.5">
               {verdict.next.map((n, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-violet-600 text-white text-xs font-bold flex items-center justify-center">
+                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-brand-600 text-white text-xs font-bold flex items-center justify-center">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{n}</span>

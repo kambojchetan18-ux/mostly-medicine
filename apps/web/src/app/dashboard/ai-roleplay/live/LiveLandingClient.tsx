@@ -81,7 +81,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
-      <header className="rounded-2xl bg-gradient-to-br from-fuchsia-600 to-violet-700 p-8 text-white shadow-lg">
+      <header className="rounded-2xl bg-gradient-to-br from-fuchsia-600 to-brand-700 p-8 text-white shadow-lg">
         <Link href="/dashboard/ai-roleplay" className="text-xs text-white/70 hover:text-white">
           ← Solo mode
         </Link>
@@ -116,7 +116,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
                   onClick={() => setHostRole(r)}
                   className={`rounded-xl border px-3 py-2 text-sm font-medium capitalize transition ${
                     hostRole === r
-                      ? "border-violet-500 bg-violet-50 text-violet-700"
+                      ? "border-brand-500 bg-brand-50 text-brand-700"
                       : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
                   }`}
                 >
@@ -147,7 +147,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
               type="button"
               disabled={pending}
               onClick={() => host(!blueprintId)}
-              className="flex-1 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-violet-700 disabled:opacity-60"
+              className="flex-1 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:opacity-60"
             >
               {pending ? "Creating…" : "Create session"}
             </button>

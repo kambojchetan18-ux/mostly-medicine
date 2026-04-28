@@ -83,7 +83,7 @@ export default function AmcMcqIndexPage() {
       </nav>
 
       <section className="max-w-4xl mx-auto px-6 sm:px-10 pt-8 pb-12">
-        <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
+        <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
           AMC MCQ · Practice
         </p>
         <h1 className="font-display font-bold text-4xl sm:text-5xl mb-4">
@@ -123,20 +123,20 @@ export default function AmcMcqIndexPage() {
               <li key={s.slug}>
                 <Link
                   href={`/amc-mcq/${s.slug}`}
-                  className="block h-full rounded-2xl border border-slate-800 hover:border-violet-700/60 bg-slate-900/40 hover:bg-slate-900/70 p-5 transition"
+                  className="block h-full rounded-2xl border border-slate-800 hover:border-brand-700/60 bg-slate-900/40 hover:bg-slate-900/70 p-5 transition"
                 >
                   <div className="flex items-baseline justify-between mb-2">
                     <h3 className="font-display font-bold text-lg text-white">
                       {s.name}
                     </h3>
-                    <span className="text-xs uppercase tracking-widest text-violet-300">
+                    <span className="text-xs uppercase tracking-widest text-brand-300">
                       {n} MCQs
                     </span>
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">
                     {s.tagline}
                   </p>
-                  <p className="mt-3 text-xs uppercase tracking-widest text-violet-400 font-bold">
+                  <p className="mt-3 text-xs uppercase tracking-widest text-brand-400 font-bold">
                     Practise {s.short.toLowerCase()} →
                   </p>
                 </Link>

@@ -168,9 +168,9 @@ export default function AmcVsUsmleVsPlabPage() {
         </Link>
       </nav>
 
-      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-violet-400 hover:prose-a:text-violet-300">
+      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
         <header className="mt-8 mb-12">
-          <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
             IMG Exam Comparison · Updated 2026
           </p>
           <h1 className="font-display font-bold mb-4">
@@ -200,7 +200,7 @@ export default function AmcVsUsmleVsPlabPage() {
           <h2>Side-by-side comparison table</h2>
           <div className="not-prose my-8 overflow-x-auto rounded-2xl border border-slate-800">
             <table className="w-full text-sm text-left text-slate-300">
-              <thead className="bg-slate-900/60 text-xs uppercase tracking-wider text-violet-300">
+              <thead className="bg-slate-900/60 text-xs uppercase tracking-wider text-brand-300">
                 <tr>
                   <th className="px-4 py-3 font-bold">Dimension</th>
                   <th className="px-4 py-3 font-bold">AMC (Australia)</th>

@@ -75,7 +75,7 @@ const modules = [
 ];
 
 const quickStats = [
-  { emoji: "🎯", value: "151",   label: "MCAT Scenarios",   color: "text-violet-600" },
+  { emoji: "🎯", value: "151",   label: "MCAT Scenarios",   color: "text-brand-600" },
   { emoji: "📝", value: "3k+",   label: "Practice MCQs",    color: "text-pink-600"   },
   { emoji: "📖", value: "5",     label: "Reference Guides", color: "text-emerald-600"},
   { emoji: "🇦🇺", value: "100+", label: "Job Listings",     color: "text-amber-600"  },

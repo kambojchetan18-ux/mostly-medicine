@@ -129,16 +129,16 @@ export default function IeltsVsOetPage() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-violet hover:shadow-[0_0_40px_rgba(139,92,246,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
         </div>
       </nav>
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-violet-400 hover:prose-a:text-violet-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
         <header className="mt-10 mb-12 not-prose">
-          <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
             English Tests for IMGs · Updated 2026
           </p>
           <h1
@@ -152,7 +152,7 @@ export default function IeltsVsOetPage() {
           </p>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 mt-5 text-sm font-semibold text-violet-300 hover:text-violet-200 no-underline"
+            className="inline-flex items-center gap-1.5 mt-5 text-sm font-semibold text-brand-300 hover:text-brand-200 no-underline"
           >
             Start AMC prep free →
           </Link>
@@ -316,10 +316,10 @@ export default function IeltsVsOetPage() {
         <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500 not-prose">
           <p>
             For official requirements, refer to{" "}
-            <a href="https://www.ahpra.gov.au" target="_blank" rel="noopener" className="text-violet-400 hover:text-violet-300">ahpra.gov.au</a>,{" "}
-            <a href="https://www.ielts.org" target="_blank" rel="noopener" className="text-violet-400 hover:text-violet-300">ielts.org</a>{" "}
+            <a href="https://www.ahpra.gov.au" target="_blank" rel="noopener" className="text-brand-400 hover:text-brand-300">ahpra.gov.au</a>,{" "}
+            <a href="https://www.ielts.org" target="_blank" rel="noopener" className="text-brand-400 hover:text-brand-300">ielts.org</a>{" "}
             and{" "}
-            <a href="https://occupationalenglishtest.org" target="_blank" rel="noopener" className="text-violet-400 hover:text-violet-300">occupationalenglishtest.org</a>.
+            <a href="https://occupationalenglishtest.org" target="_blank" rel="noopener" className="text-brand-400 hover:text-brand-300">occupationalenglishtest.org</a>.
             Last updated April 2026.
           </p>
         </footer>

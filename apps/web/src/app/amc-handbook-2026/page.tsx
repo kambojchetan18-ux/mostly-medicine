@@ -131,9 +131,9 @@ export default function AmcHandbook2026Page() {
         </Link>
       </nav>
 
-      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-violet-400 hover:prose-a:text-violet-300">
+      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
         <header className="mt-8 mb-12">
-          <p className="text-xs uppercase tracking-widest text-violet-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
             AMC Handbook · 2026 Edition
           </p>
           <h1 className="font-display font-bold mb-4">

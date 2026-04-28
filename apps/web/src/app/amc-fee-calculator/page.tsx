@@ -91,7 +91,7 @@ export default function AmcFeeCalculatorPage() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-violet hover:shadow-[0_0_40px_rgba(139,92,246,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
@@ -100,8 +100,8 @@ export default function AmcFeeCalculatorPage() {
 
       {/* Hero */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-12 pb-10 text-center">
-        <div className="inline-flex items-center gap-2.5 bg-violet-900/30 border border-violet-700/40 rounded-full px-5 py-2 text-xs text-violet-300 font-semibold mb-6 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-pulse shrink-0" />
+        <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-6 backdrop-blur-sm">
+          <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
           Updated 2026 · AUD · USD · INR
         </div>
         <h1
@@ -115,7 +115,7 @@ export default function AmcFeeCalculatorPage() {
         </p>
         <Link
           href="/auth/signup"
-          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-violet-300 hover:text-violet-200"
+          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-brand-300 hover:text-brand-200"
         >
           Start AMC prep free →
         </Link>

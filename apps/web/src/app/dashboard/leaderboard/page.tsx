@@ -111,7 +111,7 @@ export default async function LeaderboardPage() {
                 <li
                   key={row.user_id}
                   className={`px-4 sm:px-5 py-3 flex items-center gap-3 transition ${
-                    isMe ? "bg-violet-50/70 border-l-4 border-violet-500" : ""
+                    isMe ? "bg-brand-50/70 border-l-4 border-brand-500" : ""
                   }`}
                 >
                   {/* Rank */}
@@ -142,7 +142,7 @@ export default async function LeaderboardPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-semibold text-gray-900 truncate">
                         {name}
-                        {isMe && <span className="ml-1.5 text-[10px] text-violet-600 font-bold uppercase tracking-wider">You</span>}
+                        {isMe && <span className="ml-1.5 text-[10px] text-brand-600 font-bold uppercase tracking-wider">You</span>}
                       </span>
                       <span
                         className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${planBadgeStyle(row.plan)}`}
@@ -157,7 +157,7 @@ export default async function LeaderboardPage() {
 
                   {/* XP */}
                   <div className="text-right shrink-0">
-                    <p className="text-base font-bold text-violet-600 leading-none">
+                    <p className="text-base font-bold text-brand-600 leading-none">
                       {row.weekly_xp.toLocaleString()}
                     </p>
                     <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">XP</p>

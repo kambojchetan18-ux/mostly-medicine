@@ -94,12 +94,6 @@
   }
 
   /* Gradient borders via box-shadow */
-  .border-gradient-violet {
-    border: 1px solid transparent;
-    background-clip: padding-box;
-    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.3);
-  }
-
   .border-gradient-teal {
     border: 1px solid transparent;
     background-clip: padding-box;

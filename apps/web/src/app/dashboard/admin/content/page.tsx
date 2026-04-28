@@ -205,7 +205,7 @@ export default function ContentStudioPage() {
           <button
             onClick={() => generateMonth(false)}
             disabled={generating || posts.length > 0}
-            className="px-4 py-2 text-sm font-semibold bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 text-sm font-semibold bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 flex items-center gap-2"
           >
             {generating ? (
               <>
@@ -271,7 +271,7 @@ export default function ContentStudioPage() {
       {/* Loading */}
       {loading && (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
@@ -286,10 +286,10 @@ export default function ContentStudioPage() {
 
       {/* Generating placeholder */}
       {generating && (
-        <div className="text-center py-20 border-2 border-dashed border-violet-200 rounded-2xl bg-violet-50/40">
-          <div className="w-10 h-10 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="font-semibold text-violet-700">Generating {monthLabel} content…</p>
-          <p className="text-sm text-violet-500 mt-1">Claude is writing your posts. ~15 seconds.</p>
+        <div className="text-center py-20 border-2 border-dashed border-brand-200 rounded-2xl bg-brand-50/40">
+          <div className="w-10 h-10 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="font-semibold text-brand-700">Generating {monthLabel} content…</p>
+          <p className="text-sm text-brand-500 mt-1">Claude is writing your posts. ~15 seconds.</p>
         </div>
       )}
 
@@ -336,14 +336,14 @@ export default function ContentStudioPage() {
                           rows={6}
                           value={isEditingCap ? editingCaption[post.id] : post.caption}
                           onChange={e => setEditingCaption(prev => ({ ...prev, [post.id]: e.target.value }))}
-                          className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-400 resize-none text-gray-700"
+                          className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-400 resize-none text-gray-700"
                         />
                         {isEditingCap && (
                           <div className="flex gap-2 mt-1.5">
                             <button
                               onClick={() => saveCaption(post)}
                               disabled={saving === post.id + "-caption"}
-                              className="text-xs px-3 py-1 bg-violet-600 text-white rounded-lg disabled:opacity-50"
+                              className="text-xs px-3 py-1 bg-brand-600 text-white rounded-lg disabled:opacity-50"
                             >
                               {saving === post.id + "-caption" ? "Saving…" : "Save"}
                             </button>

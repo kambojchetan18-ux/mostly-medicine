@@ -14,7 +14,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
         <button
           type="button"
           onClick={reset}
-          className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-violet-700"
+          className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
         >
           Try again
         </button>

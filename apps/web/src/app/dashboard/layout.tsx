@@ -4,7 +4,7 @@ import SearchTrigger from "@/components/SearchTrigger";
 import SidebarUserCard from "@/components/SidebarUserCard";
 
 const navItems = [
-  { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-violet-300"  },
+  { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-brand-300"  },
   { href: "/dashboard/cat1",      label: "AMC MCQ", icon: "🧠", hover: "hover:text-indigo-300" },
   { href: "/dashboard/progress",  label: "My Progress", icon: "📊", hover: "hover:text-blue-300"  },
   { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆", hover: "hover:text-amber-300" },
