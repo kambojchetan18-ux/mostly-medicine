@@ -217,11 +217,13 @@ export function useSpeechSynthesis() {
         clearInterval(keepaliveRef.current);
         keepaliveRef.current = null;
       }
-      // Only cancel if we're actually speaking. On Chromium an unconditional
-      // cancel() tears down the activation state established by prime(),
-      // which is exactly why the patient was silent on Chrome / Comet /
-      // Edge — Safari (WebKit) tolerated it but Chromium does not.
-      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      // ONLY cancel if we own a current real utterance. Earlier we cancelled
+      // whenever speaking|pending was true — but a prime() silent utterance
+      // sits in `pending` momentarily, and Chromium's cancel() then races
+      // with the queued real utterance and fires 'canceled' on it (this was
+      // the actual symptom: chunkIndex 0 of the patient reply got error
+      // 'canceled' before audio started). Safari ignored the race.
+      if (currentUtteranceRef.current) {
         window.speechSynthesis.cancel();
       }
       setSpeaking(false);
