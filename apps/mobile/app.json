@@ -38,7 +38,13 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Mostly Medicine to access your microphone for clinical roleplay."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

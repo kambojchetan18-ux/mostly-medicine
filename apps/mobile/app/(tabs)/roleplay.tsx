@@ -7,7 +7,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import Voice, { type SpeechResultsEvent, type SpeechErrorEvent } from '@react-native-voice/voice';
+import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
 import { scenarios } from '@mostly-medicine/ai';
@@ -85,30 +85,18 @@ export default function RoleplayScreen() {
   const feedbackRequestedRef = useRef(false);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const transcribingRef = useRef(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
 
-  // ── Voice setup ─────────────────────────────────────────────────────────────
+  // ── Cleanup any in-flight recording on unmount ──────────────────────────────
   useEffect(() => {
-    Voice.onSpeechStart = () => setIsRecording(true);
-    Voice.onSpeechEnd = () => setIsRecording(false);
-    Voice.onSpeechPartialResults = (e: SpeechResultsEvent) => {
-      const partial = e.value?.[0];
-      if (partial) setInput(partial);
-    };
-    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
-      const result = e.value?.[0];
-      if (result) {
-        setInput(result);
-        setIsRecording(false);
-      }
-    };
-    Voice.onSpeechError = (e: SpeechErrorEvent) => {
-      const msg = e.error?.message ?? 'Voice error';
-      // 7 = no match (user stopped without speaking) — silent ignore
-      if (!msg.includes('7')) setVoiceError(msg);
-      setIsRecording(false);
-    };
     return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
+      const rec = recordingRef.current;
+      recordingRef.current = null;
+      if (rec) {
+        rec.stopAndUnloadAsync().catch(() => {});
+      }
     };
   }, []);
 
@@ -149,24 +137,101 @@ export default function RoleplayScreen() {
     }
   }, [isRecording, pulseAnim]);
 
+  async function uploadAudio(uri: string) {
+    if (transcribingRef.current) return;
+    transcribingRef.current = true;
+    setIsTranscribing(true);
+    try {
+      const token = await getToken();
+      if (!token) {
+        setVoiceError('Not signed in — cannot transcribe');
+        return;
+      }
+      const form = new FormData();
+      // RN FormData accepts { uri, name, type } — cast required for TS
+      form.append('audio', { uri, name: 'recording.m4a', type: 'audio/mp4' } as unknown as Blob);
+      const res = await fetch(`${API_URL}/api/stt/transcribe`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      });
+      if (!res.ok) {
+        const detail = await res.text().catch(() => '');
+        throw new Error(`Transcribe ${res.status}${detail ? `: ${detail.slice(0, 80)}` : ''}`);
+      }
+      const data = (await res.json()) as { text?: string; error?: string };
+      if (data.error) throw new Error(data.error);
+      const text = (data.text ?? '').trim();
+      if (text) setInput((curr) => (curr ? `${curr} ${text}` : text).trim());
+    } catch (e) {
+      setVoiceError(e instanceof Error ? e.message : 'Transcription failed');
+    } finally {
+      transcribingRef.current = false;
+      setIsTranscribing(false);
+    }
+  }
+
   async function toggleRecording() {
     setVoiceError(null);
-    if (isRecording) {
-      await Voice.stop();
+    // Already recording → stop, unload, upload
+    if (recordingRef.current) {
+      const rec = recordingRef.current;
+      recordingRef.current = null;
       setIsRecording(false);
+      try {
+        await rec.stopAndUnloadAsync();
+        const uri = rec.getURI();
+        // Reset audio mode so playback (TTS) works at full volume on iOS
+        try {
+          await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
+            staysActiveInBackground: false,
+          });
+        } catch { /* ignore */ }
+        if (uri) await uploadAudio(uri);
+      } catch (e) {
+        setVoiceError(e instanceof Error ? e.message : 'Could not stop recording');
+      }
       return;
     }
+    // Not recording → request permission and start
     const ok = await requestMicPermission();
     if (!ok) {
       setVoiceError('Microphone permission denied');
       return;
     }
     stopSpeaking();
-    setInput('');
     try {
-      await Voice.start('en-AU'); // Australian English for AMC context
+      const perm = await Audio.requestPermissionsAsync();
+      if (!perm.granted) {
+        setVoiceError('Microphone permission denied');
+        return;
+      }
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+      });
+      const rec = new Audio.Recording();
+      await rec.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
+      await rec.startAsync();
+      recordingRef.current = rec;
+      setIsRecording(true);
     } catch (e) {
-      setVoiceError('Could not start voice recognition');
+      recordingRef.current = null;
+      setIsRecording(false);
+      setVoiceError(e instanceof Error ? e.message : 'Could not start recording');
+    }
+  }
+
+  // Stop recording without uploading — used when user sends/submits early or ends session
+  async function abortRecording() {
+    const rec = recordingRef.current;
+    recordingRef.current = null;
+    setIsRecording(false);
+    if (rec) {
+      try { await rec.stopAndUnloadAsync(); } catch { /* ignore */ }
     }
   }
 
@@ -210,8 +275,8 @@ export default function RoleplayScreen() {
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading || !scenario) return;
-    // Stop any ongoing recording or TTS before sending
-    if (isRecording) await Voice.stop();
+    // If still recording when user hits send, abort the recording (don't upload partial)
+    if (recordingRef.current) await abortRecording();
     stopSpeaking();
     const newMsgs: Message[] = [...messages, { role: 'user', content: text }];
     setMessages(newMsgs);
@@ -234,11 +299,11 @@ export default function RoleplayScreen() {
     } finally {
       setLoading(false);
     }
-  }, [loading, messages, scenario, isRecording, speakPatient]);
+  }, [loading, messages, scenario, speakPatient]);
 
   const getFeedback = useCallback(async () => {
     if (loading || messages.length <= 1 || !scenario) return;
-    if (isRecording) await Voice.stop();
+    if (recordingRef.current) await abortRecording();
     stopTimer();
     setFetchingFeedback(true);
     try {
@@ -256,7 +321,7 @@ export default function RoleplayScreen() {
     } finally {
       setFetchingFeedback(false);
     }
-  }, [loading, messages, scenario, isRecording]);
+  }, [loading, messages, scenario]);
 
   useEffect(() => {
     if (timeLeft === 0 && scenario && messages.length > 1 && !feedbackRequestedRef.current && !loading) {
@@ -278,7 +343,7 @@ export default function RoleplayScreen() {
   }
 
   function endSession() {
-    if (isRecording) Voice.stop();
+    if (recordingRef.current) abortRecording();
     stopSpeaking();
     stopTimer();
     setScenario(null);
@@ -497,13 +562,17 @@ export default function RoleplayScreen() {
               style={s.input}
               value={input}
               onChangeText={setInput}
-              placeholder={isRecording ? 'Listening…' : 'Tap mic or type…'}
+              placeholder={
+                isRecording ? 'Recording… tap mic to stop'
+                  : isTranscribing ? 'Transcribing…'
+                  : 'Tap mic or type…'
+              }
               placeholderTextColor={isRecording ? '#a78bfa' : '#475569'}
               multiline
               returnKeyType="send"
               blurOnSubmit
               onSubmitEditing={() => sendMessage(input)}
-              editable={!isRecording}
+              editable={!isRecording && !isTranscribing}
             />
 
             {/* Send button — only active when there's text */}
@@ -516,11 +585,16 @@ export default function RoleplayScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Recording indicator strip */}
+          {/* Recording / transcribing indicator strip */}
           {isRecording && (
             <View style={s.recordingStrip}>
               <View style={s.recordingDot} />
-              <Text style={s.recordingText}>Recording… tap mic or send when done</Text>
+              <Text style={s.recordingText}>Recording… tap mic again to stop & transcribe</Text>
+            </View>
+          )}
+          {isTranscribing && !isRecording && (
+            <View style={s.recordingStrip}>
+              <Text style={s.recordingText}>Transcribing your audio…</Text>
             </View>
           )}
         </SafeAreaView>

@@ -118,6 +118,7 @@ ANTHROPIC_API_KEY=... NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...
 - **Custom `apps/mobile/metro.config.js`** — forces monorepo root for react/react-native/react-dom/scheduler. Do not simplify.
 - **CAT 1 tab icon** — must use `school`/`school-outline` (Ionicons). `brain`/`brain-outline` are invalid.
 - EAS secrets store `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` — not in `eas.json`.
+- **Mobile mic uses `expo-av` `Audio.Recording`** (not `@react-native-voice/voice`, which is broken under managed Expo). The roleplay tab records the user's audio, then POSTs the file to `/api/stt/transcribe` (Groq Whisper) on tap-mic-again. The `expo-av` config-plugin entry in `app.json` bakes the `RECORD_AUDIO` permission and `NSMicrophoneUsageDescription` into the native build — therefore **changing voice/recording requires a fresh `eas build -p android --profile preview`**, not an OTA update.
 
 ## Key rules
 - **pnpm only** — never npm or yarn. Always install from monorepo root.
