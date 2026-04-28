@@ -48,9 +48,8 @@ export default function HomeScreen() {
 
   const modules = [
     { label: 'AMC CAT 1', sub: 'MCQ Practice — 3,000+ questions', icon: 'school' as const, color: '#7c3aed', route: '/cat1' },
-    { label: 'AMC CAT 2', sub: 'OSCE recall cases by month', icon: 'medkit' as const, color: '#ec4899', route: '/cat2' },
+    { label: 'AMC CAT 2', sub: 'AMC OSCE-style clinical practice', icon: 'medkit' as const, color: '#ec4899', route: '/cat2' },
     { label: 'My Progress', sub: 'Stats, streaks, weak areas', icon: 'bar-chart' as const, color: '#10b981', route: '/progress' },
-    { label: 'Recalls', sub: 'Spaced repetition flashcards', icon: 'repeat' as const, color: '#f59e0b', route: '/recalls' },
     { label: 'Australian Jobs', sub: 'RMO · GP · Specialist pathway', icon: 'briefcase' as const, color: '#0ea5e9', route: '/jobs' },
     { label: 'Library', sub: 'AMC resources & references', icon: 'book' as const, color: '#64748b', route: '/library' },
     { label: 'AI Role-Play', sub: 'CAT 2 clinical OSCE scenarios', icon: 'chatbubbles' as const, color: '#8b5cf6', route: '/roleplay' },

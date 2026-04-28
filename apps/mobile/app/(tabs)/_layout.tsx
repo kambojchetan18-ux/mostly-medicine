@@ -10,7 +10,7 @@ const TABS = [
   { name: 'jobs', label: 'Jobs', icon: 'briefcase-outline' as IoniconsName, activeIcon: 'briefcase' as IoniconsName },
 ];
 
-const HIDDEN = ['cat2', 'recalls', 'library', 'roleplay'];
+const HIDDEN = ['cat2', 'library', 'roleplay'];
 
 export default function TabLayout() {
   return (
