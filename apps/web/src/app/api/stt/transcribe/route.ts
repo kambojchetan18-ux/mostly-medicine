@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createBrowserClient, type SupabaseClient } from "@supabase/supabase-js";
 import { checkModulePermission } from "@/lib/permissions";
 
 // Server-side Whisper STT for the Peer RolePlay live mode.
@@ -21,20 +22,34 @@ const GROQ_TRANSCRIPTIONS_URL =
 const GROQ_MODEL = "whisper-large-v3-turbo";
 
 export async function POST(req: NextRequest) {
-  // 1. Auth — require an authenticated user
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // 1. Auth — accept Bearer token (mobile native app) OR cookie session (web)
+  let user = null;
+  let supabase: SupabaseClient;
+  const authHeader = req.headers.get("authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    const { data } = await supabase.auth.getUser(token);
+    user = data.user;
+  } else {
+    supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  }
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // 2. Plan gate — same module permission as the live session itself
-  const perm = await checkModulePermission(supabase, "acrp_live");
+  // 2. Plan gate — STT serves Cat2 + ACRP solo + Peer Live, all of which sit
+  //    behind the `roleplay` module flag (free=disabled, pro/enterprise=ok).
+  //    Earlier we gated on `acrp_live` which 403'd Pro users on Cat2 too.
+  const perm = await checkModulePermission(supabase, "roleplay");
   if (!perm.allowed) {
     return NextResponse.json(
-      { error: "Live RolePlay not available on your plan" },
+      { error: "Voice transcription not available on your plan" },
       { status: 403 }
     );
   }
