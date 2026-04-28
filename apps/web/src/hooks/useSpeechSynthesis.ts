@@ -145,7 +145,17 @@ export function useSpeechSynthesis() {
         const chosen = pickVoice(gender);
         if (!chosen) return;
 
-        const utterance = new SpeechSynthesisUtterance(text);
+        // Strip stage directions before speaking — keep them in the on-screen
+        // transcript but don't read "*sighs*" / "(pauses)" / "[winces]" aloud.
+        const speakable = text
+          .replace(/\*[^*\n]+\*/g, "") // *sighs*, *pauses*
+          .replace(/\([^)\n]+\)/g, "") // (crying)
+          .replace(/\[[^\]\n]+\]/g, "") // [winces]
+          .replace(/\s{2,}/g, " ")
+          .trim();
+        if (!speakable) return;
+
+        const utterance = new SpeechSynthesisUtterance(speakable);
         utterance.voice = chosen;
         utterance.lang = chosen.lang || "en-AU";
         utterance.rate = 0.95;
