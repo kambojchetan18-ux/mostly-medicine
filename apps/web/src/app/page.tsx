@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -130,7 +132,30 @@ const features = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  // If a logged-in user lands on / (e.g. by tapping the "Mostly Medicine"
+  // wordmark in the dashboard mobile top bar), send them to /dashboard.
+  // This prevents a confusing flash of the marketing page and — more
+  // importantly — sidesteps the mobile-web edge case where a fresh GET to /
+  // (after a bare→www 308 hop) could leave the browser in a state where the
+  // next nav into /dashboard re-runs middleware without the freshly-set
+  // cookies and bounces to /auth/login. Doing the redirect here keeps the
+  // user on a single logged-in origin.
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      redirect("/dashboard");
+    }
+  } catch (err) {
+    // next/navigation's redirect() throws a special error to short-circuit
+    // rendering — re-throw it. Any other error (e.g. Supabase env missing
+    // in a preview build) should NOT break the public marketing page.
+    if (err && typeof err === "object" && "digest" in err && typeof (err as { digest?: string }).digest === "string" && (err as { digest: string }).digest.startsWith("NEXT_REDIRECT")) {
+      throw err;
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
 
