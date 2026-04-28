@@ -59,23 +59,40 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void) {
     recognition.lang = "en-AU";
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      // Rebuild from the full results list every event. Chrome on continuous
-      // mode sometimes re-emits the same final across events, and using
-      // `+=` accumulation produced duplicates like "can can can you can you tell…".
-      // Building fresh from event.results (the canonical full list per the
-      // spec) eliminates the duplication entirely.
-      let finals = "";
+      // Two-stage rebuild: collect raw final chunks, then compact stale
+      // prefixes. Android Chrome with continuous=true emits the same
+      // growing utterance as MULTIPLE finals — ["can", "can you",
+      // "can you tell", "can you tell me"] — which previously concatenated
+      // into "can can you can you tell can you tell me…". Whenever a final
+      // chunk is a prefix of a later final chunk, drop the shorter one.
+      const finalChunks: string[] = [];
       let interim = "";
       for (let i = 0; i < event.results.length; i++) {
-        const piece = event.results[i][0]?.transcript ?? "";
+        const piece = (event.results[i][0]?.transcript ?? "").trim();
+        if (!piece) continue;
         if (event.results[i].isFinal) {
-          finals += piece + " ";
+          finalChunks.push(piece);
         } else {
-          interim += piece;
+          interim += piece + " ";
         }
       }
-      liveTranscriptRef.current = finals.trim();
-      setDisplayTranscript((finals + interim).trim());
+
+      const compacted: string[] = [];
+      for (let i = 0; i < finalChunks.length; i++) {
+        const cur = finalChunks[i].toLowerCase();
+        let stale = false;
+        for (let j = i + 1; j < finalChunks.length; j++) {
+          if (finalChunks[j].toLowerCase().startsWith(cur)) {
+            stale = true;
+            break;
+          }
+        }
+        if (!stale) compacted.push(finalChunks[i]);
+      }
+
+      const finals = compacted.join(" ").replace(/\s+/g, " ").trim();
+      liveTranscriptRef.current = finals;
+      setDisplayTranscript((finals + " " + interim).replace(/\s+/g, " ").trim());
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
