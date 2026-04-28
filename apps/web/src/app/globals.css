@@ -14,22 +14,27 @@
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #8b5cf6, #ec4899);
+    background: linear-gradient(to bottom, #14b8a6, #06b6d4);
     border-radius: 999px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+  ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
 }
 
 @layer components {
   /* Gradient text utility */
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #a78bfa 0%, #f472b6 60%, #fb923c 100%);
+    background-image: linear-gradient(135deg, #5eead4 0%, #14b8a6 50%, #0e7490 100%);
   }
 
   .gradient-text-cool {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
+    background-image: linear-gradient(135deg, #34d399 0%, #14b8a6 50%, #0284c7 100%);
+  }
+
+  /* CTA gradient — used on hero pills + key buttons */
+  .gradient-cta {
+    background-image: linear-gradient(135deg, #14b8a6 0%, #06b6d4 60%, #0284c7 100%);
   }
 
   /* Glassmorphism card */
@@ -63,13 +68,13 @@
 
   /* Glow badge */
   .badge-glow {
-    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5), inset 0 0 12px rgba(139, 92, 246, 0.05);
+    box-shadow: 0 0 12px rgba(20, 184, 166, 0.5), inset 0 0 12px rgba(20, 184, 166, 0.05);
   }
 
   /* Nav active indicator */
   .nav-active {
     @apply bg-brand-600/15 text-brand-300;
-    border-left: 2px solid #8b5cf6;
+    border-left: 2px solid #14b8a6;
   }
 
   /* Bento card base */
@@ -92,7 +97,13 @@
   .border-gradient-violet {
     border: 1px solid transparent;
     background-clip: padding-box;
-    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.3);
+  }
+
+  .border-gradient-teal {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.3);
   }
 
   /* Text size clamp for responsive hero */
@@ -106,4 +117,36 @@
     font-size: clamp(1rem, 2.5vw, 1.35rem);
     line-height: 1.6;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Phase 1 brand glows — re-tinted from violet/pink → teal/cyan.
+ * Available as CSS custom properties for components that read them directly.
+ * Tailwind equivalents: shadow-glow-teal / shadow-glow-cyan (see tailwind.config.ts)
+ * ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --glow-teal: 0 0 40px rgba(20, 184, 166, 0.35);
+  --glow-cyan: 0 0 40px rgba(6, 182, 212, 0.35);
+  --grad-cta:  linear-gradient(135deg, #14b8a6 0%, #06b6d4 60%, #0284c7 100%);
+}
+
+/* Calm palette — Phase 2 tokens, opt-in via class names.
+ * Used for low-strain study surfaces (quiz cards, library, sidebar copy).
+ * Warm off-white paper, desaturated accents, warm charcoal ink.
+ * All background tones < 60% saturation. Apply via `bg-[var(--calm-paper)]` etc. */
+:root {
+  --calm-paper:    #f5efe4;
+  --calm-paper-2:  #ebe4d6;
+  --calm-card:     #fbf6ec;
+  --calm-ink:      #2a2a2a;
+  --calm-ink-2:    #52524a;
+  --calm-ink-3:    #7a7a70;
+  --calm-sage:     #cdd9c8;
+  --calm-teal:     #a8c8c0;
+  --calm-clay:     #e0c8b4;
+  --calm-rose:     #e3c4c0;
+  --calm-honey:    #d9c188;
+  --calm-honey-2:  #f0e3bd;
+  --calm-line:     rgba(42, 42, 42, 0.18);
+  --calm-shadow:   rgba(42, 42, 42, 0.30);
 }
