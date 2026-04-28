@@ -219,18 +219,57 @@ export default function LiveSessionClient({
           }
         };
 
+        let offerSent = false;
+        // Helper: host sends an offer. Guarded so we only send once even if
+        // presence fires multiple times.
+        const sendHostOffer = async () => {
+          if (!isHost || offerSent) return;
+          if (pc.signalingState !== "stable") return;
+          offerSent = true;
+          try {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            rtcChannel.send({
+              type: "broadcast",
+              event: "offer",
+              payload: { from: myUserId, sdp: offer },
+            });
+          } catch (err) {
+            offerSent = false;
+            console.error("[live/rtc] createOffer failed", err);
+          }
+        };
+
         rtcChannel
+          .on("broadcast", { event: "ready" }, async ({ payload }) => {
+            // Guest signalled it joined the channel — host (re)sends offer.
+            if (payload.from === myUserId) return;
+            offerSent = false; // allow re-send
+            await sendHostOffer();
+          })
           .on("broadcast", { event: "offer" }, async ({ payload }) => {
             if (payload.from === myUserId) return;
-            await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
-            const answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            rtcChannel.send({ type: "broadcast", event: "answer", payload: { from: myUserId, sdp: answer } });
+            try {
+              await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+              const answer = await pc.createAnswer();
+              await pc.setLocalDescription(answer);
+              rtcChannel.send({
+                type: "broadcast",
+                event: "answer",
+                payload: { from: myUserId, sdp: answer },
+              });
+            } catch (err) {
+              console.error("[live/rtc] offer handle failed", err);
+            }
           })
           .on("broadcast", { event: "answer" }, async ({ payload }) => {
             if (payload.from === myUserId) return;
             if (pc.signalingState === "have-local-offer") {
-              await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+              try {
+                await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+              } catch (err) {
+                console.error("[live/rtc] answer handle failed", err);
+              }
             }
           })
           .on("broadcast", { event: "ice" }, async ({ payload }) => {
@@ -243,22 +282,32 @@ export default function LiveSessionClient({
           })
           .on("presence", { event: "sync" }, () => {
             const state = rtcChannel.presenceState();
-            const others = Object.values(state).flat().some((p) => (p as { user?: string }).user !== myUserId);
+            const others = Object.values(state)
+              .flat()
+              .some((p) => (p as { user?: string }).user !== myUserId);
             setPartnerOnline(others);
+            // When partner becomes online, host (re)sends offer to handle the
+            // case where the offer was sent before the guest's presence.
+            if (others) sendHostOffer();
           })
           .subscribe(async (s) => {
             if (s !== "SUBSCRIBED") return;
             await rtcChannel.track({ user: myUserId, role: myRole });
-            // Host initiates the offer once subscribed.
-            if (isHost) {
-              const offer = await pc.createOffer();
-              await pc.setLocalDescription(offer);
-              rtcChannel.send({ type: "broadcast", event: "offer", payload: { from: myUserId, sdp: offer } });
+            // Guest announces ready so host can send offer reliably.
+            if (!isHost) {
+              rtcChannel.send({
+                type: "broadcast",
+                event: "ready",
+                payload: { from: myUserId },
+              });
             }
+            // Host also tries to send offer on subscribe (in case partner
+            // already present). The guard prevents duplicates.
+            if (isHost) sendHostOffer();
           });
 
-        // Start STT on the local user — captures their speech for transcript.
-        if (stt.supported) stt.startRecording();
+        // STT no longer auto-starts — strict browsers reject it without a
+        // user gesture. The mic toggle button below the videos handles it.
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Could not start camera/mic");
       }
@@ -580,13 +629,48 @@ export default function LiveSessionClient({
           </div>
         </div>
 
+        {/* Explicit mic toggle — auto-start fails silently in strict browsers
+            without a user gesture. This button gives a clear gesture handle. */}
+        {stt.supported && (
+          <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm">
+            <div className="flex items-center gap-2 text-sm">
+              <span
+                className={`inline-block h-2 w-2 rounded-full ${
+                  stt.state === "recording" ? "animate-pulse bg-rose-500" : "bg-gray-300"
+                }`}
+              />
+              <span className="font-semibold text-gray-700">
+                {stt.state === "recording" ? "🎤 Listening — speak naturally" : "🎤 Mic is off"}
+              </span>
+              {stt.state === "recording" && stt.displayTranscript && (
+                <span className="ml-2 truncate text-xs italic text-gray-500">
+                  &ldquo;{stt.displayTranscript}&rdquo;
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (stt.state === "recording") stt.stopRecording();
+                else stt.startRecording();
+              }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
+                stt.state === "recording"
+                  ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
+                  : "bg-violet-600 text-white hover:bg-violet-700"
+              }`}
+            >
+              {stt.state === "recording" ? "Pause mic" : "Start mic"}
+            </button>
+          </div>
+        )}
         {!stt.supported && (
           <p className="text-xs text-amber-600">
-            Speech recognition not supported in this browser — transcript will be empty. Use Chrome/Edge/Safari for full feedback.
+            Speech recognition not supported in this browser. Use Chrome / Edge / Safari for the live transcript. Video + audio still work.
           </p>
         )}
         {stt.permissionDenied && (
-          <p className="text-xs text-rose-600">⚠️ Microphone permission denied. Allow it to capture your speech.</p>
+          <p className="text-xs text-rose-600">⚠️ Microphone permission denied. Click the lock icon in the address bar to allow it.</p>
         )}
         {error && <p className="text-xs text-rose-600">⚠️ {error}</p>}
       </div>
