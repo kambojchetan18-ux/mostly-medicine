@@ -150,7 +150,12 @@ export function useSpeechSynthesis() {
     const best = voices
       .map((v) => ({ v, score: scoreVoice(v, gender) }))
       .sort((a, b) => b.score - a.score)[0]?.v;
-    if (best) lockedVoiceRef.current[gender] = best;
+    if (best) {
+      lockedVoiceRef.current[gender] = best;
+      console.info("[tts] picked voice", { name: best.name, lang: best.lang, default: best.default, localService: best.localService });
+    } else {
+      console.warn("[tts] no voice available", { totalVoices: voices.length });
+    }
     return best ?? null;
   }
 
@@ -226,6 +231,15 @@ export function useSpeechSynthesis() {
         pendingRef.current = null;
         if (!window.speechSynthesis) return;
 
+        // Chromium will sometimes leave the engine "paused" after a stray
+        // cancel from a previous page (visibility change, navigation, etc).
+        // A defensive resume() before each speak makes the queue ingestible.
+        try {
+          if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        } catch {
+          /* ignore */
+        }
+
         const chosen = pickVoice(gender);
         if (!chosen) {
           // Mobile Chrome / Android: getVoices() is empty until onvoiceschanged
@@ -236,6 +250,14 @@ export function useSpeechSynthesis() {
           }
           return;
         }
+        console.info("[tts] speak", {
+          textLen: text.length,
+          gender,
+          paused: window.speechSynthesis.paused,
+          speaking: window.speechSynthesis.speaking,
+          pending: window.speechSynthesis.pending,
+          primed: primedRef.current,
+        });
         speakWithVoice(chosen);
       };
       const speakWithVoice = (chosen: SpeechSynthesisVoice) => {

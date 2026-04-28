@@ -288,10 +288,11 @@ export default function Cat2Client() {
 
   async function startScenario(id: number) {
     stopSpeaking();
-    // Prime mobile TTS NOW — this function runs inside the scenario card's
-    // click handler, so we still hold the user-gesture token. Without
-    // this, the setTimeout speak() below is silently rejected on Android
-    // Chrome / iOS Safari and the patient's opening line is inaudible.
+    // Speak the opening DIRECTLY inside this click handler (no setTimeout)
+    // so Chromium's transient-activation token still applies when speak()
+    // is reached. The earlier 400ms delay had decorative reasons (let the
+    // UI mount first) but it pushed the speak past Chromium's gesture
+    // window — patient stayed silent on Chrome / Comet / Edge / Brave.
     if (ttsSupported) primeTts();
     setExaminerFeedback(null);
     feedbackRequestedRef.current = false;
@@ -301,10 +302,10 @@ export default function Cat2Client() {
     const openingMsg = { role: "assistant", content: opening };
     setMessages([openingMsg]);
     startTimer(timerMode);
-    setTimeout(() => {
+    if (ttsSupported) {
       const { gender: g } = parsePatientProfile(scenario.patientProfile);
       speak(opening, g);
-    }, 400);
+    }
   }
 
   function endSession() {
