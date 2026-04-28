@@ -10,25 +10,44 @@ import FunLoading from "@/components/FunLoading";
 
 const READING_SECONDS = 120;
 const ROLEPLAY_SECONDS = 8 * 60;
-// STUN handles ~80% of NAT cases. The remaining cases (mobile data ↔ Wi-Fi
-// across symmetric NATs, corporate firewalls) need a TURN relay or the peers
-// just see each other as "online" with permanently black video. Open Relay
-// Project (Metered.ca) ships free, open-access TURN credentials with no
-// signup — fine for early users; we can swap to a self-hosted coturn later
-// if usage spikes. Both UDP/443 and TCP/443 are listed so corporate firewalls
-// that only allow outbound HTTPS still get a path.
+// ICE server priority (cheapest path first, fallback last):
+//   1. Google STUN — free, ~80% of users connect P2P with this alone.
+//   2. Self-hosted coturn (if NEXT_PUBLIC_TURN_* env vars are set) — private,
+//      reliable, low-latency relay for the ~20% of users on symmetric NAT
+//      (mobile data ↔ home Wi-Fi) or corporate firewalls. See
+//      /COTURN_SETUP.md for deployment guide.
+//   3. Open Relay (Metered.ca) — free public TURN, used ONLY when no
+//      self-hosted TURN is configured. It's a graceful fallback so the app
+//      still works during DevOps work, but it's rate-limited and noisy.
+// Setting NEXT_PUBLIC_TURN_URL="" in Vercel rolls back to STUN-only +
+// Open Relay — handy as an emergency kill-switch if our coturn box dies.
+const TURN_URL = process.env.NEXT_PUBLIC_TURN_URL;
+const TURN_USERNAME = process.env.NEXT_PUBLIC_TURN_USERNAME;
+const TURN_CREDENTIAL = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
+const HAS_PRIVATE_TURN = Boolean(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL);
+
 const RTC_CONFIG: RTCConfiguration = {
   iceServers: [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
-    {
-      urls: [
-        "turn:openrelay.metered.ca:80",
-        "turn:openrelay.metered.ca:443",
-        "turn:openrelay.metered.ca:443?transport=tcp",
-      ],
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
+    ...(HAS_PRIVATE_TURN
+      ? [
+          {
+            urls: [TURN_URL as string],
+            username: TURN_USERNAME as string,
+            credential: TURN_CREDENTIAL as string,
+          },
+        ]
+      : [
+          {
+            urls: [
+              "turn:openrelay.metered.ca:80",
+              "turn:openrelay.metered.ca:443",
+              "turn:openrelay.metered.ca:443?transport=tcp",
+            ],
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+        ]),
   ],
   iceTransportPolicy: "all",
 };
