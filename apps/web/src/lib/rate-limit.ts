@@ -80,3 +80,56 @@ export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
 }
+
+/**
+ * Per-user AI endpoint rate limiter. Tracks usage count in a time window
+ * using the same rate_limit_attempts table. Auto-increments on each call.
+ * Returns allowed=false when the user exceeds maxRequests within windowMs.
+ */
+export async function checkAiRateLimit(
+  userId: string,
+  endpoint: string,
+  { maxRequests = 30, windowMs = 60 * 60 * 1000 }: { maxRequests?: number; windowMs?: number } = {}
+): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const key = `ai:${endpoint}:${userId}`;
+  const supabase = serviceClient();
+  const now = new Date().toISOString();
+
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (!data) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: now,
+      updated_at: now,
+    });
+    return { allowed: true };
+  }
+
+  const elapsed = Date.now() - new Date(data.first_attempt_at).getTime();
+  if (elapsed > windowMs) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: now,
+      updated_at: now,
+    });
+    return { allowed: true };
+  }
+
+  if (data.count >= maxRequests) {
+    return { allowed: false, retryAfterMs: windowMs - elapsed };
+  }
+
+  await supabase
+    .from("rate_limit_attempts")
+    .update({ count: data.count + 1, updated_at: now })
+    .eq("key", key);
+
+  return { allowed: true };
+}

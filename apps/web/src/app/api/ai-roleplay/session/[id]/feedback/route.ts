@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 
+export const maxDuration = 60;
+
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id: sessionId } = await ctx.params;
 
@@ -69,9 +71,8 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
   try {
     feedback = await scoreSession({ caseVariant, transcript });
   } catch (err) {
-    console.error("[session/feedback] claude", err);
-    const message = err instanceof Error ? err.message : "Scoring failed";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[session/feedback] claude", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Feedback scoring failed. Please try again." }, { status: 500 });
   }
 
   // ─── Persist ─────────────────────────────────────────────────────────
@@ -88,8 +89,8 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
     .eq("id", sessionId);
 
   if (updateErr) {
-    console.error("[session/feedback] persist", updateErr);
-    return NextResponse.json({ error: updateErr.message }, { status: 500 });
+    console.error("[session/feedback] persist", updateErr.message);
+    return NextResponse.json({ error: "Failed to save feedback" }, { status: 500 });
   }
 
   return NextResponse.json({ feedback, cached: false });

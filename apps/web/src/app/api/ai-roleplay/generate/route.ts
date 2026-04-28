@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
+import { checkAiRateLimit } from "@/lib/rate-limit";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
+
+export const maxDuration = 30;
 
 interface GenerateRequest {
   blueprintId?: string;
@@ -25,6 +28,9 @@ export async function POST(req: NextRequest) {
   if (!auth.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const { allowed } = await checkAiRateLimit(auth.user.id, "ai-roleplay-generate", { maxRequests: 20 });
+  if (!allowed) return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
@@ -54,7 +60,8 @@ export async function POST(req: NextRequest) {
 
   const { data: bps, error: bpErr } = await bpQuery;
   if (bpErr) {
-    return NextResponse.json({ error: bpErr.message }, { status: 500 });
+    console.error("[ai-roleplay/generate] blueprint query", bpErr.message);
+    return NextResponse.json({ error: "Failed to load blueprints" }, { status: 500 });
   }
   if (!bps || bps.length === 0) {
     return NextResponse.json({ error: "No matching blueprint found" }, { status: 404 });
@@ -110,9 +117,8 @@ export async function POST(req: NextRequest) {
   try {
     variant = await generateCase({ blueprint, difficulty, seed });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Generation failed";
-    console.error("[ai-roleplay/generate]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[ai-roleplay/generate]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Case generation failed. Please try again." }, { status: 500 });
   }
 
   // ─── Persist with service role (bypass RLS) so the case is reusable ──
@@ -141,7 +147,7 @@ export async function POST(req: NextRequest) {
 
   if (saveErr || !saved) {
     console.error("[ai-roleplay/generate] save error", saveErr);
-    return NextResponse.json({ error: saveErr?.message ?? "Save failed" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save generated case" }, { status: 500 });
   }
 
   // ─── Return ONLY the reading-screen view, never the hidden diagnosis ──

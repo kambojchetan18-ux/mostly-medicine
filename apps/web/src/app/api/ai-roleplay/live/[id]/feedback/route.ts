@@ -64,7 +64,8 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
   try {
     feedback = await scoreSession({ caseVariant: variant, transcript });
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : "Scoring failed" }, { status: 500 });
+    console.error("[live/feedback] scoring", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Feedback scoring failed. Please try again." }, { status: 500 });
   }
 
   await supabase

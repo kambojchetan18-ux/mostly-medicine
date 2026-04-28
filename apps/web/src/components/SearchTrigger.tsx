@@ -16,6 +16,7 @@ export default function SearchTrigger() {
     <button
       onClick={trigger}
       title="Search (⌘K)"
+      aria-label="Open search (⌘K)"
       className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
