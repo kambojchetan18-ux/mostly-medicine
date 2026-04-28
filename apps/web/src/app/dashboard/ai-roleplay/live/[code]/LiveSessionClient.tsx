@@ -136,6 +136,26 @@ export default function LiveSessionClient({
     };
   }, [supabase, sessionId]);
 
+  // ─── Fallback poll while in the waiting room ────────────────────────
+  // Realtime postgres_changes can be flaky on Vercel cold starts; poll every
+  // 2.5s during 'waiting' so both host and guest reliably see partner-joined
+  // and status transitions even if the realtime event was missed.
+  useEffect(() => {
+    if (status !== "waiting") return;
+    const t = setInterval(async () => {
+      const { data } = await supabase
+        .from("acrp_live_sessions")
+        .select("guest_user_id, status")
+        .eq("id", sessionId)
+        .maybeSingle();
+      if (data) {
+        if (data.guest_user_id) setLiveGuestId(data.guest_user_id);
+        if (data.status && data.status !== status) setStatus(data.status);
+      }
+    }, 2500);
+    return () => clearInterval(t);
+  }, [status, sessionId, supabase]);
+
   // ─── Reading-phase countdown ─────────────────────────────────────────
   useEffect(() => {
     if (status !== "reading") return;
