@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
+import { bumpStreak } from "@/lib/streaks";
+import { awardXp, XP_POINTS } from "@/lib/xp";
 
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id: sessionId } = await ctx.params;
@@ -91,6 +93,11 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
     console.error("[session/feedback] persist", updateErr);
     return NextResponse.json({ error: updateErr.message }, { status: 500 });
   }
+
+  // Streak + XP: completing a roleplay session counts as activity.
+  await bumpStreak(supabase, user.id);
+  await awardXp(supabase, user.id, "roleplay_completed", XP_POINTS.roleplay_completed);
+  await awardXp(supabase, user.id, "feedback_received", XP_POINTS.feedback_received);
 
   return NextResponse.json({ feedback, cached: false });
 }

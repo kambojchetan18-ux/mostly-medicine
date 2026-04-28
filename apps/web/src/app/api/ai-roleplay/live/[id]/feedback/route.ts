@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
+import { bumpStreak } from "@/lib/streaks";
+import { awardXp, XP_POINTS } from "@/lib/xp";
 
 // Idempotent: if feedback already exists, return it.
 // Scores the doctor's transcript using the existing solo scoring engine.
@@ -78,6 +80,16 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
       feedback,
     })
     .eq("id", id);
+
+  await bumpStreak(supabase, user.id);
+
+  // Award XP to both participants of the live session
+  if (session.host_user_id) {
+    await awardXp(supabase, session.host_user_id, "live_roleplay_completed", XP_POINTS.live_roleplay_completed);
+  }
+  if (session.guest_user_id && session.guest_user_id !== session.host_user_id) {
+    await awardXp(supabase, session.guest_user_id, "live_roleplay_completed", XP_POINTS.live_roleplay_completed);
+  }
 
   return NextResponse.json({ feedback, cached: false });
 }

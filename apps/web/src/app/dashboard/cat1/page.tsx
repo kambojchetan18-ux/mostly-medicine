@@ -56,6 +56,8 @@ export default function CAT1Page() {
   const [answers, setAnswers] = useState<{ id: string; correct: boolean; topic: string }[]>([]);
   const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [smartExplanation, setSmartExplanation] = useState<string | null>(null);
+  const [smartLoading, setSmartLoading] = useState(false);
   const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
 
   // Fetch topic counts once on menu mount — tiny payload from server
@@ -121,6 +123,7 @@ export default function CAT1Page() {
       setSelected(null);
       setRevealed(false);
       setDetailedExplanation(null);
+      setSmartExplanation(null);
     }
   }, [selected, questions, current, answers]);
 
@@ -144,6 +147,27 @@ export default function CAT1Page() {
     const data = await res.json();
     setDetailedExplanation(data.explanation ?? "Could not load explanation.");
     setDetailLoading(false);
+  }
+
+  async function fetchSmartExplanation() {
+    if (!selected) return;
+    const q = questions[current];
+    const userAnswerIndex = q.options.findIndex((o) => o.label === selected);
+    if (userAnswerIndex < 0) return;
+    setSmartLoading(true);
+    try {
+      const res = await fetch("/api/cat1/smart-explain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionId: q.id, userAnswerIndex }),
+      });
+      const data = await res.json();
+      setSmartExplanation(data.explanation ?? "Could not load smart explanation.");
+    } catch {
+      setSmartExplanation("Could not load smart explanation.");
+    } finally {
+      setSmartLoading(false);
+    }
   }
 
   function reset() {
@@ -367,6 +391,16 @@ export default function CAT1Page() {
               <p className="text-xs text-gray-400">{ref.source}</p>
             </div>
 
+            {!isCorrect && !smartExplanation && (
+              <button
+                onClick={fetchSmartExplanation}
+                disabled={smartLoading}
+                className="mt-3 mr-3 text-xs font-semibold text-brand-600 hover:text-brand-800 underline disabled:opacity-50"
+              >
+                {smartLoading ? "Thinking…" : "🤔 Why was I wrong?"}
+              </button>
+            )}
+
             {!detailedExplanation && (
               <button
                 onClick={fetchDetailedExplanation}
@@ -375,6 +409,25 @@ export default function CAT1Page() {
               >
                 {detailLoading ? "Loading detailed explanation…" : "🔍 Explain in detail (why each option is right/wrong)"}
               </button>
+            )}
+
+            {smartLoading && !smartExplanation && (
+              <div className="mt-3 bg-white border border-brand-200 rounded-lg p-3">
+                <p className="text-xs font-semibold text-brand-700 uppercase tracking-wide mb-2">Smart Explanation</p>
+                <div className="space-y-2 animate-pulse">
+                  <div className="h-2.5 bg-gray-200 rounded w-11/12" />
+                  <div className="h-2.5 bg-gray-200 rounded w-10/12" />
+                  <div className="h-2.5 bg-gray-200 rounded w-9/12" />
+                  <div className="h-2.5 bg-gray-200 rounded w-7/12" />
+                </div>
+              </div>
+            )}
+
+            {smartExplanation && (
+              <div className="mt-3 bg-white border border-brand-200 rounded-lg p-3">
+                <p className="text-xs font-semibold text-brand-700 uppercase tracking-wide mb-2">Smart Explanation</p>
+                <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{smartExplanation}</p>
+              </div>
             )}
 
             {detailedExplanation && (

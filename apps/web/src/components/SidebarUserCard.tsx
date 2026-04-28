@@ -11,6 +11,7 @@ interface UserInfo {
   avatar_url: string | null;
   plan: string;
   role: string;
+  current_streak: number;
 }
 
 export default function SidebarUserCard() {
@@ -22,10 +23,10 @@ export default function SidebarUserCard() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user: u } }) => {
       if (!u) return;
-      // Fetch from user_profiles for name/plan/role
+      // Fetch from user_profiles for name/plan/role/streak
       supabase
         .from("user_profiles")
-        .select("full_name, email, avatar_url, plan, role")
+        .select("full_name, email, avatar_url, plan, role, current_streak")
         .eq("id", u.id)
         .single()
         .then(({ data }) => {
@@ -35,6 +36,7 @@ export default function SidebarUserCard() {
             avatar_url: data?.avatar_url ?? null,
             plan: data?.plan ?? "free",
             role: data?.role ?? "user",
+            current_streak: data?.current_streak ?? 0,
           });
         });
     });
@@ -58,8 +60,25 @@ export default function SidebarUserCard() {
   const planBadge = user.plan === "pro" ? "⭐ Pro" : user.plan === "enterprise" ? "🏢 Enterprise" : "Free";
   const planColor = user.plan === "pro" ? "text-amber-400" : user.plan === "enterprise" ? "text-violet-400" : "text-slate-500";
 
+  const streakLabel =
+    user.current_streak > 0
+      ? `🔥 ${user.current_streak}-day streak`
+      : "Start a streak today";
+
   return (
     <div className="mt-4 pt-4 border-t border-slate-800/50 space-y-1.5">
+      {/* Streak pill */}
+      <div
+        className={`px-3 py-1.5 rounded-lg text-[11px] font-medium ${
+          user.current_streak > 0
+            ? "text-orange-300 bg-orange-500/10"
+            : "text-slate-500 bg-white/5"
+        }`}
+        title="Daily activity streak"
+      >
+        {streakLabel}
+      </div>
+
       {/* User card */}
       <Link href="/dashboard/profile" className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-white/5 transition group">
         {/* Avatar */}

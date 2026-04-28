@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
+import { bumpStreak } from "@/lib/streaks";
 
 // SSE-streamed roleplay turn. The browser reads chunks via fetch + getReader
 // and renders patient text token-by-token, dropping perceived latency from
@@ -95,6 +96,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
       .update({ status: "roleplay", roleplay_started_at: new Date().toISOString() })
       .eq("id", sessionId);
   }
+
+  // Streak bump after the user turn is safely persisted. Idempotent per UTC day.
+  await bumpStreak(supabase, user.id);
 
   // ─── Stream Claude response back as SSE ──────────────────────────────
   const stream = new ReadableStream<Uint8Array>({

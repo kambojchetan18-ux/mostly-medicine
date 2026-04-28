@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
+import { bumpStreak } from "@/lib/streaks";
+import { awardXp, XP_POINTS } from "@/lib/xp";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
@@ -113,6 +115,13 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     }).eq("user_id", user.id);
   }
+
+  // Bump the user_profiles streak counter (idempotent per UTC day).
+  await bumpStreak(supabase, user.id);
+
+  // Award XP — never blocks the response
+  const xpSource = correct ? "mcq_correct" : "mcq_incorrect";
+  await awardXp(supabase, user.id, xpSource, XP_POINTS[xpSource]);
 
   return NextResponse.json({ ok: true, due: next.due });
 }
