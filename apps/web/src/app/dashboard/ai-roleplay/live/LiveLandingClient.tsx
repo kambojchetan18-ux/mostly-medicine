@@ -56,7 +56,23 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
         body: JSON.stringify({ inviteCode: code }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Could not join");
+      if (!res.ok) {
+        if (json.error === "upgrade_required") {
+          setError(
+            "Live RolePlay needs the Enterprise plan. Upgrade at /dashboard/billing to join."
+          );
+          return;
+        }
+        if (json.error === "Invalid code") {
+          setError("That invite code doesn't match any active session. Double-check with your partner.");
+          return;
+        }
+        if (json.error === "Session already full") {
+          setError("This session already has two participants. Ask your partner to start a new one.");
+          return;
+        }
+        throw new Error(json.error ?? "Could not join");
+      }
       startTransition(() => router.push(`/dashboard/ai-roleplay/live/${code}`));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not join");

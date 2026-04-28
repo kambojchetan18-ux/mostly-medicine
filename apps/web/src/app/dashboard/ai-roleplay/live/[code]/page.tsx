@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { checkModulePermission } from "@/lib/permissions";
 import UpgradeGate from "../../UpgradeGate";
 import LiveSessionClient, { type LiveCaseStem, type LivePatientBrief } from "./LiveSessionClient";
@@ -29,9 +30,24 @@ export default async function LiveSessionPage({ params }: PageProps) {
   if (!session) notFound();
 
   // If guest hasn't joined yet and current user is not host, claim the seat.
+  // Use the service-role client so this works even before the new RLS policy
+  // catches up — RLS otherwise blocks a non-participant from updating.
   if (!session.guest_user_id && session.host_user_id !== user.id) {
-    await supabase.from("acrp_live_sessions").update({ guest_user_id: user.id }).eq("id", session.id);
-    session.guest_user_id = user.id;
+    const service = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } }
+    );
+    const { error: claimErr } = await service
+      .from("acrp_live_sessions")
+      .update({ guest_user_id: user.id })
+      .eq("id", session.id)
+      .is("guest_user_id", null); // only claim if seat still empty (race-safe)
+    if (claimErr) {
+      console.error("[live/[code]] guest claim failed", claimErr);
+    } else {
+      session.guest_user_id = user.id;
+    }
   }
   if (session.host_user_id !== user.id && session.guest_user_id !== user.id) {
     return notFound();

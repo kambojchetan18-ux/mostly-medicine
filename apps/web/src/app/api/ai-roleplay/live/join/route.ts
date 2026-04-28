@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { checkModulePermission } from "@/lib/permissions";
 
 export async function POST(req: NextRequest) {
@@ -38,13 +39,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Session already full" }, { status: 409 });
   }
 
-  // Claim guest seat
+  // Claim guest seat — use service-role to bypass RLS (a brand-new guest is
+  // not yet a participant, so RLS would block the update otherwise).
   if (!session.guest_user_id) {
-    const { error } = await supabase
+    const service = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } }
+    );
+    const { error } = await service
       .from("acrp_live_sessions")
       .update({ guest_user_id: user.id })
-      .eq("id", session.id);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+      .eq("id", session.id)
+      .is("guest_user_id", null); // race-safe: only claim if seat still null
+    if (error) {
+      console.error("[live/join] claim error", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 
   const guestRole = session.host_role === "doctor" ? "patient" : "doctor";
