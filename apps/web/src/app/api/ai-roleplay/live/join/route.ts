@@ -22,7 +22,14 @@ export async function POST(req: NextRequest) {
   const code = body.inviteCode?.trim().toUpperCase();
   if (!code) return NextResponse.json({ error: "inviteCode required" }, { status: 400 });
 
-  const { data: session } = await supabase
+  // Use service role for the initial lookup — RLS only lets participants SELECT,
+  // so a brand-new guest can't see the row otherwise.
+  const service = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  );
+  const { data: session } = await service
     .from("acrp_live_sessions")
     .select("id, host_user_id, guest_user_id, status, host_role, invite_code")
     .eq("invite_code", code)
@@ -39,14 +46,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Session already full" }, { status: 409 });
   }
 
-  // Claim guest seat — use service-role to bypass RLS (a brand-new guest is
-  // not yet a participant, so RLS would block the update otherwise).
+  // Claim guest seat — reuse the service client created above.
   if (!session.guest_user_id) {
-    const service = createServiceClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      { auth: { persistSession: false, autoRefreshToken: false } }
-    );
     const { error } = await service
       .from("acrp_live_sessions")
       .update({ guest_user_id: user.id })
