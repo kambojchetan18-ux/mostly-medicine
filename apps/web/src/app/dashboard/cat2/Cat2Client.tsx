@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { scenarios } from "@mostly-medicine/ai";
 import type { Scenario } from "@mostly-medicine/ai";
-import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useWhisperSTT } from "@/hooks/useWhisperSTT";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import { cleanForDisplay } from "@/lib/clean-message";
@@ -152,7 +152,8 @@ export default function Cat2Client() {
     ? parsePatientProfile(activeScenarioData.patientProfile)
     : { gender: "unknown" as const, age: null };
 
-  // sendMessage must be defined before useSpeechRecognition so it can be passed as onAutoEnd
+  // sendMessage must be defined before useWhisperSTT so the stopRecording
+  // wrapper below can flush the buffered transcript to it on mic-stop.
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return;
     stopSpeaking();
@@ -187,15 +188,31 @@ export default function Cat2Client() {
     }
   }, [loading, messages, activeScenario, gender, speak, stopSpeaking, ttsSupported]);
 
-  // Pass sendMessage as onAutoEnd so voice auto-sends when the browser stops listening
+  // Buffer Whisper chunks until the user stops the mic, then send as one
+  // user turn. Avoids spamming /api/ai/roleplay with every 5s of audio.
+  // Note: Whisper has no silence-detection auto-stop — the user MUST click
+  // the mic again to end their turn (different from the old Web Speech API
+  // behaviour which auto-fired on silence).
+  const sttBufferRef = useRef("");
+  const handleSttChunk = useCallback((chunk: string) => {
+    sttBufferRef.current = (sttBufferRef.current + " " + chunk).trim();
+  }, []);
   const {
     state: recState,
     displayTranscript,
     supported: micSupported,
     permissionDenied,
     startRecording,
-    stopRecording,
-  } = useSpeechRecognition(sendMessage);
+    stopRecording: stopWhisper,
+  } = useWhisperSTT(handleSttChunk);
+
+  // When the user stops the mic, ship the buffered transcript as one message.
+  const stopRecording = useCallback(() => {
+    stopWhisper();
+    const final = sttBufferRef.current.trim();
+    sttBufferRef.current = "";
+    if (final) sendMessage(final);
+  }, [stopWhisper, sendMessage]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

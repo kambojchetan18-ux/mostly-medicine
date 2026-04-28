@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useWhisperSTT } from "@/hooks/useWhisperSTT";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import FunLoading from "@/components/FunLoading";
@@ -66,9 +66,15 @@ export default function PlayClient({
     setMuted,
     setVolume,
   } = useSpeechSynthesis();
+  // Buffer Whisper chunks until the user stops the mic, then send as one
+  // user turn. Avoids spamming /api/ai-roleplay/session with every 5s of
+  // audio. Note: Whisper has no silence-detection auto-stop — the user MUST
+  // click the mic again to end their turn (different from the old Web Speech
+  // API behaviour which auto-fired on silence).
   const sendRef = useRef<(text: string) => void>(() => {});
-  const handleSttFinal = useCallback((finalText: string) => {
-    sendRef.current?.(finalText);
+  const sttBufferRef = useRef("");
+  const handleSttChunk = useCallback((chunk: string) => {
+    sttBufferRef.current = (sttBufferRef.current + " " + chunk).trim();
   }, []);
   const {
     state: sttState,
@@ -76,8 +82,15 @@ export default function PlayClient({
     supported: sttSupported,
     permissionDenied: micDenied,
     startRecording,
-    stopRecording,
-  } = useSpeechRecognition(handleSttFinal);
+    stopRecording: stopWhisper,
+  } = useWhisperSTT(handleSttChunk);
+
+  const stopRecording = useCallback(() => {
+    stopWhisper();
+    const final = sttBufferRef.current.trim();
+    sttBufferRef.current = "";
+    if (final) sendRef.current?.(final);
+  }, [stopWhisper]);
 
   // Countdown
   useEffect(() => {
