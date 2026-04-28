@@ -39,16 +39,30 @@ export default async function LiveSessionPage({ params }: PageProps) {
   if (!session) notFound();
 
   // Claim the empty guest seat if applicable (race-safe via .is null filter).
+  // We use .select() to confirm the claim actually landed — if a different
+  // user grabbed the seat first, .update().is(null) silently affects 0 rows
+  // and we'd otherwise incorrectly mark the local session as ours.
   if (!session.guest_user_id && session.host_user_id !== user.id) {
-    const { error: claimErr } = await service
+    const { data: claimed, error: claimErr } = await service
       .from("acrp_live_sessions")
       .update({ guest_user_id: user.id })
       .eq("id", session.id)
-      .is("guest_user_id", null);
+      .is("guest_user_id", null)
+      .select("guest_user_id")
+      .maybeSingle();
     if (claimErr) {
       console.error("[live/[code]] guest claim failed", claimErr);
-    } else {
+    } else if (claimed?.guest_user_id === user.id) {
       session.guest_user_id = user.id;
+    } else {
+      // Another user claimed the seat between read and write — re-fetch the
+      // canonical row so we render the correct authorisation state.
+      const { data: refreshed } = await service
+        .from("acrp_live_sessions")
+        .select("guest_user_id")
+        .eq("id", session.id)
+        .maybeSingle();
+      session.guest_user_id = refreshed?.guest_user_id ?? null;
     }
   }
   if (session.host_user_id !== user.id && session.guest_user_id !== user.id) {
@@ -93,7 +107,6 @@ export default async function LiveSessionPage({ params }: PageProps) {
       myUserId={user.id}
       myRole={myRole}
       isHost={isHost}
-      hostUserId={session.host_user_id}
       guestUserId={session.guest_user_id}
       initialStatus={session.status}
       stem={stem}

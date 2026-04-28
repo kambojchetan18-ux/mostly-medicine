@@ -185,8 +185,12 @@ export default function PlayClient({
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Could not send message");
-        setMessages((m) => m.filter((x) => x.id !== localUser.id && x.id !== assistantId));
-        if (!textOverride) setDraft(content);
+        // The server persists the user turn BEFORE streaming, so the user
+        // message may already be saved. Keep it on screen (so a refresh will
+        // show the same transcript) and only drop the empty assistant
+        // placeholder. Don't refill the draft — that would let the user
+        // re-send and double the user turn.
+        setMessages((m) => m.filter((x) => x.id !== assistantId));
       } finally {
         setSending(false);
       }

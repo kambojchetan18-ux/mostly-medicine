@@ -2,12 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+// Whitelist redirect targets to in-app paths only — prevents open-redirect
+// abuse if an attacker crafts ?next=https://evil.com or ?next=//evil.com
+// (protocol-relative). Mirrors apps/web/src/app/auth/login/page.tsx safeNext.
+function safeNext(raw: string | null): string {
+  if (!raw) return "/dashboard";
+  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  return "/dashboard";
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = safeNext(searchParams.get("next"));
 
   // OAuth code exchange (Google SSO)
   // Cookies must be set directly on the redirect response — not on cookieStore —

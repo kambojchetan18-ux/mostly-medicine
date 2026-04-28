@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
+import { checkModulePermission } from "@/lib/permissions";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
 
 interface GenerateRequest {
@@ -24,6 +25,17 @@ export async function POST(req: NextRequest) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Plan gate — free users hitting this API directly must be blocked even
+  // though the upgrade gate already hides the UI. Otherwise the Anthropic
+  // bill escapes the per-plan limits configured in module_permissions.
+  const perm = await checkModulePermission(supabase, "acrp_solo");
+  if (!perm.allowed) {
+    return NextResponse.json(
+      { error: "Your plan does not include AI Clinical RolePlay. Upgrade to continue." },
+      { status: 403 }
+    );
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {

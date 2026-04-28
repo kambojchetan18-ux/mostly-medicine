@@ -72,8 +72,11 @@ function getPatientEmoji(gender: "male" | "female" | "unknown", age: number | nu
 
 function isExaminerFeedback(text: string, messageCount: number) {
   if (messageCount < 4) return false;
-  return /what the doctor did well|overall score|AMC marking criteria|clinical pearl/i.test(text)
-    || /\d+\s*\/\s*10/.test(text);
+  // Patient roleplay messages legitimately use "8/10" for pain severity, so
+  // we cannot trigger on a bare X/10 — require a Score-style label nearby.
+  const hasFeedbackHeading = /what the doctor did well|AMC marking criteria|clinical pearl|examiner feedback|MCAT performance criteria|critical errors/i.test(text);
+  const hasScoreLabel = /(?:^|\n)\s*(?:[#*]+\s*)?(?:🎯\s*)?(?:overall\s+)?score\s*[:：]?\s*\d+\s*\/\s*10/i.test(text);
+  return hasFeedbackHeading || hasScoreLabel;
 }
 
 const difficultyColor: Record<string, string> = {

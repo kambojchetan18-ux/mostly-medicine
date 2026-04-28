@@ -21,11 +21,24 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Extract storage path from URL
-  const url = new URL(note.file_url);
-  const pathParts = url.pathname.split("/user-notes/");
-  if (pathParts[1]) {
-    await supabase.storage.from("user-notes").remove([decodeURIComponent(pathParts[1])]);
+  // `file_url` may be either a legacy public URL (from earlier rows) or a raw
+  // storage path (`<user_id>/<timestamp>_<name>`). Normalise to a storage path.
+  let storagePath: string | null = null;
+  if (note.file_url) {
+    if (note.file_url.startsWith("http")) {
+      try {
+        const url = new URL(note.file_url);
+        const parts = url.pathname.split("/user-notes/");
+        storagePath = parts[1] ? decodeURIComponent(parts[1]) : null;
+      } catch {
+        storagePath = null;
+      }
+    } else {
+      storagePath = note.file_url;
+    }
+  }
+  if (storagePath) {
+    await supabase.storage.from("user-notes").remove([storagePath]);
   }
 
   // Delete from database

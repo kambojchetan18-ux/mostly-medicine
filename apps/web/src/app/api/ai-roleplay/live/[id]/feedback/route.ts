@@ -28,6 +28,15 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
   if (session.feedback) {
     return NextResponse.json({ feedback: session.feedback as SessionFeedback, cached: true });
   }
+  // Block scoring if the session never reached the roleplay phase. Otherwise
+  // users who land on /results during 'waiting' or 'reading' would burn a
+  // Claude call on an empty transcript and lock in a meaningless score.
+  if (session.status !== "roleplay" && session.status !== "completed") {
+    return NextResponse.json(
+      { error: "Session has not entered the roleplay phase yet" },
+      { status: 409 }
+    );
+  }
 
   const { data: caseRow } = await supabase
     .from("acrp_cases")

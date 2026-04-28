@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
+import { checkModulePermission } from "@/lib/permissions";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 
@@ -24,6 +25,14 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const perm = await checkModulePermission(supabase, "acrp_solo");
+  if (!perm.allowed) {
+    return Response.json(
+      { error: "Your plan does not include AI Clinical RolePlay." },
+      { status: 403 }
+    );
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json({ error: "AI service not configured" }, { status: 503 });

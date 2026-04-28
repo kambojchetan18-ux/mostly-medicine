@@ -91,13 +91,14 @@ export default function ReadingClient({
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Scenario</p>
         <p className="mt-2 whitespace-pre-line text-base leading-relaxed text-gray-900">
-          {stationStem.visiblePatientContext}
+          {stationStem.visiblePatientContext ||
+            `${patientName} presents to ${setting || "your clinic"} for assessment.`}
         </p>
 
         <div className="mt-5 rounded-xl bg-amber-50 border border-amber-200 p-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">Your task</p>
           <p className="mt-1 text-sm font-medium text-amber-900">
-            {stationStem.candidateTask || candidateTask}
+            {stationStem.candidateTask || candidateTask || "Take a focused history and discuss your impression."}
           </p>
         </div>
       </div>

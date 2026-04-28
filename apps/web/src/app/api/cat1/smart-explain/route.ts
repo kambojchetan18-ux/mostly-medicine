@@ -113,13 +113,20 @@ Write the personalised 3-4 sentence explanation now.`;
   const explanation = block.text.trim();
 
   // Best-effort cache write — ignore conflicts (race with another tab).
-  await supabase.from("cat1_explanations").insert({
-    user_id: user.id,
-    question_id: questionId,
-    user_answer_index: userAnswerIndex,
-    explanation,
-    model: MODEL,
-  });
+  // The unique index is (user_id, question_id), so upsert lets the first
+  // writer win without throwing on a concurrent second tab.
+  await supabase
+    .from("cat1_explanations")
+    .upsert(
+      {
+        user_id: user.id,
+        question_id: questionId,
+        user_answer_index: userAnswerIndex,
+        explanation,
+        model: MODEL,
+      },
+      { onConflict: "user_id,question_id", ignoreDuplicates: true }
+    );
 
   return NextResponse.json({ explanation, cached: false });
 }

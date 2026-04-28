@@ -65,9 +65,12 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const storagePath = `${user.id}/${Date.now()}_${file.name}`;
+  // Sanitize the filename so the storage key never breaks RLS path matching
+  // (auth.uid() = (storage.foldername(name))[1]). Slashes/odd chars are removed.
+  const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 120);
+  const storagePath = `${user.id}/${Date.now()}_${safeName}`;
 
-  // Upload to Supabase Storage
+  // Upload to Supabase Storage (private bucket — only the storage path is stored)
   const { error: uploadError } = await supabase.storage
     .from("user-notes")
     .upload(storagePath, buffer, { contentType: file.type, upsert: false });
@@ -76,7 +79,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
   }
 
-  const { data: { publicUrl } } = supabase.storage.from("user-notes").getPublicUrl(storagePath);
+  // Bucket is private, so getPublicUrl() would return a non-functional URL.
+  // Store the storage path itself in `file_url` — the DELETE route parses it
+  // back out, and any future signed-URL flow can call createSignedUrl(path).
+  const fileRef = storagePath;
 
   // Extract text
   let extractedText = "";
@@ -98,7 +104,7 @@ export async function POST(req: NextRequest) {
     .insert({
       user_id: user.id,
       filename: file.name,
-      file_url: publicUrl,
+      file_url: fileRef,
       extracted_text: extractedText,
       ai_summary: aiSummary,
       page_count: pageCount,

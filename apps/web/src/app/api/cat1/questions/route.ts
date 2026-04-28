@@ -9,10 +9,12 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { topic, count = 20 } = await req.json();
+  const safeCount = Math.min(Math.max(1, Number(count) || 20), 100);
 
-  const pool = topic
-    ? [...allQuestions.filter((q) => q.topic === topic)].sort(() => Math.random() - 0.5)
-    : [...allQuestions].sort(() => Math.random() - 0.5).slice(0, count);
+  const filtered = topic
+    ? allQuestions.filter((q) => q.topic === topic)
+    : allQuestions;
+  const pool = [...filtered].sort(() => Math.random() - 0.5).slice(0, safeCount);
 
   return NextResponse.json({ questions: pool });
 }

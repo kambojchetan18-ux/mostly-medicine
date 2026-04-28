@@ -50,6 +50,9 @@ Keep the total response under 350 words. Use plain language suitable for an AMC 
     messages: [{ role: "user", content: prompt }],
   });
 
-  const text = (message.content[0] as { type: string; text: string }).text;
-  return NextResponse.json({ explanation: text });
+  const block = message.content[0];
+  if (!block || block.type !== "text") {
+    return NextResponse.json({ error: "Unexpected response from AI" }, { status: 502 });
+  }
+  return NextResponse.json({ explanation: block.text });
 }

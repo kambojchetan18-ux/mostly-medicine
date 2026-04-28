@@ -25,24 +25,32 @@ export default async function ReadingPage({ params }: ReadingPageProps) {
 
   if (!row) notFound();
 
-  type Profile = { name: string };
-  const profile = row.patient_profile as Profile | null;
+  type Profile = { name?: string };
+  const profile = (row.patient_profile as Profile | null) ?? null;
   type Stem = {
-    presentingComplaint: string;
-    setting: string;
-    candidateTask: string;
-    visiblePatientContext: string;
+    presentingComplaint?: string;
+    setting?: string;
+    candidateTask?: string;
+    visiblePatientContext?: string;
   };
-  const stem = row.station_stem as Stem;
+  // Old rows may have null station_stem — fall back to the flat columns so
+  // the reading screen never crashes on jsonb access.
+  const rawStem = (row.station_stem as Stem | null) ?? {};
+  const stem = {
+    presentingComplaint: rawStem.presentingComplaint ?? "",
+    setting: rawStem.setting ?? row.setting ?? "",
+    candidateTask: rawStem.candidateTask ?? row.candidate_task ?? "",
+    visiblePatientContext: rawStem.visiblePatientContext ?? "",
+  };
 
   return (
     <ReadingClient
       caseId={row.id}
-      difficulty={row.difficulty}
+      difficulty={row.difficulty ?? "medium"}
       stationStem={stem}
       patientName={profile?.name ?? "Patient"}
-      candidateTask={row.candidate_task}
-      setting={row.setting}
+      candidateTask={row.candidate_task ?? ""}
+      setting={row.setting ?? ""}
     />
   );
 }

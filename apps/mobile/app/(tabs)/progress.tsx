@@ -41,7 +41,7 @@ export default function ProgressScreen() {
 
       const [attRes, streakRes, dueRes] = await Promise.all([
         supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).single(),
+        supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
           .eq('user_id', user.id).lte('due', new Date().toISOString()),
       ]);

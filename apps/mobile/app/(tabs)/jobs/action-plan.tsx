@@ -76,7 +76,7 @@ export default function ActionPlanScreen() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase.from('img_profiles').select('*').eq('user_id', user.id).single();
+      const { data } = await supabase.from('img_profiles').select('*').eq('user_id', user.id).maybeSingle();
       if (!data) { setNoProfile(true); } else { setProfile(data); }
       setLoading(false);
     }

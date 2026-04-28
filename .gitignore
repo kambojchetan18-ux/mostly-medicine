@@ -12,3 +12,6 @@ dist
 
 # AI Clinical RolePlay source PDFs (metadata is extracted offline; PDFs themselves are not tracked)
 roleplays/source-pdfs/
+
+# Generated AI crawler digests
+scripts/crawler-digest-*.md

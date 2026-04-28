@@ -41,7 +41,6 @@ interface Props {
   myUserId: string;
   myRole: "doctor" | "patient";
   isHost: boolean;
-  hostUserId: string;
   guestUserId: string | null;
   initialStatus: string;
   stem: LiveCaseStem;

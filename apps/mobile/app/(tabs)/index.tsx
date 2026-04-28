@@ -21,7 +21,7 @@ export default function HomeScreen() {
 
       const [attemptsRes, streakRes, dueRes] = await Promise.all([
         supabase.from('attempts').select('is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('*').eq('user_id', user.id).single(),
+        supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
           .eq('user_id', user.id).lte('due', new Date().toISOString()),
       ]);

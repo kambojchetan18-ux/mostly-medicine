@@ -48,14 +48,22 @@ export async function POST(req: NextRequest) {
 
   // Claim guest seat — reuse the service client created above.
   if (!session.guest_user_id) {
-    const { error } = await service
+    const { data: claimed, error } = await service
       .from("acrp_live_sessions")
       .update({ guest_user_id: user.id })
       .eq("id", session.id)
-      .is("guest_user_id", null); // race-safe: only claim if seat still null
+      .is("guest_user_id", null) // race-safe: only claim if seat still null
+      .select("guest_user_id")
+      .maybeSingle();
     if (error) {
       console.error("[live/join] claim error", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    // If the .is(null) filter lost the race, .update() returns no rows. Tell
+    // the client the session is full so they don't navigate into a dead end
+    // where the page would notFound() them.
+    if (!claimed || claimed.guest_user_id !== user.id) {
+      return NextResponse.json({ error: "Session already full" }, { status: 409 });
     }
   }
 

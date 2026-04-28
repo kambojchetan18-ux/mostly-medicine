@@ -66,8 +66,8 @@ export default async function PlayPage({ params }: PlayPageProps) {
     .eq("session_id", sessionId)
     .order("created_at");
 
-  type Profile = { name: string; gender?: string };
-  const profile = caseRow.patient_profile as Profile | null;
+  type Profile = { name?: string; gender?: string };
+  const profile = (caseRow.patient_profile as Profile | null) ?? null;
   const genderRaw = (profile?.gender ?? "").toLowerCase();
   const patientGender: "male" | "female" | "unknown" =
     /\b(female|woman|girl)\b/.test(genderRaw)
@@ -76,12 +76,12 @@ export default async function PlayPage({ params }: PlayPageProps) {
         ? "male"
         : "unknown";
   type Stem = {
-    presentingComplaint: string;
-    setting: string;
-    candidateTask: string;
-    visiblePatientContext: string;
+    presentingComplaint?: string;
+    setting?: string;
+    candidateTask?: string;
+    visiblePatientContext?: string;
   };
-  const stem = caseRow.station_stem as Stem;
+  const stem = (caseRow.station_stem as Stem | null) ?? {};
 
   return (
     <PlayClient
@@ -89,9 +89,9 @@ export default async function PlayPage({ params }: PlayPageProps) {
       sessionId={sessionId}
       patientName={profile?.name ?? "Patient"}
       patientGender={patientGender}
-      candidateTask={stem.candidateTask || caseRow.candidate_task}
-      setting={stem.setting || caseRow.setting}
-      difficulty={caseRow.difficulty}
+      candidateTask={stem.candidateTask || caseRow.candidate_task || ""}
+      setting={stem.setting || caseRow.setting || ""}
+      difficulty={caseRow.difficulty ?? "medium"}
       initialMessages={(msgs ?? [])
         .filter((m) => m.role === "user" || m.role === "assistant")
         .map((m) => ({ id: m.id, role: m.role as "user" | "assistant", content: m.content }))}
