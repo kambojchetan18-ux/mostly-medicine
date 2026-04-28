@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -13,7 +13,18 @@ function safeNext(raw: string | null): string {
   return "/dashboard";
 }
 
+// Wrapped default export — useSearchParams() bails out of static rendering
+// in Next.js App Router; the Suspense boundary lets the build succeed and
+// hydration handle the client-side query string read.
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <LoginInner />
+    </Suspense>
+  );
+}
+
+function LoginInner() {
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNext(params.get("next"));
