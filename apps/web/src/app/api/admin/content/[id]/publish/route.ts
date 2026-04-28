@@ -106,6 +106,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     return NextResponse.json({ success: true });
   } catch (e) {
-    return NextResponse.json({ error: e instanceof Error ? e.message : "Publish failed" }, { status: 500 });
+    console.error("[content/publish]", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Publish failed" }, { status: 500 });
   }
 }

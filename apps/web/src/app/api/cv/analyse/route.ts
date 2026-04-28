@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       response = await (client.messages.create as any)({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM,
+        system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
         messages: [{
           role: "user",
           content: [
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       response = await client.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM,
+        system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
         messages: [{ role: "user", content: `CV TEXT:\n\n${text.slice(0, 8000)}` }],
       });
     }
@@ -112,8 +112,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ profile: extracted });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[cv/analyse]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/analyse]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "CV analysis failed. Please try again." }, { status: 500 });
   }
 }

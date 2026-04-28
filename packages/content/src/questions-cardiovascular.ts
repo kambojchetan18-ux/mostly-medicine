@@ -764,7 +764,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b2-001",
+    id: "cv-b2-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 68-year-old man with hypertension and type 2 diabetes presents to his GP for a routine review. His ECG shows atrial fibrillation with a ventricular rate of 88 bpm. He has no history of stroke, heart failure, or vascular disease. His CHA2DS2-VASc score is calculated, and anticoagulation is being considered. Which of the following is the most appropriate next step in management?",
@@ -781,7 +781,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b2-002",
+    id: "cv-b2-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 72-year-old woman with a known history of ischaemic cardiomyopathy presents with worsening dyspnoea on exertion and bilateral ankle oedema over the past two weeks. On examination, her BP is 130/80 mmHg, HR is 78 bpm, JVP is elevated at 5 cm above the sternal angle, and bibasal crackles are heard on auscultation. Echocardiography shows an ejection fraction of 32%. She is already on enalapril 10 mg twice daily and frusemide 40 mg daily. Which additional medication has the strongest evidence for reducing mortality in this patient?",
@@ -798,7 +798,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-003",
+    id: "cv-b2-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with severe central crushing chest pain radiating to his left arm for 90 minutes. He is diaphoretic and pale. ECG shows 3 mm ST elevation in leads II, III, and aVF, with reciprocal ST depression in I and aVL. His BP is 100/70 mmHg and HR is 55 bpm. The nearest PCI-capable hospital is 45 minutes away. What is the most appropriate immediate management?",
@@ -815,7 +815,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-004",
+    id: "cv-b2-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 45-year-old Aboriginal Australian woman is found to have consistently elevated blood pressure readings of 158/96 mmHg on three separate occasions over six weeks. She has no diabetes, chronic kidney disease, or cardiovascular disease. She is a non-smoker with a BMI of 27 kg/m2. Urinalysis, renal function, electrolytes, fasting glucose, and lipid profile are all normal. She has no contraindications to antihypertensive therapy. What is the most appropriate first-line pharmacological treatment?",
@@ -832,7 +832,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-005",
+    id: "cv-b2-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 74-year-old man presents with progressive exertional dyspnoea, dizziness on exertion, and one episode of syncope over the past three months. On examination, his pulse is slow-rising with a BP of 110/80 mmHg. Auscultation reveals a harsh ejection systolic murmur heard best in the right upper sternal border, radiating to the carotids. Echocardiography confirms severe aortic stenosis with an aortic valve area of 0.7 cm2 and mean gradient of 52 mmHg. His EF is 55%. What is the most appropriate next step in management?",
@@ -849,7 +849,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b2-006",
+    id: "cv-b2-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 63-year-old male smoker with type 2 diabetes presents with a 6-month history of pain in his right calf when walking approximately 200 metres, which is relieved by rest. He has no rest pain or skin changes. On examination, the right popliteal and pedal pulses are diminished. His ABI (ankle-brachial index) is 0.62 on the right and 0.95 on the left. What is the most appropriate initial management strategy?",
@@ -866,7 +866,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b2-007",
+    id: "cv-b2-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 38-year-old woman presents to the emergency department with sudden onset pleuritic chest pain and dyspnoea. She returned from a 14-hour flight from London three days ago and takes the oral contraceptive pill. Her HR is 112 bpm, BP is 118/76 mmHg, RR is 22/min, and SpO2 is 94% on room air. D-dimer is 3.8 μg/mL (elevated). A CTPA confirms bilateral segmental pulmonary emboli. She is haemodynamically stable. What is the most appropriate anticoagulation regimen?",
@@ -883,7 +883,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-008",
+    id: "cv-b2-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 32-year-old woman presents with recurrent episodes of sudden palpitations associated with light-headedness lasting 10–15 minutes, occurring approximately once monthly for the past two years. An ECG performed during an episode shows a narrow complex tachycardia at 178 bpm with P waves visible just after the QRS complex (short RP tachycardia). The arrhythmia terminates with Valsalva manoeuvre. Between episodes, her ECG is normal. What is the most likely diagnosis?",
@@ -900,7 +900,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-009",
+    id: "cv-b2-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 28-year-old elite male footballer collapses during a pre-season training session. He is resuscitated by teammates using an AED, which delivered two shocks for ventricular fibrillation. He recovers fully and is brought to hospital. He reports a previous episode of exertional presyncope one month ago. His father died suddenly at age 35. On examination, a systolic murmur is heard at the left sternal border that increases with Valsalva manoeuvre and decreases with squatting. ECG shows left ventricular hypertrophy and deep T-wave inversions in the lateral leads. What is the most likely diagnosis?",
@@ -917,7 +917,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-010",
+    id: "cv-b2-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 67-year-old male smoker with a 40-pack-year history presents for a health check. He is asymptomatic. His BP is 148/88 mmHg. Abdominal ultrasound performed incidentally during a renal calculi workup reveals an infrarenal aortic aneurysm measuring 4.2 cm in maximal diameter. He has no symptoms and no family history of aortic disease. What is the most appropriate management?",
@@ -934,7 +934,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b2-011",
+    id: "cv-b2-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman is brought to the emergency department with palpitations, chest tightness, and marked shortness of breath starting 4 hours ago. Her ECG shows atrial fibrillation with a rapid ventricular response of 145 bpm. Her BP is 88/60 mmHg and she is diaphoretic and confused. A prior echocardiogram showed severe mitral stenosis. What is the most appropriate immediate management?",
@@ -951,7 +951,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-012",
+    id: "cv-b2-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 66-year-old woman with well-controlled hypertension presents with progressive dyspnoea on exertion and fatigue for 6 months. She denies orthopnoea or ankle swelling. Examination reveals a BP of 138/84 mmHg, HR of 76 bpm, no murmurs, clear lung fields, and no peripheral oedema. NT-proBNP is markedly elevated at 1800 pg/mL. Echocardiography shows normal LV size and ejection fraction of 62%, with evidence of impaired LV relaxation and elevated filling pressures. What is the most accurate diagnosis?",
@@ -968,7 +968,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-013",
+    id: "cv-b2-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 61-year-old woman with hypertension and hypercholesterolaemia presents with 3 hours of central chest pressure, diaphoresis, and nausea. Her ECG shows 1.5 mm ST depression in leads V4–V6 and T-wave inversions in I and aVL. Troponin I at 3 hours is 1.8 μg/L (reference <0.04 μg/L). Her BP is 154/92 mmHg, HR is 88 bpm, and she is haemodynamically stable. What is the most appropriate initial pharmacological management?",
@@ -985,7 +985,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b2-014",
+    id: "cv-b2-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 42-year-old man presents with a severe headache, blurred vision, and nausea. His BP is 228/136 mmHg on repeated measurements. Fundoscopy reveals bilateral papilloedema. Urinalysis shows 2+ proteinuria and 1+ haematuria. Serum creatinine is 198 μmol/L (baseline unknown). ECG shows LVH. What is the most appropriate immediate management?",
@@ -1002,7 +1002,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b2-015",
+    id: "cv-b2-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old woman who immigrated from India 5 years ago presents with progressive dyspnoea and orthopnoea over 12 months. She reports a childhood illness involving joint pains and a sore throat that was treated briefly. Auscultation reveals a low-pitched rumbling mid-diastolic murmur at the cardiac apex heard best in the left lateral decubitus position, a loud S1, and an opening snap. CXR shows left atrial enlargement and pulmonary venous congestion. What is the most likely diagnosis?",
@@ -1019,7 +1019,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b2-016",
+    id: "cv-b2-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 71-year-old male diabetic presents with a 2-week history of severe rest pain in his right foot, worse at night, partially relieved by hanging the foot over the side of the bed. Examination reveals a cool, pale right foot with absent pedal and popliteal pulses. There is a 1.5 cm shallow ulcer on the right great toe that has not healed for 3 weeks. His ABI is 0.28 on the right. Which of the following best describes his condition and the most appropriate next step?",
@@ -1036,7 +1036,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-017",
+    id: "cv-b2-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 52-year-old man presents with a 3-day history of left calf pain and swelling following a long-haul flight. His Wells score for DVT is 3 (high probability). D-dimer is 4.2 μg/mL. Compression duplex ultrasonography demonstrates non-compressibility of the left popliteal and superficial femoral veins. He has no contraindications to anticoagulation. He is haemodynamically stable with no respiratory symptoms. Which of the following is the most appropriate treatment plan?",
@@ -1053,7 +1053,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b2-018",
+    id: "cv-b2-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 78-year-old man with ischaemic heart disease, type 2 diabetes, and CKD stage 3 (eGFR 42 mL/min) is found to have complete heart block on his routine ECG during an outpatient review. He reports fatigue, occasional dizziness, and two episodes of near-syncope in the past month. His resting HR is 38 bpm and BP is 102/68 mmHg. His current medications include metformin, atorvastatin, and aspirin. What is the most appropriate immediate and definitive management?",
@@ -1070,7 +1070,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b2-019",
+    id: "cv-b2-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 45-year-old woman with a 15-year history of heavy alcohol use (estimated 6–8 standard drinks daily) presents with progressive dyspnoea, orthopnoea, and bilateral ankle oedema over 4 months. She denies chest pain or palpitations. On examination, her HR is 104 bpm (regular), BP is 100/70 mmHg, JVP is elevated, S3 gallop is heard, and bibasal crepitations are present. Echocardiography shows a markedly dilated LV with EF of 25% and global hypokinesis. Coronary angiography is normal. What is the most important modifiable factor in this patient's prognosis?",
@@ -1087,7 +1087,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b2-020",
+    id: "cv-b2-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 54-year-old man with Marfan syndrome presents to the emergency department with sudden-onset, severe tearing chest pain radiating to his back and interscapular region. His BP is 170/90 mmHg in the right arm and 130/80 mmHg in the left arm. He appears pale and sweating. Heart rate is 106 bpm. CXR shows a widened mediastinum. His ECG shows sinus tachycardia with no ST changes. What is the most appropriate immediate management?",
@@ -1446,7 +1446,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b3-001",
+    id: "cv-b3-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man with a history of hypertension and type 2 diabetes presents to his GP for a routine check-up. He denies any symptoms of palpitations, dyspnoea, or chest pain. His pulse is irregularly irregular at 78 bpm, blood pressure is 145/88 mmHg, and an ECG confirms atrial fibrillation. An echocardiogram shows preserved left ventricular function with no valvular disease. Which of the following is the most appropriate antithrombotic strategy for this patient?",
@@ -1463,7 +1463,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b3-002",
+    id: "cv-b3-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old man presents to the emergency department with progressive dyspnoea over the past three days, orthopnoea, and bilateral ankle swelling. He has a history of ischaemic cardiomyopathy. On examination, his JVP is elevated, he has bibasal crackles, and pitting oedema to the knees. Chest X-ray shows cardiomegaly and interstitial oedema. His eGFR is 48 mL/min/1.73m². He is currently on ramipril, carvedilol, and frusemide 40 mg daily. What is the most appropriate immediate management?",
@@ -1480,7 +1480,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b3-003",
+    id: "cv-b3-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old woman is brought by ambulance to a regional hospital with 90 minutes of crushing central chest pain radiating to the left arm, diaphoresis, and nausea. Her ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal changes in I and aVL. The nearest percutaneous coronary intervention (PCI)-capable centre is four hours away by road. Her vital signs are stable and she has no contraindications to thrombolysis. What is the most appropriate immediate reperfusion strategy?",
@@ -1497,7 +1497,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-004",
+    id: "cv-b3-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 45-year-old Aboriginal Australian man presents to a remote clinic for a routine check. He has no known medical history. His blood pressure readings on two separate occasions are 168/102 mmHg and 172/104 mmHg. He is a non-smoker with a BMI of 31 kg/m². Blood tests reveal eGFR 55 mL/min/1.73m², urine ACR 45 mg/mmol, fasting glucose 5.8 mmol/L, and total cholesterol 5.2 mmol/L. Which of the following is the most appropriate initial antihypertensive therapy?",
@@ -1514,7 +1514,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-005",
+    id: "cv-b3-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 70-year-old woman presents with progressive exertional dyspnoea and two episodes of near-syncope over the past three months. On examination, she has a slow-rising carotid pulse, a harsh ejection systolic murmur loudest at the right upper sternal border radiating to the carotids, and a soft second heart sound. Blood pressure is 110/80 mmHg. Echocardiography reveals a heavily calcified aortic valve with a peak gradient of 72 mmHg and an aortic valve area of 0.7 cm². What is the most appropriate next step in management?",
@@ -1531,7 +1531,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-006",
+    id: "cv-b3-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 66-year-old man with a 40 pack-year smoking history and type 2 diabetes presents with right calf pain on walking 100 metres that is relieved by rest. He has no rest pain or skin changes. Examination reveals absent right popliteal and pedal pulses. Ankle-brachial index (ABI) measurement shows a right ABI of 0.58. Which of the following represents the most appropriate initial management plan?",
@@ -1548,7 +1548,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b3-007",
+    id: "cv-b3-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman presents to the emergency department with sudden onset pleuritic right-sided chest pain, dyspnoea, and haemoptysis following a 14-hour flight from London. She takes the combined oral contraceptive pill. Her oxygen saturation is 93% on room air, heart rate is 112 bpm, and blood pressure is 118/74 mmHg. A CT pulmonary angiogram confirms bilateral pulmonary emboli. There is no right heart strain on echo and troponin is normal. What is the most appropriate treatment?",
@@ -1565,7 +1565,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b3-008",
+    id: "cv-b3-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old male presents with his third episode of sudden-onset palpitations with mild dizziness. Episodes start and terminate abruptly and last 20–30 minutes. He has no structural heart disease. An ECG during palpitations shows a regular narrow-complex tachycardia at 180 bpm with no visible P waves. Vagal manoeuvres including carotid sinus massage failed to terminate the episode. He is haemodynamically stable. What is the most appropriate next step in management?",
@@ -1582,7 +1582,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-009",
+    id: "cv-b3-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 35-year-old male competitive cyclist presents with exertional chest tightness and two episodes of near-syncope during intense exercise. His father died suddenly at age 40. Examination reveals a harsh systolic murmur that increases with Valsalva manoeuvre and decreases with squatting. ECG shows LVH with deep T-wave inversions in V1–V4. Echocardiography reveals asymmetric septal hypertrophy of 21 mm with systolic anterior motion of the mitral valve and a resting LVOT gradient of 45 mmHg. What is the most important initial recommendation for this patient?",
@@ -1599,7 +1599,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-010",
+    id: "cv-b3-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 68-year-old male hypertensive smoker presents to the emergency department with sudden severe tearing chest pain radiating to the back between his shoulder blades. His blood pressure is 185/100 mmHg in the right arm and 145/80 mmHg in the left arm. He is diaphoretic and in significant distress. A chest X-ray shows widening of the mediastinum. CT angiography confirms a Type A aortic dissection involving the ascending aorta. What is the most appropriate immediate management?",
@@ -1616,7 +1616,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-011",
+    id: "cv-b3-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 62-year-old woman with no significant past medical history is found to have AF on a routine pre-operative ECG. She is completely asymptomatic and her ventricular rate is 75 bpm. An echocardiogram shows preserved LV function and no valvular disease. Her CHA2DS2-VA score is 2 (female sex category, age 62). She strongly prefers not to take medication if possible and asks about cardioversion. Which of the following statements about rate control versus rhythm control is most accurate in her case?",
@@ -1633,7 +1633,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-012",
+    id: "cv-b3-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 55-year-old male with newly diagnosed heart failure with reduced ejection fraction (HFrEF, LVEF 30%) is stabilised after an acute exacerbation. He is on optimal doses of ramipril, carvedilol, and spironolactone. His blood pressure is 115/70 mmHg, heart rate is 68 bpm, eGFR 52 mL/min/1.73m², and potassium 4.6 mmol/L. He remains in NYHA class II. According to current evidence-based guidelines, what additional therapy should now be considered?",
@@ -1650,7 +1650,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b3-013",
+    id: "cv-b3-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 50-year-old male presents with three hours of central chest pain. ECG shows new left bundle branch block (LBBB). Troponin I is elevated at 2.8 μg/L (normal <0.04 μg/L). He is haemodynamically stable. The hospital has 24/7 PCI capability and the estimated door-to-balloon time is 55 minutes. He has no known contraindications to antiplatelet therapy. Which of the following is the most appropriate immediate pharmacological treatment prior to PCI?",
@@ -1667,7 +1667,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-014",
+    id: "cv-b3-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 32-year-old woman is referred for investigation of hypertension. Her blood pressure averages 158/96 mmHg on ambulatory blood pressure monitoring. She has no family history of hypertension and is otherwise well. Blood tests show sodium 144 mmol/L, potassium 2.9 mmol/L (not on diuretics), bicarbonate 30 mmol/L, and creatinine 72 μmol/L. Renin activity is suppressed and aldosterone level is markedly elevated. What is the most likely underlying diagnosis?",
@@ -1684,7 +1684,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-015",
+    id: "cv-b3-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 45-year-old man with a history of rheumatic fever is found to have mitral stenosis on echocardiography during investigation for recent-onset palpitations. Echo shows a mitral valve area of 1.0 cm² with a mean gradient of 12 mmHg, commissural fusion, and a Wilkins score of 6. The valve leaflets are pliable and there is no significant mitral regurgitation or left atrial thrombus. He has mild dyspnoea on exertion (NYHA class II). What is the preferred intervention?",
@@ -1701,7 +1701,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b3-016",
+    id: "cv-b3-016d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 55-year-old man presents with left calf swelling, redness, and pain for four days. He has no recent surgery, travel, or immobilisation. An ultrasound confirms an isolated left gastrocnemius muscle vein DVT (distal DVT below the knee). He has no active cancer, thrombophilia history, or family history of VTE. His Wells score for DVT is 2 (moderate probability). What is the most appropriate management?",
@@ -1718,7 +1718,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b3-017",
+    id: "cv-b3-017d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 22-year-old male presents to the ED after collapsing during a basketball game. He regained consciousness spontaneously within one minute. There is a family history of sudden cardiac death in his maternal uncle at age 35. A 12-lead ECG shows a short PR interval of 0.09 seconds, a delta wave, and a wide QRS complex. What is the most appropriate next step?",
@@ -1735,7 +1735,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b3-018",
+    id: "cv-b3-018d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 38-year-old woman with a recent viral upper respiratory tract infection three weeks ago presents with progressive dyspnoea, orthopnoea, and fatigue over the past two weeks. She has no cardiac history. On examination, she has a displaced apex beat, S3 gallop, JVP elevated to 5 cm above the sternal angle, and bilateral basal crackles. ECG shows sinus tachycardia with non-specific ST changes. Echocardiography reveals globally dilated left ventricle with LVEF of 22% and no valvular abnormalities. What is the most likely diagnosis?",
@@ -1752,7 +1752,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b3-019",
+    id: "cv-b3-019d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 70-year-old male ex-smoker undergoes a screening abdominal ultrasound as part of the Australian Department of Health's abdominal aortic aneurysm (AAA) screening program. The ultrasound reveals an infrarenal aortic aneurysm measuring 4.2 cm in diameter. He is asymptomatic and has no abdominal tenderness. Blood pressure is 135/82 mmHg on amlodipine. What is the most appropriate management at this stage?",
@@ -1769,7 +1769,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b3-020",
+    id: "cv-b3-020d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 75-year-old male diabetic presents to the emergency department with a two-day history of rest pain in his right foot, pallor of the right toes, and a non-healing ulcer on his right heel that has been present for four weeks. His right foot is cold with absent pedal and popliteal pulses. The ABI is 0.35 on the right. He has no fever but his white cell count is 13.5 x10⁹/L. Which of the following best describes his condition and most appropriate management pathway?",
@@ -2128,7 +2128,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b4-001",
+    id: "cv-b4-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-week history of palpitations and mild exertional dyspnoea. He has a history of hypertension and type 2 diabetes mellitus. On examination, his pulse is irregularly irregular at 88 bpm, blood pressure 148/92 mmHg, and there are no signs of heart failure. An ECG confirms atrial fibrillation with no delta waves. His CHA2DS2-VASc score is calculated. Which of the following is the most appropriate management regarding stroke prevention?",
@@ -2145,7 +2145,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b4-002",
+    id: "cv-b4-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with a known history of ischaemic heart disease presents with progressive dyspnoea on exertion, orthopnoea, and bilateral ankle swelling over 4 weeks. On examination, JVP is elevated at 5 cm above the sternal angle, there are bibasal fine crackles, and pitting oedema to the knees. Her ECG shows left bundle branch block. An echocardiogram reveals an ejection fraction of 28%. She is currently on aspirin, atorvastatin, and ramipril 5 mg daily. Which additional medication would most reduce her mortality?",
@@ -2162,7 +2162,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-003",
+    id: "cv-b4-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with severe central crushing chest pain radiating to his left arm, onset 90 minutes ago, associated with diaphoresis and nausea. His blood pressure is 118/76 mmHg, heart rate 92 bpm, oxygen saturation 97% on room air. His ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. The nearest PCI-capable centre is 25 minutes away. What is the most appropriate immediate management?",
@@ -2179,7 +2179,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b4-004",
+    id: "cv-b4-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 45-year-old Aboriginal Australian man is found to have a blood pressure of 158/96 mmHg on three separate occasions over 6 weeks. He has no history of diabetes, cardiovascular disease, or chronic kidney disease. His BMI is 28 kg/m², he is a non-smoker, and his fasting lipids are borderline elevated. His absolute cardiovascular risk is calculated at 12% over 10 years. Which of the following represents the most appropriate initial management?",
@@ -2196,7 +2196,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-005",
+    id: "cv-b4-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 68-year-old woman with no prior cardiac history presents with a 6-month history of progressive exertional dyspnoea, fatigue, and a single episode of exertional syncope. On examination, her pulse is slow-rising, blood pressure is 105/80 mmHg, and there is a harsh ejection systolic murmur loudest at the right upper sternal border radiating to both carotids. Echocardiography shows a calcified aortic valve with a mean gradient of 52 mmHg and aortic valve area of 0.7 cm². What is the most appropriate next step in management?",
@@ -2213,7 +2213,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-006",
+    id: "cv-b4-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 62-year-old male smoker with type 2 diabetes and hypertension presents with a 4-month history of cramping calf pain after walking approximately 200 metres, relieved by rest within 5 minutes. On examination, the right femoral pulse is reduced, popliteal and foot pulses are absent on the right. The ankle-brachial index (ABI) is 0.62 on the right and 0.94 on the left. There are no rest symptoms or tissue loss. Which of the following is the most appropriate initial management strategy?",
@@ -2230,7 +2230,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b4-007",
+    id: "cv-b4-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman presents to the emergency department with acute onset pleuritic right-sided chest pain and dyspnoea. She is 6 weeks postpartum following an uncomplicated vaginal delivery and has been largely immobile due to perineal discomfort. Her heart rate is 112 bpm, respiratory rate 22 breaths/min, oxygen saturation 93% on room air, blood pressure 116/74 mmHg. Her right calf is swollen and tender. A CT pulmonary angiogram confirms bilateral pulmonary emboli. She is currently breastfeeding. Which anticoagulant is most appropriate for acute treatment?",
@@ -2247,7 +2247,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-008",
+    id: "cv-b4-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old healthy woman presents with recurrent episodes of rapid palpitations, each lasting 10-20 minutes and terminating abruptly. During an episode, her ECG shows a narrow complex tachycardia at 178 bpm with no visible P waves between QRS complexes. She is haemodynamically stable. Vagal manoeuvres performed in the ED terminate the tachycardia. An ECG in sinus rhythm is normal with no delta waves. She has had four episodes in the past year. What is the most likely diagnosis and preferred long-term management?",
@@ -2264,7 +2264,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-009",
+    id: "cv-b4-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 22-year-old male elite footballer collapses on the field during a match. Bystander CPR is commenced immediately and he is defibrillated twice for ventricular fibrillation, achieving return of spontaneous circulation. In the ED, his ECG shows sinus rhythm with left ventricular hypertrophy pattern and deep T-wave inversions in leads V1-V4. Echocardiography shows asymmetric septal hypertrophy of 22 mm with systolic anterior motion of the mitral valve. There is no history of hypertension or steroid use. What is the most likely diagnosis?",
@@ -2281,7 +2281,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-010",
+    id: "cv-b4-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 55-year-old male heavy smoker with hypertension and hypercholesterolaemia undergoes an abdominal ultrasound for another indication. An infrarenal aortic aneurysm of 4.2 cm diameter is incidentally detected. He is asymptomatic and haemodynamically stable. His blood pressure is 145/88 mmHg on amlodipine. There is no family history of aortic aneurysm. Which of the following is the most appropriate management plan?",
@@ -2298,7 +2298,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b4-011",
+    id: "cv-b4-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 61-year-old man is brought to the emergency department with palpitations of 5 hours duration. His ECG confirms new onset atrial fibrillation with a ventricular rate of 134 bpm. His blood pressure is 132/82 mmHg, and he is haemodynamically stable. He has no known cardiac history and no contraindications to anticoagulation. Thyroid function tests are normal. The emergency physician is considering DC cardioversion. Which of the following statements regarding anticoagulation prior to cardioversion is most accurate according to current guidelines?",
@@ -2315,7 +2315,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b4-012",
+    id: "cv-b4-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 70-year-old woman with a history of well-controlled hypertension presents with a 3-month history of exertional dyspnoea and fatigue. Examination reveals an elevated JVP, mild bibasal crackles, and a fourth heart sound. Her blood pressure is 152/88 mmHg. An ECG shows sinus rhythm with left ventricular hypertrophy. Echocardiography reveals normal LV cavity size, preserved ejection fraction of 62%, but E/e' ratio of 18, suggesting elevated filling pressures. Chest X-ray shows mild pulmonary congestion. What is the most important initial pharmacological intervention?",
@@ -2332,7 +2332,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b4-013",
+    id: "cv-b4-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 67-year-old woman with diabetes and CKD stage 3 presents with 2 hours of central chest discomfort and diaphoresis. Her ECG shows 1.5 mm ST depression and T-wave inversions in V4-V6 and leads I and aVL. Initial high-sensitivity troponin I is 210 ng/L (normal <26 ng/L) with a second value at 1 hour of 380 ng/L. Blood pressure is 138/86 mmHg, heart rate 88 bpm, and she is haemodynamically stable. Which of the following represents the most appropriate management strategy?",
@@ -2349,7 +2349,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-014",
+    id: "cv-b4-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 52-year-old woman is referred for refractory hypertension. Despite adherence to three antihypertensive agents (ramipril 10 mg, amlodipine 10 mg, and hydrochlorothiazide 25 mg), her blood pressure remains 168/102 mmHg. She does not smoke, her BMI is 31 kg/m², and she has no oedema. Laboratory tests show potassium 3.1 mmol/L, sodium 142 mmol/L, bicarbonate 28 mmol/L, and aldosterone-to-renin ratio of 95 (elevated). Renal function and urinalysis are normal. What is the most appropriate next investigation?",
@@ -2366,7 +2366,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b4-015",
+    id: "cv-b4-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old woman with a history of rheumatic fever as a child presents with progressive exertional dyspnoea and occasional haemoptysis over 12 months. She is 20 weeks pregnant. Auscultation reveals a low-pitched, rumbling mid-diastolic murmur at the apex with an opening snap. Her ECG shows AF. Echocardiography confirms mitral stenosis with a valve area of 0.9 cm² and moderate mitral regurgitation. Her symptoms are significantly limiting her daily activities. What is the most appropriate intervention at this stage?",
@@ -2383,7 +2383,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b4-016",
+    id: "cv-b4-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 71-year-old man with a 40 pack-year smoking history and type 2 diabetes presents with a non-healing ulcer on his right first toe for 6 weeks. On examination, the ulcer is punched out with pale base and minimal surrounding erythema. The right foot is cool, hairless, and the skin is shiny. Both pedal pulses are absent on the right. His ABI on the right is 0.38. He reports rest pain in his right foot at night that is relieved by hanging the leg over the bed. Which of the following is the most appropriate urgent management?",
@@ -2400,7 +2400,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-017",
+    id: "cv-b4-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 48-year-old man presents with sudden onset severe pleuritic chest pain, dyspnoea, and haemoptysis. His heart rate is 122 bpm, blood pressure is 88/60 mmHg, and oxygen saturation is 84% on 15 L/min oxygen. His ECG shows sinus tachycardia with the classic S1Q3T3 pattern. A bedside echocardiogram shows a dilated right ventricle with D-sign and reduced RV function. CT pulmonary angiography confirms saddle pulmonary embolism. He has no contraindications to thrombolysis. What is the most appropriate immediate treatment?",
@@ -2417,7 +2417,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b4-018",
+    id: "cv-b4-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 78-year-old man with ischaemic cardiomyopathy (EF 30%) and a previously implanted ICD presents with recurrent appropriate ICD shocks, having received 5 shocks in the past 48 hours. He is conscious and haemodynamically stable with blood pressure 108/70 mmHg. ECG shows runs of monomorphic ventricular tachycardia at 178 bpm that self-terminate or are terminated by the ICD. His current medications include carvedilol 25 mg BD, ramipril, spironolactone, and furosemide. Electrolytes show potassium 3.2 mmol/L and magnesium 0.68 mmol/L. What is the most appropriate immediate management step?",
@@ -2434,7 +2434,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b4-019",
+    id: "cv-b4-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 42-year-old woman presents with a 2-month history of progressive breathlessness, fatigue, and bilateral ankle oedema. She delivered a healthy baby 5 months ago following an uncomplicated pregnancy. She has no prior cardiac history or family history of cardiomyopathy. Echocardiography shows dilated left ventricle with an ejection fraction of 25%, global hypokinesia, and no regional wall motion abnormalities. Coronary angiography is normal. Thyroid function tests, ferritin, and autoimmune markers are normal. What is the most likely diagnosis?",
@@ -2451,7 +2451,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b4-020",
+    id: "cv-b4-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 62-year-old man with known Marfan syndrome presents to the emergency department with sudden onset tearing chest pain radiating to the back, maximal at onset. His blood pressure is 178/90 mmHg in the right arm and 142/78 mmHg in the left arm. He appears pale and diaphoretic. An ECG shows normal sinus rhythm. A portable chest X-ray shows widening of the mediastinum. Aortic regurgitation is audible on auscultation. What is the most appropriate immediate management?",
@@ -2810,7 +2810,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b5-001",
+    id: "cv-b5-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-week history of palpitations and mild dyspnoea on exertion. He has a history of hypertension and type 2 diabetes. Examination reveals an irregularly irregular pulse at 88 bpm, BP 145/90 mmHg, and mild ankle oedema. ECG confirms atrial fibrillation with no delta waves or pre-excitation. His CHA2DS2-VASc score is calculated as 4. Which is the most appropriate antithrombotic management?",
@@ -2827,7 +2827,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b5-002",
+    id: "cv-b5-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with known ischaemic cardiomyopathy presents with worsening breathlessness over 2 weeks, orthopnoea requiring 3 pillows, and bilateral ankle swelling. She is currently on ramipril 10 mg daily and carvedilol 25 mg twice daily. Examination reveals JVP elevated at 5 cm, bibasal crackles, and pitting oedema to the knees. Echocardiography shows LVEF of 28%. Bloods: Na 138, K 4.2, creatinine 110 µmol/L. What is the most appropriate additional medication?",
@@ -2844,7 +2844,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-003",
+    id: "cv-b5-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with 45 minutes of severe crushing central chest pain radiating to his left jaw, diaphoresis, and nausea. BP is 140/85 mmHg, HR 95 bpm, SpO2 96% on room air. ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in I and aVL. The nearest PCI-capable centre is 25 minutes away. What is the most appropriate immediate management?",
@@ -2861,7 +2861,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b5-004",
+    id: "cv-b5-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Aboriginal Australian man presents for a routine health check. He has no symptoms and no known medical history. BP is 168/105 mmHg on three separate readings taken over two visits. BMI is 31 kg/m2. Investigations: fasting glucose 5.8 mmol/L, total cholesterol 5.6 mmol/L, HDL 1.0 mmol/L, LDL 3.8 mmol/L, creatinine 95 µmol/L, urine ACR 4.5 mg/mmol. ECG shows LVH. What is the most appropriate initial pharmacological treatment?",
@@ -2878,7 +2878,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-005",
+    id: "cv-b5-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old woman with a history of rheumatic fever as a child presents with progressive exertional dyspnoea and two episodes of haemoptysis over the past 6 months. She is now 20 weeks pregnant with her first child. Examination reveals a low-pitched mid-diastolic rumble at the apex, an opening snap, and a loud first heart sound. Chest X-ray shows straightening of the left heart border. Echocardiography confirms mitral stenosis with a mean gradient of 12 mmHg and mitral valve area of 1.0 cm2. What is the most appropriate management?",
@@ -2895,7 +2895,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b5-006",
+    id: "cv-b5-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 67-year-old male smoker with type 2 diabetes presents with a 6-month history of right calf pain that consistently occurs after walking 200 metres and reliably resolves with 5 minutes of rest. He has no rest pain and no skin changes on his feet. Ankle-brachial index (ABI) is 0.62 on the right and 0.85 on the left. His HbA1c is 8.2%, BP 150/92 mmHg, and LDL-C 3.4 mmol/L. What is the most appropriate initial management strategy?",
@@ -2912,7 +2912,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b5-007",
+    id: "cv-b5-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 29-year-old woman presents 10 days postpartum with sudden onset pleuritic right-sided chest pain and dyspnoea. She had a normal vaginal delivery and has been breastfeeding. HR 112 bpm, BP 118/76 mmHg, SpO2 92% on room air, RR 24/min. ECG shows sinus tachycardia. CT pulmonary angiogram (CTPA) confirms bilateral pulmonary emboli. She has no prior history of VTE and no thrombophilia. What is the most appropriate anticoagulation?",
@@ -2929,7 +2929,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-008",
+    id: "cv-b5-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 22-year-old male presents to the ED with sudden onset palpitations and mild lightheadedness for 2 hours. He has no chest pain and no prior cardiac history. HR is 185 bpm, BP 118/72 mmHg, SpO2 99%. ECG shows a regular narrow complex tachycardia at 186 bpm with no visible P waves. Vagal manoeuvres including Valsalva and carotid sinus massage are unsuccessful. What is the most appropriate next intervention?",
@@ -2946,7 +2946,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b5-009",
+    id: "cv-b5-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 28-year-old male competitive cyclist collapses during a race and is resuscitated from ventricular fibrillation. He recovers fully and has no prior symptoms. Family history reveals his father died suddenly at age 32. Examination is unremarkable. ECG shows increased voltage with deep T-wave inversions in V1-V4 and epsilon waves. Echocardiography reveals mildly reduced LVEF at 48% with regional wall motion abnormalities in the right ventricle and RV dilatation. Cardiac MRI confirms fibrofatty replacement of the RV myocardium. What is the most appropriate long-term management?",
@@ -2963,7 +2963,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b5-010",
+    id: "cv-b5-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 71-year-old male ex-smoker presents to the ED with sudden onset severe tearing back pain radiating to his abdomen. He is diaphoretic and distressed. BP is 190/110 mmHg in the right arm and 145/88 mmHg in the left arm. HR 104 bpm. Chest X-ray shows widened mediastinum. CT aortogram confirms a Type B (Stanford) aortic dissection beginning distal to the left subclavian artery with no involvement of the ascending aorta. There are no signs of end-organ ischaemia. What is the most appropriate initial management?",
@@ -2980,7 +2980,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-011",
+    id: "cv-b5-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 63-year-old woman with hypertension and paroxysmal atrial fibrillation presents after a 6-hour episode of palpitations. ECG now shows sinus rhythm. She is haemodynamically stable. Her only medication is amlodipine. She asks about preventing future AF episodes and whether she needs anticoagulation. CHA2DS2-VASc score is 3 (age, female sex, hypertension). What is the single most appropriate next step in her ongoing management?",
@@ -2997,7 +2997,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-012",
+    id: "cv-b5-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 74-year-old woman presents with worsening dyspnoea, fatigue, and bilateral ankle oedema. Echocardiography shows preserved LVEF of 58% with evidence of grade 2 diastolic dysfunction (E/A ratio 0.7, elevated E/e' ratio of 15, and left atrial enlargement). NT-proBNP is 1450 pg/mL. She has hypertension and obesity (BMI 34). She is not currently on any cardiac medications. What is the most appropriate initial pharmacological management?",
@@ -3014,7 +3014,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-013",
+    id: "cv-b5-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 61-year-old woman with hypertension and chronic kidney disease (eGFR 35 mL/min/1.73m2) presents with 3 hours of central chest tightness and diaphoresis. ECG shows 1 mm ST depression in V4-V6 and deep T-wave inversions in I and aVL. Troponin I returns at 2.4 µg/L (normal <0.04 µg/L). She is haemodynamically stable. She has no allergy history. Regarding her acute management, which antiplatelet regimen is most appropriate?",
@@ -3031,7 +3031,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b5-014",
+    id: "cv-b5-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 52-year-old woman is found to have BP readings of 175/110 mmHg on two separate visits 2 weeks apart. She has no symptoms, no known organ damage, and no other medical history. Bloods show normal electrolytes, creatinine, and fasting glucose. Urinalysis is normal. She is a non-smoker with BMI 24. Ambulatory blood pressure monitoring (ABPM) confirms average daytime BP of 172/108 mmHg. She is keen to avoid medication if possible. What is the most appropriate first step?",
@@ -3048,7 +3048,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b5-015",
+    id: "cv-b5-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 70-year-old man presents with progressive exertional dyspnoea, angina on effort, and two syncopal episodes over the past 3 months. Examination reveals a harsh ejection systolic murmur radiating to the carotid arteries, a slow-rising pulse, and a non-displaced apex beat. Echocardiography shows a heavily calcified aortic valve with peak gradient 88 mmHg, mean gradient 52 mmHg, and aortic valve area of 0.7 cm2. LVEF is 50%. Coronary angiography shows non-significant disease. He is assessed by the heart team as high surgical risk due to severe COPD and previous CABG. What is the most appropriate intervention?",
@@ -3065,7 +3065,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-016",
+    id: "cv-b5-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 78-year-old diabetic woman is referred by her podiatrist with a non-healing ulcer on her right great toe for 6 weeks. She has rest pain in her right foot at night that is partially relieved by hanging her leg over the bed. Examination reveals hairless, cool skin on the right foot, absent right popliteal and pedal pulses, and a 2 cm x 1.5 cm ulcer with pale base on the plantar aspect of the right great toe. ABI right is 0.38 and toe pressure is 22 mmHg. What is the most appropriate next step?",
@@ -3082,7 +3082,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b5-017",
+    id: "cv-b5-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 45-year-old male presents with sudden pleuritic left chest pain and haemoptysis 3 days after a 14-hour flight from Los Angeles to Sydney. He has swelling and tenderness in his left calf. He has no prior VTE history and no family history of clotting disorders. Vitals: HR 108, BP 122/80, SpO2 95% on room air. Wells score for PE is 6 (high probability). CTPA confirms a left lower lobe segmental pulmonary embolism. There are no contraindications to anticoagulation. How long should anticoagulation be continued?",
@@ -3099,7 +3099,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-018",
+    id: "cv-b5-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 55-year-old man with ischaemic cardiomyopathy (LVEF 30%) and LBBB on ECG presents with sudden loss of consciousness at home. He was resuscitated by paramedics from ventricular tachycardia (VT) with a pulse. He is now haemodynamically stable in sinus rhythm. He is on optimal medical therapy including carvedilol, ramipril, eplerenone, and atorvastatin. Electrolytes are normal. Coronary angiography shows no new significant stenosis. Which long-term management is most appropriate?",
@@ -3116,7 +3116,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b5-019",
+    id: "cv-b5-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 32-year-old male presents with exertional dyspnoea and pre-syncopal episodes. He played competitive football but stopped 6 months ago due to symptoms. His father had a cardiac operation at age 28. Examination reveals a harsh systolic murmur at the left sternal border that increases with Valsalva manoeuvre and decreases on squatting. BP 122/78 mmHg, HR 72 bpm. Echocardiography shows asymmetric septal hypertrophy of 22 mm, systolic anterior motion (SAM) of the mitral valve, and LVOT gradient of 55 mmHg at rest. What is the most appropriate initial pharmacological therapy?",
@@ -3133,7 +3133,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b5-020",
+    id: "cv-b5-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "During an abdominal ultrasound for unrelated symptoms, a 69-year-old male ex-smoker is incidentally found to have an infrarenal abdominal aortic aneurysm (AAA) measuring 4.2 cm in maximum diameter. He is asymptomatic, BP is well controlled at 128/78 mmHg, and he is a current non-smoker (quit 5 years ago). No family history of aortic disease. He is otherwise well. What is the most appropriate management?",
@@ -3492,7 +3492,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b6-001",
+    id: "cv-b6-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-day history of palpitations and mild breathlessness. He has a history of hypertension and type 2 diabetes. His BP is 138/84 mmHg, pulse is irregularly irregular at 96 bpm. An ECG confirms atrial fibrillation. His CHA2DS2-VASc score is calculated to be 4. He has no contraindications to anticoagulation and his renal function is normal. What is the most appropriate antithrombotic management?",
@@ -3509,7 +3509,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b6-002",
+    id: "cv-b6-002d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 65-year-old woman is brought to the emergency department with rapid onset palpitations, dyspnoea, and chest tightness of 4 hours duration. She is haemodynamically unstable with a BP of 82/50 mmHg and HR of 148 bpm. ECG shows atrial fibrillation with rapid ventricular response. She has no previous cardiac history. What is the most appropriate immediate management?",
@@ -3526,7 +3526,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-003",
+    id: "cv-b6-003d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 68-year-old man with a known history of ischaemic cardiomyopathy presents with worsening dyspnoea on exertion (NYHA class III), bilateral ankle oedema, and orthopnoea. His echocardiogram shows an ejection fraction of 28%. He is currently on furosemide 40 mg daily. His BP is 112/70 mmHg and HR is 78 bpm in sinus rhythm. His serum potassium is 4.2 mmol/L and eGFR is 55 mL/min/1.73m². Which medication has the strongest evidence for reducing mortality in this patient?",
@@ -3543,7 +3543,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-004",
+    id: "cv-b6-004d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 74-year-old woman with hypertension and type 2 diabetes presents with dyspnoea and bilateral leg swelling. An echocardiogram reveals an ejection fraction of 62% with evidence of impaired relaxation (grade II diastolic dysfunction). Her NT-proBNP is elevated at 820 pg/mL. Chest X-ray shows mild pulmonary oedema. Her BP is 158/96 mmHg and HR is 82 bpm. What is the most appropriate initial management priority?",
@@ -3560,7 +3560,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-005",
+    id: "cv-b6-005d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to a regional hospital with a 90-minute history of crushing central chest pain radiating to his left arm, diaphoresis, and nausea. His ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal depression in I and aVL. His BP is 96/60 mmHg and HR is 48 bpm. The nearest PCI-capable centre is 3 hours away by road transfer. What is the most appropriate reperfusion strategy?",
@@ -3577,7 +3577,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-006",
+    id: "cv-b6-006d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 62-year-old woman with hypertension and hyperlipidaemia presents with 2 hours of rest chest pain described as pressure-like, without ST elevation. Her ECG shows new T-wave inversions in V1–V4. Her first troponin I is 0.08 ng/mL (upper reference limit 0.04 ng/mL) and repeats at 3 hours at 0.22 ng/mL (rising pattern). She is haemodynamically stable. She is started on aspirin, ticagrelor, anticoagulation, and a statin. What is the most appropriate next management step?",
@@ -3594,7 +3594,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b6-007",
+    id: "cv-b6-007d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 55-year-old Aboriginal Australian man presents for a routine health check. He has no symptoms. His BP on three separate occasions over 4 weeks is 158/96 mmHg, 162/98 mmHg, and 156/94 mmHg. His fasting glucose is 5.8 mmol/L, eGFR is 68 mL/min/1.73m², and urine albumin-to-creatinine ratio (ACR) is 4.2 mg/mmol. He has no known cardiovascular disease. His absolute cardiovascular risk (NVDPA calculator) is 18%. Which antihypertensive agent is most appropriate as first-line therapy?",
@@ -3611,7 +3611,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-008",
+    id: "cv-b6-008d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 34-year-old woman presents to the emergency department at 32 weeks gestation with a severe headache, visual disturbance, and epigastric pain. Her BP is 172/114 mmHg on two readings 15 minutes apart. Urinalysis shows 3+ proteinuria. Her platelet count is 88 × 10⁹/L, ALT is 320 U/L, and LDH is elevated. The fetus appears well on cardiotocography. What is the most appropriate immediate management?",
@@ -3628,7 +3628,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-009",
+    id: "cv-b6-009d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 78-year-old woman presents with a 6-month history of progressive exertional dyspnoea, syncope on exertion, and angina. On examination, she has a slow-rising carotid pulse, a harsh ejection systolic murmur radiating to the carotids, and a soft A2. Echocardiography shows an aortic valve area of 0.7 cm², peak gradient of 72 mmHg, and an ejection fraction of 55%. She has no other significant comorbidities. What is the most appropriate management?",
@@ -3645,7 +3645,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-010",
+    id: "cv-b6-010d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 28-year-old woman who is 20 weeks pregnant presents with increasing dyspnoea and fatigue. She is known to have rheumatic mitral stenosis. On auscultation, there is a loud S1, an opening snap, and a mid-diastolic rumble at the apex. Echocardiography reveals a mitral valve area of 1.1 cm² with a mean gradient of 14 mmHg, severe mitral stenosis, and moderate pulmonary hypertension. There is no significant mitral regurgitation. Her symptoms are NYHA class III despite medical therapy. What is the most appropriate intervention?",
@@ -3662,7 +3662,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b6-011",
+    id: "cv-b6-011d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 67-year-old male smoker with type 2 diabetes and hypertension presents with a 6-month history of right calf pain on walking approximately 100 metres that resolves with rest. He denies rest pain. On examination, his right ankle-brachial index (ABI) is 0.62 and his left ABI is 0.88. His foot pulses are diminished on the right. There are no skin changes or ulcers. What is the most appropriate initial management?",
@@ -3679,7 +3679,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b6-012",
+    id: "cv-b6-012d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 74-year-old woman with known peripheral arterial disease presents with a 3-day history of severe pain in her right foot at rest, worsening at night and relieved by hanging the foot off the bed. On examination, the right foot is cold, pale, and has a non-healing ulcer on the medial malleolus. Her right ABI is 0.28. There is no fever and CRP is mildly elevated at 18 mg/L. What is the most appropriate next step in management?",
@@ -3696,7 +3696,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b6-013",
+    id: "cv-b6-013d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 45-year-old woman presents with acute onset dyspnoea and pleuritic right-sided chest pain 10 days after a long-haul flight from London to Sydney. She takes the combined oral contraceptive pill. Her HR is 112 bpm, BP is 118/76 mmHg, RR is 22/min, and SpO2 is 93% on room air. Her Wells score for PE is 6. A CTPA confirms bilateral pulmonary emboli without evidence of right heart strain. What is the most appropriate initial anticoagulation?",
@@ -3713,7 +3713,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b6-014",
+    id: "cv-b6-014d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 52-year-old man with metastatic colorectal cancer (on chemotherapy) presents with a swollen, tender, warm right calf of 5 days duration. Compression ultrasound confirms an acute proximal DVT of the right popliteal and femoral veins. His platelet count is 148 × 10⁹/L, eGFR is 42 mL/min/1.73m², and there are no active bleeding sites. What is the most appropriate anticoagulation therapy?",
@@ -3730,7 +3730,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b6-015",
+    id: "cv-b6-015d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 19-year-old male elite athlete presents with recurrent episodes of palpitations and presyncope during vigorous exercise. He has no significant past medical history. An ECG at rest shows a short PR interval of 100 ms and a delta wave at the onset of the QRS complex. His Holter monitor captured a paroxysmal narrow complex tachycardia at 210 bpm during an episode. An echocardiogram is normal. What is the most appropriate long-term management?",
@@ -3747,7 +3747,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-016",
+    id: "cv-b6-016d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 66-year-old woman with hypertension is brought to the emergency department following a witnessed collapse. On arrival she is conscious but confused. The cardiac monitor shows a regular broad complex tachycardia at 162 bpm. Her BP is 92/58 mmHg. The QRS morphology is consistent with left bundle branch block pattern and there is AV dissociation visible on the rhythm strip. What is the most appropriate immediate management?",
@@ -3764,7 +3764,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-017",
+    id: "cv-b6-017d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 24-year-old male rugby player collapses during training and is resuscitated from ventricular fibrillation. He reports a previous episode of unexplained syncope during exercise last year, which was attributed to dehydration. Family history reveals his father died suddenly at age 32. An echocardiogram shows asymmetric septal hypertrophy with a maximum septal thickness of 22 mm and systolic anterior motion of the mitral valve. The LV outflow tract gradient at rest is 48 mmHg. What is the most appropriate next intervention?",
@@ -3781,7 +3781,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b6-018",
+    id: "cv-b6-018d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 38-year-old woman presents 8 weeks postpartum with progressive dyspnoea, orthopnoea, and bilateral leg oedema. She delivered her third child uneventfully at term. She has no prior cardiac history and no family history of cardiac disease. Echocardiography reveals a dilated left ventricle with an ejection fraction of 25%, no valvular abnormalities, and no regional wall motion abnormalities. Cardiac MRI shows no late gadolinium enhancement. Which of the following statements regarding her prognosis and management is most accurate?",
@@ -3798,7 +3798,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b6-019",
+    id: "cv-b6-019d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 62-year-old male smoker with hypertension presents to the emergency department with sudden onset severe tearing chest pain radiating to the back between the shoulder blades. His BP is 178/102 mmHg in the right arm and 142/88 mmHg in the left arm. On examination, he has a new aortic regurgitation murmur. His chest X-ray shows widening of the mediastinum. A CT aortogram confirms a Type A aortic dissection involving the ascending aorta. What is the most appropriate management?",
@@ -3815,7 +3815,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b6-020",
+    id: "cv-b6-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "During a routine abdominal ultrasound for renal calculi, a 68-year-old male smoker is found to have an asymptomatic infrarenal abdominal aortic aneurysm (AAA) measuring 4.2 cm in maximum diameter. He has hypertension and smokes 15 cigarettes per day. He is otherwise well with no symptoms. His BP is 146/88 mmHg. What is the most appropriate management?",
@@ -4174,7 +4174,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b7-001",
+    id: "cv-b7-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-day history of palpitations and mild shortness of breath. He has a history of hypertension and type 2 diabetes. ECG shows irregularly irregular rhythm with absent P waves and a ventricular rate of 110 bpm. Echocardiogram reveals no structural heart disease and preserved left ventricular function. His CHA2DS2-VASc score is calculated to be 4. Which of the following is the most appropriate next step in management?",
@@ -4191,7 +4191,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b7-002",
+    id: "cv-b7-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with a known history of ischaemic cardiomyopathy presents with worsening dyspnoea on minimal exertion, orthopnoea, and bilateral ankle oedema over the past 2 weeks. On examination, JVP is elevated at 5 cm above the sternal angle, bibasal crackles are heard on auscultation, and there is pitting oedema to the knees. Her last echocardiogram showed an ejection fraction of 28%. She is currently on lisinopril 10 mg daily and carvedilol 6.25 mg twice daily. Her eGFR is 55 mL/min and serum potassium is 4.2 mmol/L. What is the most appropriate addition to her current therapy?",
@@ -4208,7 +4208,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-003",
+    id: "cv-b7-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old man presents to the emergency department with severe crushing central chest pain radiating to his left arm, diaphoresis, and nausea for the past 90 minutes. He is haemodynamically stable with BP 138/88 mmHg and HR 88 bpm. His 12-lead ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. The nearest PCI-capable hospital is 45 minutes away. Which of the following is the most appropriate immediate management?",
@@ -4225,7 +4225,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-004",
+    id: "cv-b7-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Indigenous Australian man presents to his GP for a routine check-up. He is asymptomatic. His BP today is 158/96 mmHg, and a repeat measurement 10 minutes later is 162/98 mmHg. He has no history of cardiovascular disease, diabetes, or chronic kidney disease. His BMI is 29 kg/m². Blood tests show normal renal function, fasting glucose 5.4 mmol/L, and lipids within normal range. What is the most appropriate initial management?",
@@ -4242,7 +4242,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-005",
+    id: "cv-b7-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 68-year-old woman presents with a 6-month history of progressive exertional dyspnoea, fatigue, and recently developed exertional chest tightness. On examination, she has a low-pitched mid-diastolic rumble best heard at the apex in the left lateral decubitus position, an opening snap, and a loud first heart sound. Her pulse is irregularly irregular. Echocardiogram confirms severe mitral stenosis with a valve area of 0.9 cm² and elevated mean gradient of 14 mmHg. She is in atrial fibrillation. What is the most appropriate management?",
@@ -4259,7 +4259,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b7-006",
+    id: "cv-b7-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 64-year-old male smoker with type 2 diabetes presents with a 4-month history of right calf pain on walking approximately 200 metres, relieved by rest. He denies rest pain or ulceration. On examination, right popliteal and pedal pulses are absent. The ankle-brachial index (ABI) on the right is 0.62 and on the left is 0.95. What is the most appropriate initial management strategy?",
@@ -4276,7 +4276,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b7-007",
+    id: "cv-b7-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 52-year-old woman presents to the emergency department with sudden onset pleuritic right-sided chest pain, shortness of breath, and haemoptysis that began 2 hours ago. She returned from a 14-hour flight from London 5 days ago. Her HR is 112 bpm, BP 124/78 mmHg, RR 22/min, and oxygen saturation 93% on room air. ECG shows sinus tachycardia. Wells score for PE is calculated at 7.5 (high probability). What is the most appropriate next step in management?",
@@ -4293,7 +4293,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-008",
+    id: "cv-b7-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 34-year-old woman is brought to the emergency department with sudden onset palpitations, lightheadedness, and near-syncope. She has no significant past medical history. Her HR is 186 bpm, BP 105/70 mmHg, and she is conscious and alert. The 12-lead ECG shows a regular narrow complex tachycardia with no visible P waves. Vagal manoeuvres (Valsalva) are attempted without success. What is the most appropriate next step?",
@@ -4310,7 +4310,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b7-009",
+    id: "cv-b7-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 24-year-old male elite athlete collapses during a basketball game. He is resuscitated with defibrillation after being found in ventricular fibrillation. His family history reveals his older brother died suddenly at age 22 during sport. On examination, a harsh ejection systolic murmur is heard at the left sternal border that increases in intensity with Valsalva manoeuvre and decreases with squatting. ECG shows LVH with deep Q waves in the lateral leads. Echocardiogram shows asymmetric septal hypertrophy with a septal thickness of 22 mm and systolic anterior motion (SAM) of the mitral valve. What is the most appropriate long-term management to prevent sudden cardiac death?",
@@ -4327,7 +4327,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-010",
+    id: "cv-b7-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 67-year-old man presents to the emergency department with sudden onset, severe, tearing chest pain that radiates to the back and between the shoulder blades. His BP is 185/95 mmHg in the right arm and 155/82 mmHg in the left arm. He appears pale and diaphoretic. Chest X-ray shows a widened mediastinum (8.5 cm). His ECG shows no ST changes. CT aortography is performed and confirms a Type A aortic dissection involving the ascending aorta. What is the most appropriate management?",
@@ -4344,7 +4344,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-011",
+    id: "cv-b7-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman with no known cardiac history presents to the ED with a 3-hour history of palpitations. She feels haemodynamically well. ECG confirms new-onset atrial fibrillation with a ventricular rate of 140 bpm. Her BP is 132/80 mmHg and oxygen saturations are 98%. Echocardiogram shows no structural disease and normal LV function. She is keen to try rhythm control. Her CHA2DS2-VASc score is 2. Which of the following statements is MOST accurate regarding cardioversion?",
@@ -4361,7 +4361,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b7-012",
+    id: "cv-b7-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 70-year-old man with a history of heart failure is brought to the ED in severe respiratory distress. He is sitting upright, using accessory muscles, and is diaphoretic. Oxygen saturation is 84% on room air. Examination reveals coarse bibasal crackles extending to mid-zones, S3 gallop, and pink frothy sputum. BP is 168/100 mmHg and HR is 110 bpm. CXR shows bilateral alveolar shadowing and upper lobe diversion. What is the MOST important immediate intervention?",
@@ -4378,7 +4378,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-013",
+    id: "cv-b7-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 62-year-old man with hypertension and hypercholesterolaemia presents with 4 hours of typical ischaemic chest pain. His 12-lead ECG shows ST depression of 2 mm in leads V4–V6 and T-wave inversions in leads I and aVL. Serial troponin I levels are 0.08 µg/L (normal <0.04) at presentation and 0.24 µg/L at 3 hours. He is haemodynamically stable. He is commenced on aspirin and a P2Y12 inhibitor. What is the most appropriate further management?",
@@ -4395,7 +4395,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-014",
+    id: "cv-b7-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 35-year-old woman presents with a 6-month history of headaches and episodic hypertension. She has been found on multiple occasions to have BP recordings between 180/110 and 220/130 mmHg. Between episodes she is normotensive. She describes associated sweating, palpitations, and pallor during episodes. Her GP notes she has developed persistent hypertension between episodes over the last month. Urine metanephrines are markedly elevated. Which investigation is most appropriate to localise the lesion?",
@@ -4412,7 +4412,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-015",
+    id: "cv-b7-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 75-year-old man presents with a 6-month history of progressive exertional dyspnoea, angina on climbing one flight of stairs, and one episode of exertional syncope. On examination, BP is 110/85 mmHg, and there is a harsh ejection systolic murmur at the right upper sternal border radiating to both carotids. The carotid pulse is slow-rising and of low volume. Echocardiogram shows calcific aortic stenosis with aortic valve area 0.7 cm², mean gradient 52 mmHg, and preserved LV systolic function (EF 55%). His operative mortality risk is estimated at 8% due to multiple comorbidities. What is the most appropriate management?",
@@ -4429,7 +4429,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b7-016",
+    id: "cv-b7-016d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 45-year-old man presents with a swollen, tender, erythematous right calf 5 days after a long-haul flight. Ultrasound confirms an isolated distal (below-knee) deep vein thrombosis involving the posterior tibial vein. He has no malignancy, thrombophilia, or prior VTE. He is not on any anticoagulants. What is the most appropriate management?",
@@ -4446,7 +4446,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b7-017",
+    id: "cv-b7-017d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 48-year-old man is brought to the ED unconscious after collapsing at a family dinner. CPR is in progress. The cardiac monitor shows a broad complex irregular tachycardia with varying QRS morphology and a rate of approximately 200 bpm, consistent with torsades de pointes. A bystander reports the patient has been taking a new antibiotic prescribed for cellulitis. His serum potassium returns at 2.8 mmol/L. What is the most appropriate immediate management?",
@@ -4463,7 +4463,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b7-018",
+    id: "cv-b7-018d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 38-year-old woman presents with a 3-month history of progressive dyspnoea, fatigue, and peripheral oedema. She gave birth to her first child 2 months ago at 39 weeks. She breastfeeds exclusively. On examination, JVP is elevated, there are bibasal crackles, and a displaced apex beat. Echocardiogram shows a dilated LV with an ejection fraction of 32%. All investigations for ischaemic, inflammatory, and metabolic causes are negative. Which of the following statements regarding her management is MOST accurate?",
@@ -4480,7 +4480,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b7-019",
+    id: "cv-b7-019d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 70-year-old man with a 50 pack-year smoking history presents for a routine check-up. He is asymptomatic. On examination, a pulsatile epigastric mass is palpated. Abdominal ultrasound confirms an infrarenal abdominal aortic aneurysm (AAA) measuring 4.2 cm in maximum diameter. His BP is well controlled on amlodipine. He has no family history of AAA. Which of the following is the most appropriate management?",
@@ -4497,7 +4497,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b7-020",
+    id: "cv-b7-020d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 72-year-old diabetic woman is referred for evaluation of a non-healing ulcer on the right great toe that has been present for 6 weeks. She reports constant rest pain in the foot, worse at night and partially relieved by hanging the leg over the side of the bed. On examination, the foot is cool and pale on elevation with dependent rubor. Pulses are absent below the femoral level on the right. The right ABI is 0.35. Wound swab shows Staphylococcus aureus growth. Which of the following represents the most important priority in this patient's management?",
@@ -4856,7 +4856,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b8-001",
+    id: "cv-b8-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 2-week history of palpitations and mild shortness of breath on exertion. He has a background of hypertension and type 2 diabetes. On examination, his pulse is irregularly irregular at 88 bpm, BP 145/88 mmHg. ECG confirms atrial fibrillation. His CHA2DS2-VASc score is calculated at 4. Which of the following is the most appropriate next step in anticoagulation management?",
@@ -4873,7 +4873,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b8-002",
+    id: "cv-b8-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with a history of ischaemic heart disease presents with a 3-month history of progressive dyspnoea on exertion, orthopnoea, and bilateral ankle swelling. Examination reveals elevated JVP, bibasal crackles, and pitting oedema to the knees. Echocardiography shows an ejection fraction of 30%. She is currently on aspirin and atorvastatin. Which combination of medications has been shown to reduce mortality in this condition?",
@@ -4890,7 +4890,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b8-003",
+    id: "cv-b8-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with 90 minutes of severe crushing central chest pain radiating to his left arm, accompanied by diaphoresis and nausea. His ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal changes in leads I and aVL. His troponin is pending. The nearest PCI-capable centre is 30 minutes away. What is the most appropriate immediate management?",
@@ -4907,7 +4907,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b8-004",
+    id: "cv-b8-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Aboriginal Australian man is found to have a blood pressure of 158/96 mmHg on three separate occasions over 6 weeks. He is otherwise well with no symptoms and no evidence of end-organ damage. His eGFR is 72 mL/min/1.73m², and he has no diabetes or dyslipidaemia. His 5-year cardiovascular risk is estimated at 12%. Which of the following represents the most appropriate initial management?",
@@ -4924,7 +4924,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-005",
+    id: "cv-b8-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 70-year-old woman is referred for evaluation of a murmur. She reports a 6-month history of exertional chest pain, syncope on two occasions, and progressive dyspnoea (NYHA class II). On examination, there is a harsh ejection systolic murmur best heard at the right upper sternal border, radiating to the carotids, with a slow-rising carotid pulse. Echocardiography shows a heavily calcified aortic valve with a mean gradient of 52 mmHg and valve area of 0.7 cm². What is the most appropriate next step?",
@@ -4941,7 +4941,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-006",
+    id: "cv-b8-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 62-year-old male smoker with type 2 diabetes presents with a 6-month history of pain in his right calf when walking approximately 150 metres, which resolves with rest. Examination reveals absent right popliteal and pedal pulses, with the left side intact. The skin of the right foot is cool with no ulcers or gangrene. Ankle-brachial index (ABI) on the right is 0.62. Which of the following is the most appropriate initial management?",
@@ -4958,7 +4958,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b8-007",
+    id: "cv-b8-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman presents to the emergency department with sudden onset pleuritic chest pain and dyspnoea that commenced 4 hours ago. She returned from a 14-hour flight 3 days ago and is taking the oral contraceptive pill. Her SpO2 is 93% on room air, HR 112 bpm, BP 118/76 mmHg, RR 22/min. Chest X-ray is normal. Her Wells PE score is 7 (high probability). Which is the most appropriate next step?",
@@ -4975,7 +4975,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-008",
+    id: "cv-b8-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old woman with no significant past medical history presents with a 2-hour episode of palpitations and light-headedness. Her ECG shows a narrow complex tachycardia at 180 bpm with no discernible P waves before the QRS complex but with pseudo-R' waves in V1 and pseudo-S waves in inferior leads. BP is 100/70 mmHg. She has had three similar episodes in the past year. Vagal manoeuvres failed to terminate the arrhythmia. What is the most appropriate immediate pharmacological treatment?",
@@ -4992,7 +4992,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-009",
+    id: "cv-b8-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 22-year-old male footballer collapses on the field during a game. He is resuscitated by bystanders using an AED, which delivered one shock for ventricular fibrillation. In hospital, he is stabilised. His ECG shows left ventricular hypertrophy and deep T-wave inversions in the lateral leads. Echocardiography reveals asymmetric septal hypertrophy with a septal thickness of 22 mm and systolic anterior motion of the mitral valve with LVOTO gradient of 55 mmHg. What is the most appropriate long-term management recommendation?",
@@ -5009,7 +5009,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-010",
+    id: "cv-b8-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 68-year-old male smoker is found incidentally to have an infrarenal aortic aneurysm measuring 4.2 cm on abdominal ultrasound performed for an unrelated reason. He is asymptomatic. He has well-controlled hypertension on amlodipine. On examination, there is no abdominal tenderness and no pulsatile mass is palpable. What is the most appropriate management?",
@@ -5026,7 +5026,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b8-011",
+    id: "cv-b8-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman with known paroxysmal AF presents to the ED with a 6-hour history of palpitations and mild dyspnoea. Her ECG confirms AF with rapid ventricular response at 142 bpm. BP is 130/80 mmHg and she is otherwise haemodynamically stable. She is not anticoagulated. Which is the most important consideration before attempting electrical or pharmacological cardioversion?",
@@ -5043,7 +5043,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-012",
+    id: "cv-b8-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 78-year-old man with a history of hypertension and preserved ejection fraction heart failure (HFpEF, EF 58%) presents with worsening dyspnoea, orthopnoea, and leg swelling. His BNP is markedly elevated. Examination shows bibasal crackles and bilateral pitting oedema. He is currently on ramipril 10 mg daily. Which additional medication has the most robust evidence for improving outcomes in HFpEF?",
@@ -5060,7 +5060,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b8-013",
+    id: "cv-b8-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 61-year-old woman presents with 3 hours of chest tightness and diaphoresis. Her ECG shows widespread ST depression in V4-V6 and new T-wave inversions in leads I and aVL with no ST elevation. Her high-sensitivity troponin T at presentation is 68 ng/L (reference <14 ng/L) and rises to 210 ng/L at 1 hour. BP is 138/82 mmHg, HR 88 bpm. What is the most appropriate management strategy?",
@@ -5077,7 +5077,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-014",
+    id: "cv-b8-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 45-year-old woman presents to the ED with a severe headache and blurred vision. On examination, her BP is 228/134 mmHg. Fundoscopy shows bilateral papilloedema and flame haemorrhages. She is confused (GCS 14/15). Urinalysis shows proteinuria (3+). There is no focal neurological deficit and CT head is normal. What is the most appropriate immediate management?",
@@ -5094,7 +5094,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-015",
+    id: "cv-b8-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old male intravenous drug user presents with a 2-week history of fever, rigors, and malaise. Examination reveals a temperature of 38.8°C, HR 110 bpm, BP 100/60 mmHg, and a new pansystolic murmur loudest at the left lower sternal border that increases with inspiration. Three sets of blood cultures are positive for Staphylococcus aureus. Echocardiography shows a 15 mm vegetation on the tricuspid valve with moderate tricuspid regurgitation. Which of the following is the most appropriate antibiotic regimen?",
@@ -5111,7 +5111,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b8-016",
+    id: "cv-b8-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 70-year-old woman with diabetes and hypertension presents with a 4-day history of severe rest pain in her right foot and a non-healing ulcer on the right first toe that appeared spontaneously 2 weeks ago. On examination, the right foot is cold, pale, and pulseless. ABI on the right is 0.38. She has no sensation in the right toes. Which of the following best describes this presentation and the urgency of intervention?",
@@ -5128,7 +5128,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-017",
+    id: "cv-b8-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 52-year-old man presents with his second episode of unprovoked proximal DVT in 2 years. He had a right popliteal vein thrombosis 18 months ago and completed 6 months of anticoagulation. He now has a left femoral vein DVT confirmed on duplex ultrasound. He has no known malignancy and a full thrombophilia screen is pending. What is the most appropriate duration of anticoagulation therapy?",
@@ -5145,7 +5145,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b8-018",
+    id: "cv-b8-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 44-year-old man is referred for evaluation of an incidental ECG finding. He has no symptoms and no family history of sudden death. His ECG shows a short PR interval of 100 ms, a delta wave, and a wide QRS complex of 130 ms in sinus rhythm. He has never had palpitations. What is the most appropriate initial investigation to stratify his risk?",
@@ -5162,7 +5162,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b8-019",
+    id: "cv-b8-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 38-year-old woman presents with progressive dyspnoea over 6 weeks, commencing 8 weeks after an uncomplicated vaginal delivery of her first child. She has no prior cardiac history. Examination reveals cardiomegaly, elevated JVP, and bibasal crackles. Echocardiography demonstrates a dilated left ventricle with EF of 25%. Coronary angiography shows normal coronary arteries. What is the most likely diagnosis and the most important prognostic factor?",
@@ -5179,7 +5179,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b8-020",
+    id: "cv-b8-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 58-year-old man with Marfan syndrome presents to the emergency department with sudden onset severe tearing chest pain radiating to his back between the shoulder blades. His BP is 178/96 mmHg in the right arm and 142/82 mmHg in the left arm. On auscultation, there is a new early diastolic murmur at the right sternal border. CT angiography of the chest shows an intimal flap in the ascending aorta extending to the descending thoracic aorta. What is the most appropriate immediate management?",
@@ -5538,7 +5538,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b9-001",
+    id: "cv-b9-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man with a history of hypertension and type 2 diabetes presents to his GP with a 3-day history of palpitations and mild dyspnoea. His blood pressure is 145/90 mmHg, heart rate is 110 bpm and irregularly irregular. ECG confirms atrial fibrillation. His CHA2DS2-VASc score is calculated to be 4. He has no contraindications to anticoagulation. What is the most appropriate management regarding stroke prevention?",
@@ -5555,7 +5555,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b9-002",
+    id: "cv-b9-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with known ischaemic cardiomyopathy presents with progressive breathlessness on exertion, orthopnoea, and ankle swelling over 4 weeks. On examination, JVP is elevated at 5 cm above the sternal angle, bibasal crackles are audible, and bilateral pitting oedema to the knees is present. Echocardiogram shows ejection fraction of 32%. She is already on furosemide and ramipril. Which additional medication has been shown to reduce mortality in this condition?",
@@ -5572,7 +5572,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b9-003",
+    id: "cv-b9-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with severe crushing central chest pain radiating to his left arm for 90 minutes. He is diaphoretic, BP 100/70 mmHg, HR 95 bpm. ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal changes in leads I and aVL. Troponin I is elevated. The nearest PCI-capable hospital is 45 minutes away. What is the most appropriate immediate management?",
@@ -5589,7 +5589,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b9-004",
+    id: "cv-b9-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Aboriginal Australian man is found to have a blood pressure of 158/96 mmHg on three separate readings over 6 weeks. He has no history of diabetes, cardiovascular disease, or renal disease. His BMI is 28 kg/m², he is a non-smoker, and fasting lipids are normal. Urinalysis shows microalbuminuria (albumin:creatinine ratio 4.5 mg/mmol). eGFR is 72 mL/min/1.73m². What is the most appropriate initial antihypertensive medication?",
@@ -5606,7 +5606,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-005",
+    id: "cv-b9-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 70-year-old retired farmer presents with a 6-month history of exertional dyspnoea, presyncope on exertion, and chest tightness. On examination, there is a slow-rising carotid pulse, BP 110/85 mmHg, and a harsh ejection systolic murmur loudest at the right upper sternal border radiating to the carotids. S2 is soft. Echocardiogram shows aortic valve area of 0.8 cm², mean gradient 52 mmHg, and preserved LV systolic function (EF 58%). Which of the following is the most appropriate next step?",
@@ -5623,7 +5623,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-006",
+    id: "cv-b9-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 66-year-old male smoker with type 2 diabetes and dyslipidaemia presents with a 5-month history of bilateral calf pain occurring after walking approximately 200 metres, relieved within 5 minutes of rest. Examination reveals absent dorsalis pedis pulses bilaterally and thin, shiny skin on the lower legs. Ankle-brachial index (ABI) is 0.62 bilaterally. What is the most appropriate initial management?",
@@ -5640,7 +5640,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-007",
+    id: "cv-b9-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman presents to the ED with sudden onset pleuritic right-sided chest pain and dyspnoea that developed 2 hours ago. She is 6 weeks postpartum and was prescribed the combined oral contraceptive pill 4 weeks ago. HR is 112 bpm, RR 22, SpO2 93% on room air, BP 118/78 mmHg. ECG shows sinus tachycardia. CT pulmonary angiogram confirms bilateral pulmonary emboli. She is haemodynamically stable. What is the most appropriate treatment?",
@@ -5657,7 +5657,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-008",
+    id: "cv-b9-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old woman presents with recurrent episodes of sudden-onset rapid palpitations lasting 10–15 minutes and terminating spontaneously. During an episode, her HR is 178 bpm and ECG shows a narrow complex regular tachycardia with no discernible P waves before the QRS complexes; retrograde P waves are visible in the ST segments. BP is 106/72 mmHg. She is otherwise well with no structural heart disease on echocardiogram. Vagal manoeuvres have been unsuccessful in terminating the current episode. What is the most appropriate immediate treatment?",
@@ -5674,7 +5674,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b9-009",
+    id: "cv-b9-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 22-year-old elite football player collapses during training. CPR is initiated and he is resuscitated with a defibrillator; rhythm was ventricular fibrillation. He recovers fully neurologically. He reports a family history of sudden cardiac death in his uncle at age 30. ECG shows increased QRS voltage, deep Q waves in V5–V6 and lateral leads, and a bifid P wave. Echocardiogram shows asymmetric septal hypertrophy with a septal thickness of 19 mm and systolic anterior motion of the mitral valve. Which of the following is the most appropriate long-term management?",
@@ -5691,7 +5691,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-010",
+    id: "cv-b9-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 67-year-old hypertensive male smoker presents to the ED with sudden onset severe tearing chest pain radiating to his back and interscapular region. BP is 190/110 mmHg in the right arm and 155/85 mmHg in the left arm. He is diaphoretic and in distress. Chest X-ray shows a widened mediastinum. ECG shows no ST changes. Contrast CT of the chest confirms a Stanford Type A aortic dissection involving the ascending aorta. What is the most appropriate immediate management?",
@@ -5708,7 +5708,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-011",
+    id: "cv-b9-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 60-year-old woman with no prior cardiac history presents with palpitations of 10-hour duration. ECG confirms AF with a ventricular rate of 130 bpm. BP is 128/82 mmHg, she is haemodynamically stable, and there is no history of valvular heart disease or structural abnormality on point-of-care echo. She has never had AF before and is keen to return to sinus rhythm. She takes no regular medications. What is the most appropriate cardioversion strategy in the ED?",
@@ -5725,7 +5725,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-012",
+    id: "cv-b9-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 78-year-old woman with a history of longstanding hypertension and preserved exercise capacity until recently presents with 3 weeks of progressive dyspnoea on exertion and fatigue. She denies chest pain. Examination reveals elevated JVP, bibasal crepitations, and bilateral ankle oedema. Echocardiogram shows an ejection fraction of 62%, Grade 2 diastolic dysfunction, elevated E/e' ratio, and LV hypertrophy. NT-proBNP is 1,450 pg/mL. What is the most accurate diagnosis?",
@@ -5742,7 +5742,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-013",
+    id: "cv-b9-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 52-year-old woman with type 2 diabetes and hypertension presents with a 4-hour history of burning epigastric discomfort, nausea, and diaphoresis. She initially attributed it to indigestion. BP is 138/88 mmHg, HR 88 bpm regular. ECG shows new ST depression of 2 mm in leads V4–V6 and T-wave inversion in leads I and aVL. High-sensitivity troponin T at 0 hours is 68 ng/L (ULN 14 ng/L) and at 3 hours is 195 ng/L. What is the most appropriate management?",
@@ -5759,7 +5759,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b9-014",
+    id: "cv-b9-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 55-year-old man with a 10-year history of hypertension managed with amlodipine 10 mg and ramipril 10 mg presents for routine review. His home blood pressure readings average 158/102 mmHg. He has no diabetes, CKD, or history of cardiovascular events. His serum potassium is 4.2 mmol/L, eGFR 78 mL/min/1.73m². Fasting glucose is normal. He denies secondary causes of hypertension. What is the most appropriate next step in management?",
@@ -5776,7 +5776,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-015",
+    id: "cv-b9-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old intravenous drug user presents with 2 weeks of fever, night sweats, fatigue, and progressive dyspnoea. On examination, temperature is 38.8°C, HR 108 bpm, BP 96/42 mmHg with a wide pulse pressure. A loud early diastolic murmur is heard at the left sternal border. Chest X-ray shows pulmonary oedema. Echocardiogram reveals a mobile vegetation on the aortic valve with severe aortic regurgitation and markedly elevated LV end-diastolic pressure. Blood cultures are pending. What is the most appropriate next step?",
@@ -5793,7 +5793,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b9-016",
+    id: "cv-b9-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 75-year-old diabetic man presents with a 2-day history of severe rest pain in his right foot, worse at night and when lying down. He has a non-healing ulcer on the tip of his right second toe with a black eschar. Examination reveals absent popliteal and distal pulses in the right leg, the limb is cool to below the knee, and his ABI is 0.38. His capillary refill is >4 seconds. What is the most appropriate management?",
@@ -5810,7 +5810,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-017",
+    id: "cv-b9-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 45-year-old man presents with a second unprovoked proximal DVT affecting his left femoral vein. His first episode was 3 years ago and he completed 6 months of anticoagulation. He has no malignancy, thrombophilia, or other identifiable risk factors. He has no contraindications to anticoagulation. What is the most appropriate recommendation regarding duration of anticoagulation?",
@@ -5827,7 +5827,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b9-018",
+    id: "cv-b9-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 19-year-old man is brought to the ED after collapsing at a family barbecue following sudden onset palpitations. He was resuscitated by a bystander. ECG in the ED shows sinus rhythm with a QTc interval of 512 ms and a bifid T wave in V2–V3. His brother died suddenly at age 16 during sleep. Serum electrolytes are normal. There is no history of drug use or medications known to prolong QT. What is the most likely diagnosis?",
@@ -5844,7 +5844,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b9-019",
+    id: "cv-b9-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 38-year-old woman who recently delivered her first child 6 weeks ago presents with progressive dyspnoea, orthopnoea, and fatigue since 2 weeks postpartum. She denies chest pain. On examination, BP is 88/60 mmHg, HR 118 bpm, JVP elevated, bibasal crepitations, and a third heart sound is audible. Echocardiogram shows globally dilated left ventricle with EF of 28% and no regional wall motion abnormalities. She has no prior cardiac history. What is the most likely diagnosis?",
@@ -5861,7 +5861,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b9-020",
+    id: "cv-b9-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 68-year-old male ex-smoker presents for abdominal ultrasound as part of a screening program. He is asymptomatic. Ultrasound reveals an infrarenal abdominal aortic aneurysm (AAA) measuring 4.2 cm in maximum diameter. His BP is well controlled on amlodipine. He has no family history of AAA. What is the most appropriate management?",
@@ -6220,7 +6220,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b10-001",
+    id: "cv-b10-002d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-day history of palpitations and mild dyspnoea. He has no prior cardiac history and takes no regular medications. His BP is 138/82 mmHg, HR is 110 bpm and irregularly irregular. ECG confirms atrial fibrillation. Echocardiogram shows no structural abnormality and preserved ejection fraction. His CHA2DS2-VASc score is 2. What is the most appropriate long-term antithrombotic strategy?",
@@ -6237,7 +6237,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b10-002",
+    id: "cv-b10-002d3",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with a history of ischaemic cardiomyopathy presents with worsening exerteric dyspnoea, orthopnoea, and bilateral ankle oedema over 2 weeks. She is currently on furosemide 40 mg daily, ramipril 5 mg daily, and carvedilol 12.5 mg twice daily. Examination reveals JVP elevated at 5 cm above the sternal angle, bibasal crackles, and pitting oedema to the knees. Echocardiogram shows LVEF of 30%. Which additional medication has the strongest evidence for reducing mortality in this patient?",
@@ -6254,7 +6254,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-003",
+    id: "cv-b10-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old man presents to a rural emergency department with 90 minutes of severe crushing chest pain radiating to the left arm, diaphoresis, and nausea. His BP is 100/70 mmHg, HR is 95 bpm, and oxygen saturation is 96% on air. ECG shows 3 mm ST elevation in leads II, III, and aVF. The nearest PCI-capable centre is 4 hours away by road. He has no contraindications to thrombolysis. What is the most appropriate immediate management?",
@@ -6271,7 +6271,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-004",
+    id: "cv-b10-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Aboriginal Australian man is found to have a blood pressure of 158/96 mmHg on two separate occasions 4 weeks apart. He is a non-smoker, has no diabetes, and his renal function and electrolytes are normal. His 10-year cardiovascular risk is calculated at 18%. He has no contraindications to any antihypertensive. Which is the most appropriate first-line antihypertensive therapy?",
@@ -6288,7 +6288,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-005",
+    id: "cv-b10-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 70-year-old man presents with a 6-month history of exertional dyspnoea, angina, and two episodes of near-syncope. On examination, his pulse is slow-rising with low volume, BP is 110/80 mmHg, and he has a harsh crescendo-decrescendo systolic murmur loudest at the right second intercostal space radiating to the carotids. Echocardiogram shows a bicuspid aortic valve with a mean gradient of 52 mmHg and an aortic valve area of 0.7 cm². LVEF is 55%. What is the most appropriate next step in management?",
@@ -6305,7 +6305,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b10-006",
+    id: "cv-b10-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 64-year-old man with a 40 pack-year smoking history and type 2 diabetes presents with a 4-month history of right calf pain that reliably occurs after walking 200 metres and resolves with 5 minutes of rest. Examination reveals absent right popliteal and pedal pulses. Ankle-brachial index (ABI) on the right is 0.62. He is currently on metformin only. What is the single most important pharmacological intervention to reduce his cardiovascular event risk?",
@@ -6322,7 +6322,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-007",
+    id: "cv-b10-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 38-year-old woman who is 28 weeks pregnant presents with acute onset right-sided pleuritic chest pain and dyspnoea. Her HR is 108 bpm, BP 118/74 mmHg, RR 22/min, and SpO2 94% on air. Bilateral leg Doppler ultrasound is negative. Serum D-dimer is 3.2 mg/L (elevated). CT pulmonary angiography (CTPA) confirms a right main pulmonary artery embolism. She is haemodynamically stable. What is the most appropriate anticoagulation therapy?",
@@ -6339,7 +6339,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-008",
+    id: "cv-b10-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 22-year-old woman presents to the emergency department with sudden onset palpitations and mild dizziness lasting 30 minutes. Her ECG shows a regular narrow complex tachycardia at 182 bpm with no visible P waves. BP is 118/76 mmHg and she is conscious and alert. Vagal manoeuvres are unsuccessful. There is no history of pre-excitation. What is the most appropriate next step?",
@@ -6356,7 +6356,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b10-009",
+    id: "cv-b10-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 28-year-old male footballer collapses during a match and is successfully resuscitated from ventricular fibrillation. He has no prior cardiac history. His father died suddenly at age 32. Resting ECG shows left ventricular hypertrophy with deep T-wave inversions in V4–V6. Echocardiogram demonstrates asymmetric septal hypertrophy with a septal thickness of 22 mm and systolic anterior motion of the mitral valve. LVEF is 72%. What is the most appropriate long-term management to prevent sudden cardiac death?",
@@ -6373,7 +6373,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-010",
+    id: "cv-b10-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 67-year-old hypertensive man presents to the emergency department with sudden onset severe tearing chest pain radiating to the back between the shoulder blades. His BP is 170/100 mmHg in the right arm and 145/90 mmHg in the left arm. He appears pale and diaphoretic. Chest X-ray shows widening of the mediastinum. CT aortography confirms a Type A (Stanford) aortic dissection involving the ascending aorta. What is the most appropriate immediate management?",
@@ -6390,7 +6390,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-011",
+    id: "cv-b10-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman with hypertension and type 2 diabetes is found to have persistent atrial fibrillation on routine ECG. Her resting ventricular rate is 95 bpm. She has no symptoms of heart failure. Her CHA2DS2-VASc score is 4. She is started on apixaban. The cardiologist now wishes to achieve rate control. Which is the most appropriate first-line rate control agent?",
@@ -6407,7 +6407,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b10-012",
+    id: "cv-b10-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 76-year-old woman with heart failure and a preserved ejection fraction (HFpEF, LVEF 58%) presents with worsening dyspnoea and bilateral ankle oedema. Her NT-proBNP is significantly elevated. She has a background of hypertension and atrial fibrillation. Examination reveals elevated JVP and bibasal crackles. She is on ramipril 5 mg, bisoprolol 5 mg, and furosemide 40 mg daily. Recent trial evidence has prompted a change to her medication. Which additional medication has most recently demonstrated a mortality and hospitalisation benefit specifically in HFpEF?",
@@ -6424,7 +6424,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b10-013",
+    id: "cv-b10-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 62-year-old man with hypertension and hyperlipidaemia presents with 2 hours of typical ischaemic chest pain. His ECG shows 1.5 mm horizontal ST depression in leads V4–V6 and high-sensitivity troponin I is elevated at 340 ng/L (reference <26 ng/L) on first sample and 580 ng/L at 1 hour. He is pain-free with sublingual GTN. BP is 136/84 mmHg, HR 78 bpm. He is already on aspirin 100 mg. Which is the most appropriate additional antiplatelet agent and timing of invasive coronary angiography?",
@@ -6441,7 +6441,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b10-014",
+    id: "cv-b10-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 52-year-old woman with a 10-year history of hypertension presents with a severe headache, visual disturbances, and confusion. Her BP is 218/128 mmHg. Fundoscopy reveals bilateral papilloedema and flame haemorrhages. Serum creatinine has risen acutely from her baseline of 90 to 165 µmol/L. Urinalysis shows 3+ proteinuria and red cell casts. What is this clinical syndrome and what is the most appropriate initial management?",
@@ -6458,7 +6458,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-015",
+    id: "cv-b10-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old woman who is 20 weeks pregnant presents with increasing dyspnoea on exertion and orthopnoea. She has a history of rheumatic fever as a child. On examination, there is a loud S1, a low-pitched mid-diastolic rumble at the apex, and an opening snap. Her HR is 110 bpm in sinus rhythm. Echocardiogram shows severe mitral stenosis with a valve area of 0.9 cm², mean gradient of 14 mmHg, and calcified leaflets with a Wilkins score of 10/16. She has no mitral regurgitation. What is the most appropriate management?",
@@ -6475,7 +6475,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b10-016",
+    id: "cv-b10-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 70-year-old man with type 2 diabetes and known peripheral arterial disease presents with a 1-week history of a non-healing ulcer on the right great toe. The toe is cold, pale, and he reports rest pain at night. ABI is 0.40 on the right. There is no fever and inflammatory markers are mildly elevated. X-ray of the foot shows no bone involvement. What is the most appropriate immediate management?",
@@ -6492,7 +6492,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-017",
+    id: "cv-b10-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 45-year-old previously well woman presents with acute onset shortness of breath and right-sided pleuritic chest pain following a 14-hour flight from London. Her HR is 118 bpm, BP 88/60 mmHg, RR 26/min, SpO2 88% on air. ECG shows sinus tachycardia with an S1Q3T3 pattern. CTPA confirms bilateral massive pulmonary emboli with right heart strain. Despite oxygen and IV fluids, she remains haemodynamically unstable. She has no contraindications to thrombolysis. What is the most appropriate next management step?",
@@ -6509,7 +6509,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-018",
+    id: "cv-b10-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 50-year-old man with no significant cardiac history presents with a 3-hour history of palpitations. His BP is 105/70 mmHg and he feels lightheaded. ECG shows a broad complex tachycardia at 180 bpm with positive concordance in the precordial leads and AV dissociation. He is conscious but distressed. What is the most appropriate management?",
@@ -6526,7 +6526,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b10-019",
+    id: "cv-b10-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 32-year-old woman presents 6 weeks after delivery of her first child with a 2-week history of progressive dyspnoea, orthopnoea, and bilateral leg swelling. She had an uncomplicated vaginal delivery at 39 weeks. Examination reveals a raised JVP, displaced apex beat, S3 gallop, and pitting oedema to the mid-thigh. Echocardiogram shows a dilated left ventricle with an LVEF of 28%. Coronary angiogram is normal. What is the most likely diagnosis and which medication should be avoided in the acute setting?",
@@ -6543,7 +6543,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b10-020",
+    id: "cv-b10-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 65-year-old man with a 50 pack-year smoking history attends a health screening program. He has no symptoms. Abdominal ultrasound performed as part of a national screening program reveals an abdominal aortic aneurysm (AAA) with a maximum diameter of 4.8 cm. His BP is well controlled on ramipril. He has no family history of AAA and is otherwise well. What is the most appropriate management?",
@@ -6902,7 +6902,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b11-001",
+    id: "cv-b11-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-day history of palpitations and mild dyspnoea. He has a history of hypertension and type 2 diabetes. On examination, his pulse is irregularly irregular at 110 bpm, BP 148/92 mmHg, and he has no signs of heart failure. ECG confirms atrial fibrillation with a rapid ventricular response. His CHA2DS2-VASc score is calculated at 4. Which of the following is the most appropriate next step in management?",
@@ -6919,7 +6919,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b11-002",
+    id: "cv-b11-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with a history of ischaemic heart disease presents with a 6-week history of progressive exertional dyspnoea and ankle swelling. She reports orthopnoea requiring 3 pillows. On examination, JVP is elevated at 5 cm above the sternal angle, bibasal crackles are present, and she has pitting oedema to the knees. Echocardiogram shows an ejection fraction of 32%. Which combination of medications has the strongest evidence for reducing mortality in this patient?",
@@ -6936,7 +6936,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b11-003",
+    id: "cv-b11-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with severe crushing central chest pain radiating to his left arm, diaphoresis, and nausea for the past 75 minutes. His BP is 130/80 mmHg, HR 92 bpm, and oxygen saturation 97% on room air. ECG shows ST elevation of 3 mm in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. The nearest primary PCI-capable centre is 30 minutes away. What is the most appropriate immediate management?",
@@ -6953,7 +6953,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-004",
+    id: "cv-b11-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 52-year-old Aboriginal Australian man is found to have a blood pressure of 168/104 mmHg on two separate occasions over four weeks. He has no history of cardiovascular disease, diabetes, or CKD. His 5-year absolute cardiovascular risk score is calculated at 18%. His fasting lipids, electrolytes, renal function, and urinalysis are all normal. He does not smoke and exercises regularly. What is the most appropriate initial management strategy?",
@@ -6970,7 +6970,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-005",
+    id: "cv-b11-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 68-year-old woman presents with a 6-month history of progressive exertional dyspnoea, angina, and near-syncope on exertion. On examination, she has a harsh ejection systolic murmur at the right upper sternal border radiating to the carotids, a slow-rising pulse, and a narrow pulse pressure. Her ECG shows left ventricular hypertrophy. Echocardiogram demonstrates a heavily calcified aortic valve with a mean gradient of 52 mmHg and an aortic valve area of 0.7 cm². Her EF is 55%. What is the most appropriate management?",
@@ -6987,7 +6987,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-006",
+    id: "cv-b11-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 66-year-old male smoker with type 2 diabetes and hypertension presents with a 3-month history of right calf pain after walking 200 metres that is consistently relieved by rest. He has no rest pain or skin ulcers. On examination, dorsalis pedis pulses are absent bilaterally and posterior tibial pulses are weak. Ankle-brachial index (ABI) on the right is 0.62. What is the most appropriate initial management?",
@@ -7004,7 +7004,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b11-007",
+    id: "cv-b11-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman at 28 weeks gestation presents with sudden onset of dyspnoea, right-sided pleuritic chest pain, and haemoptysis. She has no previous thrombotic history. Her HR is 118 bpm, BP 108/70 mmHg, RR 24/min, and oxygen saturation 91% on room air. Wells score for PE is 7 (high probability). What is the most appropriate next diagnostic step?",
@@ -7021,7 +7021,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-008",
+    id: "cv-b11-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 45-year-old woman with no significant cardiac history presents to the emergency department with sudden onset palpitations, lightheadedness, and mild chest discomfort for 2 hours. ECG shows a regular narrow-complex tachycardia at 178 bpm with no discernible P waves between QRS complexes. BP is 122/78 mmHg. Vagal manoeuvres including carotid sinus massage are unsuccessful. What is the most appropriate next management step?",
@@ -7038,7 +7038,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b11-009",
+    id: "cv-b11-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 28-year-old male competitive cyclist collapses during a race. He is resuscitated from ventricular fibrillation. His ECG shows left ventricular hypertrophy with deep T-wave inversions in V4-V6 and I, aVL. BP is 120/75 mmHg. Echocardiogram reveals asymmetric septal hypertrophy with a septal wall thickness of 22 mm and systolic anterior motion of the mitral valve with an outflow tract gradient of 55 mmHg. His father died suddenly at age 35. What is the single most important long-term management intervention?",
@@ -7055,7 +7055,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-010",
+    id: "cv-b11-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 62-year-old hypertensive male smoker presents to the emergency department with severe, sudden-onset tearing chest pain radiating to the back between the scapulae. He describes the pain as 'the worst of his life.' BP is 178/95 mmHg in the right arm and 142/88 mmHg in the left arm. Auscultation reveals an early diastolic murmur at the left sternal border. CXR shows a widened mediastinum. What is the most appropriate immediate investigation and management?",
@@ -7072,7 +7072,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-011",
+    id: "cv-b11-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman with paroxysmal AF on no medications presents after a 4-hour episode of palpitations that spontaneously terminated. Her only medical history is well-controlled hypertension on amlodipine. CHA2DS2-VASc score is 3. She has no contraindications to anticoagulation. Her cardiologist has discussed rhythm control versus rate control strategies with her and she strongly prefers rhythm control. Which of the following is the most appropriate rhythm control agent as first-line therapy in this patient?",
@@ -7089,7 +7089,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b11-012",
+    id: "cv-b11-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 74-year-old woman presents with worsening dyspnoea and ankle oedema. Echocardiogram shows an ejection fraction of 62% with evidence of impaired relaxation (Grade II diastolic dysfunction) and left ventricular hypertrophy. BNP is elevated at 420 pg/mL. She has hypertension and paroxysmal AF. She is not currently on any cardiac medications. Which statement best describes the management of her underlying cardiac condition?",
@@ -7106,7 +7106,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b11-013",
+    id: "cv-b11-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 61-year-old man with diabetes and hypertension presents with 3 hours of central chest pain. ECG shows no ST elevation but new deep T-wave inversions in V1-V4. High-sensitivity troponin I at presentation is 180 ng/L (upper limit of normal 52 ng/L) and repeats at 1 hour at 310 ng/L. He is haemodynamically stable with no signs of heart failure. He is diagnosed with NSTEMI. Which of the following best represents the appropriate antiplatelet and anticoagulant strategy at this stage?",
@@ -7123,7 +7123,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b11-014",
+    id: "cv-b11-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 38-year-old woman presents for routine review. She is found to have a blood pressure of 186/118 mmHg. She complains of a 4-week history of severe headaches, and her urine dipstick shows 3+ protein. Blood tests reveal creatinine 145 micromol/L (baseline normal 6 months ago), potassium 3.1 mmol/L, and sodium 142 mmol/L. She is not on any medications. On fundoscopy, bilateral papilloedema is noted. What is the most appropriate immediate management?",
@@ -7140,7 +7140,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-015",
+    id: "cv-b11-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 22-year-old woman presents with progressive exertional dyspnoea and fatigue. She had rheumatic fever as a child. On examination, she has an irregularly irregular pulse at 88 bpm. Auscultation reveals a loud S1, an opening snap shortly after S2, and a low-pitched rumbling mid-diastolic murmur best heard at the apex with the patient in the left lateral decubitus position. Echocardiogram shows a mitral valve area of 1.2 cm² with moderate commissural fusion and pliant leaflets. Her pulmonary artery pressure is mildly elevated. What is the most appropriate intervention?",
@@ -7157,7 +7157,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b11-016",
+    id: "cv-b11-016d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 75-year-old man with a long history of smoking and type 2 diabetes presents with a 1-week history of rest pain in his right foot and a non-healing ulcer on the right first toe. On examination, the right foot is cold, pale, and the ulcer has a dry, punched-out appearance with surrounding erythema. ABI on the right is 0.38. Toe pressure is 28 mmHg. The left limb has an ABI of 0.72. What is the most appropriate next step?",
@@ -7174,7 +7174,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b11-017",
+    id: "cv-b11-017d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 48-year-old man presents with a 5-day history of left calf pain and swelling after a 14-hour flight from London. Compression ultrasound confirms an isolated distal (calf) DVT in the posterior tibial veins. He has no history of previous VTE, no malignancy, and no identifiable thrombophilia. He is otherwise well and mobile. What is the most appropriate management?",
@@ -7191,7 +7191,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b11-018",
+    id: "cv-b11-018d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 58-year-old man with ischaemic cardiomyopathy (EF 28%) presents to the ED unconscious. He is unresponsive, pulseless, and CPR is in progress. The cardiac monitor shows a regular wide-complex tachycardia at 200 bpm. A defibrillator is available and ventricular tachycardia is suspected. What is the immediate management?",
@@ -7208,7 +7208,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b11-019",
+    id: "cv-b11-019d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 35-year-old woman presents 6 weeks after an uncomplicated vaginal delivery with progressive dyspnoea, orthopnoea, and bilateral leg oedema. She had no cardiac history prior to pregnancy. ECG shows sinus tachycardia and left bundle branch block. Echocardiogram demonstrates a dilated left ventricle with global hypokinesis and an ejection fraction of 25%. Troponin is mildly elevated. What is the most likely diagnosis and what additional therapy, beyond standard HFrEF management, should be considered?",
@@ -7225,7 +7225,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b11-020",
+    id: "cv-b11-020d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 68-year-old male ex-smoker with hypertension undergoes an abdominal ultrasound for unrelated reasons. An incidental infrarenal abdominal aortic aneurysm (AAA) measuring 4.2 cm in maximum diameter is found. He is asymptomatic. He is well-controlled on amlodipine and aspirin. What is the most appropriate management at this time?",
@@ -7584,7 +7584,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b12-001",
+    id: "cv-b12-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man with a history of hypertension and type 2 diabetes presents to his GP with a 3-day history of palpitations and mild dyspnoea. His blood pressure is 138/86 mmHg, pulse is 112 bpm and irregularly irregular. An ECG confirms atrial fibrillation with no pre-excitation. His CHA2DS2-VASc score is calculated to be 4. He has no contraindications to anticoagulation and his renal function is normal. Which of the following is the most appropriate long-term stroke prevention strategy?",
@@ -7601,7 +7601,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b12-002",
+    id: "cv-b12-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old man with known ischaemic cardiomyopathy presents with worsening exertional dyspnoea, orthopnoea, and ankle swelling over 2 weeks. On examination, JVP is elevated at 5 cm above the sternal angle, there are bibasal crackles, and pitting oedema to the knees. His most recent echocardiogram shows an ejection fraction of 30%. His current medications include furosemide 40 mg daily, ramipril 5 mg daily, and carvedilol 12.5 mg twice daily. Which additional medication has been shown to most significantly reduce all-cause mortality in this patient?",
@@ -7618,7 +7618,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-003",
+    id: "cv-b12-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old man presents to the emergency department with 45 minutes of crushing central chest pain radiating to his left arm, diaphoresis, and nausea. His BP is 110/70 mmHg, HR 95 bpm, and O2 saturation 97% on room air. The ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. The nearest PCI-capable centre is 90 minutes away. What is the most appropriate immediate management?",
@@ -7635,7 +7635,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-004",
+    id: "cv-b12-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Aboriginal Australian woman is found to have a blood pressure of 158/96 mmHg on two separate occasions three weeks apart. She has no history of cardiovascular disease, diabetes, or renal disease. Her BMI is 28 kg/m², she is a non-smoker, and fasting lipids are normal. Her 5-year absolute cardiovascular risk is calculated at 8%. Urinalysis shows microalbuminuria. What is the most appropriate next step in management?",
@@ -7652,7 +7652,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-005",
+    id: "cv-b12-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 76-year-old woman presents with a 6-month history of progressive exertional dyspnoea, chest tightness on climbing stairs, and two episodes of near-syncope. On examination, she has a slow-rising carotid pulse, a narrow pulse pressure, and a harsh ejection systolic murmur loudest at the right upper sternal border radiating to the carotids. Echocardiography reveals an aortic valve area of 0.7 cm² and a mean gradient of 52 mmHg. Her ejection fraction is 55%. She is deemed moderate surgical risk. What is the most appropriate management?",
@@ -7669,7 +7669,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-006",
+    id: "cv-b12-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 62-year-old man with a 40 pack-year smoking history and poorly controlled type 2 diabetes presents with a 4-month history of right calf pain that occurs after walking 200 metres and is completely relieved by rest within 5 minutes. He has no rest pain or skin changes. On examination, the right femoral pulse is diminished, popliteal and pedal pulses are absent on the right. His ankle-brachial index (ABI) on the right is 0.62. What is the most appropriate next step in management?",
@@ -7686,7 +7686,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b12-007",
+    id: "cv-b12-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman presents to the emergency department with sudden onset pleuritic right-sided chest pain and dyspnoea that began 2 hours ago. She is 8 weeks postpartum and breastfeeding. Her HR is 118 bpm, BP 124/78 mmHg, respiratory rate 22/min, and O2 saturation 93% on room air. Her right calf is swollen and tender. CTPA confirms bilateral pulmonary emboli. What is the most appropriate anticoagulation therapy?",
@@ -7703,7 +7703,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b12-008",
+    id: "cv-b12-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old woman presents to the emergency department with sudden onset palpitations, dizziness, and mild chest discomfort for 30 minutes. She has no significant past medical history and takes no medications. Her BP is 108/70 mmHg, HR 178 bpm, and she is alert. Her ECG shows a narrow complex regular tachycardia at 178 bpm with no visible P waves. Vagal manoeuvres have been unsuccessful. What is the most appropriate next pharmacological intervention?",
@@ -7720,7 +7720,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b12-009",
+    id: "cv-b12-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 22-year-old male elite basketball player collapses on the court during a game. He is resuscitated by bystanders and recovers consciousness within 2 minutes. His father died suddenly at age 38. On examination, there is a harsh systolic murmur at the left lower sternal border that increases with Valsalva manoeuvre and decreases with squatting. ECG shows left ventricular hypertrophy and deep Q waves in leads I, aVL, and V4–V6. Echocardiography reveals asymmetric septal hypertrophy of 22 mm with systolic anterior motion of the mitral valve. What is the most appropriate long-term management recommendation?",
@@ -7737,7 +7737,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-010",
+    id: "cv-b12-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 67-year-old man with a history of hypertension and 50 pack-year smoking history presents with sudden onset severe tearing chest pain radiating to the back between the shoulder blades. His BP is 188/104 mmHg in the right arm and 150/90 mmHg in the left arm. He is diaphoretic and distressed. Chest X-ray shows widening of the mediastinum. His aortic regurgitation murmur is noted on auscultation. What is the most critical immediate management step?",
@@ -7754,7 +7754,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-011",
+    id: "cv-b12-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman with no prior cardiac history presents with a 6-hour history of palpitations and mild shortness of breath. Her ECG confirms atrial fibrillation with a ventricular rate of 135 bpm. BP is 126/80 mmHg, and she is haemodynamically stable. Her thyroid function and electrolytes are normal. A transthoracic echocardiogram shows no structural heart disease and normal left atrial size. She is keen for rhythm control. What is the most appropriate approach to achieve acute cardioversion in this haemodynamically stable patient within the recommended timeframe?",
@@ -7771,7 +7771,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-012",
+    id: "cv-b12-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 71-year-old woman presents with progressive dyspnoea, fatigue, and peripheral oedema. Her echocardiogram shows a left ventricular ejection fraction of 62% with evidence of diastolic dysfunction (E/A ratio 0.6, elevated filling pressures). She has a history of hypertension and obesity. Her BNP is elevated at 320 pg/mL. Coronary angiography shows no obstructive disease. Which statement best describes the management of her condition?",
@@ -7788,7 +7788,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-013",
+    id: "cv-b12-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 61-year-old woman with hypertension and hyperlipidaemia presents to the emergency department with 3 hours of central chest pressure and diaphoresis. Her ECG shows ST depression of 2 mm in leads V4–V6 and T-wave inversions in I and aVL with no ST elevation. Her initial high-sensitivity troponin I is 180 ng/L (upper limit of normal 26 ng/L), rising to 340 ng/L at 1 hour. BP is 136/84 mmHg and she is pain-free after GTN. She is haemodynamically stable with a GRACE score of 142. What is the most appropriate management strategy?",
@@ -7805,7 +7805,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-014",
+    id: "cv-b12-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 52-year-old man is found to have a BP of 210/126 mmHg at his GP clinic. He denies headache, chest pain, or visual disturbance. On fundoscopy, there are flame haemorrhages and papilloedema. His serum creatinine is 168 µmol/L (baseline unknown), and urinalysis shows 2+ proteinuria and red cell casts. His ECG shows LVH. What is the most appropriate immediate management?",
@@ -7822,7 +7822,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b12-015",
+    id: "cv-b12-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 35-year-old woman with a known history of rheumatic fever as a child presents with progressively worsening dyspnoea on exertion, orthopnoea, and haemoptysis over 6 months. She has recently become pregnant (8 weeks gestation). On examination, there is a loud S1, an opening snap followed by a low-pitched mid-diastolic rumble at the apex, and a tapping apex beat. Echocardiography confirms severe mitral stenosis with a valve area of 0.9 cm² and elevated pulmonary arterial pressures. What is the most appropriate next management step?",
@@ -7839,7 +7839,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b12-016",
+    id: "cv-b12-016d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 68-year-old man presents with 2 days of right leg pain and swelling after a 14-hour flight from London. Compression duplex ultrasound confirms a proximal right femoral deep vein thrombosis. He has no history of malignancy, thrombophilia, or prior VTE. He is otherwise well. What is the most appropriate initial anticoagulation strategy and duration of treatment?",
@@ -7856,7 +7856,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b12-017",
+    id: "cv-b12-017d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 19-year-old man presents following a syncopal episode during exercise. His ECG shows a QTc interval of 510 ms (normal <440 ms for males) with no delta waves. His potassium and magnesium are normal. Family history reveals a brother who died suddenly at age 22 during sleep. Genetic testing confirms a pathogenic KCNQ1 mutation. He is asymptomatic between episodes. What is the most appropriate management?",
@@ -7873,7 +7873,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b12-018",
+    id: "cv-b12-018d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 38-year-old woman with a history of excessive alcohol use (estimated 60 g/day for 10 years) presents with progressive dyspnoea, bilateral leg oedema, and fatigue over 3 months. She denies chest pain or palpitations. Examination reveals displaced apex beat, S3 gallop, and bibasal crackles. ECG shows sinus tachycardia with LBBB. Echocardiogram demonstrates global left ventricular hypokinesis with an EF of 22% and dilated LV with LVEDD 7.2 cm. What is the most important initial therapeutic recommendation?",
@@ -7890,7 +7890,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-019",
+    id: "cv-b12-019d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 58-year-old man with a known 4.8 cm abdominal aortic aneurysm (AAA), detected incidentally 2 years ago on ultrasound, attends for his routine 6-monthly follow-up. He is asymptomatic. His latest ultrasound shows the aneurysm has grown to 5.6 cm in the past 6 months. He smokes 15 cigarettes per day and his blood pressure is 148/90 mmHg. Which of the following is the most appropriate next step?",
@@ -7907,7 +7907,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b12-020",
+    id: "cv-b12-020d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 70-year-old woman with diabetes and hypertension presents to the emergency department with a 6-hour history of sudden onset severe right foot pain, pallor, and paralysis of the right foot. On examination, the right foot is cold and white to mid-calf, with absent popliteal and pedal pulses on the right. She is unable to move her right toes. Her left foot is warm and has normal pulses. She is in AF with a ventricular rate of 88 bpm. What is the most appropriate immediate management?",
@@ -8266,7 +8266,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b13-001",
+    id: "cv-b13-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man with hypertension and type 2 diabetes presents to his GP for a routine review. His blood pressure is 138/84 mmHg and pulse is 88 bpm and irregularly irregular. An ECG confirms atrial fibrillation. He has no prior history of stroke or TIA, and an echocardiogram shows no structural heart disease. His CHA2DS2-VASc score is calculated. Which of the following is the most appropriate management regarding stroke prevention?",
@@ -8283,7 +8283,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b13-002",
+    id: "cv-b13-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with ischaemic cardiomyopathy presents with worsening dyspnoea on minimal exertion and orthopnoea over 3 weeks. On examination, her JVP is elevated at 5 cm above the sternal angle, there is bilateral pitting oedema to the knees, and bibasal crackles are heard on auscultation. Her ECG shows sinus rhythm with left bundle branch block. An echocardiogram reveals an ejection fraction of 28%. She is already on furosemide and ramipril. Which additional medication has the greatest evidence for reducing mortality in this patient?",
@@ -8300,7 +8300,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b13-003",
+    id: "cv-b13-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with 90 minutes of severe crushing central chest pain radiating to the left arm, associated with diaphoresis and nausea. His BP is 110/70 mmHg, HR 98 bpm, and oxygen saturation 96% on room air. ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in I and aVL. The nearest PCI-capable hospital is 45 minutes away. What is the most appropriate immediate management?",
@@ -8317,7 +8317,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-004",
+    id: "cv-b13-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 48-year-old Aboriginal Australian man presents for a health check. He has no symptoms but his blood pressure is recorded at 158/96 mmHg on two separate occasions three weeks apart. He has no diabetes, no target organ damage, and no cardiovascular disease. His 10-year absolute cardiovascular risk is calculated at 8% using the Australian cardiovascular risk calculator. He does not smoke and exercises regularly. What is the most appropriate next step in management?",
@@ -8334,7 +8334,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-005",
+    id: "cv-b13-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 70-year-old woman presents with a 6-month history of progressive exertional dyspnoea, syncopal episodes, and angina on exertion. On examination, there is a harsh ejection systolic murmur at the right upper sternal border radiating to the carotids, a slow-rising pulse, and a soft second heart sound. Her ECG shows left ventricular hypertrophy. Echocardiogram reveals a mean pressure gradient of 52 mmHg across the aortic valve with an aortic valve area of 0.7 cm². What is the most appropriate management?",
@@ -8351,7 +8351,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-006",
+    id: "cv-b13-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 62-year-old male smoker with type 2 diabetes presents with a 4-month history of calf pain after walking approximately 100 metres, relieved by 5 minutes of rest. He has no rest pain and no skin changes. Peripheral pulses are diminished at the right popliteal and absent at the right dorsalis pedis. Ankle-brachial index (ABI) on the right is 0.62. Which of the following is the most appropriate management strategy?",
@@ -8368,7 +8368,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b13-007",
+    id: "cv-b13-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman who is 28 weeks pregnant presents with sudden onset pleuritic chest pain and dyspnoea. Her HR is 112 bpm, BP 118/74 mmHg, RR 22/min, and SpO2 94% on room air. Her lower limb ultrasound is negative for DVT. A V/Q scan shows a high probability result for pulmonary embolism. Her Wells score for PE is 7. What is the most appropriate anticoagulation therapy?",
@@ -8385,7 +8385,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-008",
+    id: "cv-b13-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 19-year-old male athlete collapses during a football game. Bystanders commence CPR. Paramedics arrive within 4 minutes and attach a defibrillator, which identifies ventricular fibrillation. He is successfully defibrillated and transported to the ED. On arrival he is haemodynamically stable. ECG reveals a QTc of 520 ms. His potassium is 4.1 mmol/L, magnesium is 0.9 mmol/L, and troponin is negative. Family history reveals his father died suddenly at age 35. What is the most likely diagnosis?",
@@ -8402,7 +8402,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-009",
+    id: "cv-b13-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 28-year-old woman who delivered her first child 6 weeks ago presents with progressive dyspnoea, orthopnoea, and leg swelling over the past 3 weeks. She had an uncomplicated vaginal delivery at term. On examination, HR is 110 bpm, BP 105/70 mmHg, JVP is elevated, and bibasal crackles are present. An echocardiogram reveals an ejection fraction of 30% with global left ventricular dilatation. Prior to pregnancy, her cardiac function was normal. What is the most likely diagnosis?",
@@ -8419,7 +8419,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b13-010",
+    id: "cv-b13-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 68-year-old hypertensive male smoker presents to the ED with sudden onset severe tearing chest pain radiating to the back between the shoulder blades. His BP is 180/100 mmHg in the right arm and 155/90 mmHg in the left arm. Aortic regurgitation murmur is heard. His chest X-ray shows a widened mediastinum. ECG shows no ST changes. What is the most appropriate immediate investigation?",
@@ -8436,7 +8436,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b13-011",
+    id: "cv-b13-011d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 55-year-old woman with no prior cardiac history presents to the ED with palpitations and mild dyspnoea for 5 hours. Her BP is 125/80 mmHg and she is haemodynamically stable. ECG confirms new-onset atrial fibrillation with a ventricular rate of 142 bpm. She has no contraindications to anticoagulation. She is keen to restore sinus rhythm. After anticoagulation is commenced, which of the following is the most appropriate strategy for rhythm control?",
@@ -8453,7 +8453,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-012",
+    id: "cv-b13-012d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 78-year-old woman with a history of hypertension presents with worsening dyspnoea on exertion and bilateral ankle oedema. Echocardiogram reveals a preserved ejection fraction of 62% with impaired diastolic relaxation (Grade II diastolic dysfunction) and left ventricular hypertrophy. NT-proBNP is elevated at 1800 pg/mL. She is currently on no cardiac medications. What is the most appropriate initial pharmacological management for her symptoms?",
@@ -8470,7 +8470,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-013",
+    id: "cv-b13-013d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 62-year-old woman with diabetes and hypertension presents with 2 hours of central chest pressure and diaphoresis. ECG shows 1.5 mm ST depression in V4–V6 and dynamic T-wave inversion in I and aVL. High-sensitivity troponin I is 620 ng/L (reference <16 ng/L) at presentation and rises to 1840 ng/L at 1 hour. Her BP is 145/88 mmHg and HR 88 bpm. She is haemodynamically stable. What is the most appropriate management pathway?",
@@ -8487,7 +8487,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-014",
+    id: "cv-b13-014d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 52-year-old man is found to have a blood pressure of 235/130 mmHg at an urgent care visit. He complains of a severe headache and visual blurring. On fundoscopy, bilateral flame haemorrhages and papilloedema are noted. His serum creatinine is 168 μmol/L (baseline unknown). ECG shows LVH. What is the most appropriate immediate management?",
@@ -8504,7 +8504,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-015",
+    id: "cv-b13-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 32-year-old woman with a history of rheumatic fever in childhood presents for a routine review. She is asymptomatic. Echocardiography shows mitral stenosis with a mitral valve area of 1.4 cm² and a mean gradient of 6 mmHg. She is in sinus rhythm and her LVEF is 65%. She is planning a pregnancy. Which of the following is the most appropriate management?",
@@ -8521,7 +8521,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b13-016",
+    id: "cv-b13-016d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 45-year-old man presents to the ED 3 days after a long-haul flight from London with right calf pain and swelling. He has no personal or family history of clotting disorders, no active malignancy, and no prior DVT. Compression ultrasound confirms an isolated right popliteal DVT. His renal function is normal. He is ambulant and haemodynamically stable. He has no contraindications to anticoagulation. What is the most appropriate management?",
@@ -8538,7 +8538,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b13-017",
+    id: "cv-b13-017d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 72-year-old man with ischaemic heart disease presents with recurrent episodes of presyncope. A 24-hour Holter monitor reveals multiple episodes of 3–5-second pauses associated with symptoms, consistent with sick sinus syndrome. His resting HR is 44 bpm. He is on no rate-limiting medications. His echocardiogram shows a mildly reduced LVEF of 45%. He is asking about treatment options. What is the most appropriate definitive management?",
@@ -8555,7 +8555,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-018",
+    id: "cv-b13-018d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 22-year-old male elite basketballer presents after his team doctor heard a murmur during a pre-participation screening. He reports mild exertional dyspnoea and one episode of near-syncope during intense training last month. The murmur increases in intensity with the Valsalva manoeuvre and decreases when he squats. ECG shows left ventricular hypertrophy with deep T-wave inversions in the lateral leads. Echocardiogram reveals asymmetric septal hypertrophy of 20 mm with SAM (systolic anterior motion of the mitral valve) and LVOT gradient of 52 mmHg. What is the most appropriate immediate recommendation?",
@@ -8572,7 +8572,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b13-019",
+    id: "cv-b13-019d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 65-year-old male ex-smoker undergoes a screening abdominal ultrasound which reveals an infrarenal abdominal aortic aneurysm (AAA) measuring 4.2 cm in maximum diameter. He is asymptomatic. His BP is well-controlled at 128/76 mmHg on perindopril. He has no family history of aortic disease. What is the most appropriate management?",
@@ -8589,7 +8589,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b13-020",
+    id: "cv-b13-020d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 70-year-old diabetic woman with chronic kidney disease (eGFR 28 mL/min/1.73m²) presents with a 2-week history of rest pain in the right foot and a non-healing ulcer on the right great toe. On examination, the right foot is cold, pale, and pulseless at the dorsalis pedis and posterior tibial arteries. The ABI is 0.3 on the right. There is no warmth or purulent discharge from the ulcer. What is the most appropriate next step in management?",
@@ -8948,7 +8948,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b14-001",
+    id: "cv-b14-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man presents to his GP with a 3-day history of palpitations and mild dyspnoea. He has a history of hypertension and type 2 diabetes. His pulse is irregularly irregular at 110 bpm, BP 145/90 mmHg, and SpO2 98%. An ECG confirms atrial fibrillation with no delta waves or ST changes. His CHA2DS2-VASc score is calculated at 4. Which of the following is the most appropriate next step regarding anticoagulation?",
@@ -8965,7 +8965,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b14-002",
+    id: "cv-b14-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 68-year-old woman with known ischaemic cardiomyopathy presents with worsening dyspnoea on minimal exertion, orthopnoea, and bilateral ankle oedema over 2 weeks. On examination, JVP is elevated at 6 cm above the sternal angle, there are bibasal crackles, and a third heart sound is audible. Her medications include frusemide 40 mg daily, perindopril 5 mg daily, and carvedilol 12.5 mg BD. Echocardiography shows LVEF of 28%. Her serum potassium is 4.1 mmol/L and eGFR is 52 mL/min/1.73m². Which additional medication would most reduce her mortality?",
@@ -8982,7 +8982,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b14-003",
+    id: "cv-b14-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to the emergency department with sudden-onset severe central chest pain radiating to the left arm, associated with diaphoresis and nausea, for the past 90 minutes. His BP is 130/80 mmHg, HR 95 bpm, and SpO2 95% on room air. His 12-lead ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. The nearest cardiac catheterisation laboratory is 45 minutes away. Which is the most appropriate immediate management?",
@@ -8999,7 +8999,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b14-004",
+    id: "cv-b14-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 45-year-old Indigenous Australian man is found to have a blood pressure of 158/96 mmHg on two separate occasions three weeks apart during health checks. He has no symptoms and no personal history of cardiovascular disease. His BMI is 31 kg/m², he does not smoke, drinks alcohol occasionally, and has no family history of premature CVD. Urinalysis shows microalbuminuria (albumin:creatinine ratio 3.5 mg/mmol). His fasting lipids, glucose, and renal function are otherwise normal. His calculated 5-year cardiovascular risk is 8%. What is the most appropriate initial management?",
@@ -9016,7 +9016,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-005",
+    id: "cv-b14-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 74-year-old woman presents with a 6-month history of progressively worsening exertional dyspnoea, angina, and a single episode of syncope last week. On examination, her pulse is slow-rising and low volume, BP 110/80 mmHg (narrow pulse pressure), and there is a harsh ejection systolic murmur at the right upper sternal border radiating to the carotids. Echocardiography confirms severe aortic stenosis with an aortic valve area of 0.7 cm², mean gradient 55 mmHg, and preserved LVEF of 62%. She is a non-smoker with no significant comorbidities. What is the most appropriate management?",
@@ -9033,7 +9033,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-006",
+    id: "cv-b14-006d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman who is 32 weeks pregnant presents with sudden-onset right-sided pleuritic chest pain and dyspnoea. She has no leg symptoms. Her BP is 118/76 mmHg, HR 108 bpm, RR 22/min, SpO2 94% on room air. Her ECG shows sinus tachycardia. A Wells score for PE is calculated as 4.5 (PE likely). D-dimer is elevated. What is the most appropriate next diagnostic step?",
@@ -9050,7 +9050,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b14-007",
+    id: "cv-b14-007d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old woman presents to the emergency department with sudden-onset palpitations and dizziness that started 2 hours ago. She has no significant past medical history and takes no medications. Her BP is 110/70 mmHg and she is haemodynamically stable. The ECG shows a regular narrow complex tachycardia at 180 bpm with no visible P waves. Vagal manoeuvres (Valsalva, carotid sinus massage) have been unsuccessful. What is the most appropriate next management step?",
@@ -9067,7 +9067,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b14-008",
+    id: "cv-b14-008d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 62-year-old woman with type 2 diabetes and hypertension presents with a 4-hour history of atypical chest discomfort described as indigestion with mild dyspnoea. Her ECG shows new 2 mm ST depression in leads V4-V6 and dynamic T-wave inversions. Her initial troponin I is 0.08 µg/L (upper reference limit 0.04 µg/L) and a repeat at 3 hours is 0.24 µg/L. BP is 135/85 mmHg and she is haemodynamically stable. She has no prior history of bleeding. What is the most appropriate initial pharmacological management?",
@@ -9084,7 +9084,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-009",
+    id: "cv-b14-009d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 67-year-old male smoker with hypertension and dyslipidaemia presents with a 6-month history of right calf pain that occurs after walking approximately 200 metres and is relieved by rest. He has no rest pain or skin changes. On examination, the right femoral pulse is reduced, the popliteal and pedal pulses are absent on the right, and the ABPI (ankle-brachial pressure index) on the right is 0.65. What is the most appropriate initial management?",
@@ -9101,7 +9101,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-010",
+    id: "cv-b14-010d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 24-year-old elite male footballer collapses during a training session. He is resuscitated from ventricular fibrillation by first responders using an AED. In the emergency department, he is conscious and haemodynamically stable. His ECG shows increased voltage in the limb leads, deep septal Q waves in leads I, aVL, V5-V6, and lateral ST-T wave changes. His father died suddenly at age 32. Echocardiography shows an asymmetric septal hypertrophy of 22 mm with systolic anterior motion of the mitral valve and a dynamic LVOT gradient of 60 mmHg. What is the most appropriate long-term management for this patient?",
@@ -9118,7 +9118,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-011",
+    id: "cv-b14-011d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 55-year-old hypertensive male smoker presents to the emergency department with sudden-onset, tearing chest pain radiating to the interscapular region. His BP is 178/110 mmHg in the right arm and 155/95 mmHg in the left arm. His pulse is 105 bpm and regular. A chest X-ray shows widening of the mediastinum to 9 cm. The aortic knuckle is indistinct. His ECG shows no ST changes. What is the immediate priority in management before definitive imaging?",
@@ -9135,7 +9135,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-012",
+    id: "cv-b14-012d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 65-year-old man is brought to the emergency department with AF with rapid ventricular response at 145 bpm. His BP is 78/50 mmHg, he is diaphoretic, and complaining of severe chest pain. His ECG shows AF with a ventricular rate of 145 bpm, and there are significant ST changes in the anterior leads. He has no history of previous AF. What is the most appropriate immediate management?",
@@ -9152,7 +9152,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b14-013",
+    id: "cv-b14-013d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 78-year-old woman with a history of long-standing hypertension presents with dyspnoea on exertion, fatigue, and bilateral ankle oedema. Examination reveals an elevated JVP, S4 gallop, and mild bibasal crackles. Her ECG shows LVH changes. Echocardiography shows concentric LVH, normal chamber dimensions, and a preserved LVEF of 58% with an E/A ratio of 0.7 and E/e' ratio of 16, consistent with grade II diastolic dysfunction. BNP is 420 pg/mL. She is not on any cardiac medications. What is the most important initial treatment strategy?",
@@ -9169,7 +9169,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-014",
+    id: "cv-b14-014d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 52-year-old man presents with a 3-day history of right calf pain and swelling following a 14-hour flight from London. On examination, there is tenderness along the right calf with a positive Homan's sign and 3 cm difference in calf circumference compared to the left. His Wells score for DVT is 3 (high probability). Compression ultrasound confirms an acute proximal DVT involving the right popliteal and femoral veins. He has no personal or family history of clotting disorders, no malignancy identified on history. This is his first DVT. Which is the most appropriate treatment duration for anticoagulation?",
@@ -9186,7 +9186,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b14-015",
+    id: "cv-b14-015d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 32-year-old woman with known rheumatic mitral stenosis presents at 22 weeks gestation with worsening dyspnoea, orthopnoea, and paroxysmal nocturnal dyspnoea over 4 weeks. Her heart rate is 100 bpm and regular, BP is 100/70 mmHg. Auscultation reveals a loud S1, opening snap, and a 3/6 mid-diastolic rumble at the apex. An echocardiogram confirms severe mitral stenosis with a mitral valve area of 0.9 cm², mean gradient 12 mmHg, and absent significant mitral regurgitation. There is mild pulmonary hypertension. What is the most appropriate management?",
@@ -9203,7 +9203,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b14-016",
+    id: "cv-b14-016d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 38-year-old man is referred for investigation of hypertension that has been poorly controlled despite three antihypertensive medications including an ACE inhibitor, calcium channel blocker, and thiazide diuretic at maximum doses. He has gained 10 kg over the past 2 years, snores loudly, and his partner reports witnessed apnoeic episodes at night. On examination, BP is 162/98 mmHg, BMI 34 kg/m², and neck circumference is 42 cm. Serum potassium is 3.4 mmol/L. Renal function and thyroid function are normal. What is the most likely cause of his resistant hypertension?",
@@ -9220,7 +9220,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-017",
+    id: "cv-b14-017d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 19-year-old man presents to his GP with intermittent palpitations since adolescence, now occurring weekly. He describes episodes of sudden-onset rapid heartbeat with abrupt termination. His 12-lead resting ECG shows a short PR interval of 100 ms, a slurred initial upstroke of the QRS complex (delta wave), and a broad QRS complex of 120 ms. He is otherwise well and currently asymptomatic. Echocardiography is normal. What is the most appropriate next management step?",
@@ -9237,7 +9237,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-018",
+    id: "cv-b14-018d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 70-year-old woman with hypertension presents to the emergency department with sudden-onset severe pain, pallor, and paraesthesia in her right leg over the past 3 hours. She has no history of claudication. On examination, the right leg is cold, pale, and mottled below the knee. Femoral, popliteal, and pedal pulses are absent on the right. The left leg is normal. She has an irregularly irregular pulse at 88 bpm. What is the most likely diagnosis and immediate management?",
@@ -9254,7 +9254,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b14-019",
+    id: "cv-b14-019d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 68-year-old male ex-smoker with hypertension is found to have an incidental abdominal aortic aneurysm (AAA) of 4.2 cm on ultrasound performed for renal calculi. He is asymptomatic and the aneurysm appears infrarenal. His BP is currently 138/85 mmHg on amlodipine. He does not smoke and is otherwise healthy. What is the most appropriate management?",
@@ -9271,7 +9271,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b14-020",
+    id: "cv-b14-020d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 42-year-old woman with a history of treated breast cancer (anthracycline-based chemotherapy completed 18 months ago) presents with a 3-month history of progressive exertional dyspnoea, fatigue, and mild ankle oedema. She has no other cardiac history. Examination reveals an elevated JVP, displaced apex beat, S3 gallop, and mild bibasal crackles. ECG shows non-specific ST-T wave changes. Echocardiography shows a dilated left ventricle (LVIDd 63 mm), global hypokinesis, and LVEF of 35%. What is the most likely diagnosis and the most appropriate initial management?",
@@ -9460,7 +9460,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
   }
 ,
   {
-    id: "cv-b15-001",
+    id: "cv-b15-001d2",
     topic: "Cardiovascular",
     subtopic: "Atrial Fibrillation",
     stem: "A 72-year-old man with a history of hypertension and type 2 diabetes presents to his GP for a routine review. He denies palpitations or dyspnoea. His pulse is irregularly irregular at 88 bpm, blood pressure is 148/88 mmHg, and an ECG confirms atrial fibrillation with no prior documented AF. Echocardiogram shows no valvular disease and preserved left ventricular function. Using the CHA2DS2-VASc score, which of the following is the most appropriate next step in management?",
@@ -9477,7 +9477,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b15-002",
+    id: "cv-b15-002d2",
     topic: "Cardiovascular",
     subtopic: "Heart Failure",
     stem: "A 65-year-old woman with known ischaemic cardiomyopathy presents with worsening exertional dyspnoea and bilateral ankle oedema over four weeks. She is currently on ramipril 10 mg daily, carvedilol 25 mg twice daily, and frusemide 40 mg daily. On examination, her JVP is elevated at 6 cm above the sternal angle, there are bibasal crackles, and pitting oedema to the mid-shin. Her eGFR is 52 mL/min/1.73m², potassium 4.2 mmol/L, and echocardiogram shows an LVEF of 30%. Which additional medication would provide the greatest mortality benefit in this patient?",
@@ -9494,7 +9494,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b15-003",
+    id: "cv-b15-003d2",
     topic: "Cardiovascular",
     subtopic: "STEMI/NSTEMI",
     stem: "A 58-year-old male smoker presents to a rural emergency department with severe central chest pain radiating to the left arm for 90 minutes, diaphoresis, and nausea. His ECG shows 3 mm ST elevation in leads II, III, and aVF with reciprocal ST depression in leads I and aVL. Blood pressure is 95/60 mmHg, heart rate 55 bpm, and oxygen saturation 96% on room air. The nearest PCI-capable centre is 3.5 hours away by road. Which of the following is the most appropriate immediate management?",
@@ -9511,7 +9511,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b15-004",
+    id: "cv-b15-004d2",
     topic: "Cardiovascular",
     subtopic: "Hypertension",
     stem: "A 45-year-old Aboriginal Australian man attends his GP for a health check. He has no symptoms. His blood pressure is 158/96 mmHg today, confirmed on two separate readings. His BMI is 29 kg/m², he is a non-smoker, total cholesterol is 5.8 mmol/L, HDL 1.0 mmol/L, fasting glucose 6.0 mmol/L, eGFR 78 mL/min/1.73m², and urine albumin-creatinine ratio (UACR) is 4.5 mg/mmol. His absolute cardiovascular risk (ACVR) is calculated at 18% over 5 years. Which of the following represents the most appropriate initial management plan?",
@@ -9528,7 +9528,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b15-005",
+    id: "cv-b15-005d2",
     topic: "Cardiovascular",
     subtopic: "Valvular Disease",
     stem: "A 68-year-old woman presents with progressive exertional dyspnoea, exertional syncope, and angina over eight months. On examination, her blood pressure is 125/85 mmHg, pulse is 72 bpm, and there is a harsh ejection systolic murmur loudest at the right upper sternal border radiating to both carotids. Echocardiogram reveals a heavily calcified aortic valve with a mean gradient of 48 mmHg, aortic valve area 0.8 cm², and preserved LVEF of 58%. Which of the following is the most appropriate management?",
@@ -9545,7 +9545,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b15-006",
+    id: "cv-b15-006d2",
     topic: "Cardiovascular",
     subtopic: "Peripheral Arterial Disease",
     stem: "A 66-year-old male ex-smoker with type 2 diabetes and hypertension presents with a 6-month history of right calf pain occurring after walking approximately 200 metres, relieved by rest within 5 minutes. Examination reveals absent right dorsalis pedis and posterior tibial pulses, and the ankle-brachial index (ABI) on the right is 0.62. His current medications include metformin, perindopril, and atorvastatin 20 mg. Which of the following management changes is most appropriate?",
@@ -9562,7 +9562,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b15-007",
+    id: "cv-b15-007d2",
     topic: "Cardiovascular",
     subtopic: "DVT/PE",
     stem: "A 34-year-old woman who is 6 weeks postpartum presents to the emergency department with sudden onset dyspnoea, pleuritic right-sided chest pain, and haemoptysis of small volume. She had a prolonged labour requiring caesarean section. Her heart rate is 118 bpm, blood pressure 108/70 mmHg, respiratory rate 24/min, and oxygen saturation 91% on room air. ECG shows sinus tachycardia. Her Wells PE score is 7 (high probability). Which of the following is the most appropriate next investigation or management step?",
@@ -9579,7 +9579,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "medium",
   },
   {
-    id: "cv-b15-008",
+    id: "cv-b15-008d2",
     topic: "Cardiovascular",
     subtopic: "Arrhythmias",
     stem: "A 28-year-old athletic man with no prior cardiac history presents to the emergency department with sudden onset palpitations, lightheadedness, and mild dyspnoea for 45 minutes. He denies chest pain or syncope. His blood pressure is 118/72 mmHg. ECG shows a regular narrow-complex tachycardia at 178 bpm with no discernible P waves before each QRS complex, and retrograde P waves visible after the QRS in the terminal portion of the ST segment. Two attempts at Valsalva manoeuvre have been unsuccessful. Which of the following is the most appropriate next treatment?",
@@ -9596,7 +9596,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "easy",
   },
   {
-    id: "cv-b15-009",
+    id: "cv-b15-009d2",
     topic: "Cardiovascular",
     subtopic: "Cardiomyopathy",
     stem: "A 24-year-old male elite footballer collapses on the field during training but regains consciousness spontaneously within 30 seconds. He reports a prior episode of exertional near-syncope three months ago that was attributed to dehydration. His father died suddenly at age 38. Examination is unremarkable at rest. ECG shows left ventricular hypertrophy voltage criteria and deep T-wave inversions in leads V3–V6. Echocardiogram reveals asymmetric septal hypertrophy with a maximal wall thickness of 22 mm and systolic anterior motion (SAM) of the mitral valve with an outflow tract gradient of 55 mmHg. Which of the following is the most appropriate management?",
@@ -9613,7 +9613,7 @@ export const cardiovascularQuestions: MCQuestion[] = [
     difficulty: "hard",
   },
   {
-    id: "cv-b15-010",
+    id: "cv-b15-010d2",
     topic: "Cardiovascular",
     subtopic: "Aortic Disease",
     stem: "A 62-year-old hypertensive man with Marfan syndrome presents to the emergency department with sudden onset tearing chest pain radiating to the interscapular region. His blood pressure is 178/102 mmHg in the right arm and 155/90 mmHg in the left arm. Heart rate is 102 bpm. Auscultation reveals an early diastolic murmur at the left sternal border. Chest X-ray shows a widened mediastinum. CT aortogram confirms a Type A aortic dissection extending from the aortic root to the descending thoracic aorta. Which of the following is the most appropriate immediate management?",
