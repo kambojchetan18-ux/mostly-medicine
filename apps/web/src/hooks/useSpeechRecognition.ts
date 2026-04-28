@@ -59,15 +59,23 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void) {
     recognition.lang = "en-AU";
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
+      // Rebuild from the full results list every event. Chrome on continuous
+      // mode sometimes re-emits the same final across events, and using
+      // `+=` accumulation produced duplicates like "can can can you can you tell…".
+      // Building fresh from event.results (the canonical full list per the
+      // spec) eliminates the duplication entirely.
+      let finals = "";
       let interim = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
+      for (let i = 0; i < event.results.length; i++) {
+        const piece = event.results[i][0]?.transcript ?? "";
         if (event.results[i].isFinal) {
-          liveTranscriptRef.current += event.results[i][0].transcript + " ";
+          finals += piece + " ";
         } else {
-          interim += event.results[i][0].transcript;
+          interim += piece;
         }
       }
-      setDisplayTranscript((liveTranscriptRef.current + interim).trim());
+      liveTranscriptRef.current = finals.trim();
+      setDisplayTranscript((finals + interim).trim());
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
