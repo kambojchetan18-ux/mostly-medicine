@@ -187,19 +187,37 @@ export function useSpeechSynthesis() {
       window.speechSynthesis.cancel();
       setSpeaking(false);
 
-      pendingRef.current = setTimeout(() => {
+      let attempts = 0;
+      const trySpeak = () => {
         pendingRef.current = null;
         if (!window.speechSynthesis) return;
 
         const chosen = pickVoice(gender);
-        if (!chosen) return;
+        if (!chosen) {
+          // Mobile Chrome / Android: getVoices() is empty until onvoiceschanged
+          // fires. Retry up to 1.5s before giving up so the patient still talks.
+          if (attempts < 15) {
+            attempts++;
+            pendingRef.current = setTimeout(trySpeak, 100);
+          }
+          return;
+        }
+        speakWithVoice(chosen);
+      };
+      const speakWithVoice = (chosen: SpeechSynthesisVoice) => {
 
-        // Strip stage directions before speaking — keep them in the on-screen
-        // transcript but don't read "*sighs*" / "(pauses)" / "[winces]" aloud.
+        // Strip markdown + stage directions before speaking. Patient replies
+        // sometimes leak markdown bold (**word**) which TTS reads as
+        // "asterisk asterisk word" or stalls. Single-asterisk runs are stage
+        // directions and dropped entirely.
         const speakable = text
+          .replace(/\*\*([^*\n]+)\*\*/g, "$1") // **bold** → bold (keep content)
+          .replace(/__([^_\n]+)__/g, "$1") // __bold__
           .replace(/\*[^*\n]+\*/g, "") // *sighs*, *pauses*
+          .replace(/_[^_\n]+_/g, "") // _italic stage_
           .replace(/\([^)\n]+\)/g, "") // (crying)
           .replace(/\[[^\]\n]+\]/g, "") // [winces]
+          .replace(/[`#>~]+/g, "") // stray markdown punctuation
           .replace(/\s{2,}/g, " ")
           .trim();
         if (!speakable) return;
@@ -243,7 +261,10 @@ export function useSpeechSynthesis() {
         utterance.onerror = cleanup;
 
         window.speechSynthesis.speak(utterance);
-      }, 80);
+      };
+
+      // Initial 80ms reset delay then attempt to speak.
+      pendingRef.current = setTimeout(trySpeak, 80);
     },
     [supported]
   );

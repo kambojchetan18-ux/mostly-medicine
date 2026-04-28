@@ -6,6 +6,7 @@ import type { Scenario } from "@mostly-medicine/ai";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
+import { cleanForDisplay } from "@/lib/clean-message";
 import FunLoading from "@/components/FunLoading";
 
 // ── Timer config ──────────────────────────────────────────────────────────────
@@ -541,7 +542,7 @@ export default function Cat2Client() {
               {m.role === "assistant" && (
                 <p className="text-xs font-semibold text-gray-400 mb-1">Patient</p>
               )}
-              {m.content}
+              {m.role === "assistant" ? cleanForDisplay(m.content) : m.content}
             </div>
           </div>
         ))}

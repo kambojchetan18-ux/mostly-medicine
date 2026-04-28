@@ -6,6 +6,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import FunLoading from "@/components/FunLoading";
+import { cleanForDisplay } from "@/lib/clean-message";
 
 const ROLEPLAY_SECONDS = 8 * 60;
 
@@ -301,7 +302,7 @@ export default function PlayClient({
                     : "rounded-bl-sm border border-gray-200 bg-white text-gray-800"
                 }`}
               >
-                {m.content}
+                {m.role === "assistant" ? cleanForDisplay(m.content) : m.content}
               </div>
             </div>
           ))
