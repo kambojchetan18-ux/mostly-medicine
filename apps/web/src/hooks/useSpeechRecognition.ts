@@ -22,6 +22,22 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void) {
       ? (window.SpeechRecognition ?? window.webkitSpeechRecognition)
       : null;
     setSupported(!!SR);
+    // Brave specifically blocks the underlying Google Speech API even though
+    // webkitSpeechRecognition is exposed. Detect Brave and surface a clear
+    // unsupported state so the UI can show a Brave-shield-disable hint.
+    if (typeof navigator !== "undefined") {
+      const nav = navigator as unknown as { brave?: { isBrave?: () => Promise<boolean> } };
+      if (nav.brave?.isBrave) {
+        nav.brave.isBrave().then((isBrave) => {
+          if (isBrave) {
+            // SpeechRecognition exists in Brave but the network call fails.
+            // Mark as unsupported so the UI prompts user to switch browsers
+            // or disable Shields for this site.
+            setSupported(false);
+          }
+        }).catch(() => {});
+      }
+    }
   }, []);
 
   const startRecording = useCallback(() => {

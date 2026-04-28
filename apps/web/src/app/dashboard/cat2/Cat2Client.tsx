@@ -5,6 +5,7 @@ import { scenarios } from "@mostly-medicine/ai";
 import type { Scenario } from "@mostly-medicine/ai";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import VoiceControls from "@/components/VoiceControls";
 
 // ── Timer config ──────────────────────────────────────────────────────────────
 
@@ -118,7 +119,16 @@ export default function Cat2Client() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Speech synthesis must come before sendMessage (sendMessage calls speak/stopSpeaking)
-  const { speaking, speak, stop: stopSpeaking, supported: ttsSupported } = useSpeechSynthesis();
+  const {
+    speaking,
+    speak,
+    stop: stopSpeaking,
+    supported: ttsSupported,
+    muted,
+    volume,
+    setMuted,
+    setVolume,
+  } = useSpeechSynthesis();
 
   const activeScenarioData = activeScenario !== null
     ? scenarios.find(s => s.id === activeScenario) ?? null
@@ -469,6 +479,15 @@ export default function Cat2Client() {
               <div className="text-xs font-normal text-amber-500 text-right">2 min left</div>
             )}
           </div>
+          {ttsSupported && (
+            <VoiceControls
+              muted={muted}
+              volume={volume}
+              setMuted={setMuted}
+              setVolume={setVolume}
+              ttsSupported={ttsSupported}
+            />
+          )}
           {speaking && (
             <button
               onClick={stopSpeaking}
@@ -545,6 +564,13 @@ export default function Cat2Client() {
           <span className="flex-1 italic text-gray-500">
             {displayTranscript || "Listening…"}
           </span>
+        </div>
+      )}
+
+      {/* Voice input unsupported banner */}
+      {micSupported === false && (
+        <div className="mb-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed">
+          🎤 Voice input not supported in this browser (Brave / Firefox block it). Use Chrome, Edge, or Safari, or click the keyboard icon below to type your response.
         </div>
       )}
 

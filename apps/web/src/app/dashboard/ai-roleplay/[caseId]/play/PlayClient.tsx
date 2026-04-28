@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import VoiceControls from "@/components/VoiceControls";
 
 const ROLEPLAY_SECONDS = 8 * 60;
 
@@ -52,7 +53,16 @@ export default function PlayClient({
   // Voice — STT in, TTS out. The hook auto-fires its callback on stop/silence
   // with the final transcript; we send it straight to the API. The keepalive
   // logic for Chrome is already handled inside useSpeechSynthesis.
-  const { speak, stop: stopSpeaking, speaking, supported: ttsSupported } = useSpeechSynthesis();
+  const {
+    speak,
+    stop: stopSpeaking,
+    speaking,
+    supported: ttsSupported,
+    muted,
+    volume,
+    setMuted,
+    setVolume,
+  } = useSpeechSynthesis();
   const sendRef = useRef<(text: string) => void>(() => {});
   const handleSttFinal = useCallback((finalText: string) => {
     sendRef.current?.(finalText);
@@ -218,6 +228,15 @@ export default function PlayClient({
           <span className="text-xs text-gray-700">{setting}</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
+          {voiceMode && (
+            <VoiceControls
+              muted={muted}
+              volume={volume}
+              setMuted={setMuted}
+              setVolume={setVolume}
+              ttsSupported={ttsSupported}
+            />
+          )}
           {(sttSupported || ttsSupported) && (
             <button
               type="button"
@@ -336,9 +355,18 @@ export default function PlayClient({
             {sending && "Patient is responding…"}
           </div>
           {!sttSupported && (
-            <p className="text-xs text-amber-600">
-              Voice not supported in this browser. Use Chrome, Edge, or Safari.
-            </p>
+            <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-center">
+              <p className="text-xs text-amber-700">
+                Voice input isn’t available in this browser (e.g. Brave or Firefox). Use Chrome, Edge, or Safari for voice input. Or switch to text below.
+              </p>
+              <button
+                type="button"
+                onClick={() => setVoiceMode(false)}
+                className="rounded-md border border-amber-300 bg-white px-2.5 py-1 text-xs font-semibold text-amber-800 hover:bg-amber-100"
+              >
+                Switch to text mode
+              </button>
+            </div>
           )}
         </div>
       ) : (
