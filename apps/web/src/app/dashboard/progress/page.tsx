@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
+// Always fetch fresh progress data — the page reads per-user mutable state
+// (attempts, topic_progress, streaks). Without this, Next.js statically
+// renders the page at build time and the "In Progress" stats stay at zero
+// even after the user completes MCQs.
+export const dynamic = "force-dynamic";
+
 // Thresholds for topic status
 const COMPLETED_MIN = 20;   // ≥20 attempts = completed at least one full quiz
 const IN_PROGRESS_MIN = 1;  // 1–19 attempts = in progress
