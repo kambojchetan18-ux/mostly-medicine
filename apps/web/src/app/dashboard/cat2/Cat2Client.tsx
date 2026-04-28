@@ -11,6 +11,8 @@ import FunLoading from "@/components/FunLoading";
 
 // ── Timer config ──────────────────────────────────────────────────────────────
 
+const READING_SECONDS = 120; // 2 min — matches AMC Clinical AI RolePlay reading screen
+
 type TimerMode = "Standard" | "Beginner" | "Exam" | "Sprint";
 
 const MODE_DURATIONS: Record<TimerMode, number> = {
@@ -113,6 +115,13 @@ export default function Cat2Client() {
   const [loading, setLoading] = useState(false);
   const [examinerFeedback, setExaminerFeedback] = useState<string | null>(null);
 
+  // Reading-time briefing state (mirrors AMC Clinical AI RolePlay flow).
+  // While readingScenarioId is set we render a 2-min countdown + Scenario +
+  // Your task panels; on timer end OR explicit Start click we hand off to
+  // startScenario which kicks off the 8-min consultation.
+  const [readingScenarioId, setReadingScenarioId] = useState<number | null>(null);
+  const [readingSecondsLeft, setReadingSecondsLeft] = useState(0);
+
   // Timer state
   const [timerMode, setTimerMode] = useState<TimerMode>("Standard");
   const [timeLeft, setTimeLeft] = useState(0);
@@ -191,6 +200,22 @@ export default function Cat2Client() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  // Reading-time countdown. When the timer hits 0 we auto-hand-off to the
+  // active session by calling startScenario. Cleanup clears any pending tick
+  // when the user backs out or hits Start manually.
+  useEffect(() => {
+    if (readingScenarioId === null) return;
+    if (readingSecondsLeft <= 0) {
+      const id = readingScenarioId;
+      setReadingScenarioId(null);
+      void startScenario(id);
+      return;
+    }
+    const t = setTimeout(() => setReadingSecondsLeft((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readingScenarioId, readingSecondsLeft]);
 
   function formatTime(sec: number) {
     const m = String(Math.floor(sec / 60)).padStart(2, "0");
@@ -286,7 +311,18 @@ export default function Cat2Client() {
     }
   }
 
+  function enterReading(id: number) {
+    // Prime TTS NOW while we hold a live user-gesture token. The 2-min
+    // reading countdown puts the actual speak() call (in startScenario)
+    // well outside Chromium's transient-activation window — without this
+    // the patient's opening line goes silent on Chrome / Comet / Edge.
+    if (ttsSupported) primeTts();
+    setReadingScenarioId(id);
+    setReadingSecondsLeft(READING_SECONDS);
+  }
+
   async function startScenario(id: number) {
+    setReadingScenarioId(null);
     stopSpeaking();
     // Speak the opening DIRECTLY inside this click handler (no setTimeout)
     // so Chromium's transient-activation token still applies when speak()
@@ -316,6 +352,87 @@ export default function Cat2Client() {
     setActiveScenario(null);
     setMessages([]);
     setExaminerFeedback(null);
+    setReadingScenarioId(null);
+  }
+
+  // ── Reading-time briefing screen (mirrors AMC Clinical AI RolePlay) ──────
+  if (readingScenarioId !== null) {
+    const scenario = scenarios.find((s) => s.id === readingScenarioId);
+    if (!scenario) {
+      // Defensive: scenario went missing — bail back to selection.
+      setReadingScenarioId(null);
+      return null;
+    }
+    const briefing = scenario.candidateInfo;
+    // Split candidateInfo into the situational scenario half and the
+    // explicit "Your tasks are…" half so we can render two panels.
+    const taskMarker = /your task[s]?\s+(?:are|is)/i;
+    const taskMatch = briefing.match(taskMarker);
+    const splitIdx = taskMatch ? briefing.indexOf(taskMatch[0]) : -1;
+    const scenarioBody = splitIdx >= 0 ? briefing.slice(0, splitIdx).trim() : briefing.trim();
+    const taskBody = splitIdx >= 0 ? briefing.slice(splitIdx).trim() : "Read each instruction, then take a focused history, examine, explain and counsel as appropriate. Aim to finish within 8 minutes.";
+    const mm = Math.floor(readingSecondsLeft / 60).toString().padStart(2, "0");
+    const ss = (readingSecondsLeft % 60).toString().padStart(2, "0");
+    const pct = (readingSecondsLeft / READING_SECONDS) * 100;
+    return (
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setReadingScenarioId(null)}
+            className="text-xs text-gray-500 hover:text-gray-700"
+          >
+            ← Back
+          </button>
+          <span className="rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-600">
+            {scenario.difficulty} · {scenario.category}
+          </span>
+        </div>
+
+        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Reading time</p>
+              <p className="mt-0.5 text-3xl font-bold tabular-nums text-brand-900">{mm}:{ss}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const id = readingScenarioId;
+                setReadingScenarioId(null);
+                if (id !== null) void startScenario(id);
+              }}
+              className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+            >
+              Start RolePlay →
+            </button>
+          </div>
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-100">
+            <div
+              className="h-full bg-brand-600 transition-[width] duration-1000 ease-linear"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Scenario</p>
+          <h2 className="mt-1 text-lg font-semibold text-gray-900">{scenario.title}</h2>
+          <p className="mt-3 whitespace-pre-line text-base leading-relaxed text-gray-900">
+            {scenarioBody}
+          </p>
+
+          <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">Your task</p>
+            <p className="mt-1 whitespace-pre-line text-sm font-medium text-amber-900">{taskBody}</p>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-gray-500">
+          When the timer ends you will move to the 8-minute roleplay automatically. You can also start early.
+        </p>
+      </div>
+    );
   }
 
   // ── Scenario selection screen ─────────────────────────────────────────────
@@ -376,7 +493,7 @@ export default function Cat2Client() {
             return (
               <button
                 key={s.id}
-                onClick={() => startScenario(s.id)}
+                onClick={() => enterReading(s.id)}
                 className="bg-white border border-gray-200 rounded-2xl p-5 text-left hover:shadow-md hover:border-brand-400 transition group"
               >
                 <div className="flex items-start justify-between mb-3">
@@ -437,7 +554,7 @@ export default function Cat2Client() {
             ← All Scenarios
           </button>
           <button
-            onClick={() => startScenario(activeScenario)}
+            onClick={() => enterReading(activeScenario)}
             className="px-5 py-2.5 text-sm font-medium rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition"
           >
             Retry Scenario
