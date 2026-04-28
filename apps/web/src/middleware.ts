@@ -11,6 +11,16 @@ const PUBLIC_API_ROUTES = [
 ];
 
 export async function middleware(request: NextRequest) {
+  // Force www subdomain so auth cookies are always set against the same
+  // origin. Without this, logging in at www.* and then navigating to the
+  // bare domain (or vice versa) drops the session and redirects to login.
+  const host = request.headers.get("host");
+  if (host === "mostlymedicine.com") {
+    const url = request.nextUrl.clone();
+    url.host = "www.mostlymedicine.com";
+    return NextResponse.redirect(url, 308);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
