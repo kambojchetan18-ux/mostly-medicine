@@ -435,8 +435,23 @@ export default function LiveSessionClient({
       <div className="mx-auto max-w-lg py-8">
         <h1 className="text-center text-xl font-bold text-gray-900">🎬 Live RolePlay — Waiting Room</h1>
         <p className="mt-1 text-center text-sm text-gray-600">
-          You'll play <span className="font-semibold capitalize text-violet-700">{myRole}</span>.
+          You'll play <span className="font-semibold capitalize text-violet-700">{myRole}</span>
+          {isHost && <span className="ml-1 text-xs text-gray-400">(host)</span>}
         </p>
+
+        {/* Same-account warning — when the user opens the invite link while
+            already logged in as the host on another device, they see the host
+            view (correct), but it's confusing for testing. Make it clear. */}
+        {isHost && (
+          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-center text-xs text-amber-900">
+            <p className="font-semibold">⚠️ You are the host of this session.</p>
+            <p className="mt-1">
+              To test the joiner experience as the other role, share this link with a partner who
+              has a <span className="font-semibold">different Mostly Medicine account</span>, or
+              open it in an incognito window logged in as a different user.
+            </p>
+          </div>
+        )}
 
         {/* Big invite code */}
         <div className="mt-6 rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-pink-50 p-6 text-center shadow-sm">
