@@ -60,12 +60,14 @@ export default function LiveSessionClient({
   myUserId,
   myRole,
   isHost,
+  guestUserId,
   initialStatus,
   stem,
   patientBrief,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
+  const [liveGuestId, setLiveGuestId] = useState<string | null>(guestUserId);
   const [partnerOnline, setPartnerOnline] = useState(false);
   const [readingLeft, setReadingLeft] = useState(READING_SECONDS);
   const [roleplayLeft, setRoleplayLeft] = useState(ROLEPLAY_SECONDS);
@@ -107,8 +109,9 @@ export default function LiveSessionClient({
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "acrp_live_sessions", filter: `id=eq.${sessionId}` },
         (payload) => {
-          const row = payload.new as { status: string };
+          const row = payload.new as { status: string; guest_user_id: string | null };
           setStatus(row.status);
+          setLiveGuestId(row.guest_user_id ?? null);
         }
       )
       .subscribe();
@@ -289,55 +292,165 @@ export default function LiveSessionClient({
     router.push(`/dashboard/ai-roleplay/live/${inviteCode}/results`);
   }
 
+  function inviteUrl() {
+    return typeof window !== "undefined"
+      ? `${window.location.origin}/dashboard/ai-roleplay/live/${inviteCode}`
+      : "";
+  }
+
   function copyInvite() {
-    const url = typeof window !== "undefined" ? `${window.location.origin}/dashboard/ai-roleplay/live/${inviteCode}` : "";
-    navigator.clipboard.writeText(url || inviteCode).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    const url = inviteUrl() || inviteCode;
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    } else {
+      // Fallback for older mobile browsers — select + execCommand
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  function shareWhatsApp() {
+    const url = inviteUrl();
+    const msg = encodeURIComponent(
+      `Join me for a Live Roleplay practice on Mostly Medicine 🩺\n\nClick the link to join (or use code ${inviteCode}):\n${url}`
+    );
+    window.open(`https://wa.me/?text=${msg}`, "_blank");
+  }
+
+  function nativeShare() {
+    if (typeof navigator === "undefined" || !navigator.share) {
+      copyInvite();
+      return;
+    }
+    navigator
+      .share({
+        title: "Mostly Medicine — Live Roleplay",
+        text: `Join me for a Live Roleplay session. Code: ${inviteCode}`,
+        url: inviteUrl(),
+      })
+      .catch(() => {
+        /* user cancelled */
+      });
   }
 
   const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
 
   // ─────────────── PHASE: waiting ───────────────
   if (status === "waiting") {
+    // Track guest joined via the live session row (set by /api/live/join when
+    // partner enters the code). Partner-online presence is set later during
+    // roleplay phase; here we just need to know the guest seat is filled.
+    const guestJoined = Boolean(liveGuestId);
     return (
-      <div className="mx-auto max-w-md py-12 text-center">
-        <h1 className="text-xl font-bold text-gray-900">Waiting room</h1>
-        <p className="mt-1 text-sm text-gray-600">Share this code with your partner.</p>
-        <div className="mt-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="font-mono text-3xl font-bold tracking-widest text-violet-700">{inviteCode}</p>
-          <button
-            type="button"
-            onClick={copyInvite}
-            className="mt-3 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
-          >
-            {copied ? "✓ Copied!" : "Copy invite link"}
-          </button>
-        </div>
-        <p className="mt-4 text-xs text-gray-500">
-          Your role: <span className="font-semibold capitalize text-gray-700">{myRole}</span>
+      <div className="mx-auto max-w-lg py-8">
+        <h1 className="text-center text-xl font-bold text-gray-900">🎬 Live RolePlay — Waiting Room</h1>
+        <p className="mt-1 text-center text-sm text-gray-600">
+          You'll play <span className="font-semibold capitalize text-violet-700">{myRole}</span>.
         </p>
+
+        {/* Big invite code */}
+        <div className="mt-6 rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-pink-50 p-6 text-center shadow-sm">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-violet-600">Your invite code</p>
+          <p className="mt-2 font-mono text-4xl font-extrabold tracking-[0.3em] text-violet-700">{inviteCode}</p>
+          <p className="mt-3 break-all text-[11px] text-gray-500">{inviteUrl()}</p>
+        </div>
+
+        {/* Share buttons */}
+        {isHost && (
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={shareWhatsApp}
+              className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
+            >
+              💬 WhatsApp
+            </button>
+            <button
+              type="button"
+              onClick={nativeShare}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              📤 Share…
+            </button>
+            <button
+              type="button"
+              onClick={copyInvite}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              {copied ? "✓ Copied" : "📋 Copy link"}
+            </button>
+          </div>
+        )}
+
+        {/* Step-by-step instructions */}
+        {isHost && (
+          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-700">
+            <p className="font-semibold text-gray-900">How to start:</p>
+            <ol className="mt-2 space-y-2 pl-4 text-xs">
+              <li>
+                <span className="font-semibold">1.</span> Send the invite link or code{" "}
+                <span className="font-mono font-bold text-violet-700">{inviteCode}</span> to your partner via
+                WhatsApp / message.
+              </li>
+              <li>
+                <span className="font-semibold">2.</span> They open{" "}
+                <span className="font-semibold">/dashboard/ai-roleplay/live</span> and enter the code in
+                "Join a session" — or just click the link.
+              </li>
+              <li>
+                <span className="font-semibold">3.</span> Once they appear below ⬇️, hit{" "}
+                <span className="font-semibold">Start reading time</span>.
+              </li>
+            </ol>
+          </div>
+        )}
+
+        {/* Partner status */}
+        <div className="mt-5 rounded-xl border border-gray-200 bg-white p-3 text-center text-sm">
+          {guestJoined ? (
+            <p className="font-semibold text-emerald-700">✅ Partner joined — ready to start!</p>
+          ) : (
+            <FunLoading
+              pool={[
+                "⏳ Waiting for your partner to join…",
+                "📨 They should see the link any moment now…",
+                "🤝 Pre-warming the handshake…",
+              ]}
+              className="justify-center text-xs text-gray-500"
+            />
+          )}
+        </div>
+
+        {/* Start button (host only) */}
         {isHost && (
           <button
             type="button"
-            disabled={!partnerOnline && status === "waiting"}
+            disabled={!guestJoined}
             onClick={() => advance("reading")}
-            className="mt-6 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-violet-700 disabled:opacity-60"
+            className="mt-6 w-full rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white shadow hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Start reading time
+            {guestJoined ? "▶️ Start reading time (2 min)" : "Waiting for partner…"}
           </button>
         )}
         {!isHost && (
-          <p className="mt-6 text-sm text-gray-600">Waiting for the host to start…</p>
+          <p className="mt-6 text-center text-sm text-gray-600">
+            Waiting for the host to start the session…
+          </p>
         )}
-        {!partnerOnline && (
-          <FunLoading
-            pool={["⏳ Waiting for partner to connect…", "📨 Sending vibes through the wires…"]}
-            className="mt-2 text-xs text-gray-500"
-          />
-        )}
-        {error && <p className="mt-3 text-xs text-rose-600">⚠️ {error}</p>}
+        {error && <p className="mt-3 text-center text-xs text-rose-600">⚠️ {error}</p>}
       </div>
     );
   }
