@@ -80,6 +80,12 @@ export function useSpeechSynthesis() {
   // patient reply after toggling unmute.
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const pausedByMuteRef = useRef(false);
+  // Track current speakable text + last charIndex so a volume change mid-
+  // utterance can cancel + restart at the new volume from where we were.
+  const currentTextRef = useRef<string>("");
+  const currentCharIndexRef = useRef<number>(0);
+  const currentGenderRef = useRef<Gender>("unknown");
+  const volumeRestartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -89,6 +95,49 @@ export function useSpeechSynthesis() {
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     return () => {
       window.speechSynthesis.onvoiceschanged = null;
+      // Hard-stop any in-flight speech on unmount — without this, navigating
+      // away from a roleplay page lets the patient keep talking in the
+      // background (Web Speech API is global to the document).
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        /* ignore */
+      }
+      if (keepaliveRef.current) {
+        clearInterval(keepaliveRef.current);
+        keepaliveRef.current = null;
+      }
+      if (pendingRef.current) {
+        clearTimeout(pendingRef.current);
+        pendingRef.current = null;
+      }
+      if (volumeRestartTimerRef.current) {
+        clearTimeout(volumeRestartTimerRef.current);
+        volumeRestartTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  // Belt-and-braces — also stop speech if the page is hidden / unloaded.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stopAll = () => {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        /* ignore */
+      }
+    };
+    const onVisibility = () => {
+      if (document.hidden) stopAll();
+    };
+    window.addEventListener("pagehide", stopAll);
+    window.addEventListener("beforeunload", stopAll);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", stopAll);
+      window.removeEventListener("beforeunload", stopAll);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
@@ -165,6 +214,9 @@ export function useSpeechSynthesis() {
         utterance.onstart = () => {
           setSpeaking(true);
           currentUtteranceRef.current = utterance;
+          currentTextRef.current = speakable;
+          currentCharIndexRef.current = 0;
+          currentGenderRef.current = gender;
           // Chrome silently stops TTS after ~15s; pause+resume every 8s keeps it alive
           keepaliveRef.current = setInterval(() => {
             if (window.speechSynthesis.speaking) {
@@ -172,6 +224,11 @@ export function useSpeechSynthesis() {
               window.speechSynthesis.resume();
             }
           }, 8_000);
+        };
+
+        utterance.onboundary = (ev: SpeechSynthesisEvent) => {
+          // Track position so a real-time volume change can resume from here.
+          currentCharIndexRef.current = ev.charIndex ?? 0;
         };
 
         const cleanup = () => {
@@ -217,16 +274,63 @@ export function useSpeechSynthesis() {
     setSettings(next);
     saveSettings(next);
     if (typeof window === "undefined") return;
-    // Apply to the in-flight utterance if any. The Web Speech spec says volume
-    // changes mid-utterance MAY be ignored — but Chrome supports it for the
-    // currently-speaking utterance, so we set it directly.
-    if (currentUtteranceRef.current) {
-      try {
-        currentUtteranceRef.current.volume = v;
-      } catch {
-        /* ignore */
+    // Web Speech spec says volume changes mid-utterance MAY be ignored — and
+    // most browsers DO ignore them (Chrome/Safari/Edge). Workaround: cancel
+    // the current utterance and restart it from the last word boundary at the
+    // new volume. Debounce 250ms so dragging the slider doesn't thrash.
+    if (!currentUtteranceRef.current) return;
+    if (volumeRestartTimerRef.current) clearTimeout(volumeRestartTimerRef.current);
+    volumeRestartTimerRef.current = setTimeout(() => {
+      volumeRestartTimerRef.current = null;
+      const text = currentTextRef.current;
+      const idx = currentCharIndexRef.current;
+      const gender = currentGenderRef.current;
+      if (!text || !window.speechSynthesis) return;
+      const remaining = text.slice(idx).trim();
+      if (!remaining) return;
+
+      // Cancel + clear keepalive
+      window.speechSynthesis.cancel();
+      if (keepaliveRef.current) {
+        clearInterval(keepaliveRef.current);
+        keepaliveRef.current = null;
       }
-    }
+      const chosen = lockedVoiceRef.current[gender];
+      if (!chosen) return;
+
+      const utt = new SpeechSynthesisUtterance(remaining);
+      utt.voice = chosen;
+      utt.lang = chosen.lang || "en-AU";
+      utt.rate = 0.95;
+      utt.pitch = gender === "female" ? 1.05 : gender === "male" ? 0.95 : 1.0;
+      utt.volume = v;
+
+      utt.onstart = () => {
+        currentUtteranceRef.current = utt;
+        currentTextRef.current = remaining;
+        currentCharIndexRef.current = 0;
+        keepaliveRef.current = setInterval(() => {
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+          }
+        }, 8_000);
+      };
+      utt.onboundary = (ev: SpeechSynthesisEvent) => {
+        currentCharIndexRef.current = ev.charIndex ?? 0;
+      };
+      const done = () => {
+        setSpeaking(false);
+        currentUtteranceRef.current = null;
+        if (keepaliveRef.current) {
+          clearInterval(keepaliveRef.current);
+          keepaliveRef.current = null;
+        }
+      };
+      utt.onend = done;
+      utt.onerror = done;
+      window.speechSynthesis.speak(utt);
+    }, 250);
   }, []);
 
   return {
