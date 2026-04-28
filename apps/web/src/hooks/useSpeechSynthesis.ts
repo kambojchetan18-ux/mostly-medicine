@@ -229,61 +229,63 @@ export function useSpeechSynthesis() {
       };
       const speakWithVoice = (chosen: SpeechSynthesisVoice) => {
 
-        // Strip markdown + stage directions before speaking. Patient replies
-        // sometimes leak markdown bold (**word**) which TTS reads as
-        // "asterisk asterisk word" or stalls. Single-asterisk runs are stage
-        // directions and dropped entirely.
+        // Strip markdown + stage directions before speaking.
         const speakable = text
-          .replace(/\*\*([^*\n]+)\*\*/g, "$1") // **bold** → bold (keep content)
-          .replace(/__([^_\n]+)__/g, "$1") // __bold__
-          .replace(/\*[^*\n]+\*/g, "") // *sighs*, *pauses*
-          .replace(/_[^_\n]+_/g, "") // _italic stage_
-          .replace(/\([^)\n]+\)/g, "") // (crying)
-          .replace(/\[[^\]\n]+\]/g, "") // [winces]
-          .replace(/[`#>~]+/g, "") // stray markdown punctuation
+          .replace(/\*\*([^*\n]+)\*\*/g, "$1")
+          .replace(/__([^_\n]+)__/g, "$1")
+          .replace(/\*[^*\n]+\*/g, "")
+          .replace(/_[^_\n]+_/g, "")
+          .replace(/\([^)\n]+\)/g, "")
+          .replace(/\[[^\]\n]+\]/g, "")
+          .replace(/[`#>~]+/g, "")
           .replace(/\s{2,}/g, " ")
           .trim();
         if (!speakable) return;
 
-        const utterance = new SpeechSynthesisUtterance(speakable);
-        utterance.voice = chosen;
-        utterance.lang = chosen.lang || "en-AU";
-        utterance.rate = 0.95;
-        utterance.pitch = gender === "female" ? 1.05 : gender === "male" ? 0.95 : 1.0;
-        utterance.volume = settingsRef.current.volume;
+        // Chunk into sentences. Mobile Chrome stops speaking after ~15s and
+        // the pause/resume keepalive trick is unreliable on Android. Queueing
+        // multiple short utterances avoids the timeout entirely.
+        const chunks =
+          speakable.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)?.map((c) => c.trim()).filter(Boolean) ??
+          [speakable];
 
-        utterance.onstart = () => {
-          setSpeaking(true);
-          currentUtteranceRef.current = utterance;
-          currentTextRef.current = speakable;
-          currentCharIndexRef.current = 0;
-          currentGenderRef.current = gender;
-          // Chrome silently stops TTS after ~15s; pause+resume every 8s keeps it alive
-          keepaliveRef.current = setInterval(() => {
-            if (window.speechSynthesis.speaking) {
-              window.speechSynthesis.pause();
-              window.speechSynthesis.resume();
-            }
-          }, 8_000);
-        };
+        currentTextRef.current = speakable;
+        currentCharIndexRef.current = 0;
+        currentGenderRef.current = gender;
 
-        utterance.onboundary = (ev: SpeechSynthesisEvent) => {
-          // Track position so a real-time volume change can resume from here.
-          currentCharIndexRef.current = ev.charIndex ?? 0;
-        };
+        chunks.forEach((chunk, i) => {
+          const utterance = new SpeechSynthesisUtterance(chunk);
+          utterance.voice = chosen;
+          utterance.lang = chosen.lang || "en-AU";
+          utterance.rate = 0.95;
+          utterance.pitch = gender === "female" ? 1.05 : gender === "male" ? 0.95 : 1.0;
+          utterance.volume = settingsRef.current.volume;
 
-        const cleanup = () => {
-          setSpeaking(false);
-          currentUtteranceRef.current = null;
-          if (keepaliveRef.current) {
-            clearInterval(keepaliveRef.current);
-            keepaliveRef.current = null;
+          if (i === 0) {
+            utterance.onstart = () => {
+              setSpeaking(true);
+              currentUtteranceRef.current = utterance;
+            };
           }
-        };
-        utterance.onend = cleanup;
-        utterance.onerror = cleanup;
+          utterance.onboundary = (ev: SpeechSynthesisEvent) => {
+            currentCharIndexRef.current = ev.charIndex ?? 0;
+          };
+          if (i === chunks.length - 1) {
+            const cleanup = () => {
+              setSpeaking(false);
+              currentUtteranceRef.current = null;
+            };
+            utterance.onend = cleanup;
+            utterance.onerror = cleanup;
+          } else {
+            // Track that this chunk became current when it starts.
+            utterance.onstart = () => {
+              currentUtteranceRef.current = utterance;
+            };
+          }
 
-        window.speechSynthesis.speak(utterance);
+          window.speechSynthesis.speak(utterance);
+        });
       };
 
       // Initial 80ms reset delay then attempt to speak.
