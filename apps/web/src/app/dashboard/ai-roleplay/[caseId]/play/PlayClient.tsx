@@ -85,9 +85,11 @@ export default function PlayClient({
     stopRecording: stopWhisper,
   } = useWhisperSTT(handleSttChunk);
 
-  const stopRecording = useCallback(() => {
-    stopWhisper();
-    const final = sttBufferRef.current.trim();
+  // stopWhisper() now resolves AFTER the final partial chunk uploads + all
+  // in-flight uploads settle. Without awaiting, a 2-3s utterance was lost
+  // because the buffer was read before the final chunk transcribed.
+  const stopRecording = useCallback(async () => {
+    const final = (await stopWhisper()).trim() || sttBufferRef.current.trim();
     sttBufferRef.current = "";
     if (final) sendRef.current?.(final);
   }, [stopWhisper]);

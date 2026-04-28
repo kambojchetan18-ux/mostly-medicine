@@ -388,7 +388,7 @@ export default function LiveSessionClient({
 
     return () => {
       cancelled = true;
-      stt.stopRecording();
+      void stt.stopRecording();
       pcRef.current?.close();
       pcRef.current = null;
       localStreamRef.current?.getTracks().forEach((t) => t.stop());
@@ -744,8 +744,8 @@ export default function LiveSessionClient({
             <button
               type="button"
               onClick={() => {
-                if (stt.state === "recording") stt.stopRecording();
-                else stt.startRecording();
+                if (stt.state === "recording") void stt.stopRecording();
+                else void stt.startRecording();
               }}
               className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
                 stt.state === "recording"

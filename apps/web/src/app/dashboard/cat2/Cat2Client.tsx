@@ -207,9 +207,12 @@ export default function Cat2Client() {
   } = useWhisperSTT(handleSttChunk);
 
   // When the user stops the mic, ship the buffered transcript as one message.
-  const stopRecording = useCallback(() => {
-    stopWhisper();
-    const final = sttBufferRef.current.trim();
+  // stopWhisper() now returns a Promise<string> that resolves AFTER the final
+  // partial chunk uploads + all in-flight chunks settle — so even a 2-3s
+  // utterance produces a non-empty transcript. Earlier we read the buffer
+  // synchronously, racing the async final chunk and missing it.
+  const stopRecording = useCallback(async () => {
+    const final = (await stopWhisper()).trim() || sttBufferRef.current.trim();
     sttBufferRef.current = "";
     if (final) sendMessage(final);
   }, [stopWhisper, sendMessage]);

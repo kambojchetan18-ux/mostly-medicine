@@ -70,20 +70,28 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
   }, []);
 
   const uploadChunk = useCallback(async (blob: Blob) => {
-    if (blob.size === 0) return;
+    if (blob.size === 0) {
+      console.info("[whisper] empty chunk, skip");
+      return;
+    }
     if (inflightRef.current >= MAX_INFLIGHT) {
-      // Back-pressure: drop rather than queue forever. Whisper is robust to
-      // missing 5s windows; queuing would just push latency to many seconds.
+      console.warn("[whisper] back-pressure: dropping chunk", { inflight: inflightRef.current });
       return;
     }
     inflightRef.current += 1;
     const form = new FormData();
     form.append("audio", blob, "chunk.webm");
+    console.info("[whisper] uploading chunk", { bytes: blob.size, type: blob.type });
     try {
       const res = await fetch(TRANSCRIBE_URL, { method: "POST", body: form });
-      if (!res.ok) return;
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        console.warn("[whisper] /api/stt/transcribe non-OK", { status: res.status, body: errText });
+        return;
+      }
       const payload = (await res.json()) as { text?: string };
       const text = (payload.text ?? "").trim();
+      console.info("[whisper] chunk transcribed", { text });
       if (!text) return;
       fullTranscriptRef.current = (
         fullTranscriptRef.current
@@ -92,8 +100,8 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
       ).trim();
       setDisplayTranscript(fullTranscriptRef.current);
       onTranscriptRef.current?.(text);
-    } catch {
-      /* network blip — next chunk will catch up */
+    } catch (err) {
+      console.warn("[whisper] upload failed", err);
     } finally {
       inflightRef.current = Math.max(0, inflightRef.current - 1);
     }
@@ -171,18 +179,37 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
     }
   }, [cleanupStream, uploadChunk]);
 
-  const stopRecording = useCallback(() => {
+  const stopRecording = useCallback(async (): Promise<string> => {
     const recorder = recorderRef.current;
     if (!recorder) {
       cleanupStream();
-      return;
+      return fullTranscriptRef.current.trim();
+    }
+    // Force any buffered audio < CHUNK_MS old to fire ondataavailable before
+    // we stop. Without this, a 2-3s utterance produces zero chunks because
+    // the timeslice never elapsed.
+    try {
+      if (recorder.state === "recording") {
+        recorder.requestData();
+      }
+    } catch (err) {
+      console.warn("[whisper] requestData() failed", err);
     }
     try {
       if (recorder.state !== "inactive") recorder.stop();
     } catch {
       /* ignore */
     }
-    // onstop handler clears recorderRef and the stream
+    // Wait for all in-flight uploads to settle (with a hard cap so we never
+    // hang forever on a stuck request). Whisper rarely takes > 5s for a 5s
+    // chunk, but the 10s cap protects against network outages.
+    const start = Date.now();
+    while (inflightRef.current > 0 && Date.now() - start < 10_000) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    const final = fullTranscriptRef.current.trim();
+    console.info("[whisper] stopRecording — flushed", { final, leftInflight: inflightRef.current });
+    return final;
   }, [cleanupStream]);
 
   // Belt and braces: if the component unmounts while recording, drop the
