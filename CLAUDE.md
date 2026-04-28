@@ -54,6 +54,15 @@ SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 #      Copy the signing secret -> STRIPE_WEBHOOK_SECRET
 #   4) Test with Stripe test cards (4242 4242 4242 4242) before flipping to live mode
 
+# Peer RolePlay — Cloudflare Realtime TURN (per-session credentials)
+#   CLOUDFLARE_TURN_KEY_ID                # from dash.cloudflare.com → Realtime → TURN
+#   CLOUDFLARE_TURN_API_TOKEN             # Bearer token for that TURN key
+#
+# /api/turn-credentials is the broker that hands a fresh 24h credential pair
+# to authenticated acrp_live users. LiveSessionClient pulls these before
+# constructing the RTCPeerConnection. If env missing the route returns 503
+# and the client falls back to STUN + Open Relay (free public TURN).
+
 # Peer RolePlay — server-side STT (Groq Whisper)
 #   GROQ_API_KEY                          # gsk_... (from console.groq.com/keys)
 #
