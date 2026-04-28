@@ -41,20 +41,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 
-  // Idempotency — store the event id and short-circuit on replay.
+  // Idempotency — atomically claim this event id. Two concurrent webhook
+  // deliveries (Stripe retries) used to both pass a separate select check
+  // and run the handler twice. Switching to an upsert with ignoreDuplicates
+  // makes "first writer wins" a single round-trip; the loser sees no row
+  // back and short-circuits.
   const sb = service();
-  const { data: existing } = await sb
+  const { data: claimed } = await sb
     .from("billing_events")
-    .select("id")
-    .eq("id", event.id)
-    .maybeSingle();
-  if (existing) return NextResponse.json({ ok: true, replay: true });
+    .upsert(
+      {
+        id: event.id,
+        type: event.type,
+        payload: event as unknown as Record<string, unknown>,
+      },
+      { onConflict: "id", ignoreDuplicates: true }
+    )
+    .select("id");
 
-  await sb.from("billing_events").insert({
-    id: event.id,
-    type: event.type,
-    payload: event as unknown as Record<string, unknown>,
-  });
+  if (!claimed || claimed.length === 0) {
+    return NextResponse.json({ ok: true, replay: true });
+  }
 
   try {
     switch (event.type) {
@@ -89,14 +96,35 @@ export async function POST(req: NextRequest) {
         break;
       }
       case "invoice.payment_failed": {
+        // Stripe gives the user a grace window (3-4 retries over ~3 weeks)
+        // before cancelling. We must NOT demote them to free instantly;
+        // retrieve the full subscription so we keep their priceId+periodEnd
+        // and only flip status to past_due. syncSubscriptionToProfile
+        // treats past_due as active for plan retention.
         const inv = event.data.object as Stripe.Invoice & { subscription: string | null };
         if (inv.customer && typeof inv.customer === "string") {
+          let priceId: string | null = null;
+          let periodEnd: number | null = null;
+          let status: string | null = "past_due";
+          if (inv.subscription) {
+            try {
+              const sub = (await stripe().subscriptions.retrieve(inv.subscription)) as unknown as Stripe.Subscription & {
+                current_period_end: number;
+              };
+              priceId = sub.items.data[0]?.price.id ?? null;
+              periodEnd = sub.current_period_end ?? null;
+              // Honour Stripe's status (past_due, unpaid, etc) over our default.
+              status = sub.status ?? "past_due";
+            } catch (err) {
+              console.error("[billing/webhook] failed to retrieve subscription", err);
+            }
+          }
           await syncSubscriptionToProfile({
             customerId: inv.customer,
             subscriptionId: inv.subscription ?? null,
-            priceId: null,
-            status: "past_due",
-            periodEnd: null,
+            priceId,
+            status,
+            periodEnd,
           });
         }
         break;

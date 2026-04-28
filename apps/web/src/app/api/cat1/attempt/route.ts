@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
+import { enforceDailyLimit } from "@/lib/permissions";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
@@ -17,6 +18,22 @@ export async function POST(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Free plan caps MCQ attempts per UTC day. Pro/Enterprise = unlimited.
+  // checkModulePermission would already have blocked plans where mcq is
+  // disabled, but we run the combined daily-limit check here.
+  const limit = await enforceDailyLimit(supabase, "mcq");
+  if (!limit.allowed) {
+    return NextResponse.json(
+      {
+        error: "daily_limit_reached",
+        plan: limit.plan,
+        dailyLimit: limit.dailyLimit,
+        used: limit.used,
+      },
+      { status: 429 }
+    );
+  }
 
   const { questionId, correct, topic } = await req.json();
   if (!questionId || correct === undefined || !topic) {

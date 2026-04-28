@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
-import { checkModulePermission } from "@/lib/permissions";
+import { enforceDailyLimit } from "@/lib/permissions";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
 
 interface GenerateRequest {
@@ -27,11 +27,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Plan gate — free users hitting this API directly must be blocked even
-  // though the upgrade gate already hides the UI. Otherwise the Anthropic
-  // bill escapes the per-plan limits configured in module_permissions.
-  const perm = await checkModulePermission(supabase, "acrp_solo");
-  if (!perm.allowed) {
+  // Plan + daily-quota gate. Free users hitting this API directly must be
+  // blocked even though the upgrade gate already hides the UI. Pro is also
+  // capped (30 sessions/day per module_permissions) so the Anthropic bill
+  // can never run away. 429 distinguishes "hit daily cap" from 403
+  // "your plan doesn't include this".
+  const limit = await enforceDailyLimit(supabase, "acrp_solo");
+  if (!limit.allowed) {
+    if (limit.dailyLimit != null && limit.used >= limit.dailyLimit) {
+      return NextResponse.json(
+        {
+          error: "daily_limit_reached",
+          plan: limit.plan,
+          dailyLimit: limit.dailyLimit,
+          used: limit.used,
+        },
+        { status: 429 }
+      );
+    }
     return NextResponse.json(
       { error: "Your plan does not include AI Clinical RolePlay. Upgrade to continue." },
       { status: 403 }

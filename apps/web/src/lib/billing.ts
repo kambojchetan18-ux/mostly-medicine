@@ -49,12 +49,31 @@ interface SyncInput {
 
 export async function syncSubscriptionToProfile(input: SyncInput): Promise<void> {
   const sb = service();
-  const plan = input.priceId ? planForPriceId(input.priceId) : "free";
 
   // Active-ish statuses keep the plan; everything else falls back to free.
+  // past_due is included so users in their Stripe grace window keep access.
   const activeStatuses = new Set(["active", "trialing", "past_due"]);
-  const effectivePlan =
-    input.status && activeStatuses.has(input.status) ? plan : "free";
+  const isActive = !!input.status && activeStatuses.has(input.status);
+
+  // Resolve the new plan. If we have a priceId, that's authoritative. If
+  // we don't (invoice.payment_failed payload sometimes can't supply it),
+  // fall back to the user's existing plan so we don't demote them inside
+  // the Stripe grace window.
+  let plan: "free" | "pro" | "enterprise";
+  if (input.priceId) {
+    plan = planForPriceId(input.priceId);
+  } else if (isActive) {
+    const { data: existing } = await sb
+      .from("user_profiles")
+      .select("plan")
+      .eq("stripe_customer_id", input.customerId)
+      .maybeSingle();
+    plan = (existing?.plan as "free" | "pro" | "enterprise" | undefined) ?? "free";
+  } else {
+    plan = "free";
+  }
+
+  const effectivePlan = isActive ? plan : "free";
 
   await sb
     .from("user_profiles")

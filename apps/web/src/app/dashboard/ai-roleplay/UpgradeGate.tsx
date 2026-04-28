@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 interface Props {
-  module: "acrp_solo" | "acrp_live" | "roleplay";
+  module: "acrp_solo" | "acrp_live" | "roleplay" | "mcq";
   currentPlan: string;
 }
 
@@ -30,6 +30,15 @@ const COPY = {
       "Practice with handbook-aligned AMC scenarios",
       "Voice-enabled 8-minute consultations with the AI patient",
       "Examiner-style feedback after every session",
+    ],
+    minPlan: "Pro",
+  },
+  mcq: {
+    title: "AMC CAT 1 — MCQ Practice",
+    bullets: [
+      "3,000+ AMC-style MCQs across 14 topics",
+      "Spaced-repetition recalls + smart explanations",
+      "Topic-level progress tracking and weak-area targeting",
     ],
     minPlan: "Pro",
   },
