@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { stripe, priceCatalog } from "@/lib/stripe";
+import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
 
 export async function POST(req: NextRequest) {
+  try {
+    assertStripeConfig();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
+    console.error("[billing/checkout] config", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
   const supabase = await createClient();
   const {
     data: { user },

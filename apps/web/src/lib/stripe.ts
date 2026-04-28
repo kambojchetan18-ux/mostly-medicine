@@ -44,3 +44,92 @@ export function planForPriceId(priceId: string): "free" | "pro" | "enterprise" {
   const hit = priceCatalog().find((p) => p.id === priceId);
   return hit?.plan ?? "free";
 }
+
+// Detect whether the configured Stripe secret key targets test or live mode.
+// Returns null when STRIPE_SECRET_KEY is missing.
+export function stripeMode(): "test" | "live" | null {
+  const k = process.env.STRIPE_SECRET_KEY;
+  if (!k) return null;
+  if (k.startsWith("sk_live_")) return "live";
+  if (k.startsWith("sk_test_")) return "test";
+  return null;
+}
+
+// Read the publishable key prefix without leaking the key value itself.
+// Used for the test/live banner on the billing UI.
+export function publishableKeyMode(): "test" | "live" | null {
+  const k = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  if (!k) return null;
+  if (k.startsWith("pk_live_")) return "live";
+  if (k.startsWith("pk_test_")) return "test";
+  return null;
+}
+
+/**
+ * Startup-time consistency guard. Throws when env vars look mismatched
+ * (e.g. live secret + test publishable key) so we fail fast rather than
+ * charging real cards in test mode or vice versa.
+ *
+ * Call at the top of every billing API route. Errors get logged via
+ * console.error so Vercel surfaces them in production logs.
+ */
+export function assertStripeConfig(): void {
+  const errors: string[] = [];
+
+  const secret = process.env.STRIPE_SECRET_KEY;
+  const publishable = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  const webhook = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!secret) {
+    errors.push("STRIPE_SECRET_KEY is not set");
+  } else if (!secret.startsWith("sk_test_") && !secret.startsWith("sk_live_")) {
+    errors.push("STRIPE_SECRET_KEY must start with sk_test_ or sk_live_");
+  }
+
+  // Publishable key should match the secret key mode.
+  if (secret && publishable) {
+    if (secret.startsWith("sk_live_") && !publishable.startsWith("pk_live_")) {
+      errors.push(
+        "Mode mismatch: STRIPE_SECRET_KEY is live (sk_live_) but NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not pk_live_"
+      );
+    }
+    if (secret.startsWith("sk_test_") && !publishable.startsWith("pk_test_")) {
+      errors.push(
+        "Mode mismatch: STRIPE_SECRET_KEY is test (sk_test_) but NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not pk_test_"
+      );
+    }
+  }
+
+  // Webhook secret heuristic — Stripe dashboards label test webhooks
+  // with a whsec_test_ prefix in newer accounts. If the secret is
+  // explicitly test-prefixed, it must not be paired with a live key.
+  if (secret && webhook) {
+    if (secret.startsWith("sk_live_") && webhook.startsWith("whsec_test_")) {
+      errors.push(
+        "Mode mismatch: STRIPE_SECRET_KEY is live but STRIPE_WEBHOOK_SECRET is a test webhook (whsec_test_)"
+      );
+    }
+  }
+
+  // Price IDs are opaque strings — Stripe gives them no sk-style prefix.
+  // We can only sanity-check that they look like price ids at all.
+  const priceVars = [
+    "STRIPE_PRICE_PRO_MONTHLY",
+    "STRIPE_PRICE_PRO_YEARLY",
+    "STRIPE_PRICE_ENTERPRISE_MONTHLY",
+    "STRIPE_PRICE_ENTERPRISE_YEARLY",
+  ];
+  for (const v of priceVars) {
+    const val = process.env[v];
+    if (val && !val.startsWith("price_")) {
+      errors.push(`${v} does not look like a Stripe price id (expected price_...)`);
+    }
+  }
+
+  if (errors.length > 0) {
+    const message = `Stripe configuration invalid:\n  - ${errors.join("\n  - ")}`;
+    // Always log so Vercel surfaces it, even when callers swallow the throw.
+    console.error("[stripe-config]", message);
+    throw new Error(message);
+  }
+}

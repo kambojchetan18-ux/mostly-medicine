@@ -21,32 +21,33 @@ interface Prices {
 interface Props {
   subscription: CurrentSubscription;
   prices: Prices;
+  mode: "test" | "live" | null;
   flash: "success" | "canceled" | null;
 }
 
 const FEATURES = {
   free: [
-    "AMC CAT 1 MCQs (limited daily)",
+    "AMC MCQs (limited daily)",
     "Spaced repetition recalls (limited)",
     "Reference library (read-only)",
   ],
   pro: [
     "Everything in Free",
-    "Unlimited AMC CAT 1 MCQs",
-    "AMC Handbook RolePlay (CAT 2)",
-    "AI Clinical RolePlay — Solo voice mode",
+    "Unlimited AMC MCQs",
+    "AMC Handbook AI RolePlay",
+    "AMC Clinical AI RolePlay — Solo voice mode",
     "Examiner-style feedback after every session",
   ],
   enterprise: [
     "Everything in Pro",
-    "AI Clinical RolePlay — Live (2-player video)",
+    "AMC Clinical AI RolePlay — Live (2-player video)",
     "Practice with a partner over video + audio",
     "Higher daily limits",
     "Priority support",
   ],
 };
 
-export default function BillingClient({ subscription, prices, flash }: Props) {
+export default function BillingClient({ subscription, prices, mode, flash }: Props) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [cadence, setCadence] = useState<"monthly" | "yearly">("monthly");
@@ -98,6 +99,11 @@ export default function BillingClient({ subscription, prices, flash }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
+      {mode === "test" && (
+        <div className="rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-center text-xs font-semibold text-amber-900">
+          ⚠️ Stripe TEST mode — payments are not real.
+        </div>
+      )}
       <header>
         <h1 className="text-2xl font-bold text-gray-900">Billing & Plans</h1>
         <p className="mt-1 text-sm text-gray-600">

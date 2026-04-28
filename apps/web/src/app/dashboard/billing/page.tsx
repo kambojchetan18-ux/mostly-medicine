@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { publishableKeyMode, stripeMode } from "@/lib/stripe";
 import BillingClient, { type CurrentSubscription } from "./BillingClient";
 
 export const metadata = { title: "Billing & Plans — Mostly Medicine" };
@@ -40,10 +41,17 @@ export default async function BillingPage({ searchParams }: PageProps) {
     enterpriseYearly: process.env.STRIPE_PRICE_ENTERPRISE_YEARLY ?? null,
   };
 
+  // Detect Stripe mode from the publishable key prefix on the server, so we
+  // can render a TEST-mode banner before any real money flows. Prefer the
+  // publishable key (it's the one wired into the SDK that does the charging),
+  // fall back to the secret key prefix.
+  const mode: "test" | "live" | null = publishableKeyMode() ?? stripeMode();
+
   return (
     <BillingClient
       subscription={sub}
       prices={prices}
+      mode={mode}
       flash={params.success ? "success" : params.canceled ? "canceled" : null}
     />
   );

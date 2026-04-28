@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, assertStripeConfig } from "@/lib/stripe";
 import { syncSubscriptionToProfile } from "@/lib/billing";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import type Stripe from "stripe";
@@ -26,6 +26,13 @@ function service() {
 }
 
 export async function POST(req: NextRequest) {
+  try {
+    assertStripeConfig();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
+    console.error("[billing/webhook] config", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
   const sig = req.headers.get("stripe-signature");
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!sig || !secret) {

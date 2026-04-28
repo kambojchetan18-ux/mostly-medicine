@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, assertStripeConfig } from "@/lib/stripe";
 
 // Returns a Stripe Customer Portal URL so the user can update payment method,
 // switch plans, or cancel without us building UI for any of that.
 export async function POST(req: NextRequest) {
+  try {
+    assertStripeConfig();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
+    console.error("[billing/portal] config", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
   const supabase = await createClient();
   const {
     data: { user },
