@@ -136,12 +136,13 @@ export default function LiveSessionClient({
     };
   }, [supabase, sessionId]);
 
-  // ─── Fallback poll while in the waiting room ────────────────────────
-  // Realtime postgres_changes can be flaky on Vercel cold starts; poll every
-  // 2.5s during 'waiting' so both host and guest reliably see partner-joined
-  // and status transitions even if the realtime event was missed.
+  // ─── Fallback poll for any pre-roleplay phase ───────────────────────
+  // Realtime can drop events on Vercel cold starts; poll every 2.5s during
+  // 'waiting' and 'reading' so both host and guest reliably see partner-joined
+  // and status transitions (waiting -> reading -> roleplay) even if the
+  // realtime broadcast was missed. Stops once we hit roleplay/completed.
   useEffect(() => {
-    if (status !== "waiting") return;
+    if (status !== "waiting" && status !== "reading") return;
     const t = setInterval(async () => {
       const { data } = await supabase
         .from("acrp_live_sessions")
@@ -301,6 +302,9 @@ export default function LiveSessionClient({
         const j = await res.json();
         throw new Error(j.error ?? "Could not advance");
       }
+      // Optimistic local update — don't wait for realtime/polling to flip the
+      // local view. The other participant catches up via their own subscription.
+      setStatus(to);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not advance");
     }
