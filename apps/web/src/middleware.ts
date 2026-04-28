@@ -48,10 +48,12 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Not logged in → redirect to login
+  // Not logged in → redirect to login, preserving the original URL so the
+  // login flow can return the user there (e.g. WhatsApp invite link → login → back to /live/[code]).
   if (!user && pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
+    url.searchParams.set("next", pathname + (request.nextUrl.search ?? ""));
     return NextResponse.redirect(url);
   }
 

@@ -3,10 +3,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
+// Whitelist redirect targets to in-app paths only — prevents open-redirect
+// abuse if an attacker crafts ?next=https://evil.com.
+function safeNext(raw: string | null): string {
+  if (!raw) return "/dashboard";
+  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  return "/dashboard";
+}
 
 export default function LoginPage() {
   const router = useRouter();
+  const params = useSearchParams();
+  const next = safeNext(params.get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +38,7 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push("/dashboard");
+      router.push(next);
       router.refresh();
     } else {
       const data = await res.json();
@@ -41,9 +51,11 @@ export default function LoginPage() {
     setGoogleLoading(true);
     setError("");
     const supabase = createClient();
+    const callback = new URL(`${window.location.origin}/auth/callback`);
+    callback.searchParams.set("next", next);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: callback.toString() },
     });
     if (error) { setError(error.message); setGoogleLoading(false); }
   }
