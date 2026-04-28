@@ -128,6 +128,9 @@ export default function LiveSessionClient({
   const [turnProvider, setTurnProvider] = useState<"cloudflare" | "self-hosted" | "fallback">(
     HAS_PRIVATE_TURN ? "self-hosted" : "fallback"
   );
+  // Surface the EXACT reason the broker fell back, so misconfigured env
+  // vars / upstream errors show up next to the pill instead of being silent.
+  const [turnError, setTurnError] = useState<string | null>(null);
 
   const supabase = useMemo(() => createClient(), []);
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -290,15 +293,24 @@ export default function LiveSessionClient({
                 iceTransportPolicy: "all",
               };
               setTurnProvider("cloudflare");
+              setTurnError(null);
               console.info("[live/rtc] using Cloudflare TURN credentials");
+            } else {
+              setTurnError("Cloudflare returned 200 but no iceServers");
             }
-          } else if (res.status === 503) {
-            console.info("[live/rtc] Cloudflare TURN not configured, using fallback");
           } else {
-            console.warn("[live/rtc] Cloudflare TURN fetch failed", res.status);
+            const body = await res.text().catch(() => "");
+            const reason =
+              res.status === 503
+                ? "TURN not configured (env vars missing in Vercel)"
+                : `${res.status}: ${body.slice(0, 100)}`;
+            console.info("[live/rtc] Cloudflare TURN unavailable", reason);
+            setTurnError(reason);
           }
         } catch (err) {
+          const msg = err instanceof Error ? err.message : "fetch failed";
           console.warn("[live/rtc] Cloudflare TURN fetch error", err);
+          setTurnError(msg);
         }
 
         const pc = new RTCPeerConnection(rtcConfig);
@@ -790,7 +802,7 @@ export default function LiveSessionClient({
                   ? "bg-emerald-50 text-emerald-700"
                   : "bg-amber-50 text-amber-700"
             }`}
-            title="Which TURN relay is wired into the peer connection."
+            title={turnError ?? "Which TURN relay is wired into the peer connection."}
           >
             {turnProvider === "cloudflare"
               ? "Cloudflare TURN"
@@ -798,6 +810,11 @@ export default function LiveSessionClient({
                 ? "self-hosted TURN"
                 : "fallback TURN"}
           </span>
+          {turnError && turnProvider === "fallback" && (
+            <span className="basis-full text-[10px] text-amber-700" title={turnError}>
+              ↳ {turnError.slice(0, 120)}
+            </span>
+          )}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">

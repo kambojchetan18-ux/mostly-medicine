@@ -53,24 +53,29 @@ export async function GET() {
     return NextResponse.json({ error: "TURN not configured" }, { status: 503 });
   }
 
+  // Cloudflare's actual endpoint is `generate-ice-servers`, not just
+  // `generate` — the older docs called it generate but the live API
+  // requires the longer name. Wrong endpoint returns 404 not 200.
+  const url = `https://rtc.live.cloudflare.com/v1/turn/keys/${keyId}/credentials/generate-ice-servers`;
   try {
-    const res = await fetch(
-      `https://rtc.live.cloudflare.com/v1/turn/keys/${keyId}/credentials/generate`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ttl: TTL_SECONDS }),
-        // Don't cache — credentials must rotate.
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ttl: TTL_SECONDS }),
+      cache: "no-store",
+    });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       console.error("[turn-credentials] cloudflare upstream error", res.status, body);
-      return NextResponse.json({ error: "Upstream error" }, { status: 502 });
+      // Surface the actual upstream message so the diagnostic pill can show
+      // a meaningful hint instead of an opaque 502.
+      return NextResponse.json(
+        { error: `Cloudflare ${res.status}: ${body.slice(0, 160)}` },
+        { status: 502 }
+      );
     }
     const payload = (await res.json()) as CloudflareIceServers;
     return NextResponse.json(payload);
