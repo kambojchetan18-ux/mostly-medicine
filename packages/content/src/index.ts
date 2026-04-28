@@ -1,9 +1,6 @@
 export { seedQuestions } from "./questions";
 export type { MCQuestion } from "./questions";
 
-export { recalls } from "./recalls";
-export type { RecallItem, RecallMonth, RecallCategory } from "./recalls";
-
 import { seedQuestions } from "./questions";
 import { cardiovascularQuestions } from "./questions-cardiovascular";
 import { respiratoryQuestions } from "./questions-respiratory";

@@ -4,7 +4,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type ModuleKey = "mcq" | "roleplay" | "recalls" | "acrp_solo" | "acrp_live";
+export type ModuleKey = "mcq" | "roleplay" | "acrp_solo" | "acrp_live";
 
 export interface PermissionResult {
   allowed: boolean;
@@ -58,7 +58,6 @@ const USAGE_COUNTERS: Record<ModuleKey, { table: string; userColumn: string; tim
   acrp_solo: { table: "acrp_sessions", userColumn: "user_id", timestampColumn: "created_at" },
   acrp_live: { table: "acrp_live_sessions", userColumn: "host_user_id", timestampColumn: "created_at" },
   // No server-side usage table — daily limit not enforceable.
-  recalls: null,
   roleplay: null,
 };
 

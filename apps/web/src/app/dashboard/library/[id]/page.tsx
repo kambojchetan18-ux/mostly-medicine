@@ -125,15 +125,6 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
           </section>
         )}
 
-        {/* Related Cases link */}
-        <div className="flex justify-end">
-          <Link
-            href="/dashboard/cases"
-            className="inline-flex items-center gap-2 text-sm text-brand-600 hover:text-brand-700 font-medium transition"
-          >
-            View Related Cases →
-          </Link>
-        </div>
       </div>
 
       <LibraryChat

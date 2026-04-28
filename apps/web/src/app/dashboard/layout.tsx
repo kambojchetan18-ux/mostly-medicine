@@ -11,9 +11,7 @@ const navItems = [
   { href: "/dashboard/cat2",      label: "AMC CAT 2", icon: "🩺", hover: "hover:text-pink-300"   },
   { href: "/dashboard/ai-roleplay", label: "AI RolePlay", icon: "🎙️", hover: "hover:text-fuchsia-300" },
   { href: "/dashboard/ai-roleplay/live", label: "Live (2-player)", icon: "🎥", hover: "hover:text-pink-300" },
-  { href: "/dashboard/recalls",   label: "Recalls",   icon: "📝", hover: "hover:text-orange-300" },
   { href: "/dashboard/library",   label: "Library",   icon: "📚", hover: "hover:text-amber-300"  },
-  { href: "/dashboard/cases",     label: "Cases",     icon: "🏥", hover: "hover:text-cyan-300"   },
   { href: "/dashboard/reference", label: "Reference", icon: "📖", hover: "hover:text-emerald-300"},
 ];
 
