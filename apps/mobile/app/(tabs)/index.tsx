@@ -47,12 +47,12 @@ export default function HomeScreen() {
   }
 
   const modules = [
-    { label: 'AMC CAT 1', sub: 'MCQ Practice — 3,000+ questions', icon: 'school' as const, color: '#7c3aed', route: '/cat1' },
-    { label: 'AMC CAT 2', sub: 'AMC OSCE-style clinical practice', icon: 'medkit' as const, color: '#ec4899', route: '/cat2' },
+    { label: 'AMC MCQ', sub: 'MCQ Practice — 3,000+ questions', icon: 'school' as const, color: '#7c3aed', route: '/cat1' },
+    { label: 'AMC Handbook AI RolePlay', sub: 'AMC OSCE-style clinical practice', icon: 'medkit' as const, color: '#ec4899', route: '/cat2' },
     { label: 'My Progress', sub: 'Stats, streaks, weak areas', icon: 'bar-chart' as const, color: '#10b981', route: '/progress' },
     { label: 'Australian Jobs', sub: 'RMO · GP · Specialist pathway', icon: 'briefcase' as const, color: '#0ea5e9', route: '/jobs' },
     { label: 'Library', sub: 'AMC resources & references', icon: 'book' as const, color: '#64748b', route: '/library' },
-    { label: 'AI Role-Play', sub: 'CAT 2 clinical OSCE scenarios', icon: 'chatbubbles' as const, color: '#8b5cf6', route: '/roleplay' },
+    { label: 'AMC Clinical AI RolePlay', sub: 'AMC Handbook AI RolePlay clinical OSCE scenarios', icon: 'chatbubbles' as const, color: '#8b5cf6', route: '/roleplay' },
   ];
 
   return (
@@ -87,7 +87,7 @@ export default function HomeScreen() {
           <TouchableOpacity style={styles.quickStart} onPress={() => router.push('/(tabs)/cat1')}>
             <View style={{ flex: 1 }}>
               <Text style={styles.quickTitle}>⚡ Quick Quiz</Text>
-              <Text style={styles.quickSub}>20 random CAT 1 questions</Text>
+              <Text style={styles.quickSub}>20 random AMC MCQ questions</Text>
             </View>
             <Ionicons name="arrow-forward-circle" size={32} color="#a78bfa" />
           </TouchableOpacity>

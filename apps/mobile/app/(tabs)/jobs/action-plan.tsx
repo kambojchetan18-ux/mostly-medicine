@@ -43,7 +43,7 @@ function buildPlan(profile: Profile): Step[] {
   }
 
   if (profile.amc_part1_status !== 'passed') {
-    steps.push({ step: steps.length + 1, title: 'Pass AMC Part 1 (CAT 1)', urgency: 'high', timeEstimate: '3–6 months preparation', description: 'Computer Adaptive Test — 150 MCQ questions on clinical medicine. Recommended: 3–6 months study with question banks. Use Mostly Medicine CAT 1 to practise daily.', link: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/', linkText: 'AMC CAT 1 Info' });
+    steps.push({ step: steps.length + 1, title: 'Pass AMC Part 1 (AMC MCQ)', urgency: 'high', timeEstimate: '3–6 months preparation', description: 'Computer Adaptive Test — 150 MCQ questions on clinical medicine. Recommended: 3–6 months study with question banks. Use Mostly Medicine AMC MCQ to practise daily.', link: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/', linkText: 'AMC MCQ Info' });
   }
 
   if (profile.amc_part1_status === 'passed' && profile.amc_part2_status !== 'passed') {

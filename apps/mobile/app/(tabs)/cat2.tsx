@@ -12,7 +12,7 @@ export default function CAT2Screen() {
             <Ionicons name="arrow-back" size={22} color="#94a3b8" />
           </TouchableOpacity>
           <View>
-            <Text style={s.title}>AMC CAT 2</Text>
+            <Text style={s.title}>AMC Handbook AI RolePlay</Text>
             <Text style={s.sub}>OSCE-style clinical practice</Text>
           </View>
         </View>
@@ -27,14 +27,14 @@ export default function CAT2Screen() {
               <Ionicons name="chatbubbles" size={26} color="#8b5cf6" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={s.cardTitle}>AI Role-Play</Text>
+              <Text style={s.cardTitle}>AMC Clinical AI RolePlay</Text>
               <Text style={s.cardSub}>AI-driven AMC clinical roleplays with voice</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#475569" />
           </TouchableOpacity>
 
           <View style={s.infoCard}>
-            <Text style={s.infoTitle}>About AMC CAT 2</Text>
+            <Text style={s.infoTitle}>About AMC Handbook AI RolePlay</Text>
             <Text style={s.infoText}>
               Practice OSCE-style clinical scenarios with an AI patient simulator. New
               structured station packs are being prepared and will appear here soon.

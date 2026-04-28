@@ -10,8 +10,8 @@ const SECTIONS: Section[] = [
   {
     heading: 'AMC Official',
     items: [
-      { title: 'AMC CAT 1 Info', desc: 'Computer adaptive test — format, fees, booking', url: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/', icon: 'desktop-outline', color: '#7c3aed' },
-      { title: 'AMC CAT 2 Clinical', desc: 'OSCE exam — stations, skills, registration', url: 'https://www.amc.org.au/assessment/amc-clinical-examination/', icon: 'people-outline', color: '#ec4899' },
+      { title: 'AMC MCQ Info', desc: 'Computer adaptive test — format, fees, booking', url: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/', icon: 'desktop-outline', color: '#7c3aed' },
+      { title: 'AMC Handbook AI RolePlay Clinical', desc: 'OSCE exam — stations, skills, registration', url: 'https://www.amc.org.au/assessment/amc-clinical-examination/', icon: 'people-outline', color: '#ec4899' },
       { title: 'AMC Handbook', desc: 'Core curriculum: medical knowledge & clinical skills', url: 'https://www.amc.org.au/assessment/the-amc-clinical-examination/preparation/', icon: 'book-outline', color: '#0ea5e9' },
       { title: 'AMC Question Bank', desc: 'Official practice questions from AMC', url: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/preparation/', icon: 'help-circle-outline', color: '#10b981' },
     ],
@@ -37,8 +37,8 @@ const SECTIONS: Section[] = [
   {
     heading: 'Exam Preparation',
     items: [
-      { title: 'AMCQuestions.com', desc: 'Popular CAT 1 question bank', url: 'https://www.amcquestions.com', icon: 'checkmark-circle-outline', color: '#7c3aed' },
-      { title: 'PassMedicine AMC', desc: 'Question bank tailored for AMC CAT 1', url: 'https://www.passmedicine.com/amc', icon: 'trophy-outline', color: '#ec4899' },
+      { title: 'AMCQuestions.com', desc: 'Popular AMC MCQ question bank', url: 'https://www.amcquestions.com', icon: 'checkmark-circle-outline', color: '#7c3aed' },
+      { title: 'PassMedicine AMC', desc: 'Question bank tailored for AMC MCQ', url: 'https://www.passmedicine.com/amc', icon: 'trophy-outline', color: '#ec4899' },
       { title: 'AMC Facebook Groups', desc: 'Community support and discussion', url: 'https://www.facebook.com/groups/amccatexam/', icon: 'people-circle-outline', color: '#0ea5e9' },
       { title: 'Mostly Medicine Website', desc: 'Full platform with more features', url: 'https://mostlymedicine.com', icon: 'globe-outline', color: '#10b981' },
     ],

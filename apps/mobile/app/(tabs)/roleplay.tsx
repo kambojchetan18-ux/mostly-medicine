@@ -301,7 +301,7 @@ export default function RoleplayScreen() {
               <Ionicons name="arrow-back" size={22} color="#94a3b8" />
             </TouchableOpacity>
             <View>
-              <Text style={s.title}>CAT 2 Role-Play</Text>
+              <Text style={s.title}>AMC Clinical AI RolePlay</Text>
               <Text style={s.sub}>AI patient · examiner feedback · 8 min</Text>
             </View>
           </View>

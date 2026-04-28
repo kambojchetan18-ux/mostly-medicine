@@ -503,7 +503,7 @@ export default function Cat1DeckScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.title}>AMC CAT 1</Text>
+            <Text style={styles.title}>AMC MCQ</Text>
             <Text style={styles.subTitle}>Daily MCQ deck</Text>
           </View>
           <View style={styles.headerRight}>

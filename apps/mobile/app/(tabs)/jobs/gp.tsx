@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 const STEPS = [
   {
     n: 1, title: 'AMC Part 1 & Part 2',
-    body: 'Complete both AMC exams. Part 1 is MCQ (CAT 1); Part 2 is clinical (OSCE). Both required before GP training.',
+    body: 'Complete both AMC exams. Part 1 is MCQ (AMC MCQ); Part 2 is clinical (OSCE). Both required before GP training.',
     color: '#7c3aed',
   },
   {
