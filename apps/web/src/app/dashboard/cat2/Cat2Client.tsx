@@ -288,6 +288,11 @@ export default function Cat2Client() {
 
   async function startScenario(id: number) {
     stopSpeaking();
+    // Prime mobile TTS NOW — this function runs inside the scenario card's
+    // click handler, so we still hold the user-gesture token. Without
+    // this, the setTimeout speak() below is silently rejected on Android
+    // Chrome / iOS Safari and the patient's opening line is inaudible.
+    if (ttsSupported) primeTts();
     setExaminerFeedback(null);
     feedbackRequestedRef.current = false;
     setActiveScenario(id);

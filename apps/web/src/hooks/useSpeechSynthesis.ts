@@ -261,26 +261,33 @@ export function useSpeechSynthesis() {
           utterance.pitch = gender === "female" ? 1.05 : gender === "male" ? 0.95 : 1.0;
           utterance.volume = settingsRef.current.volume;
 
-          if (i === 0) {
-            utterance.onstart = () => {
-              setSpeaking(true);
-              currentUtteranceRef.current = utterance;
-            };
-          }
+          // First chunk owns the speaking-state flip. Earlier code overrode
+          // this onstart in the else-branch below, which silently dropped
+          // the setSpeaking(true) for any multi-chunk reply.
+          const isFirst = i === 0;
+          const isLast = i === chunks.length - 1;
+          utterance.onstart = () => {
+            if (isFirst) setSpeaking(true);
+            currentUtteranceRef.current = utterance;
+          };
           utterance.onboundary = (ev: SpeechSynthesisEvent) => {
             currentCharIndexRef.current = ev.charIndex ?? 0;
           };
-          if (i === chunks.length - 1) {
-            const cleanup = () => {
+          // Surface failures on EVERY chunk — silent rejection (mobile
+          // gesture-token expired, voice not ready, etc) is the #1 reason
+          // people report "no patient voice". The console.warn lets us
+          // diagnose remotely.
+          utterance.onerror = (ev: SpeechSynthesisErrorEvent) => {
+            console.warn("[tts] utterance error", { chunkIndex: i, chunk, error: ev.error });
+            if (isLast) {
               setSpeaking(false);
               currentUtteranceRef.current = null;
-            };
-            utterance.onend = cleanup;
-            utterance.onerror = cleanup;
-          } else {
-            // Track that this chunk became current when it starts.
-            utterance.onstart = () => {
-              currentUtteranceRef.current = utterance;
+            }
+          };
+          if (isLast) {
+            utterance.onend = () => {
+              setSpeaking(false);
+              currentUtteranceRef.current = null;
             };
           }
 
