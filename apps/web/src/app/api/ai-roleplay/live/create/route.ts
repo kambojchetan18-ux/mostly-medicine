@@ -34,25 +34,34 @@ export async function POST(req: NextRequest) {
   const hostRole: "doctor" | "patient" = body.hostRole === "patient" ? "patient" : "doctor";
 
   // If the host already has a session in 'waiting' status (no guest yet),
-  // reuse it so the invite code stays stable across accidental re-clicks
-  // or refreshes. Without this, every Create press makes a new session and
-  // the code "changes" visibly.
+  // reuse it ONLY when the chosen role matches — otherwise abandon the
+  // stale session and create a fresh one with the new role. Reusing with a
+  // mismatched role caused the bug where the host thought they were Doctor
+  // but the DB still had them as Patient, so guests saw the wrong role too.
   {
     const { data: existing } = await supabase
       .from("acrp_live_sessions")
-      .select("id, invite_code")
+      .select("id, invite_code, host_role")
       .eq("host_user_id", user.id)
       .eq("status", "waiting")
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (existing) {
+    if (existing && existing.host_role === hostRole) {
       return NextResponse.json({
         sessionId: existing.id,
         inviteCode: existing.invite_code,
         hostRole,
         reused: true,
       });
+    }
+    if (existing && existing.host_role !== hostRole) {
+      // Mark the stale waiting session as abandoned so it stops polluting
+      // the host's "waiting" history.
+      await supabase
+        .from("acrp_live_sessions")
+        .update({ status: "abandoned", ended_at: new Date().toISOString() })
+        .eq("id", existing.id);
     }
   }
 
