@@ -1,32 +1,41 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 
-const CARDS = [
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+type JobCard = {
+  icon: IoniconName;
+  color: string;
+  label: string;
+  sub: string;
+  route: Href;
+};
+
+const CARDS: JobCard[] = [
   {
-    icon: 'briefcase' as const,
+    icon: 'briefcase',
     color: '#7c3aed',
     label: 'RMO Pools',
     sub: 'State-by-state pools — NSW, VIC, QLD, WA & more',
     route: '/(tabs)/jobs/rmo',
   },
   {
-    icon: 'medical' as const,
+    icon: 'medical',
     color: '#10b981',
     label: 'GP Pathway',
     sub: 'RACGP/ACRRM fellowship, DPA, bonded positions',
     route: '/(tabs)/jobs/gp',
   },
   {
-    icon: 'school' as const,
+    icon: 'school',
     color: '#ec4899',
     label: 'Specialist Pathway',
     sub: 'College OTS assessment, fellowship & training',
     route: '/(tabs)/jobs/specialist',
   },
   {
-    icon: 'list' as const,
+    icon: 'list',
     color: '#f59e0b',
     label: 'My Action Plan',
     sub: 'Personalised step-by-step roadmap',
@@ -53,7 +62,7 @@ export default function JobsScreen() {
           </View>
 
           {CARDS.map((c) => (
-            <TouchableOpacity key={c.label} style={s.card} onPress={() => router.push(c.route as any)}>
+            <TouchableOpacity key={c.label} style={s.card} onPress={() => router.push(c.route)}>
               <View style={[s.iconBox, { backgroundColor: c.color + '22' }]}>
                 <Ionicons name={c.icon} size={26} color={c.color} />
               </View>

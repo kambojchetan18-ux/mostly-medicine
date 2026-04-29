@@ -73,14 +73,23 @@ export default function ActionPlanScreen() {
   const [noProfile, setNoProfile] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (cancelled) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       const { data } = await supabase.from('img_profiles').select('*').eq('user_id', user.id).maybeSingle();
+      if (cancelled) return;
       if (!data) { setNoProfile(true); } else { setProfile(data); }
       setLoading(false);
     }
     load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const steps = profile ? buildPlan(profile) : [];

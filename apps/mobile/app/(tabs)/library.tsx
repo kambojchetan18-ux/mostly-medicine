@@ -3,7 +3,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
-type Resource = { title: string; desc: string; url: string; icon: string; color: string };
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+type Resource = { title: string; desc: string; url: string; icon: IoniconName; color: string };
 type Section = { heading: string; items: Resource[] };
 
 const SECTIONS: Section[] = [
@@ -66,7 +67,7 @@ export default function LibraryScreen() {
               {section.items.map((item) => (
                 <TouchableOpacity key={item.title} style={s.card} onPress={() => Linking.openURL(item.url)} activeOpacity={0.7}>
                   <View style={[s.iconBox, { backgroundColor: item.color + '22' }]}>
-                    <Ionicons name={item.icon as any} size={22} color={item.color} />
+                    <Ionicons name={item.icon} size={22} color={item.color} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={s.cardTitle}>{item.title}</Text>

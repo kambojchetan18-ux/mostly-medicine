@@ -1,11 +1,29 @@
-import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 
 type Stat = { label: string; value: string | number; color: string };
+type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
+type ModuleEntry = {
+  label: string;
+  sub: string;
+  icon: IoniconName;
+  color: string;
+  route: '/cat1' | '/cat2' | '/progress' | '/jobs' | '/library' | '/roleplay';
+};
+
+// Static — no need to re-allocate per render.
+const MODULES: ModuleEntry[] = [
+  { label: 'AMC MCQ', sub: 'MCQ Practice — 3,000+ questions', icon: 'school', color: '#7c3aed', route: '/cat1' },
+  { label: 'AMC Handbook AI RolePlay', sub: 'AMC OSCE-style clinical practice', icon: 'medkit', color: '#ec4899', route: '/cat2' },
+  { label: 'My Progress', sub: 'Stats, streaks, weak areas', icon: 'bar-chart', color: '#10b981', route: '/progress' },
+  { label: 'Australian Jobs', sub: 'RMO · GP · Specialist pathway', icon: 'briefcase', color: '#0ea5e9', route: '/jobs' },
+  { label: 'Library', sub: 'AMC resources & references', icon: 'book', color: '#64748b', route: '/library' },
+  { label: 'AMC Clinical AI RolePlay', sub: 'AMC Handbook AI RolePlay clinical OSCE scenarios', icon: 'chatbubbles', color: '#8b5cf6', route: '/roleplay' },
+];
 
 export default function HomeScreen() {
   const [userName, setUserName] = useState('Doctor');
@@ -13,9 +31,14 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (cancelled) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       const name = user.user_metadata?.full_name?.split(' ')[0] ?? 'Doctor';
       setUserName(name);
 
@@ -25,6 +48,7 @@ export default function HomeScreen() {
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
           .eq('user_id', user.id).lte('due', new Date().toISOString()),
       ]);
+      if (cancelled) return;
 
       const attempts = attemptsRes.data ?? [];
       const total = attempts.length;
@@ -39,21 +63,17 @@ export default function HomeScreen() {
       ]);
       setLoading(false);
     }
-    load();
+    // Defer until first frame is on-screen so the home tab paints quickly.
+    const handle = InteractionManager.runAfterInteractions(() => load());
+    return () => {
+      cancelled = true;
+      handle.cancel?.();
+    };
   }, []);
 
-  async function handleLogout() {
+  const handleLogout = useCallback(async () => {
     await supabase.auth.signOut();
-  }
-
-  const modules = [
-    { label: 'AMC MCQ', sub: 'MCQ Practice — 3,000+ questions', icon: 'school' as const, color: '#7c3aed', route: '/cat1' },
-    { label: 'AMC Handbook AI RolePlay', sub: 'AMC OSCE-style clinical practice', icon: 'medkit' as const, color: '#ec4899', route: '/cat2' },
-    { label: 'My Progress', sub: 'Stats, streaks, weak areas', icon: 'bar-chart' as const, color: '#10b981', route: '/progress' },
-    { label: 'Australian Jobs', sub: 'RMO · GP · Specialist pathway', icon: 'briefcase' as const, color: '#0ea5e9', route: '/jobs' },
-    { label: 'Library', sub: 'AMC resources & references', icon: 'book' as const, color: '#64748b', route: '/library' },
-    { label: 'AMC Clinical AI RolePlay', sub: 'AMC Handbook AI RolePlay clinical OSCE scenarios', icon: 'chatbubbles' as const, color: '#8b5cf6', route: '/roleplay' },
-  ];
+  }, []);
 
   return (
     <View style={styles.bg}>
@@ -95,23 +115,18 @@ export default function HomeScreen() {
           {/* Modules */}
           <Text style={styles.sectionTitle}>Modules</Text>
           <View style={styles.moduleGrid}>
-            {modules.map((m) => (
+            {MODULES.map((m) => (
               <TouchableOpacity
                 key={m.label}
                 style={styles.moduleCard}
-                onPress={() => m.route ? router.push(`/(tabs)${m.route}` as any) : null}
-                activeOpacity={m.route ? 0.7 : 0.4}
+                onPress={() => router.push(`/(tabs)${m.route}`)}
+                activeOpacity={0.7}
               >
                 <View style={[styles.moduleIcon, { backgroundColor: m.color + '22' }]}>
                   <Ionicons name={m.icon} size={24} color={m.color} />
                 </View>
                 <Text style={styles.moduleLabel}>{m.label}</Text>
                 <Text style={styles.moduleSub}>{m.sub}</Text>
-                {!m.route && (
-                  <View style={styles.comingSoon}>
-                    <Text style={styles.comingSoonText}>Coming soon</Text>
-                  </View>
-                )}
               </TouchableOpacity>
             ))}
           </View>

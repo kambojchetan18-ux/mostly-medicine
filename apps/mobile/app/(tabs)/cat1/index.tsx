@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
+  InteractionManager,
 } from 'react-native';
 import FunLoading from '@/components/FunLoading';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -379,13 +380,15 @@ export default function Cat1DeckScreen() {
         }
       }
 
-      // Pool: prioritise review-later items first, then unseen-today fresh ones
-      const reviewPool = allQuestions.filter(
-        (q) => reviewSet.has(q.id) && !attemptedToday.has(q.id),
-      );
-      const freshPool = allQuestions.filter(
-        (q) => !reviewSet.has(q.id) && !attemptedToday.has(q.id),
-      );
+      // Pool: prioritise review-later items first, then unseen-today fresh
+      // ones. Single O(N) pass — the previous version walked allQuestions twice.
+      const reviewPool: MCQuestion[] = [];
+      const freshPool: MCQuestion[] = [];
+      for (const q of allQuestions) {
+        if (attemptedToday.has(q.id)) continue;
+        if (reviewSet.has(q.id)) reviewPool.push(q);
+        else freshPool.push(q);
+      }
       const built = [...shuffle(reviewPool), ...shuffle(freshPool)].slice(0, DAILY_TARGET);
 
       if (cancelled) return;
@@ -393,9 +396,12 @@ export default function Cat1DeckScreen() {
       setDeck(built);
       setLoading(false);
     }
-    init();
+    // Defer the heavy filter+shuffle (allQuestions has 3,000+ items) until
+    // after the loading splash has painted. Keeps the tab transition snappy.
+    const handle = InteractionManager.runAfterInteractions(() => init());
     return () => {
       cancelled = true;
+      handle.cancel?.();
     };
   }, []);
 

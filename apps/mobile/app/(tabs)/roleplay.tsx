@@ -89,7 +89,7 @@ export default function RoleplayScreen() {
   const transcribingRef = useRef(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
 
-  // ── Cleanup any in-flight recording on unmount ──────────────────────────────
+  // ── Cleanup any in-flight recording / timer / TTS on unmount ────────────────
   useEffect(() => {
     return () => {
       const rec = recordingRef.current;
@@ -97,6 +97,15 @@ export default function RoleplayScreen() {
       if (rec) {
         rec.stopAndUnloadAsync().catch(() => {});
       }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      // Stop the patient TTS so it doesn't keep speaking after we unmount.
+      Speech.stop();
+      // Stop & null the pulse loop in case the screen unmounts while recording.
+      pulseLoop.current?.stop();
+      pulseLoop.current = null;
     };
   }, []);
 
@@ -121,20 +130,27 @@ export default function RoleplayScreen() {
     setIsSpeaking(false);
   }
 
-  // Mic pulse animation when recording
+  // Mic pulse animation when recording. Cleanup function ensures the loop is
+  // stopped if the effect re-runs OR the component unmounts mid-pulse.
   useEffect(() => {
-    if (isRecording) {
-      pulseLoop.current = Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, { toValue: 1.35, duration: 600, useNativeDriver: true }),
-          Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-        ]),
-      );
-      pulseLoop.current.start();
-    } else {
+    if (!isRecording) {
       pulseLoop.current?.stop();
+      pulseLoop.current = null;
       pulseAnim.setValue(1);
+      return;
     }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.35, duration: 600, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+      ]),
+    );
+    pulseLoop.current = loop;
+    loop.start();
+    return () => {
+      loop.stop();
+      if (pulseLoop.current === loop) pulseLoop.current = null;
+    };
   }, [isRecording, pulseAnim]);
 
   async function uploadAudio(uri: string) {

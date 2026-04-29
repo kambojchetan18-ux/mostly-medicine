@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { allQuestions } from '@mostly-medicine/content';
@@ -7,7 +7,17 @@ import { allQuestions } from '@mostly-medicine/content';
 type TopicRow = { topic: string; total: number; done: number; correct: number };
 type Status = 'Completed' | 'In Progress' | 'Not Started';
 
-const TOPICS = [...new Set(allQuestions.map((q) => q.topic))].sort();
+// Build a question-id → topic Map once. O(1) lookup beats O(N) `find` per attempt.
+const QUESTION_TOPIC_MAP = new Map<string, string>(allQuestions.map((q) => [q.id, q.topic]));
+// Precompute the list of unique topics + per-topic totals once at module load.
+const TOPIC_TOTALS: Record<string, number> = (() => {
+  const out: Record<string, number> = {};
+  for (const q of allQuestions) {
+    out[q.topic] = (out[q.topic] ?? 0) + 1;
+  }
+  return out;
+})();
+const TOPICS = Object.keys(TOPIC_TOTALS).sort();
 
 function getStatus(done: number): Status {
   if (done >= 20) return 'Completed';
@@ -35,9 +45,14 @@ export default function ProgressScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (cancelled) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
       const [attRes, streakRes, dueRes] = await Promise.all([
         supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
@@ -45,6 +60,7 @@ export default function ProgressScreen() {
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
           .eq('user_id', user.id).lte('due', new Date().toISOString()),
       ]);
+      if (cancelled) return;
 
       const attempts = attRes.data ?? [];
       setTotalAttempts(attempts.length);
@@ -54,28 +70,42 @@ export default function ProgressScreen() {
 
       const topicMap: Record<string, { done: number; correct: number }> = {};
       for (const a of attempts) {
-        const q = allQuestions.find((q) => q.id === a.question_id);
-        if (!q) continue;
-        if (!topicMap[q.topic]) topicMap[q.topic] = { done: 0, correct: 0 };
-        topicMap[q.topic].done++;
-        if (a.is_correct) topicMap[q.topic].correct++;
+        const topic = QUESTION_TOPIC_MAP.get(a.question_id);
+        if (!topic) continue;
+        if (!topicMap[topic]) topicMap[topic] = { done: 0, correct: 0 };
+        topicMap[topic].done++;
+        if (a.is_correct) topicMap[topic].correct++;
       }
 
+      if (cancelled) return;
       setRows(TOPICS.map((t) => ({
         topic: t,
-        total: allQuestions.filter((q) => q.topic === t).length,
+        total: TOPIC_TOTALS[t] ?? 0,
         done: topicMap[t]?.done ?? 0,
         correct: topicMap[t]?.correct ?? 0,
       })));
       setLoading(false);
     }
-    load();
+    // Defer the supabase fetch until after the first frame paints — avoids
+    // blocking tab transition.
+    const handle = InteractionManager.runAfterInteractions(() => load());
+    return () => {
+      cancelled = true;
+      handle.cancel?.();
+    };
   }, []);
 
   const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
-  const completed = rows.filter((r) => getStatus(r.done) === 'Completed').length;
-  const inProgress = rows.filter((r) => getStatus(r.done) === 'In Progress').length;
-  const notStarted = rows.filter((r) => getStatus(r.done) === 'Not Started').length;
+  const { completed, inProgress, notStarted } = useMemo(() => {
+    let c = 0, ip = 0, ns = 0;
+    for (const r of rows) {
+      const st = getStatus(r.done);
+      if (st === 'Completed') c++;
+      else if (st === 'In Progress') ip++;
+      else ns++;
+    }
+    return { completed: c, inProgress: ip, notStarted: ns };
+  }, [rows]);
 
   return (
     <View style={s.bg}>

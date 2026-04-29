@@ -66,12 +66,17 @@ export default function QuizScreen() {
 
   async function saveAttempts(records: AttemptRecord[]) {
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from('attempts').insert(
-      records.map((r) => ({ ...r, user_id: user.id }))
-    );
-    setSaving(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      await supabase.from('attempts').insert(
+        records.map((r) => ({ ...r, user_id: user.id }))
+      );
+    } finally {
+      // Always clear "Saving…" — was previously stuck on for unauthed users
+      // and on insert errors.
+      setSaving(false);
+    }
   }
 
   if (!q && phase !== 'done') {

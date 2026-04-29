@@ -20,7 +20,7 @@ export default function CAT2Screen() {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 16, gap: 12 }}>
           <TouchableOpacity
             style={s.card}
-            onPress={() => router.push('/(tabs)/roleplay' as any)}
+            onPress={() => router.push('/(tabs)/roleplay')}
             activeOpacity={0.7}
           >
             <View style={[s.iconWrap, { backgroundColor: '#8b5cf622' }]}>
