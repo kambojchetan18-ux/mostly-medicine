@@ -407,22 +407,17 @@ export function useWhisperSTT(
         // bleeding into the mic and causing Whisper to transcribe the other
         // side's words as if the user said them.
         //
-        // BUT noiseSuppression + autoGainControl are aggressive on macOS and
-        // commonly destroy soft-spoken voices on laptop mics — the captured
-        // waveform ends up at near-silent RMS levels, which is why every
-        // 4-second WebM chunk decoded to Whisper's classic silence
-        // hallucination "Thank you." (a YouTube-ASR training-data artefact
-        // Whisper emits on quiet/empty audio).
-        //
-        // We disable both so the user's actual voice survives the capture
-        // pipeline. The hallucination filter still catches genuinely empty
-        // chunks, and echoCancellation alone is enough to block the
-        // partner-bleed loop.
+        // Default Chrome AEC pipeline expects all three flags ON together —
+        // disabling AGC + NS while keeping EC on ducks the mic to ~zero on
+        // macOS Chrome (mic level reads 0.0000 in the analyser). Letting
+        // Chrome manage all three produces a usable signal AND keeps
+        // partner/TTS bleed cancelled. Hallucinations are handled separately
+        // by the WHISPER_HALLUCINATIONS filter + per-chunk VAD-skip.
         stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: true,
-            noiseSuppression: false,
-            autoGainControl: false,
+            noiseSuppression: true,
+            autoGainControl: true,
           },
         });
         ownsStreamRef.current = true;

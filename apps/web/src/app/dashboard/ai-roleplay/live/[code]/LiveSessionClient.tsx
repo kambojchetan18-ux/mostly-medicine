@@ -570,21 +570,30 @@ export default function LiveSessionClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  // Auto-restart STT after each final to keep capture continuous. Gate on
-  // localStream too — useWhisperSTT is in externalStream mode, so it can't
-  // start until the WebRTC capture has resolved. Without this gate the first
-  // startRecording fires before localStream is set, the hook bails out (no
-  // audio track), and the only way back in is a re-render with state still
-  // "idle" — which `stt` reference equality usually doesn't trigger.
+  // Auto-start STT once after WebRTC capture resolves. The `stt` object is a
+  // fresh reference on every render (micLevel updates ~5x/sec), so depending
+  // on `stt` directly causes the effect to re-run continuously and clear the
+  // setTimeout before it fires — which is why the mic stayed off. Read stt
+  // through a ref + a "did we auto-start yet?" flag so we fire exactly once
+  // per phase entry.
+  const sttRef = useRef(stt);
+  sttRef.current = stt;
+  const sttAutoStartedRef = useRef(false);
   useEffect(() => {
-    if (status !== "roleplay") return;
-    if (!stt.supported) return;
-    if (!localStream) return;
-    if (stt.state === "idle") {
-      const t = setTimeout(() => stt.startRecording(), 400);
-      return () => clearTimeout(t);
+    if (status !== "roleplay") {
+      sttAutoStartedRef.current = false;
+      return;
     }
-  }, [status, stt, localStream]);
+    if (!localStream) return;
+    if (sttAutoStartedRef.current) return;
+    const t = setTimeout(() => {
+      if (!sttRef.current.supported) return;
+      if (sttRef.current.state !== "idle") return;
+      sttAutoStartedRef.current = true;
+      void sttRef.current.startRecording();
+    }, 600);
+    return () => clearTimeout(t);
+  }, [status, localStream]);
 
   // ─── Status transitions ──────────────────────────────────────────────
   async function advance(to: string) {
