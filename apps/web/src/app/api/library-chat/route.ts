@@ -5,8 +5,17 @@ import {
   LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC,
 } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
+
+const MODEL = "claude-haiku-4-5-20251001";
+
+let _client: Anthropic | null = null;
+function client(): Anthropic {
+  if (!_client) _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  return _client;
+}
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -22,6 +31,16 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Per-user rolling-window throttle. Stops scripts hitting Anthropic on
+  // our dime. 30 calls / 60s easily covers a chatty student typing fast.
+  const rl = await aiRateLimit(clientKey(req, "library-chat", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
+
   const { messages, topicTitle, topicContent } = await req.json();
 
   const systemPrompt =
@@ -29,15 +48,25 @@ export async function POST(req: NextRequest) {
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
       : LIBRARY_CHAT_SYSTEM_PROMPT;
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  // cache_control is a runtime feature in @anthropic-ai/sdk@0.32.x but
+  // missing from the published types — cast to TextBlockParam[].
+  // Caching the long static guideline preamble cuts input cost ~90% on
+  // repeat turns of the same chat session.
+  const systemBlocks = [
+    {
+      type: "text",
+      text: systemPrompt,
+      cache_control: { type: "ephemeral" },
+    },
+  ] as unknown as Anthropic.TextBlockParam[];
 
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const response = await client.messages.create({
-          model: "claude-haiku-4-5-20251001",
+        const response = await client().messages.create({
+          model: MODEL,
           max_tokens: 1024,
-          system: systemPrompt,
+          system: systemBlocks,
           messages: messages.map((m: { role: string; content: string }) => ({
             role: m.role as "user" | "assistant",
             content: m.content,

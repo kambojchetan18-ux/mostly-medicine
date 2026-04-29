@@ -68,10 +68,19 @@ export async function POST(req: NextRequest) {
 
   const monthName = new Date(`${month}-01`).toLocaleString("en-AU", { month: "long", year: "numeric" });
 
+  // cache_control on the system prompt — repeat regenerate calls hit warm cache.
+  const systemBlocks = [
+    {
+      type: "text",
+      text: SYSTEM_PROMPT,
+      cache_control: { type: "ephemeral" },
+    },
+  ] as unknown as Anthropic.TextBlockParam[];
+
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 8000,
-    system: SYSTEM_PROMPT,
+    system: systemBlocks,
     messages: [
       {
         role: "user",
