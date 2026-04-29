@@ -436,6 +436,33 @@ export function useWhisperSTT(
     wantRecordingRef.current = true;
     setState("recording");
 
+    // Diagnostic: print which device + track state Chrome handed us. When the
+    // mic is "silently silent" (rms 0.0000 forever) this is the only way to
+    // tell whether the OS muted us, the device is virtual/placeholder, or the
+    // browser handed back a track that's `muted: true`.
+    try {
+      const t = stream.getAudioTracks()[0];
+      if (t) {
+        const settings = typeof t.getSettings === "function" ? t.getSettings() : {};
+        console.info("[whisper] mic track ready", {
+          label: t.label,
+          muted: t.muted,
+          enabled: t.enabled,
+          readyState: t.readyState,
+          deviceId: (settings as { deviceId?: string }).deviceId,
+          sampleRate: (settings as { sampleRate?: number }).sampleRate,
+          channelCount: (settings as { channelCount?: number }).channelCount,
+        });
+        // Surface browser-side mute toggles into the UI immediately. (User
+        // muted at OS / hardware key level — they'll never see RMS rise.)
+        if (t.muted) {
+          console.warn("[whisper] track is muted by the browser/OS — user must unmute");
+        }
+      }
+    } catch (err) {
+      console.warn("[whisper] track diagnostic failed", err);
+    }
+
     // Always run an RMS analyser loop while recording — even when the caller
     // hasn't enabled `autoStopOnSilence`. The auto-stop branch is gated by
     // `autoStopOnSilenceRef.current` below, but we still need per-chunk peak
