@@ -116,6 +116,7 @@ export default function Cat2Client() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [examinerFeedback, setExaminerFeedback] = useState<string | null>(null);
+  const [micMuted, setMicMuted] = useState(false);
 
   // Reading-time briefing state (mirrors AMC Clinical AI RolePlay flow).
   // While readingScenarioId is set we render a 2-min countdown + Scenario +
@@ -226,16 +227,11 @@ export default function Cat2Client() {
     stopRecordingRef.current = stopRecording;
   }, [stopRecording]);
 
-  // Guard: never let the mic record while the AI is speaking. Otherwise the
-  // patient's TTS audio bleeds out of the laptop speakers, the mic captures
-  // it, Whisper transcribes the AI's own line, and the conversation loops
-  // on itself. Auto-stop the recorder the moment speaking starts; the user
-  // can tap mic again once the patient finishes.
   useEffect(() => {
-    if (speaking && recState === "recording") {
+    if (micMuted && recState === "recording") {
       void stopRecording();
     }
-  }, [speaking, recState, stopRecording]);
+  }, [micMuted, recState, stopRecording]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -343,6 +339,7 @@ export default function Cat2Client() {
   }
 
   function handleMicButton() {
+    if (micMuted) return;
     if (recState === "recording") {
       stopRecording(); // transcript arrives via sendMessage callback in onend
     } else {
@@ -758,10 +755,10 @@ export default function Cat2Client() {
         {micSupported !== false && (
           <button
             onClick={handleMicButton}
-            disabled={loading || speaking}
+            disabled={loading || micMuted}
             title={
-              speaking
-                ? "Patient is speaking — wait for them to finish"
+              micMuted
+                ? "Unmute first to record"
                 : isRecording
                   ? "Tap to stop recording and send"
                   : "Tap to start voice input"
@@ -779,6 +776,21 @@ export default function Cat2Client() {
           </button>
         )}
 
+        {/* Mute toggle */}
+        {micSupported !== false && (
+          <button
+            onClick={() => setMicMuted((m) => !m)}
+            title={micMuted ? "Tap to unmute mic" : "Tap to mute mic"}
+            className={`flex-shrink-0 px-3 h-12 rounded-xl text-xs font-semibold transition border ${
+              micMuted
+                ? "bg-orange-50 border-orange-300 text-orange-700 hover:bg-orange-100"
+                : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {micMuted ? "🔇 Muted — tap to unmute" : "🎤 Mic on"}
+          </button>
+        )}
+
         {/* Text input */}
         <input
           value={isRecording ? displayTranscript : input}
@@ -787,9 +799,9 @@ export default function Cat2Client() {
           placeholder={
             permissionDenied ? "Mic access denied — type here"
             : micSupported === false ? "Type your question to the patient…"
-            : speaking ? "Patient is speaking… mic paused"
-            : isRecording ? (displayTranscript ? "" : "🎤 Listening… speak naturally, tap ⏹ when done")
-            : "Type or use the 🎤 mic button…"
+            : micMuted ? "🔇 Mic muted — tap unmute to speak, or type here"
+            : isRecording ? (displayTranscript ? "" : "🎤 Listening… speak naturally")
+            : "🎤 Listening… speak naturally"
           }
           readOnly={isRecording}
           className={`flex-1 border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition ${

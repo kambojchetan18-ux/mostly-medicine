@@ -19,7 +19,42 @@ export interface ScoringInput {
   transcript: Array<{ role: "user" | "assistant"; content: string }>;
 }
 
+// A doctor turn count below this is treated as "session too short to score"
+// — common after the live mode debouncing/hallucination filter changes when a
+// peer ends the call within a few seconds of the roleplay starting.
+const MIN_DOCTOR_TURNS_FOR_SCORING = 2;
+
+// Stub feedback returned when there is no real transcript to score. The UI
+// renders this exactly the same as a real result, just with zero scores and
+// a single "session was too short" note in strengths — far better than a
+// blank page, a 500, or the client getting stuck on the loading spinner.
+function emptyTranscriptFeedback(): SessionFeedback {
+  return {
+    globalScore: 0,
+    communicationScore: 0,
+    reasoningScore: 0,
+    strengths: ["Session was too short for full scoring — try a fresh 8-minute roleplay."],
+    missedQuestions: [],
+    missedRedFlags: [],
+    suggestedPhrasing: [],
+    differentialReview:
+      "No meaningful exchange was captured before the session ended. This usually means the call was ended within a few seconds of starting, the microphone was off, or speech recognition did not pick up any audio.",
+    retrySuggestion:
+      "Start a new live session and ensure your mic is on (you should see the 🎤 chip turn green during roleplay).",
+  };
+}
+
 export async function scoreSession({ caseVariant, transcript }: ScoringInput): Promise<SessionFeedback> {
+  // Short-circuit empty / near-empty transcripts before burning a Claude call
+  // and before risking a "no tool_use block" throw that would surface as 500
+  // in the live feedback flow.
+  const doctorTurns = transcript.filter(
+    (m) => m.role === "user" && m.content.trim().length > 0
+  ).length;
+  if (doctorTurns < MIN_DOCTOR_TURNS_FOR_SCORING) {
+    return emptyTranscriptFeedback();
+  }
+
   const transcriptText = transcript
     .map((m, i) => `[${i + 1}] ${m.role === "user" ? "Doctor" : "Patient"}: ${m.content}`)
     .join("\n\n");

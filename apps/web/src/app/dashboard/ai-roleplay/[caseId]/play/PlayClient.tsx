@@ -50,6 +50,7 @@ export default function PlayClient({
   // Voice is the default — typing wastes 8-min station time. User can flip
   // to text via the toggle if their browser/mic blocks STT.
   const [voiceMode, setVoiceMode] = useState(true);
+  const [micMuted, setMicMuted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Voice — STT in, TTS out. The hook auto-fires its callback on stop/silence
@@ -101,14 +102,11 @@ export default function PlayClient({
     stopRecordingRef.current = stopRecording;
   }, [stopRecording]);
 
-  // Hard guard against TTS↔mic feedback loop. While the patient AI is
-  // speaking through the laptop speaker, the mic was capturing that audio
-  // back and Whisper transcribed the AI's own line as user input — chaos.
   useEffect(() => {
-    if (speaking && sttState === "recording") {
+    if (micMuted && sttState === "recording") {
       void stopRecording();
     }
-  }, [speaking, sttState, stopRecording]);
+  }, [micMuted, sttState, stopRecording]);
 
   // Countdown
   useEffect(() => {
@@ -381,6 +379,7 @@ export default function PlayClient({
           <button
             type="button"
             onClick={() => {
+              if (micMuted) return;
               if (sttState === "recording") {
                 stopRecording();
               } else {
@@ -388,7 +387,7 @@ export default function PlayClient({
                 startRecording();
               }
             }}
-            disabled={ended || sending || !sttSupported}
+            disabled={ended || sending || !sttSupported || micMuted}
             className={`flex h-20 w-20 items-center justify-center rounded-full text-3xl shadow-lg transition disabled:cursor-not-allowed disabled:opacity-50 ${
               sttState === "recording"
                 ? "animate-pulse bg-rose-500 text-white"
@@ -398,11 +397,24 @@ export default function PlayClient({
           >
             🎙️
           </button>
+          <button
+            type="button"
+            onClick={() => setMicMuted((m) => !m)}
+            disabled={ended}
+            className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${
+              micMuted
+                ? "border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100"
+                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            }`}
+            title={micMuted ? "Tap to unmute mic" : "Tap to mute mic"}
+          >
+            {micMuted ? "🔇 Muted — tap to unmute" : "🎤 Mic on"}
+          </button>
           <div className="min-h-[1.5rem] text-center text-sm text-gray-700">
-            {sttState === "recording" && (displayTranscript || "Listening…")}
-            {sttState === "idle" && speaking && `${patientName} is speaking…`}
-            {sttState === "idle" && !speaking && !sending && "Tap the mic and speak"}
-            {sending && "Patient is responding…"}
+            {micMuted && "🔇 Mic muted — unmute to speak"}
+            {!micMuted && sttState === "recording" && (displayTranscript || "🎤 Listening… speak naturally")}
+            {!micMuted && sttState === "idle" && !sending && "🎤 Listening… speak naturally"}
+            {!micMuted && sending && "Patient is responding…"}
           </div>
           {!sttSupported && (
             <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-center">

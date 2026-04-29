@@ -132,6 +132,15 @@ export default function LiveSessionClient({
   // vars / upstream errors show up next to the pill instead of being silent.
   const [turnError, setTurnError] = useState<string | null>(null);
 
+  // ─── Remote-peer audio controls ──────────────────────────────────────
+  // The partner's voice arrives via the WebRTC remote stream attached to
+  // remoteVideoRef. The user needs a way to dial that down (loud caller)
+  // or mute it entirely (taking a phone call mid-session) without killing
+  // the connection. We cache the pre-mute volume so un-muting restores it.
+  const [remoteVolume, setRemoteVolume] = useState(1);
+  const [remoteMuted, setRemoteMuted] = useState(false);
+  const lastNonZeroVolumeRef = useRef(1);
+
   const supabase = useMemo(() => createClient(), []);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -184,6 +193,17 @@ export default function LiveSessionClient({
     []
   );
   const stt = useWhisperSTT(handleSttFinal);
+
+  // ─── Apply remote-volume / remote-mute to the <video> element ────────
+  // Re-runs whenever the user drags the slider or hits the mute toggle.
+  // The element may not exist on the very first render (before the remote
+  // track arrives) — that's fine, the next change will catch it.
+  useEffect(() => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.volume = remoteVolume;
+      remoteVideoRef.current.muted = remoteMuted;
+    }
+  }, [remoteVolume, remoteMuted]);
 
   // ─── Subscribe to session row + message stream ───────────────────────
   useEffect(() => {
@@ -522,6 +542,24 @@ export default function LiveSessionClient({
 
   async function handleEnd() {
     if (status === "completed") return;
+    // Flush any buffered STT BEFORE flipping the session to "completed".
+    // The /message route 409s once status != "roleplay", so a still-pending
+    // 2.5s debounce would silently drop the last utterance — which on a
+    // short session can mean an entirely empty transcript and a useless
+    // feedback page. Drain the buffer + post it, then advance.
+    if (flushTimerRef.current) {
+      clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = null;
+    }
+    const buffered = sttBufferRef.current.trim();
+    sttBufferRef.current = "";
+    if (buffered) {
+      try {
+        await postMessage(buffered);
+      } catch {
+        /* best-effort; do not block end */
+      }
+    }
     await advance("completed");
     router.push(`/dashboard/ai-roleplay/live/${inviteCode}/results`);
   }
@@ -838,20 +876,74 @@ export default function LiveSessionClient({
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2 grid grid-cols-2 gap-3">
-            <video
-              ref={remoteVideoRef}
-              autoPlay
-              playsInline
-              className="aspect-video w-full rounded-xl border border-gray-300 bg-black"
-            />
-            <video
-              ref={localVideoRef}
-              autoPlay
-              playsInline
-              muted
-              className="aspect-video w-full rounded-xl border border-gray-300 bg-black"
-            />
+          <div className="lg:col-span-2 space-y-2">
+            <div className="grid grid-cols-2 gap-3">
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                playsInline
+                className="aspect-video w-full rounded-xl border border-gray-300 bg-black"
+              />
+              <video
+                ref={localVideoRef}
+                autoPlay
+                playsInline
+                muted
+                className="aspect-video w-full rounded-xl border border-gray-300 bg-black"
+              />
+            </div>
+            {/* Partner-audio controls — affect the remote <video> only.
+                Local mic is toggled by the "Start mic / Pause mic" button
+                further down (that one drives STT + transcript). */}
+            <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm">
+              <button
+                type="button"
+                onClick={() => {
+                  setRemoteMuted((m) => {
+                    const next = !m;
+                    if (!next && remoteVolume === 0) {
+                      // un-muting from a 0-volume state — restore last audible level
+                      setRemoteVolume(lastNonZeroVolumeRef.current || 1);
+                    }
+                    return next;
+                  });
+                }}
+                aria-label={remoteMuted ? "Unmute partner" : "Mute partner"}
+                title={remoteMuted ? "Unmute partner" : "Mute partner"}
+                className={`rounded-lg px-2.5 py-1.5 text-base ${
+                  remoteMuted
+                    ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {remoteMuted || remoteVolume === 0 ? "🔇" : "🔊"}
+              </button>
+              <label htmlFor="remote-volume" className="text-xs font-semibold text-gray-600">
+                Partner volume
+              </label>
+              <input
+                id="remote-volume"
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={remoteVolume}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  setRemoteVolume(v);
+                  if (v > 0) {
+                    lastNonZeroVolumeRef.current = v;
+                    if (remoteMuted) setRemoteMuted(false);
+                  } else {
+                    setRemoteMuted(true);
+                  }
+                }}
+                className="flex-1 accent-brand-600"
+              />
+              <span className="w-10 text-right text-xs tabular-nums text-gray-500">
+                {Math.round((remoteMuted ? 0 : remoteVolume) * 100)}%
+              </span>
+            </div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Live transcript</p>
