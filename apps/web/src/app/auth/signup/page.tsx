@@ -2,8 +2,11 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 // Whitelist redirect targets to in-app paths only — prevents open-redirect
 // abuse if an attacker crafts ?next=https://evil.com or ?next=//evil.com.
@@ -40,7 +43,7 @@ export default function SignupPage() {
 function SignupInner() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = safeNext(params.get("next"));
+  const next = safeNext(params?.get("next") ?? null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,13 +52,35 @@ function SignupInner() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const strength = passwordStrength(password);
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError("Please complete the human-verification check.");
+      return;
+    }
     setLoading(true);
+
+    // Verify Turnstile BEFORE invoking Supabase signup so bot-driven
+    // attempts never reach our auth provider.
+    if (TURNSTILE_SITE_KEY) {
+      const verify = await fetch("/api/auth/verify-turnstile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      if (!verify.ok) {
+        setError("Verification failed. Please try again.");
+        setLoading(false);
+        setTurnstileToken("");
+        return;
+      }
+    }
+
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -151,7 +176,18 @@ function SignupInner() {
             )}
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button type="submit" disabled={loading}
+          {TURNSTILE_SITE_KEY && (
+            <div className="flex justify-center">
+              <Turnstile
+                siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={(t) => setTurnstileToken(t)}
+                onError={() => setTurnstileToken("")}
+                onExpire={() => setTurnstileToken("")}
+                options={{ theme: "light" }}
+              />
+            </div>
+          )}
+          <button type="submit" disabled={loading || (Boolean(TURNSTILE_SITE_KEY) && !turnstileToken)}
             className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
             {loading ? "Creating account…" : "Sign Up Free"}
           </button>
