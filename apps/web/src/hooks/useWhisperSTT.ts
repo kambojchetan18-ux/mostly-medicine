@@ -66,11 +66,11 @@ function isHallucination(text: string): boolean {
 // silence. Bumping these up was a regression that caused the recorder to
 // believe a soft-spoken user was silent.
 const SILENCE_AMPLITUDE_THRESHOLD = 0.002;
-// 3000 ms = "user clearly finished speaking", not "tiny pause between
-// sentences". Conversational flow needs room for natural pauses; auto-stop
-// is now a safety net, not the primary submit path. Users tap mic again
-// when they're done — predictable.
-const SILENCE_HOLD_MS = 3000;
+// 1500 ms — tuned for back-and-forth medical-consult cadence. Long enough
+// to ride through a thinking pause between sentences, short enough that the
+// AI patient doesn't feel sluggish. Anything 3 s+ made every turn feel like
+// a long-distance phone call.
+const SILENCE_HOLD_MS = 1500;
 const VOICE_AMPLITUDE_THRESHOLD = 0.006;
 
 // Pick the first MediaRecorder mime type the browser actually supports.
