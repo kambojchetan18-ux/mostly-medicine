@@ -390,14 +390,26 @@ export default function LiveSessionClient({
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
         pc.ontrack = (ev) => {
-          console.info("[live/rtc] remote ontrack fired", { kind: ev.track.kind });
-          // Drive attachment via state — the dedicated useEffect picks this up
-          // and re-runs after the next commit, even if the <video> element
-          // wasn't mounted at the moment ontrack fired (the silent black-tile
-          // race). Direct ref.srcObject assignment on its own is unreliable.
-          if (ev.streams[0]) {
-            setRemoteStream(ev.streams[0]);
-          }
+          console.info("[live/rtc] remote ontrack fired", {
+            kind: ev.track.kind,
+            streams: ev.streams.length,
+            streamId: ev.streams[0]?.id,
+          });
+          // Accumulate tracks into a single MediaStream rather than overwriting.
+          // Browsers can fire ontrack twice — once for audio, once for video —
+          // and may pass DIFFERENT stream ids per track (Firefox, some mobile
+          // Chromes). Setting setRemoteStream(ev.streams[0]) overwrote the
+          // earlier track and dropped the video tile to black even though the
+          // video track was being transmitted. Build a fresh MediaStream from
+          // (prev tracks ∪ this track) every fire — new identity triggers the
+          // attachment effect, and the <video> element receives BOTH tracks.
+          setRemoteStream((prev) => {
+            const existing = prev ? prev.getTracks() : [];
+            if (existing.some((t) => t.id === ev.track.id)) {
+              return prev;
+            }
+            return new MediaStream([...existing, ev.track]);
+          });
         };
 
         // Diagnose hung handshakes: surface every state transition into the

@@ -16,9 +16,16 @@ type RecognitionState = "idle" | "recording";
 //   - The mic stream is owned by this hook (separate getUserMedia call) so
 //     the WebRTC video stream and the STT stream stay independent — pausing
 //     STT shouldn't tear down the call.
-const CHUNK_MS = 4000;
-const MAX_INFLIGHT = 3;
+const CHUNK_MS = 6000;
+const MAX_INFLIGHT = 1;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
+
+// Exponential backoff bounds when Groq returns rate_limit_exceeded. The chunk
+// loop pauses for at least this long before scheduling the next chunk; the
+// delay doubles on each consecutive rate-limit hit and resets on first
+// successful upload.
+const RATE_LIMIT_BACKOFF_INITIAL_MS = 8000;
+const RATE_LIMIT_BACKOFF_MAX_MS = 32000;
 
 // Whisper hallucinates dozens of stock phrases on near-silent or noise-only
 // audio (a YouTube-ASR training-data artefact). Drop a chunk when EVERY
@@ -104,10 +111,23 @@ export function useWhisperSTT(
   // Live RMS of the mic in 0..1 — exposed so the UI can show a level bar.
   // Updated every 200ms by the silence-detection loop.
   const [micLevel, setMicLevel] = useState(0);
+  // True when Groq is currently rate-limiting us and we're in backoff. The
+  // caller can render a pill so the user knows transcripts are paused.
+  const [rateLimited, setRateLimited] = useState(false);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const inflightRef = useRef(0);
+  // Exponential-backoff bookkeeping for Groq rate_limit_exceeded responses.
+  // `nextAllowedAtRef` is a wall-clock timestamp the chunk loop must wait past
+  // before scheduling the next recorder; `currentBackoffMsRef` doubles on each
+  // consecutive rate-limit and resets on first success.
+  const nextAllowedAtRef = useRef<number>(0);
+  const currentBackoffMsRef = useRef<number>(RATE_LIMIT_BACKOFF_INITIAL_MS);
+  // Peak RMS observed during the in-progress chunk's recording window. The
+  // chunk-loop reads + resets this each time a chunk closes so we can decide
+  // whether the chunk is silent enough to skip uploading.
+  const chunkPeakRmsRef = useRef<number>(0);
   // Keep a ref to the running transcript so we can append without re-rendering
   // for every interim chunk and so we can read it from the recorder closure.
   const fullTranscriptRef = useRef("");
@@ -167,7 +187,34 @@ export function useWhisperSTT(
       if (!res.ok) {
         const errText = await res.text().catch(() => "");
         console.warn("[whisper] /api/stt/transcribe non-OK", { status: res.status, body: errText });
+        // Detect Groq rate-limit. The /api/stt/transcribe route wraps Groq's
+        // 429 as a 502 with the upstream error string embedded; we look for
+        // either the literal `rate_limit_exceeded` token or a 429.
+        const looksRateLimited =
+          (res.status === 502 || res.status === 429) &&
+          /rate_limit_exceeded/i.test(errText);
+        if (looksRateLimited) {
+          // Schedule the chunk loop to pause for the current backoff window
+          // and then double the backoff (capped) for the next consecutive
+          // rate-limit. The loop reads nextAllowedAtRef before kicking off
+          // the next recorder.
+          const wait = currentBackoffMsRef.current;
+          nextAllowedAtRef.current = Date.now() + wait;
+          currentBackoffMsRef.current = Math.min(
+            currentBackoffMsRef.current * 2,
+            RATE_LIMIT_BACKOFF_MAX_MS
+          );
+          setRateLimited(true);
+          console.warn("[whisper] rate limit — backing off", { waitMs: wait, nextBackoffMs: currentBackoffMsRef.current });
+        }
         return;
+      }
+      // Successful upload — clear rate-limit state and reset the backoff so
+      // the next 502/429 starts again from the initial window.
+      if (currentBackoffMsRef.current !== RATE_LIMIT_BACKOFF_INITIAL_MS || nextAllowedAtRef.current !== 0) {
+        currentBackoffMsRef.current = RATE_LIMIT_BACKOFF_INITIAL_MS;
+        nextAllowedAtRef.current = 0;
+        setRateLimited(false);
       }
       const payload = (await res.json()) as { text?: string };
       const text = (payload.text ?? "").trim();
@@ -250,11 +297,31 @@ export function useWhisperSTT(
       wantRecordingRef.current = false;
     };
     recorder.onstop = () => {
-      // Upload the completed standalone-WebM chunk (fire-and-forget).
-      if (chunkData) void uploadChunk(chunkData);
-      // Recurse for the next chunk if user still wants to record.
+      // Read + reset the per-chunk peak RMS so the next chunk starts fresh.
+      const peakRms = chunkPeakRmsRef.current;
+      chunkPeakRmsRef.current = 0;
+      // VAD-skip: if the user was below voice threshold the entire chunk,
+      // it's silence/ambient noise — skip uploading to avoid burning Groq
+      // rate-limit budget on hallucinations like "Thank you." / "Hello?".
+      const isSilentChunk = peakRms < VOICE_AMPLITUDE_THRESHOLD;
+      if (chunkData && !isSilentChunk) {
+        void uploadChunk(chunkData);
+      } else if (chunkData && isSilentChunk) {
+        console.info("[whisper] VAD-skip silent chunk", { peakRms: peakRms.toFixed(4) });
+      }
+      // If Groq rate-limited us, defer the next chunk start until the
+      // backoff window elapses; otherwise recurse immediately.
       if (wantRecordingRef.current && streamRef.current) {
-        startChunkLoop(streamRef.current, mime);
+        const waitMs = Math.max(0, nextAllowedAtRef.current - Date.now());
+        if (waitMs > 0) {
+          setTimeout(() => {
+            if (wantRecordingRef.current && streamRef.current) {
+              startChunkLoop(streamRef.current, mime);
+            }
+          }, waitMs);
+        } else {
+          startChunkLoop(streamRef.current, mime);
+        }
       } else {
         setState("idle");
         cleanupStream();
@@ -329,68 +396,73 @@ export function useWhisperSTT(
     wantRecordingRef.current = true;
     setState("recording");
 
-    // Optional: silence-detection auto-stop. Only enabled when the caller
-    // passed `autoStopOnSilence` (Cat2 + ACRP solo modes). Live Peer mode
-    // leaves it off because chunks stream continuously to both peers and we
-    // never want auto-end mid-conversation.
-    if (autoStopOnSilenceRef.current) {
-      try {
-        const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        if (Ctor) {
-          const ctx = new Ctor();
-          // Some browsers start AudioContext "suspended" until a user gesture
-          // resumes it. We're already inside startRecording (called from a
-          // click handler), so resume immediately.
-          if (ctx.state === "suspended") {
-            void ctx.resume().catch(() => {});
-          }
-          const src = ctx.createMediaStreamSource(stream);
-          const analyser = ctx.createAnalyser();
-          analyser.fftSize = 2048;
-          src.connect(analyser);
-          audioCtxRef.current = ctx;
-          analyserRef.current = analyser;
-          // Use TIME-DOMAIN amplitude (Float32, ~-1..1) for an RMS energy
-          // signal — far more reliable than frequency-bin averages and
-          // independent of pitch.
-          const timeBuf = new Float32Array(analyser.fftSize);
-          lastVoiceAtRef.current = Date.now();
-          hasHeardVoiceRef.current = false;
-          let lastDebugAt = 0;
-          silenceCheckRef.current = setInterval(() => {
-            if (!analyserRef.current) return;
-            analyserRef.current.getFloatTimeDomainData(timeBuf);
-            let sumSq = 0;
-            for (let i = 0; i < timeBuf.length; i++) {
-              sumSq += timeBuf[i] * timeBuf[i];
-            }
-            const rms = Math.sqrt(sumSq / timeBuf.length);
-            setMicLevel(rms);
-            const now = Date.now();
-            if (now - lastDebugAt > 1000) {
-              lastDebugAt = now;
-              console.info("[whisper] mic level", { rms: rms.toFixed(4), heardVoice: hasHeardVoiceRef.current });
-            }
-            if (rms > VOICE_AMPLITUDE_THRESHOLD) {
-              lastVoiceAtRef.current = now;
-              hasHeardVoiceRef.current = true;
-            } else if (
-              hasHeardVoiceRef.current &&
-              rms < SILENCE_AMPLITUDE_THRESHOLD &&
-              now - lastVoiceAtRef.current > SILENCE_HOLD_MS
-            ) {
-              console.info("[whisper] silence auto-stop fired", { rms: rms.toFixed(4) });
-              if (silenceCheckRef.current) {
-                clearInterval(silenceCheckRef.current);
-                silenceCheckRef.current = null;
-              }
-              onAutoStopRef.current?.();
-            }
-          }, 200);
+    // Always run an RMS analyser loop while recording — even when the caller
+    // hasn't enabled `autoStopOnSilence`. The auto-stop branch is gated by
+    // `autoStopOnSilenceRef.current` below, but we still need per-chunk peak
+    // RMS so the chunk loop can skip uploading silent chunks (Live mode VAD
+    // gating, to keep us off Groq's whisper rate limit).
+    try {
+      const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (Ctor) {
+        const ctx = new Ctor();
+        // Some browsers start AudioContext "suspended" until a user gesture
+        // resumes it. We're already inside startRecording (called from a
+        // click handler), so resume immediately.
+        if (ctx.state === "suspended") {
+          void ctx.resume().catch(() => {});
         }
-      } catch (err) {
-        console.warn("[whisper] silence detection setup failed", err);
+        const src = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 2048;
+        src.connect(analyser);
+        audioCtxRef.current = ctx;
+        analyserRef.current = analyser;
+        // Use TIME-DOMAIN amplitude (Float32, ~-1..1) for an RMS energy
+        // signal — far more reliable than frequency-bin averages and
+        // independent of pitch.
+        const timeBuf = new Float32Array(analyser.fftSize);
+        lastVoiceAtRef.current = Date.now();
+        hasHeardVoiceRef.current = false;
+        chunkPeakRmsRef.current = 0;
+        let lastDebugAt = 0;
+        silenceCheckRef.current = setInterval(() => {
+          if (!analyserRef.current) return;
+          analyserRef.current.getFloatTimeDomainData(timeBuf);
+          let sumSq = 0;
+          for (let i = 0; i < timeBuf.length; i++) {
+            sumSq += timeBuf[i] * timeBuf[i];
+          }
+          const rms = Math.sqrt(sumSq / timeBuf.length);
+          setMicLevel(rms);
+          // Track the peak RMS seen during the in-progress chunk so the
+          // chunk loop can decide whether to skip uploading. Reset by the
+          // chunk loop after each chunk closes.
+          if (rms > chunkPeakRmsRef.current) chunkPeakRmsRef.current = rms;
+          const now = Date.now();
+          if (now - lastDebugAt > 1000) {
+            lastDebugAt = now;
+            console.info("[whisper] mic level", { rms: rms.toFixed(4), heardVoice: hasHeardVoiceRef.current });
+          }
+          if (rms > VOICE_AMPLITUDE_THRESHOLD) {
+            lastVoiceAtRef.current = now;
+            hasHeardVoiceRef.current = true;
+          } else if (
+            autoStopOnSilenceRef.current &&
+            hasHeardVoiceRef.current &&
+            rms < SILENCE_AMPLITUDE_THRESHOLD &&
+            now - lastVoiceAtRef.current > SILENCE_HOLD_MS
+          ) {
+            console.info("[whisper] silence auto-stop fired", { rms: rms.toFixed(4) });
+            if (silenceCheckRef.current) {
+              clearInterval(silenceCheckRef.current);
+              silenceCheckRef.current = null;
+            }
+            onAutoStopRef.current?.();
+          }
+        }, 200);
       }
+    } catch (err) {
+      console.warn("[whisper] analyser setup failed", err);
     }
 
     startChunkLoop(stream, mime);
