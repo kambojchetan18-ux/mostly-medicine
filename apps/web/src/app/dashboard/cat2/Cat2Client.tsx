@@ -748,7 +748,7 @@ export default function Cat2Client() {
           <button
             onClick={handleMicButton}
             disabled={loading}
-            title={isRecording ? "Stop recording & send" : "Hold to speak"}
+            title={isRecording ? "Tap to stop recording and send" : "Tap to start voice input"}
             className={`relative flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all disabled:opacity-40 ${
               isRecording
                 ? "bg-red-500 hover:bg-red-600 shadow-lg"
@@ -770,7 +770,7 @@ export default function Cat2Client() {
           placeholder={
             permissionDenied ? "Mic access denied — type here"
             : micSupported === false ? "Type your question to the patient…"
-            : isRecording ? "Listening…"
+            : isRecording ? "Listening… tap ⏹ to send (or pause speaking 1.5s for auto-send)"
             : "Type or use the 🎤 mic button…"
           }
           readOnly={isRecording}

@@ -22,9 +22,14 @@ const TRANSCRIBE_URL = "/api/stt/transcribe";
 
 // Silence-detection thresholds for the auto-stop behaviour. Tuned so a quick
 // breath / pause doesn't auto-end the turn but a clear stop (>1.5s of low
-// audio) does. Levels are 0-255 (Uint8 frequency bin).
-const SILENCE_RMS_THRESHOLD = 12;
+// audio) does. We use time-domain amplitude (Float32, RMS-like) rather than
+// frequency-domain because it tracks overall loudness regardless of pitch.
+// Threshold ~0.015 is roughly room-quiet; speech routinely hits 0.05–0.3.
+const SILENCE_AMPLITUDE_THRESHOLD = 0.015;
 const SILENCE_HOLD_MS = 1500;
+// Voice-presence threshold — slightly above the silence floor so a single
+// burst of microphone noise isn't enough to mark "the user has spoken".
+const VOICE_AMPLITUDE_THRESHOLD = 0.04;
 
 // Pick the first MediaRecorder mime type the browser actually supports.
 // Chrome/Android: audio/webm;codecs=opus. iOS Safari 17+: audio/mp4.
@@ -258,33 +263,49 @@ export function useWhisperSTT(
         const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
         if (Ctor) {
           const ctx = new Ctor();
+          // Some browsers start AudioContext "suspended" until a user gesture
+          // resumes it. We're already inside startRecording (called from a
+          // click handler), so resume immediately.
+          if (ctx.state === "suspended") {
+            void ctx.resume().catch(() => {});
+          }
           const src = ctx.createMediaStreamSource(stream);
           const analyser = ctx.createAnalyser();
-          analyser.fftSize = 1024;
+          analyser.fftSize = 2048;
           src.connect(analyser);
           audioCtxRef.current = ctx;
           analyserRef.current = analyser;
-          const buffer = new Uint8Array(analyser.frequencyBinCount);
+          // Use TIME-DOMAIN amplitude (Float32, ~-1..1) for an RMS energy
+          // signal — far more reliable than frequency-bin averages and
+          // independent of pitch.
+          const timeBuf = new Float32Array(analyser.fftSize);
           lastVoiceAtRef.current = Date.now();
           hasHeardVoiceRef.current = false;
+          let lastDebugAt = 0;
           silenceCheckRef.current = setInterval(() => {
             if (!analyserRef.current) return;
-            analyserRef.current.getByteFrequencyData(buffer);
-            // RMS-ish: average magnitude across all bins.
-            let sum = 0;
-            for (let i = 0; i < buffer.length; i++) sum += buffer[i];
-            const avg = sum / buffer.length;
-            if (avg > SILENCE_RMS_THRESHOLD) {
-              lastVoiceAtRef.current = Date.now();
+            analyserRef.current.getFloatTimeDomainData(timeBuf);
+            let sumSq = 0;
+            for (let i = 0; i < timeBuf.length; i++) {
+              sumSq += timeBuf[i] * timeBuf[i];
+            }
+            const rms = Math.sqrt(sumSq / timeBuf.length);
+            // Throttled diagnostic: log RMS once per second so the user can
+            // see what's happening in DevTools.
+            const now = Date.now();
+            if (now - lastDebugAt > 1000) {
+              lastDebugAt = now;
+              console.info("[whisper] mic level", { rms: rms.toFixed(4), heardVoice: hasHeardVoiceRef.current });
+            }
+            if (rms > VOICE_AMPLITUDE_THRESHOLD) {
+              lastVoiceAtRef.current = now;
               hasHeardVoiceRef.current = true;
             } else if (
               hasHeardVoiceRef.current &&
-              Date.now() - lastVoiceAtRef.current > SILENCE_HOLD_MS
+              rms < SILENCE_AMPLITUDE_THRESHOLD &&
+              now - lastVoiceAtRef.current > SILENCE_HOLD_MS
             ) {
-              // Auto-stop fires only AFTER the user has spoken at least once
-              // and then gone silent — protects against firing on initial
-              // pause before the user starts.
-              console.info("[whisper] silence auto-stop");
+              console.info("[whisper] silence auto-stop fired", { rms: rms.toFixed(4) });
               if (silenceCheckRef.current) {
                 clearInterval(silenceCheckRef.current);
                 silenceCheckRef.current = null;
