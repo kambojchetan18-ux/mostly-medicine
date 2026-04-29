@@ -199,6 +199,9 @@ export default function Cat2Client() {
   const handleSttChunk = useCallback((chunk: string) => {
     sttBufferRef.current = (sttBufferRef.current + " " + chunk).trim();
   }, []);
+  // Forward-decl ref so the silence-auto-stop callback can call the wrapper
+  // we define a few lines below without a chicken-and-egg ordering problem.
+  const stopRecordingRef = useRef<() => Promise<void>>(() => Promise.resolve());
   const {
     state: recState,
     displayTranscript,
@@ -206,18 +209,22 @@ export default function Cat2Client() {
     permissionDenied,
     startRecording,
     stopRecording: stopWhisper,
-  } = useWhisperSTT(handleSttChunk);
+  } = useWhisperSTT(handleSttChunk, {
+    autoStopOnSilence: true,
+    onAutoStop: () => void stopRecordingRef.current(),
+  });
 
-  // When the user stops the mic, ship the buffered transcript as one message.
-  // stopWhisper() now returns a Promise<string> that resolves AFTER the final
-  // partial chunk uploads + all in-flight chunks settle — so even a 2-3s
-  // utterance produces a non-empty transcript. Earlier we read the buffer
-  // synchronously, racing the async final chunk and missing it.
+  // When the user stops the mic (manual tap OR silence-detected auto-stop),
+  // ship the buffered transcript as one message. stopWhisper() resolves AFTER
+  // the final partial chunk uploads + all in-flight chunks settle.
   const stopRecording = useCallback(async () => {
     const final = (await stopWhisper()).trim() || sttBufferRef.current.trim();
     sttBufferRef.current = "";
     if (final) sendMessage(final);
   }, [stopWhisper, sendMessage]);
+  useEffect(() => {
+    stopRecordingRef.current = stopRecording;
+  }, [stopRecording]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

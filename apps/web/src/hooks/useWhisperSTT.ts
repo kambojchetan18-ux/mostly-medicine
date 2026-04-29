@@ -20,6 +20,12 @@ const CHUNK_MS = 5000;
 const MAX_INFLIGHT = 3;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
 
+// Silence-detection thresholds for the auto-stop behaviour. Tuned so a quick
+// breath / pause doesn't auto-end the turn but a clear stop (>1.5s of low
+// audio) does. Levels are 0-255 (Uint8 frequency bin).
+const SILENCE_RMS_THRESHOLD = 12;
+const SILENCE_HOLD_MS = 1500;
+
 // Pick the first MediaRecorder mime type the browser actually supports.
 // Chrome/Android: audio/webm;codecs=opus. iOS Safari 17+: audio/mp4.
 function pickMimeType(): string | null {
@@ -40,7 +46,17 @@ function pickMimeType(): string | null {
   return null;
 }
 
-export function useWhisperSTT(onTranscript?: (text: string) => void) {
+export interface UseWhisperSTTOptions {
+  /** Auto-stop the recording when the mic detects sustained silence. */
+  autoStopOnSilence?: boolean;
+  /** Called when auto-stop fires so the caller can flush the buffer. */
+  onAutoStop?: () => void;
+}
+
+export function useWhisperSTT(
+  onTranscript?: (text: string) => void,
+  options: UseWhisperSTTOptions = {}
+) {
   const [state, setState] = useState<RecognitionState>("idle");
   const [displayTranscript, setDisplayTranscript] = useState("");
   const [supported, setSupported] = useState<boolean | null>(null);
@@ -53,10 +69,23 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
   // for every interim chunk and so we can read it from the recorder closure.
   const fullTranscriptRef = useRef("");
   const onTranscriptRef = useRef(onTranscript);
+  const onAutoStopRef = useRef(options.onAutoStop);
+  const autoStopOnSilenceRef = useRef(options.autoStopOnSilence ?? false);
+  // Web Audio bits for silence detection — created lazily inside startRecording
+  // so we don't pay the cost when the caller doesn't enable autoStopOnSilence.
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const silenceCheckRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastVoiceAtRef = useRef<number>(0);
+  const hasHeardVoiceRef = useRef<boolean>(false);
 
   useEffect(() => {
     onTranscriptRef.current = onTranscript;
   }, [onTranscript]);
+  useEffect(() => {
+    onAutoStopRef.current = options.onAutoStop;
+    autoStopOnSilenceRef.current = options.autoStopOnSilence ?? false;
+  }, [options.onAutoStop, options.autoStopOnSilence]);
 
   // Capability detection — runs once on mount.
   useEffect(() => {
@@ -107,10 +136,29 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
     }
   }, []);
 
+  const teardownSilenceDetection = useCallback(() => {
+    if (silenceCheckRef.current) {
+      clearInterval(silenceCheckRef.current);
+      silenceCheckRef.current = null;
+    }
+    try {
+      analyserRef.current?.disconnect();
+    } catch {
+      /* ignore */
+    }
+    analyserRef.current = null;
+    if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
+      void audioCtxRef.current.close().catch(() => {});
+    }
+    audioCtxRef.current = null;
+    hasHeardVoiceRef.current = false;
+  }, []);
+
   const cleanupStream = useCallback(() => {
+    teardownSilenceDetection();
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
-  }, []);
+  }, [teardownSilenceDetection]);
 
   // Are we still in "user wants to record" state? Used by the chunk loop.
   const wantRecordingRef = useRef(false);
@@ -200,6 +248,56 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
     setDisplayTranscript("");
     wantRecordingRef.current = true;
     setState("recording");
+
+    // Optional: silence-detection auto-stop. Only enabled when the caller
+    // passed `autoStopOnSilence` (Cat2 + ACRP solo modes). Live Peer mode
+    // leaves it off because chunks stream continuously to both peers and we
+    // never want auto-end mid-conversation.
+    if (autoStopOnSilenceRef.current) {
+      try {
+        const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (Ctor) {
+          const ctx = new Ctor();
+          const src = ctx.createMediaStreamSource(stream);
+          const analyser = ctx.createAnalyser();
+          analyser.fftSize = 1024;
+          src.connect(analyser);
+          audioCtxRef.current = ctx;
+          analyserRef.current = analyser;
+          const buffer = new Uint8Array(analyser.frequencyBinCount);
+          lastVoiceAtRef.current = Date.now();
+          hasHeardVoiceRef.current = false;
+          silenceCheckRef.current = setInterval(() => {
+            if (!analyserRef.current) return;
+            analyserRef.current.getByteFrequencyData(buffer);
+            // RMS-ish: average magnitude across all bins.
+            let sum = 0;
+            for (let i = 0; i < buffer.length; i++) sum += buffer[i];
+            const avg = sum / buffer.length;
+            if (avg > SILENCE_RMS_THRESHOLD) {
+              lastVoiceAtRef.current = Date.now();
+              hasHeardVoiceRef.current = true;
+            } else if (
+              hasHeardVoiceRef.current &&
+              Date.now() - lastVoiceAtRef.current > SILENCE_HOLD_MS
+            ) {
+              // Auto-stop fires only AFTER the user has spoken at least once
+              // and then gone silent — protects against firing on initial
+              // pause before the user starts.
+              console.info("[whisper] silence auto-stop");
+              if (silenceCheckRef.current) {
+                clearInterval(silenceCheckRef.current);
+                silenceCheckRef.current = null;
+              }
+              onAutoStopRef.current?.();
+            }
+          }, 200);
+        }
+      } catch (err) {
+        console.warn("[whisper] silence detection setup failed", err);
+      }
+    }
+
     startChunkLoop(stream, mime);
   }, [cleanupStream, startChunkLoop]);
 

@@ -76,6 +76,7 @@ export default function PlayClient({
   const handleSttChunk = useCallback((chunk: string) => {
     sttBufferRef.current = (sttBufferRef.current + " " + chunk).trim();
   }, []);
+  const stopRecordingRef = useRef<() => Promise<void>>(() => Promise.resolve());
   const {
     state: sttState,
     displayTranscript,
@@ -83,16 +84,22 @@ export default function PlayClient({
     permissionDenied: micDenied,
     startRecording,
     stopRecording: stopWhisper,
-  } = useWhisperSTT(handleSttChunk);
+  } = useWhisperSTT(handleSttChunk, {
+    autoStopOnSilence: true,
+    onAutoStop: () => void stopRecordingRef.current(),
+  });
 
-  // stopWhisper() now resolves AFTER the final partial chunk uploads + all
-  // in-flight uploads settle. Without awaiting, a 2-3s utterance was lost
-  // because the buffer was read before the final chunk transcribed.
+  // stopRecording fires on manual tap OR auto-stop when silence is detected.
+  // stopWhisper() resolves AFTER the final partial chunk uploads + all
+  // in-flight uploads settle.
   const stopRecording = useCallback(async () => {
     const final = (await stopWhisper()).trim() || sttBufferRef.current.trim();
     sttBufferRef.current = "";
     if (final) sendRef.current?.(final);
   }, [stopWhisper]);
+  useEffect(() => {
+    stopRecordingRef.current = stopRecording;
+  }, [stopRecording]);
 
   // Countdown
   useEffect(() => {
