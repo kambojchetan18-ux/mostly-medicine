@@ -124,8 +124,14 @@ export async function POST(req: NextRequest) {
   if (!groqRes.ok) {
     const detail = await groqRes.text().catch(() => "");
     console.error("[stt/transcribe] groq error", groqRes.status, detail);
+    // Surface the upstream status + body so the diagnostic pill / console
+    // can show the actual Groq error (auth, quota, rate-limit, format).
     return NextResponse.json(
-      { error: "Transcription upstream error" },
+      {
+        error: "Transcription upstream error",
+        upstreamStatus: groqRes.status,
+        upstreamBody: detail.slice(0, 400),
+      },
       { status: 502 }
     );
   }
