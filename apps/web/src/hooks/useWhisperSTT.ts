@@ -52,16 +52,19 @@ function isHallucination(text: string): boolean {
 }
 
 // Silence-detection thresholds for the auto-stop behaviour. Time-domain RMS
-// of the float waveform; speech on quiet mics can be as low as 0.01–0.02
-// (laptop mic at 30cm), so be permissive on voice detection. Silence
-// threshold sits below room-floor so it only trips on actual silence.
-const SILENCE_AMPLITUDE_THRESHOLD = 0.005;
+// of the float waveform; on Mac built-in mics with autoGainControl OFF (see
+// getUserMedia constraints below) the waveform is quieter than expected, so
+// we use lower thresholds. Speech can dip to ~0.006 RMS during soft consonants;
+// silence threshold sits well below room-floor so it only trips on actual
+// silence. Bumping these up was a regression that caused the recorder to
+// believe a soft-spoken user was silent.
+const SILENCE_AMPLITUDE_THRESHOLD = 0.002;
 // 3000 ms = "user clearly finished speaking", not "tiny pause between
 // sentences". Conversational flow needs room for natural pauses; auto-stop
 // is now a safety net, not the primary submit path. Users tap mic again
 // when they're done — predictable.
 const SILENCE_HOLD_MS = 3000;
-const VOICE_AMPLITUDE_THRESHOLD = 0.012;
+const VOICE_AMPLITUDE_THRESHOLD = 0.006;
 
 // Pick the first MediaRecorder mime type the browser actually supports.
 // Chrome/Android: audio/webm;codecs=opus. iOS Safari 17+: audio/mp4.
@@ -289,16 +292,27 @@ export function useWhisperSTT(
 
     let stream: MediaStream;
     try {
-      // Critical for solo modes: echoCancellation drops the loopback of TTS
-      // playback that the laptop speakers feed back into the mic. Without
-      // this, Whisper transcribes the AI's own line as if the user said it
-      // and the conversation goes haywire. noiseSuppression + autoGainControl
-      // cleanup quiet rooms.
+      // Keep echoCancellation TRUE in all modes — it's the only thing
+      // preventing partner audio (Live mode) or TTS playback (solo modes)
+      // bleeding into the mic and causing Whisper to transcribe the other
+      // side's words as if the user said them.
+      //
+      // BUT noiseSuppression + autoGainControl are aggressive on macOS and
+      // commonly destroy soft-spoken voices on laptop mics — the captured
+      // waveform ends up at near-silent RMS levels, which is why every
+      // 4-second WebM chunk decoded to Whisper's classic silence
+      // hallucination "Thank you." (a YouTube-ASR training-data artefact
+      // Whisper emits on quiet/empty audio).
+      //
+      // We disable both so the user's actual voice survives the capture
+      // pipeline. The hallucination filter still catches genuinely empty
+      // chunks, and echoCancellation alone is enough to block the
+      // partner-bleed loop.
       stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
+          noiseSuppression: false,
+          autoGainControl: false,
         },
       });
     } catch (err) {

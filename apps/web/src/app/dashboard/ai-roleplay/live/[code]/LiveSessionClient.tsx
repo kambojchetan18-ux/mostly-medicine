@@ -149,6 +149,12 @@ export default function LiveSessionClient({
   const stateChannelRef = useRef<RealtimeChannel | null>(null);
   const rtcChannelRef = useRef<RealtimeChannel | null>(null);
   const messagesChannelRef = useRef<RealtimeChannel | null>(null);
+  // Stream state — drives the video <-> srcObject useEffects below. Holding
+  // the streams in state (instead of just on the ref) means a re-render
+  // re-runs the attachment effect, which fixes a race where ontrack fires
+  // while the remote <video> element hasn't been committed yet (black tile).
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 
   // ─── STT — capture local speech, debounce, POST to message API ──────
   // Each Whisper chunk arrives every ~4 s. Posting every chunk floods the
@@ -204,6 +210,40 @@ export default function LiveSessionClient({
       remoteVideoRef.current.muted = remoteMuted;
     }
   }, [remoteVolume, remoteMuted]);
+
+  // ─── Attach local stream to local <video> ────────────────────────────
+  // Re-runs whenever the stream changes OR the roleplay phase re-renders
+  // the <video> element. Without this, on slow devices the getUserMedia
+  // promise can resolve BEFORE React commits the <video> tag, so the
+  // assignment in the WebRTC effect dropped silently → black local tile.
+  useEffect(() => {
+    const el = localVideoRef.current;
+    if (!el || !localStream) return;
+    if (el.srcObject !== localStream) {
+      el.srcObject = localStream;
+    }
+    el.muted = true; // local preview must be muted to autoplay (Chrome policy)
+    void el.play().catch((err) => {
+      console.warn("[live/rtc] local video play() rejected", err);
+    });
+  }, [localStream, status]);
+
+  // ─── Attach remote stream to remote <video> ──────────────────────────
+  // Same race fix: ontrack fires asynchronously and the <video> element
+  // may not be mounted yet. Holding the stream in state ensures a re-render
+  // re-runs this effect once the element is committed.
+  useEffect(() => {
+    const el = remoteVideoRef.current;
+    if (!el || !remoteStream) return;
+    if (el.srcObject !== remoteStream) {
+      el.srcObject = remoteStream;
+    }
+    el.volume = remoteVolume;
+    el.muted = remoteMuted;
+    void el.play().catch((err) => {
+      console.warn("[live/rtc] remote video play() rejected", err);
+    });
+  }, [remoteStream, status, remoteVolume, remoteMuted]);
 
   // ─── Subscribe to session row + message stream ───────────────────────
   useEffect(() => {
@@ -301,17 +341,9 @@ export default function LiveSessionClient({
         localStreamRef.current = stream;
         const tracks = stream.getTracks().map((t) => ({ kind: t.kind, label: t.label, enabled: t.enabled }));
         console.info("[live/rtc] local stream acquired", { tracks });
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-          // Android Chrome ignores autoPlay on some devices unless we call
-          // play() explicitly after srcObject is set. Without this, the
-          // local video panel stays black even though the camera is live.
-          try {
-            await localVideoRef.current.play();
-          } catch (err) {
-            console.warn("[live/rtc] local video play() rejected", err);
-          }
-        }
+        // Drive attachment via state so the dedicated useEffect handles it
+        // — survives the case where the <video> element isn't committed yet.
+        setLocalStream(stream);
 
         // Try to fetch fresh per-session TURN credentials from Cloudflare
         // first. If the env vars are set on the server, this returns a
@@ -359,12 +391,12 @@ export default function LiveSessionClient({
 
         pc.ontrack = (ev) => {
           console.info("[live/rtc] remote ontrack fired", { kind: ev.track.kind });
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = ev.streams[0];
-            // Same play() workaround for the remote element.
-            remoteVideoRef.current.play().catch((err) => {
-              console.warn("[live/rtc] remote video play() rejected", err);
-            });
+          // Drive attachment via state — the dedicated useEffect picks this up
+          // and re-runs after the next commit, even if the <video> element
+          // wasn't mounted at the moment ontrack fired (the silent black-tile
+          // race). Direct ref.srcObject assignment on its own is unreliable.
+          if (ev.streams[0]) {
+            setRemoteStream(ev.streams[0]);
           }
         };
 
@@ -501,6 +533,8 @@ export default function LiveSessionClient({
       pcRef.current = null;
       localStreamRef.current?.getTracks().forEach((t) => t.stop());
       localStreamRef.current = null;
+      setLocalStream(null);
+      setRemoteStream(null);
       if (rtcChannelRef.current) {
         supabase.removeChannel(rtcChannelRef.current);
         rtcChannelRef.current = null;
