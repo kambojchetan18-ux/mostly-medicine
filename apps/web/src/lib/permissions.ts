@@ -13,6 +13,35 @@ export interface PermissionResult {
   reason?: "no_user" | "module_disabled" | "no_profile";
 }
 
+// Founder promo: the first 100 signups get Pro free for 30 days. Surfaced via
+// user_profiles.pro_until. Once they later subscribe via Stripe, plan is set
+// to 'pro' so this branch is irrelevant.
+//
+// `pro_until` is an ISO timestamp string when read via the Supabase JS client.
+// Anything in the future means effective Pro.
+export interface PlanLikeProfile {
+  plan?: string | null;
+  pro_until?: string | null;
+}
+
+export function isEffectivelyPro(profile: PlanLikeProfile | null | undefined): boolean {
+  if (!profile) return false;
+  if (profile.plan === "pro" || profile.plan === "enterprise") return true;
+  if (profile.pro_until) {
+    const until = Date.parse(profile.pro_until);
+    if (Number.isFinite(until) && until > Date.now()) return true;
+  }
+  return false;
+}
+
+// Resolve the plan we should *gate* on. Free users inside their founder
+// window are gated as `pro` so they get Pro module access.
+function resolveEffectivePlan(profile: PlanLikeProfile | null | undefined): PermissionResult["plan"] {
+  const raw = (profile?.plan as PermissionResult["plan"]) ?? "free";
+  if (raw !== "free") return raw;
+  return isEffectivelyPro(profile) ? "pro" : "free";
+}
+
 export async function checkModulePermission(
   supabase: SupabaseClient,
   module: ModuleKey
@@ -26,7 +55,7 @@ export async function checkModulePermission(
 
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("plan, role")
+    .select("plan, role, pro_until")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -35,7 +64,7 @@ export async function checkModulePermission(
     return { allowed: true, plan: (profile.plan as PermissionResult["plan"]) ?? "enterprise", dailyLimit: null };
   }
 
-  const plan = (profile?.plan as PermissionResult["plan"]) ?? "free";
+  const plan = resolveEffectivePlan(profile);
 
   const { data: perm } = await supabase
     .from("module_permissions")

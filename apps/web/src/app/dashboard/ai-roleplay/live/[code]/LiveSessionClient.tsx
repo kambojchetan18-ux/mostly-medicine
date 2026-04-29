@@ -198,7 +198,12 @@ export default function LiveSessionClient({
     },
     []
   );
-  const stt = useWhisperSTT(handleSttFinal);
+  // Live Peer RolePlay reuses the WebRTC capture stream for STT — we cannot
+  // call getUserMedia twice in the same tab on macOS Chrome (the second call
+  // returns a silent placeholder track, leaving the analyser stuck at RMS 0
+  // and every chunk VAD-skipped). Pass localStream through so the hook
+  // analyses + records from the SAME audio track WebRTC is sending.
+  const stt = useWhisperSTT(handleSttFinal, { externalStream: localStream });
 
   // ─── Apply remote-volume / remote-mute to the <video> element ────────
   // Re-runs whenever the user drags the slider or hits the mute toggle.
@@ -555,15 +560,21 @@ export default function LiveSessionClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  // Auto-restart STT after each final to keep capture continuous
+  // Auto-restart STT after each final to keep capture continuous. Gate on
+  // localStream too — useWhisperSTT is in externalStream mode, so it can't
+  // start until the WebRTC capture has resolved. Without this gate the first
+  // startRecording fires before localStream is set, the hook bails out (no
+  // audio track), and the only way back in is a re-render with state still
+  // "idle" — which `stt` reference equality usually doesn't trigger.
   useEffect(() => {
     if (status !== "roleplay") return;
     if (!stt.supported) return;
+    if (!localStream) return;
     if (stt.state === "idle") {
       const t = setTimeout(() => stt.startRecording(), 400);
       return () => clearTimeout(t);
     }
-  }, [status, stt]);
+  }, [status, stt, localStream]);
 
   // ─── Status transitions ──────────────────────────────────────────────
   async function advance(to: string) {

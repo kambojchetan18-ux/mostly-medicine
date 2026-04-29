@@ -9,6 +9,8 @@ export interface CurrentSubscription {
   status: string | null;
   periodEnd: string | null;
   cancelAtPeriodEnd: boolean;
+  founderRank: number | null;
+  proUntil: string | null;
 }
 
 interface Prices {
@@ -119,6 +121,32 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
           </p>
         )}
       </header>
+
+      {/* Founder promo banner — first 100 signups get Pro free for 30 days. */}
+      {subscription.founderRank != null &&
+        subscription.proUntil &&
+        Date.parse(subscription.proUntil) > Date.now() &&
+        subscription.plan === "free" && (
+          <div className="rounded-2xl border-2 border-amber-300 bg-gradient-to-r from-amber-50 via-amber-50 to-pink-50 p-4 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-amber-900">
+                  ✨ Founder #{subscription.founderRank} — Pro unlocked free
+                </p>
+                <p className="mt-0.5 text-xs text-amber-800">
+                  Thanks for being one of our first 100 users. You have full Pro access until{" "}
+                  <span className="font-semibold">
+                    {new Date(subscription.proUntil).toLocaleDateString()}
+                  </span>
+                  . No card needed. Subscribe anytime to extend.
+                </p>
+              </div>
+              <span className="shrink-0 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold text-white">
+                FOUNDER
+              </span>
+            </div>
+          </div>
+        )}
 
       {subscription.cancelAtPeriodEnd && subscription.periodEnd && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">

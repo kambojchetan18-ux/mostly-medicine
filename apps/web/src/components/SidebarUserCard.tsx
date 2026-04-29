@@ -12,6 +12,8 @@ interface UserInfo {
   plan: string;
   role: string;
   current_streak: number;
+  founder_rank: number | null;
+  pro_until: string | null;
 }
 
 export default function SidebarUserCard() {
@@ -26,7 +28,7 @@ export default function SidebarUserCard() {
       // Fetch from user_profiles for name/plan/role/streak
       supabase
         .from("user_profiles")
-        .select("full_name, email, avatar_url, plan, role, current_streak")
+        .select("full_name, email, avatar_url, plan, role, current_streak, founder_rank, pro_until")
         .eq("id", u.id)
         .single()
         .then(({ data }) => {
@@ -37,6 +39,8 @@ export default function SidebarUserCard() {
             plan: data?.plan ?? "free",
             role: data?.role ?? "user",
             current_streak: data?.current_streak ?? 0,
+            founder_rank: data?.founder_rank ?? null,
+            pro_until: data?.pro_until ?? null,
           });
         });
     });
@@ -57,8 +61,27 @@ export default function SidebarUserCard() {
   }
 
   const initials = user.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
-  const planBadge = user.plan === "pro" ? "⭐ Pro" : user.plan === "enterprise" ? "🏢 Enterprise" : "Free";
-  const planColor = user.plan === "pro" ? "text-amber-400" : user.plan === "enterprise" ? "text-violet-400" : "text-slate-500";
+
+  // Founder promo: free users inside the 30-day founder window are surfaced
+  // as Pro because that's the access they have. Once they upgrade via Stripe,
+  // plan === 'pro' takes over.
+  const founderActive =
+    user.founder_rank != null &&
+    user.pro_until != null &&
+    Date.parse(user.pro_until) > Date.now();
+  const effectivePlan =
+    user.plan === "pro" || user.plan === "enterprise"
+      ? user.plan
+      : founderActive
+        ? "pro"
+        : user.plan;
+
+  const planBadge = effectivePlan === "pro" ? "⭐ Pro" : effectivePlan === "enterprise" ? "🏢 Enterprise" : "Free";
+  const planColor = effectivePlan === "pro" ? "text-amber-400" : effectivePlan === "enterprise" ? "text-violet-400" : "text-slate-500";
+
+  const founderProUntil = founderActive && user.pro_until
+    ? new Date(user.pro_until).toLocaleDateString(undefined, { month: "short", day: "numeric" })
+    : null;
 
   const streakLabel =
     user.current_streak > 0
@@ -78,6 +101,22 @@ export default function SidebarUserCard() {
       >
         {streakLabel}
       </div>
+
+      {/* Founder badge — first 100 launch-day signups get Pro free for 30 days */}
+      {founderActive && user.founder_rank != null && (
+        <Link
+          href="/dashboard/billing"
+          className="block px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/15 to-pink-500/15 border border-amber-400/30 hover:from-amber-500/25 hover:to-pink-500/25 transition"
+          title={`Founder #${user.founder_rank} — Pro free until ${founderProUntil}`}
+        >
+          <p className="text-[10px] font-bold tracking-wide text-amber-300">
+            ✨ FOUNDER #{user.founder_rank}
+          </p>
+          <p className="text-[10px] text-amber-200/80 truncate">
+            Pro free until {founderProUntil}
+          </p>
+        </Link>
+      )}
 
       {/* User card */}
       <Link href="/dashboard/profile" className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-white/5 transition group">

@@ -98,6 +98,17 @@ export interface UseWhisperSTTOptions {
   autoStopOnSilence?: boolean;
   /** Called when auto-stop fires so the caller can flush the buffer. */
   onAutoStop?: () => void;
+  /**
+   * Optional external MediaStream to reuse for capture instead of calling
+   * `getUserMedia` internally. Required when another part of the page already
+   * holds the mic (e.g. a WebRTC `{ video: true, audio: true }` capture in
+   * Live Peer RolePlay) — macOS Chrome serializes mic capture and the second
+   * `getUserMedia` call returns a silent placeholder track. Pass the stream
+   * that owns the real audio track here and the hook will analyse + record
+   * from that same track. The hook will NOT stop tracks on this stream
+   * during cleanup; the caller retains ownership.
+   */
+  externalStream?: MediaStream | null;
 }
 
 export function useWhisperSTT(
@@ -117,6 +128,15 @@ export function useWhisperSTT(
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  // True iff the hook itself created the stream via getUserMedia. When false
+  // (caller passed an externalStream), cleanup must NOT stop the tracks —
+  // they belong to the caller and tearing them down would kill their WebRTC
+  // capture.
+  const ownsStreamRef = useRef(false);
+  // Latest externalStream from options, mirrored to a ref so async callbacks
+  // (startRecording / cleanupStream) can read the current value without being
+  // recreated on every change.
+  const externalStreamRef = useRef<MediaStream | null>(options.externalStream ?? null);
   const inflightRef = useRef(0);
   // Exponential-backoff bookkeeping for Groq rate_limit_exceeded responses.
   // `nextAllowedAtRef` is a wall-clock timestamp the chunk loop must wait past
@@ -149,6 +169,9 @@ export function useWhisperSTT(
     onAutoStopRef.current = options.onAutoStop;
     autoStopOnSilenceRef.current = options.autoStopOnSilence ?? false;
   }, [options.onAutoStop, options.autoStopOnSilence]);
+  useEffect(() => {
+    externalStreamRef.current = options.externalStream ?? null;
+  }, [options.externalStream]);
 
   // Capability detection — runs once on mount.
   useEffect(() => {
@@ -261,8 +284,14 @@ export function useWhisperSTT(
 
   const cleanupStream = useCallback(() => {
     teardownSilenceDetection();
-    streamRef.current?.getTracks().forEach((t) => t.stop());
+    // Only stop tracks the hook itself created. When an externalStream is in
+    // use the caller retains ownership — stopping its tracks would kill their
+    // WebRTC capture too.
+    if (ownsStreamRef.current) {
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    }
     streamRef.current = null;
+    ownsStreamRef.current = false;
   }, [teardownSilenceDetection]);
 
   // Are we still in "user wants to record" state? Used by the chunk loop.
@@ -358,36 +387,52 @@ export function useWhisperSTT(
     }
 
     let stream: MediaStream;
-    try {
-      // Keep echoCancellation TRUE in all modes — it's the only thing
-      // preventing partner audio (Live mode) or TTS playback (solo modes)
-      // bleeding into the mic and causing Whisper to transcribe the other
-      // side's words as if the user said them.
-      //
-      // BUT noiseSuppression + autoGainControl are aggressive on macOS and
-      // commonly destroy soft-spoken voices on laptop mics — the captured
-      // waveform ends up at near-silent RMS levels, which is why every
-      // 4-second WebM chunk decoded to Whisper's classic silence
-      // hallucination "Thank you." (a YouTube-ASR training-data artefact
-      // Whisper emits on quiet/empty audio).
-      //
-      // We disable both so the user's actual voice survives the capture
-      // pipeline. The hallucination filter still catches genuinely empty
-      // chunks, and echoCancellation alone is enough to block the
-      // partner-bleed loop.
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: false,
-          autoGainControl: false,
-        },
-      });
-    } catch (err) {
-      const name = (err as { name?: string } | null)?.name;
-      if (name === "NotAllowedError" || name === "SecurityError") {
-        setPermissionDenied(true);
+    if (externalStreamRef.current) {
+      // External-stream mode (Live Peer RolePlay): reuse the WebRTC capture
+      // stream so we don't double-call getUserMedia. macOS Chrome serializes
+      // mic capture and would otherwise hand us a silent placeholder track.
+      // The caller owns these tracks; we MUST NOT stop them in cleanup.
+      const externalStream = externalStreamRef.current;
+      const audioTracks = externalStream.getAudioTracks();
+      if (audioTracks.length === 0) {
+        console.warn("[whisper] externalStream has no audio track — cannot record");
+        return;
       }
-      return;
+      stream = externalStream;
+      ownsStreamRef.current = false;
+    } else {
+      try {
+        // Keep echoCancellation TRUE in all modes — it's the only thing
+        // preventing partner audio (Live mode) or TTS playback (solo modes)
+        // bleeding into the mic and causing Whisper to transcribe the other
+        // side's words as if the user said them.
+        //
+        // BUT noiseSuppression + autoGainControl are aggressive on macOS and
+        // commonly destroy soft-spoken voices on laptop mics — the captured
+        // waveform ends up at near-silent RMS levels, which is why every
+        // 4-second WebM chunk decoded to Whisper's classic silence
+        // hallucination "Thank you." (a YouTube-ASR training-data artefact
+        // Whisper emits on quiet/empty audio).
+        //
+        // We disable both so the user's actual voice survives the capture
+        // pipeline. The hallucination filter still catches genuinely empty
+        // chunks, and echoCancellation alone is enough to block the
+        // partner-bleed loop.
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: false,
+            autoGainControl: false,
+          },
+        });
+        ownsStreamRef.current = true;
+      } catch (err) {
+        const name = (err as { name?: string } | null)?.name;
+        if (name === "NotAllowedError" || name === "SecurityError") {
+          setPermissionDenied(true);
+        }
+        return;
+      }
     }
 
     streamRef.current = stream;
@@ -508,7 +553,8 @@ export function useWhisperSTT(
   }, [cleanupStream]);
 
   // Belt and braces: if the component unmounts while recording, drop the
-  // mic so the indicator goes away on Android Chrome.
+  // mic so the indicator goes away on Android Chrome. Same ownership rule
+  // as cleanupStream — only stop tracks the hook created.
   useEffect(() => {
     return () => {
       try {
@@ -518,9 +564,12 @@ export function useWhisperSTT(
       } catch {
         /* ignore */
       }
-      streamRef.current?.getTracks().forEach((t) => t.stop());
+      if (ownsStreamRef.current) {
+        streamRef.current?.getTracks().forEach((t) => t.stop());
+      }
       recorderRef.current = null;
       streamRef.current = null;
+      ownsStreamRef.current = false;
     };
   }, []);
 
