@@ -16,16 +16,50 @@ type RecognitionState = "idle" | "recording";
 //   - The mic stream is owned by this hook (separate getUserMedia call) so
 //     the WebRTC video stream and the STT stream stay independent — pausing
 //     STT shouldn't tear down the call.
-const CHUNK_MS = 3000;
+const CHUNK_MS = 4000;
 const MAX_INFLIGHT = 3;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
+
+// Whisper has well-known hallucinations on near-silent or noise-only audio:
+// it confidently emits "Thank you.", "Okay.", "Bye.", "Thanks for watching."
+// because those phrases dominate its training data on YouTube ASR. Drop them
+// when they're the entire chunk transcript. Real "thank you" inside a longer
+// utterance is preserved.
+const WHISPER_HALLUCINATIONS = new Set([
+  "thank you",
+  "thank you.",
+  "thanks",
+  "thanks.",
+  "thanks for watching",
+  "thanks for watching.",
+  "okay",
+  "okay.",
+  "ok",
+  "ok.",
+  "bye",
+  "bye.",
+  "you",
+  "you.",
+  "subscribe",
+  "subscribe.",
+  ".",
+  "...",
+]);
+
+function isHallucination(text: string): boolean {
+  return WHISPER_HALLUCINATIONS.has(text.trim().toLowerCase());
+}
 
 // Silence-detection thresholds for the auto-stop behaviour. Time-domain RMS
 // of the float waveform; speech on quiet mics can be as low as 0.01–0.02
 // (laptop mic at 30cm), so be permissive on voice detection. Silence
 // threshold sits below room-floor so it only trips on actual silence.
 const SILENCE_AMPLITUDE_THRESHOLD = 0.005;
-const SILENCE_HOLD_MS = 800; // tighter for snappier turn-taking
+// 3000 ms = "user clearly finished speaking", not "tiny pause between
+// sentences". Conversational flow needs room for natural pauses; auto-stop
+// is now a safety net, not the primary submit path. Users tap mic again
+// when they're done — predictable.
+const SILENCE_HOLD_MS = 3000;
 const VOICE_AMPLITUDE_THRESHOLD = 0.012;
 
 // Pick the first MediaRecorder mime type the browser actually supports.
@@ -135,6 +169,13 @@ export function useWhisperSTT(
       const text = (payload.text ?? "").trim();
       console.info("[whisper] chunk transcribed", { text });
       if (!text) return;
+      // Skip Whisper's well-known hallucinations on silent/noise-only chunks
+      // ("Thank you.", "Okay.", "Bye.", etc) — they pollute the transcript
+      // and trigger false sendMessage calls.
+      if (isHallucination(text)) {
+        console.info("[whisper] hallucination filtered", { text });
+        return;
+      }
       fullTranscriptRef.current = (
         fullTranscriptRef.current
           ? `${fullTranscriptRef.current} ${text}`

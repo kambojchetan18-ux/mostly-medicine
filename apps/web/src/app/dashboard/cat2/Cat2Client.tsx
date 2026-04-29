@@ -788,7 +788,7 @@ export default function Cat2Client() {
             permissionDenied ? "Mic access denied — type here"
             : micSupported === false ? "Type your question to the patient…"
             : speaking ? "Patient is speaking… mic paused"
-            : isRecording ? "Listening… pause speaking to send"
+            : isRecording ? (displayTranscript ? "" : "🎤 Listening… speak naturally, tap ⏹ when done")
             : "Type or use the 🎤 mic button…"
           }
           readOnly={isRecording}
