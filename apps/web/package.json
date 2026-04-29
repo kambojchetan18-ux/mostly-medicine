@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.64",
     "@anthropic-ai/sdk": "^0.32.0",
+    "@marsidev/react-turnstile": "^1.5.1",
     "@mostly-medicine/ai": "workspace:*",
     "@mostly-medicine/content": "workspace:*",
     "@mostly-medicine/ui": "workspace:*",
