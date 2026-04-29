@@ -212,6 +212,8 @@ export default function Cat2Client() {
     stopRecording: stopWhisper,
     micLevel,
     silentTooLong,
+    lastRawText,
+    chunkCount,
   } = useWhisperSTT(handleSttChunk, {
     autoStopOnSilence: true,
     onAutoStop: () => void stopRecordingRef.current(),
@@ -759,17 +761,27 @@ export default function Cat2Client() {
 
       {/* Live mic-level bar — visible feedback that voice is being captured. */}
       {isRecording && micSupported !== false && (
-        <div className="mb-2 flex items-center gap-2 text-[10px] text-gray-500">
-          <span>🎤</span>
-          <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-            <div
-              className={`h-full transition-all duration-100 ${
-                micLevel > 0.02 ? "bg-emerald-500" : micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
-              }`}
-              style={{ width: `${Math.min(100, micLevel * 800)}%` }}
-            />
+        <div className="mb-2 flex flex-col gap-1 text-[10px] text-gray-500">
+          <div className="flex items-center gap-2">
+            <span>🎤</span>
+            <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-100 ${
+                  micLevel > 0.02 ? "bg-emerald-500" : micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
+                }`}
+                style={{ width: `${Math.min(100, micLevel * 800)}%` }}
+              />
+            </div>
+            <span className="tabular-nums w-10 text-right">{(micLevel * 100).toFixed(0)}%</span>
           </div>
-          <span className="tabular-nums w-10 text-right">{(micLevel * 100).toFixed(0)}%</span>
+          <div className="flex items-center gap-2 text-[10px]">
+            <span className="font-semibold text-gray-600">📡 chunks: {chunkCount}</span>
+            {lastRawText && (
+              <span className="truncate text-gray-500" title={lastRawText}>
+                last heard: &ldquo;{lastRawText.slice(0, 60)}&rdquo;
+              </span>
+            )}
+          </div>
         </div>
       )}
 

@@ -1087,17 +1087,27 @@ export default function LiveSessionClient({
             </button>
             </div>
             {stt.state === "recording" && (
-              <div className="flex items-center gap-2 text-[10px] text-gray-500">
-                <span>🎤</span>
-                <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-                  <div
-                    className={`h-full transition-all duration-100 ${
-                      stt.micLevel > 0.02 ? "bg-emerald-500" : stt.micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
-                    }`}
-                    style={{ width: `${Math.min(100, stt.micLevel * 800)}%` }}
-                  />
+              <div className="flex flex-col gap-1 text-[10px] text-gray-500">
+                <div className="flex items-center gap-2">
+                  <span>🎤</span>
+                  <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-100 ${
+                        stt.micLevel > 0.02 ? "bg-emerald-500" : stt.micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
+                      }`}
+                      style={{ width: `${Math.min(100, stt.micLevel * 800)}%` }}
+                    />
+                  </div>
+                  <span className="tabular-nums w-10 text-right">{(stt.micLevel * 100).toFixed(0)}%</span>
                 </div>
-                <span className="tabular-nums w-10 text-right">{(stt.micLevel * 100).toFixed(0)}%</span>
+                <div className="flex items-center gap-2 text-[10px]">
+                  <span className="font-semibold text-gray-600">📡 chunks: {stt.chunkCount}</span>
+                  {stt.lastRawText && (
+                    <span className="truncate text-gray-500" title={stt.lastRawText}>
+                      last heard: &ldquo;{stt.lastRawText.slice(0, 60)}&rdquo;
+                    </span>
+                  )}
+                </div>
               </div>
             )}
           </div>

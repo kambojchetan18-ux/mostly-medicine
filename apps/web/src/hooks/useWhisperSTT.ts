@@ -129,6 +129,14 @@ export function useWhisperSTT(
   // Surfaces an on-screen warning so mobile users (no DevTools) know their
   // mic is silent and can act (refresh, check OS permissions, swap device).
   const [silentTooLong, setSilentTooLong] = useState(false);
+  // Most recent raw text Whisper returned for this hook instance, BEFORE the
+  // hallucination filter. Surfaced in the UI so phone users (no DevTools)
+  // can see what Groq is actually hearing — distinguishes "hallucinations
+  // dropped" from "Groq returned empty / network failed".
+  const [lastRawText, setLastRawText] = useState("");
+  // Total count of successful Groq responses (any text, including filtered
+  // hallucinations). Visible counter tells the user the upload pipe works.
+  const [chunkCount, setChunkCount] = useState(0);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -250,6 +258,8 @@ export function useWhisperSTT(
       const payload = (await res.json()) as { text?: string };
       const text = (payload.text ?? "").trim();
       console.info("[whisper] chunk transcribed", { text });
+      setChunkCount((c) => c + 1);
+      setLastRawText(text);
       if (!text) return;
       // Skip Whisper's well-known hallucinations on silent/noise-only chunks
       // ("Thank you.", "Okay.", "Bye.", etc) — they pollute the transcript
@@ -627,5 +637,7 @@ export function useWhisperSTT(
     micLevel,
     rateLimited,
     silentTooLong,
+    lastRawText,
+    chunkCount,
   };
 }
