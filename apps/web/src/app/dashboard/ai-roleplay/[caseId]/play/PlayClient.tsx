@@ -101,6 +101,15 @@ export default function PlayClient({
     stopRecordingRef.current = stopRecording;
   }, [stopRecording]);
 
+  // Hard guard against TTS↔mic feedback loop. While the patient AI is
+  // speaking through the laptop speaker, the mic was capturing that audio
+  // back and Whisper transcribed the AI's own line as user input — chaos.
+  useEffect(() => {
+    if (speaking && sttState === "recording") {
+      void stopRecording();
+    }
+  }, [speaking, sttState, stopRecording]);
+
   // Countdown
   useEffect(() => {
     if (ended) return;

@@ -226,6 +226,17 @@ export default function Cat2Client() {
     stopRecordingRef.current = stopRecording;
   }, [stopRecording]);
 
+  // Guard: never let the mic record while the AI is speaking. Otherwise the
+  // patient's TTS audio bleeds out of the laptop speakers, the mic captures
+  // it, Whisper transcribes the AI's own line, and the conversation loops
+  // on itself. Auto-stop the recorder the moment speaking starts; the user
+  // can tap mic again once the patient finishes.
+  useEffect(() => {
+    if (speaking && recState === "recording") {
+      void stopRecording();
+    }
+  }, [speaking, recState, stopRecording]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
@@ -747,8 +758,14 @@ export default function Cat2Client() {
         {micSupported !== false && (
           <button
             onClick={handleMicButton}
-            disabled={loading}
-            title={isRecording ? "Tap to stop recording and send" : "Tap to start voice input"}
+            disabled={loading || speaking}
+            title={
+              speaking
+                ? "Patient is speaking — wait for them to finish"
+                : isRecording
+                  ? "Tap to stop recording and send"
+                  : "Tap to start voice input"
+            }
             className={`relative flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all disabled:opacity-40 ${
               isRecording
                 ? "bg-red-500 hover:bg-red-600 shadow-lg"
@@ -770,7 +787,8 @@ export default function Cat2Client() {
           placeholder={
             permissionDenied ? "Mic access denied — type here"
             : micSupported === false ? "Type your question to the patient…"
-            : isRecording ? "Listening… tap ⏹ to send (or pause speaking 1.5s for auto-send)"
+            : speaking ? "Patient is speaking… mic paused"
+            : isRecording ? "Listening… pause speaking to send"
             : "Type or use the 🎤 mic button…"
           }
           readOnly={isRecording}

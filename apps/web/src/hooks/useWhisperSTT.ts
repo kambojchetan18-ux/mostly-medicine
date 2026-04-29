@@ -16,7 +16,7 @@ type RecognitionState = "idle" | "recording";
 //   - The mic stream is owned by this hook (separate getUserMedia call) so
 //     the WebRTC video stream and the STT stream stay independent — pausing
 //     STT shouldn't tear down the call.
-const CHUNK_MS = 5000;
+const CHUNK_MS = 3000;
 const MAX_INFLIGHT = 3;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
 
@@ -25,7 +25,7 @@ const TRANSCRIBE_URL = "/api/stt/transcribe";
 // (laptop mic at 30cm), so be permissive on voice detection. Silence
 // threshold sits below room-floor so it only trips on actual silence.
 const SILENCE_AMPLITUDE_THRESHOLD = 0.005;
-const SILENCE_HOLD_MS = 1500;
+const SILENCE_HOLD_MS = 800; // tighter for snappier turn-taking
 const VOICE_AMPLITUDE_THRESHOLD = 0.012;
 
 // Pick the first MediaRecorder mime type the browser actually supports.
@@ -247,7 +247,18 @@ export function useWhisperSTT(
 
     let stream: MediaStream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Critical for solo modes: echoCancellation drops the loopback of TTS
+      // playback that the laptop speakers feed back into the mic. Without
+      // this, Whisper transcribes the AI's own line as if the user said it
+      // and the conversation goes haywire. noiseSuppression + autoGainControl
+      // cleanup quiet rooms.
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
     } catch (err) {
       const name = (err as { name?: string } | null)?.name;
       if (name === "NotAllowedError" || name === "SecurityError") {
