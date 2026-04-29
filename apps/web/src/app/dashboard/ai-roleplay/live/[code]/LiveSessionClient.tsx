@@ -1044,10 +1044,18 @@ export default function LiveSessionClient({
           </div>
         </div>
 
+        {/* Mic-silent warning — visible feedback for phone users without DevTools. */}
+        {stt.silentTooLong && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800 leading-relaxed">
+            🚫 <strong>Your mic seems silent.</strong> Check your phone/laptop mic permission for this site, close other apps using the mic (Zoom, Meet, FaceTime), then refresh.
+          </div>
+        )}
+
         {/* Explicit mic toggle — auto-start fails silently in strict browsers
             without a user gesture. This button gives a clear gesture handle. */}
         {stt.supported && (
-          <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm">
+          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm">
+            <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
               <span
                 className={`inline-block h-2 w-2 rounded-full ${
@@ -1077,6 +1085,21 @@ export default function LiveSessionClient({
             >
               {stt.state === "recording" ? "Pause mic" : "Start mic"}
             </button>
+            </div>
+            {stt.state === "recording" && (
+              <div className="flex items-center gap-2 text-[10px] text-gray-500">
+                <span>🎤</span>
+                <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-100 ${
+                      stt.micLevel > 0.02 ? "bg-emerald-500" : stt.micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
+                    }`}
+                    style={{ width: `${Math.min(100, stt.micLevel * 800)}%` }}
+                  />
+                </div>
+                <span className="tabular-nums w-10 text-right">{(stt.micLevel * 100).toFixed(0)}%</span>
+              </div>
+            )}
           </div>
         )}
         {!stt.supported && (

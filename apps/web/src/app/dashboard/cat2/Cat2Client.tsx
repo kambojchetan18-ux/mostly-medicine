@@ -210,6 +210,8 @@ export default function Cat2Client() {
     permissionDenied,
     startRecording,
     stopRecording: stopWhisper,
+    micLevel,
+    silentTooLong,
   } = useWhisperSTT(handleSttChunk, {
     autoStopOnSilence: true,
     onAutoStop: () => void stopRecordingRef.current(),
@@ -745,6 +747,29 @@ export default function Cat2Client() {
       {micSupported === false && (
         <div className="mb-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed">
           🎤 Voice input not supported in this browser (Brave / Firefox block it). Use Chrome, Edge, or Safari, or click the keyboard icon below to type your response.
+        </div>
+      )}
+
+      {/* Mic-silent warning — fires after 5s of recording with no voice. */}
+      {silentTooLong && (
+        <div className="mb-2 px-3 py-2 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 leading-relaxed">
+          🚫 <strong>Mic seems silent.</strong> Check your phone/laptop mic permission for this site, close other apps using the mic (Zoom, Meet, FaceTime), then refresh.
+        </div>
+      )}
+
+      {/* Live mic-level bar — visible feedback that voice is being captured. */}
+      {isRecording && micSupported !== false && (
+        <div className="mb-2 flex items-center gap-2 text-[10px] text-gray-500">
+          <span>🎤</span>
+          <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+            <div
+              className={`h-full transition-all duration-100 ${
+                micLevel > 0.02 ? "bg-emerald-500" : micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
+              }`}
+              style={{ width: `${Math.min(100, micLevel * 800)}%` }}
+            />
+          </div>
+          <span className="tabular-nums w-10 text-right">{(micLevel * 100).toFixed(0)}%</span>
         </div>
       )}
 

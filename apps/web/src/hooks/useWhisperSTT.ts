@@ -125,6 +125,10 @@ export function useWhisperSTT(
   // True when Groq is currently rate-limiting us and we're in backoff. The
   // caller can render a pill so the user knows transcripts are paused.
   const [rateLimited, setRateLimited] = useState(false);
+  // True when the mic has been "live" but RMS has stayed near-zero for 5+s.
+  // Surfaces an on-screen warning so mobile users (no DevTools) know their
+  // mic is silent and can act (refresh, check OS permissions, swap device).
+  const [silentTooLong, setSilentTooLong] = useState(false);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -161,6 +165,10 @@ export function useWhisperSTT(
   const silenceCheckRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastVoiceAtRef = useRef<number>(0);
   const hasHeardVoiceRef = useRef<boolean>(false);
+  // Wall-clock when startRecording last fired — used to decide when to flip
+  // `silentTooLong` on (only after a 5s grace window — startup transient
+  // shouldn't trigger the warning).
+  const recordingStartedAtRef = useRef<number>(0);
 
   useEffect(() => {
     onTranscriptRef.current = onTranscript;
@@ -435,6 +443,8 @@ export function useWhisperSTT(
     setDisplayTranscript("");
     wantRecordingRef.current = true;
     setState("recording");
+    setSilentTooLong(false);
+    recordingStartedAtRef.current = Date.now();
 
     // Diagnostic: print which device + track state Chrome handed us. When the
     // mic is "silently silent" (rms 0.0000 forever) this is the only way to
@@ -513,6 +523,18 @@ export function useWhisperSTT(
           if (rms > VOICE_AMPLITUDE_THRESHOLD) {
             lastVoiceAtRef.current = now;
             hasHeardVoiceRef.current = true;
+            setSilentTooLong(false);
+          } else if (
+            !hasHeardVoiceRef.current &&
+            recordingStartedAtRef.current > 0 &&
+            now - recordingStartedAtRef.current > 5000 &&
+            rms < SILENCE_AMPLITUDE_THRESHOLD
+          ) {
+            // 5+ seconds since startRecording AND we have NEVER seen a voice
+            // amplitude pop. Mic is almost certainly muted at the OS level,
+            // pointed at a dead/virtual device, or the user revoked permission.
+            // Surface to the UI so phone users (no DevTools) can act.
+            setSilentTooLong(true);
           } else if (
             autoStopOnSilenceRef.current &&
             hasHeardVoiceRef.current &&
@@ -602,5 +624,8 @@ export function useWhisperSTT(
     permissionDenied,
     startRecording,
     stopRecording,
+    micLevel,
+    rateLimited,
+    silentTooLong,
   };
 }

@@ -85,6 +85,8 @@ export default function PlayClient({
     permissionDenied: micDenied,
     startRecording,
     stopRecording: stopWhisper,
+    micLevel,
+    silentTooLong,
   } = useWhisperSTT(handleSttChunk, {
     autoStopOnSilence: true,
     onAutoStop: () => void stopRecordingRef.current(),
@@ -416,6 +418,27 @@ export default function PlayClient({
             {!micMuted && sttState === "idle" && !sending && "🎤 Listening… speak naturally"}
             {!micMuted && sending && "Patient is responding…"}
           </div>
+
+          {silentTooLong && (
+            <div className="w-full rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800 leading-relaxed">
+              🚫 <strong>Mic seems silent.</strong> Check your phone/laptop mic permission for this site, close other apps using the mic (Zoom, Meet, FaceTime), then refresh.
+            </div>
+          )}
+
+          {sttState === "recording" && sttSupported && (
+            <div className="flex w-full items-center gap-2 text-[10px] text-gray-500">
+              <span>🎤</span>
+              <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-100 ${
+                    micLevel > 0.02 ? "bg-emerald-500" : micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
+                  }`}
+                  style={{ width: `${Math.min(100, micLevel * 800)}%` }}
+                />
+              </div>
+              <span className="tabular-nums w-10 text-right">{(micLevel * 100).toFixed(0)}%</span>
+            </div>
+          )}
           {!sttSupported && (
             <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-center">
               <p className="text-xs text-amber-700">
