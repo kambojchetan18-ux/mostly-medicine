@@ -112,6 +112,70 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
     streamRef.current = null;
   }, []);
 
+  // Are we still in "user wants to record" state? Used by the chunk loop.
+  const wantRecordingRef = useRef(false);
+  const chunkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Spin up ONE recorder for ONE chunk, stop it after CHUNK_MS, upload the
+  // complete WebM blob, then if the user still wants to record, recurse.
+  // Why this pattern instead of `recorder.start(timeslice)`: MediaRecorder's
+  // timeslice mode emits the WebM container header in the FIRST chunk only;
+  // every subsequent chunk is raw continuation bytes that Groq rejects with
+  // "could not process file — is it a valid media file?". Stop+restart per
+  // chunk means every Blob is a standalone, valid WebM file.
+  const startChunkLoop = useCallback((stream: MediaStream, mime: string) => {
+    if (!wantRecordingRef.current) return;
+    let recorder: MediaRecorder;
+    try {
+      recorder = new MediaRecorder(stream, { mimeType: mime });
+    } catch {
+      setSupported(false);
+      return;
+    }
+
+    let chunkData: Blob | null = null;
+    recorder.ondataavailable = (ev: BlobEvent) => {
+      if (ev.data && ev.data.size > 0) chunkData = ev.data;
+    };
+    recorder.onerror = () => {
+      setState("idle");
+      cleanupStream();
+      recorderRef.current = null;
+      wantRecordingRef.current = false;
+    };
+    recorder.onstop = () => {
+      // Upload the completed standalone-WebM chunk (fire-and-forget).
+      if (chunkData) void uploadChunk(chunkData);
+      // Recurse for the next chunk if user still wants to record.
+      if (wantRecordingRef.current && streamRef.current) {
+        startChunkLoop(streamRef.current, mime);
+      } else {
+        setState("idle");
+        cleanupStream();
+        recorderRef.current = null;
+      }
+    };
+
+    try {
+      recorder.start();
+      recorderRef.current = recorder;
+      // Schedule the stop after CHUNK_MS to cap the chunk size.
+      chunkTimerRef.current = setTimeout(() => {
+        chunkTimerRef.current = null;
+        try {
+          if (recorder.state === "recording") recorder.stop();
+        } catch {
+          /* ignore */
+        }
+      }, CHUNK_MS);
+    } catch {
+      cleanupStream();
+      recorderRef.current = null;
+      wantRecordingRef.current = false;
+      setState("idle");
+    }
+  }, [cleanupStream, uploadChunk]);
+
   const startRecording = useCallback(async () => {
     if (recorderRef.current) return;
     const mime = pickMimeType();
@@ -124,7 +188,6 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (err) {
-      // Most likely "NotAllowedError" — the user clicked "Block".
       const name = (err as { name?: string } | null)?.name;
       if (name === "NotAllowedError" || name === "SecurityError") {
         setPermissionDenied(true);
@@ -135,51 +198,18 @@ export function useWhisperSTT(onTranscript?: (text: string) => void) {
     streamRef.current = stream;
     fullTranscriptRef.current = "";
     setDisplayTranscript("");
-
-    let recorder: MediaRecorder;
-    try {
-      recorder = new MediaRecorder(stream, { mimeType: mime });
-    } catch {
-      cleanupStream();
-      setSupported(false);
-      return;
-    }
-
-    recorder.ondataavailable = (ev: BlobEvent) => {
-      if (ev.data && ev.data.size > 0) {
-        // Fire-and-forget upload. Errors are swallowed inside uploadChunk.
-        void uploadChunk(ev.data);
-      }
-    };
-
-    recorder.onerror = () => {
-      // Surface as idle; the caller can re-start.
-      setState("idle");
-      cleanupStream();
-      recorderRef.current = null;
-    };
-
-    recorder.onstop = () => {
-      setState("idle");
-      cleanupStream();
-      recorderRef.current = null;
-    };
-
-    try {
-      // Timeslice arg makes ondataavailable fire every CHUNK_MS while
-      // recording is still active — exactly what we need for streaming
-      // 5s windows to Groq.
-      recorder.start(CHUNK_MS);
-      recorderRef.current = recorder;
-      setState("recording");
-    } catch {
-      cleanupStream();
-      recorderRef.current = null;
-      setState("idle");
-    }
-  }, [cleanupStream, uploadChunk]);
+    wantRecordingRef.current = true;
+    setState("recording");
+    startChunkLoop(stream, mime);
+  }, [cleanupStream, startChunkLoop]);
 
   const stopRecording = useCallback(async (): Promise<string> => {
+    // Tell the chunk loop to stop recurring after the current chunk uploads.
+    wantRecordingRef.current = false;
+    if (chunkTimerRef.current) {
+      clearTimeout(chunkTimerRef.current);
+      chunkTimerRef.current = null;
+    }
     const recorder = recorderRef.current;
     if (!recorder) {
       cleanupStream();
