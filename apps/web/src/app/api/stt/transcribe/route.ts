@@ -101,6 +101,14 @@ export async function POST(req: NextRequest) {
   groqForm.append("response_format", "json");
   groqForm.append("temperature", "0");
   groqForm.append("language", "en");
+  // Context prompt heavily biases Whisper toward medical-conversation tokens
+  // and AWAY from its YouTube-trained default-ending hallucinations
+  // ("Thank you for watching", "Subscribe", etc) that show up on quiet audio.
+  // Single biggest reduction in the "Thank you. Thank you." loop.
+  groqForm.append(
+    "prompt",
+    "A doctor is consulting with a patient. Medical English. Symptoms, history, examination, diagnosis."
+  );
   // WebM/Opus is what MediaRecorder produces in Chrome; Groq accepts it.
   groqForm.append("file", audio, "chunk.webm");
 
