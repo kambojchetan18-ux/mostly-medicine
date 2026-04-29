@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const client = new Anthropic();
 
@@ -48,6 +49,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Sonnet calls on whole PDFs are expensive — cap each user to a few uploads
+  // per minute. CVs are written once a year, so 5/min is generous.
+  const rl = await aiRateLimit(clientKey(req, "cv-analyse", user.id), { max: 5, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
+
   try {
     const formData = await req.formData();
     let cvText = formData.get("text") as string | null;
@@ -59,6 +70,16 @@ export async function POST(req: NextRequest) {
 
     let response;
 
+    // cache_control on the static SYSTEM prompt — every CV is parsed against
+    // the same schema, so warm cache hits on repeat uploads.
+    const systemBlocks = [
+      {
+        type: "text",
+        text: SYSTEM,
+        cache_control: { type: "ephemeral" },
+      },
+    ] as unknown as Anthropic.TextBlockParam[];
+
     if (file && !cvText && file.type === "application/pdf") {
       // Send PDF directly to Claude — avoids pdfjs-dist browser-global issues entirely
       const bytes = await file.arrayBuffer();
@@ -67,7 +88,7 @@ export async function POST(req: NextRequest) {
       response = await (client.messages.create as any)({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM,
+        system: systemBlocks,
         messages: [{
           role: "user",
           content: [
@@ -86,7 +107,7 @@ export async function POST(req: NextRequest) {
       response = await client.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM,
+        system: systemBlocks,
         messages: [{ role: "user", content: `CV TEXT:\n\n${text.slice(0, 8000)}` }],
       });
     }

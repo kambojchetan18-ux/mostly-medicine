@@ -6,6 +6,10 @@ export async function GET(req: NextRequest) {
   if (!query || query.length < 2) {
     return NextResponse.json({ results: [] });
   }
+  // Cap query length so the RPC can't be DoSed with a 1MB string.
+  if (query.length > 200) {
+    return NextResponse.json({ error: "Query too long" }, { status: 400 });
+  }
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

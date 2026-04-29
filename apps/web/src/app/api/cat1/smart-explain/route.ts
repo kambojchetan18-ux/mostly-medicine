@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { allQuestions } from "@mostly-medicine/content";
 import { createClient } from "@/lib/supabase/server";
+import { enforceDailyLimit } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const MODEL = "claude-haiku-4-5-20251001";
 
@@ -45,7 +47,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing questionId or userAnswerIndex" }, { status: 400 });
   }
 
-  // Cache check — return existing if same user already asked about this question.
+  // Cache check FIRST — cached replies cost nothing, so let them through
+  // regardless of daily-limit state (user already paid for the original).
   const { data: cached } = await supabase
     .from("cat1_explanations")
     .select("explanation")
@@ -55,6 +58,27 @@ export async function POST(req: NextRequest) {
 
   if (cached?.explanation) {
     return NextResponse.json({ explanation: cached.explanation, cached: true });
+  }
+
+  // Cache miss — apply per-user rolling-window throttle before any paid
+  // call. Defense in depth on top of the daily counter below.
+  const rl = await aiRateLimit(clientKey(req, "smart-explain", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
+
+  // Cache miss — gate by plan + daily quota before paying for a fresh
+  // Anthropic call. Shares the mcq counter so a free user can't bypass
+  // their attempt cap by calling smart-explain directly.
+  const limit = await enforceDailyLimit(supabase, "mcq");
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "daily_limit_reached", plan: limit.plan, dailyLimit: limit.dailyLimit, used: limit.used },
+      { status: 429 }
+    );
   }
 
   // Look up the question in the @mostly-medicine/content bundle.

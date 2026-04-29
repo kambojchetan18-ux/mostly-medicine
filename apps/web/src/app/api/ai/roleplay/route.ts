@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClinicalRoleplay } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   let user = null;
@@ -24,6 +25,16 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Per-user throttle. Mobile clients hit this directly without going
+  // through the daily-counter routes, so cap raw turn rate at 30/min.
+  const rl = await aiRateLimit(clientKey(req, "ai-roleplay", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   try {

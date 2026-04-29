@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient, type SupabaseClient } from "@supabase/supabase-js";
 import { checkModulePermission } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Server-side Whisper STT for the Peer RolePlay live mode.
 // Browser MediaRecorder posts a 5s WebM/Opus chunk to this route; we forward
@@ -51,6 +52,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: "Voice transcription not available on your plan" },
       { status: 403 }
+    );
+  }
+
+  // 2b. Per-user throttle — MediaRecorder posts ~12 chunks/min during a
+  //     normal conversation. 60/min leaves headroom for fast back-and-forth
+  //     while blocking a script that loops on this endpoint.
+  const rl = await aiRateLimit(clientKey(req, "stt", user.id), { max: 60, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
     );
   }
 
