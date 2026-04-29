@@ -141,27 +141,47 @@ export default function LiveSessionClient({
   const rtcChannelRef = useRef<RealtimeChannel | null>(null);
   const messagesChannelRef = useRef<RealtimeChannel | null>(null);
 
-  // ─── STT — capture local speech, POST to message API ─────────────────
-  const handleSttFinal = useCallback(
-    async (final: string) => {
-      setSttChunkCount((c) => c + 1);
-      setSttLastChunk(final);
-      setSttError(null);
-      try {
-        const res = await fetch(`/api/ai-roleplay/live/${sessionId}/message`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: final }),
-        });
-        if (!res.ok) {
-          const body = await res.text().catch(() => "");
-          setSttError(`message POST failed: ${res.status} ${body.slice(0, 80)}`);
-        }
-      } catch (err) {
-        setSttError(err instanceof Error ? err.message : "message POST failed");
+  // ─── STT — capture local speech, debounce, POST to message API ──────
+  // Each Whisper chunk arrives every ~4 s. Posting every chunk floods the
+  // transcript panel with "Hello?", "So...", "Thank you." fragments —
+  // partly hallucinations, partly natural pauses. Buffer for 2.5 s of
+  // quiet between chunks, then ship the joined utterance as one message.
+  const sttBufferRef = useRef("");
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const postMessage = useCallback(async (content: string) => {
+    if (!content.trim()) return;
+    setSttChunkCount((c) => c + 1);
+    setSttLastChunk(content);
+    setSttError(null);
+    try {
+      const res = await fetch(`/api/ai-roleplay/live/${sessionId}/message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        setSttError(`message POST failed: ${res.status} ${body.slice(0, 80)}`);
       }
+    } catch (err) {
+      setSttError(err instanceof Error ? err.message : "message POST failed");
+    }
+  }, [sessionId]);
+  const handleSttFinal = useCallback(
+    (final: string) => {
+      sttBufferRef.current = (sttBufferRef.current + " " + final).trim();
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+      // Wait 2.5 s of mic-quiet after the latest chunk before flushing — that
+      // amalgamates a multi-sentence utterance into ONE transcript message
+      // instead of N tiny "Hello?" / "So..." fragments.
+      flushTimerRef.current = setTimeout(() => {
+        flushTimerRef.current = null;
+        const buffered = sttBufferRef.current.trim();
+        sttBufferRef.current = "";
+        if (buffered) void postMessage(buffered);
+      }, 2500);
     },
-    [sessionId]
+    []
   );
   const stt = useWhisperSTT(handleSttFinal);
 

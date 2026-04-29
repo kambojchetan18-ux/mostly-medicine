@@ -20,34 +20,35 @@ const CHUNK_MS = 4000;
 const MAX_INFLIGHT = 3;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
 
-// Whisper has well-known hallucinations on near-silent or noise-only audio:
-// it confidently emits "Thank you.", "Okay.", "Bye.", "Thanks for watching."
-// because those phrases dominate its training data on YouTube ASR. Drop them
-// when they're the entire chunk transcript. Real "thank you" inside a longer
-// utterance is preserved.
+// Whisper hallucinates dozens of stock phrases on near-silent or noise-only
+// audio (a YouTube-ASR training-data artefact). Drop a chunk when EVERY
+// sentence inside it matches a known hallucination — that catches both
+// "Hello?" alone and "Thank you. Thank you. Thank you." spam.
 const WHISPER_HALLUCINATIONS = new Set([
-  "thank you",
-  "thank you.",
-  "thanks",
-  "thanks.",
-  "thanks for watching",
-  "thanks for watching.",
-  "okay",
-  "okay.",
-  "ok",
-  "ok.",
-  "bye",
-  "bye.",
-  "you",
-  "you.",
-  "subscribe",
-  "subscribe.",
-  ".",
-  "...",
+  "thank you", "thanks", "thanks for watching", "thanks for listening",
+  "thank you so much", "thank you very much", "thanks again",
+  "okay", "ok", "all right", "alright",
+  "bye", "goodbye", "see you",
+  "you", "yes", "no", "yeah", "yep", "nope",
+  "hi", "hello", "hey",
+  "so", "well", "um", "uh", "mm-hmm", "mm hmm", "uh-huh", "uh huh",
+  "subscribe", "like and subscribe", "please subscribe",
+  ".", "...", "?", "!", "♪", "♪♪", "(music)", "(silence)",
 ]);
 
 function isHallucination(text: string): boolean {
-  return WHISPER_HALLUCINATIONS.has(text.trim().toLowerCase());
+  // Strip outer punctuation, lowercase
+  const cleaned = text.trim().toLowerCase().replace(/[.!?,;:]+$/g, "").trim();
+  if (!cleaned) return true;
+  if (WHISPER_HALLUCINATIONS.has(cleaned)) return true;
+  // Split into sentences. If every non-empty sentence is a hallucination,
+  // the whole chunk is hallucinated noise (e.g., "Hello? Hello? Hello.").
+  const sentences = text
+    .split(/[.!?]+/)
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  if (sentences.length === 0) return true;
+  return sentences.every((s) => WHISPER_HALLUCINATIONS.has(s));
 }
 
 // Silence-detection thresholds for the auto-stop behaviour. Time-domain RMS
