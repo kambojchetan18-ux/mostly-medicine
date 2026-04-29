@@ -400,21 +400,31 @@ export default function LiveSessionClient({
             streams: ev.streams.length,
             streamId: ev.streams[0]?.id,
           });
-          // Accumulate tracks into a single MediaStream rather than overwriting.
-          // Browsers can fire ontrack twice — once for audio, once for video —
-          // and may pass DIFFERENT stream ids per track (Firefox, some mobile
-          // Chromes). Setting setRemoteStream(ev.streams[0]) overwrote the
-          // earlier track and dropped the video tile to black even though the
-          // video track was being transmitted. Build a fresh MediaStream from
-          // (prev tracks ∪ this track) every fire — new identity triggers the
-          // attachment effect, and the <video> element receives BOTH tracks.
-          setRemoteStream((prev) => {
-            const existing = prev ? prev.getTracks() : [];
-            if (existing.some((t) => t.id === ev.track.id)) {
-              return prev;
+          // Browsers fire ontrack twice — once for audio, once for video. The
+          // earlier "merge into a fresh MediaStream every fire" approach
+          // (`new MediaStream([...prev.getTracks(), ev.track])`) regressed the
+          // partner video tile to black: rebinding `srcObject` to a NEW stream
+          // instance on the second fire confused Chrome's playback pipeline,
+          // so the video track that arrived second was silently dropped.
+          //
+          // Fix: attach `ev.streams[0]` directly (sender uses
+          // `pc.addTrack(track, stream)` with a SHARED stream → same stream
+          // reference on every fire) and ALSO set srcObject + play() right
+          // here — same belt-and-braces pattern that worked at ef51399.
+          // Keep the React state in sync so the attachment useEffect still
+          // wins the "video element not yet mounted" race.
+          const incoming = ev.streams[0];
+          if (incoming) {
+            setRemoteStream(incoming);
+            if (remoteVideoRef.current) {
+              if (remoteVideoRef.current.srcObject !== incoming) {
+                remoteVideoRef.current.srcObject = incoming;
+              }
+              remoteVideoRef.current.play().catch((err) => {
+                console.warn("[live/rtc] remote video play() rejected", err);
+              });
             }
-            return new MediaStream([...existing, ev.track]);
-          });
+          }
         };
 
         // Diagnose hung handshakes: surface every state transition into the
