@@ -20,16 +20,13 @@ const CHUNK_MS = 5000;
 const MAX_INFLIGHT = 3;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
 
-// Silence-detection thresholds for the auto-stop behaviour. Tuned so a quick
-// breath / pause doesn't auto-end the turn but a clear stop (>1.5s of low
-// audio) does. We use time-domain amplitude (Float32, RMS-like) rather than
-// frequency-domain because it tracks overall loudness regardless of pitch.
-// Threshold ~0.015 is roughly room-quiet; speech routinely hits 0.05–0.3.
-const SILENCE_AMPLITUDE_THRESHOLD = 0.015;
+// Silence-detection thresholds for the auto-stop behaviour. Time-domain RMS
+// of the float waveform; speech on quiet mics can be as low as 0.01–0.02
+// (laptop mic at 30cm), so be permissive on voice detection. Silence
+// threshold sits below room-floor so it only trips on actual silence.
+const SILENCE_AMPLITUDE_THRESHOLD = 0.005;
 const SILENCE_HOLD_MS = 1500;
-// Voice-presence threshold — slightly above the silence floor so a single
-// burst of microphone noise isn't enough to mark "the user has spoken".
-const VOICE_AMPLITUDE_THRESHOLD = 0.04;
+const VOICE_AMPLITUDE_THRESHOLD = 0.012;
 
 // Pick the first MediaRecorder mime type the browser actually supports.
 // Chrome/Android: audio/webm;codecs=opus. iOS Safari 17+: audio/mp4.
@@ -66,6 +63,9 @@ export function useWhisperSTT(
   const [displayTranscript, setDisplayTranscript] = useState("");
   const [supported, setSupported] = useState<boolean | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  // Live RMS of the mic in 0..1 — exposed so the UI can show a level bar.
+  // Updated every 200ms by the silence-detection loop.
+  const [micLevel, setMicLevel] = useState(0);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -106,6 +106,14 @@ export function useWhisperSTT(
   const uploadChunk = useCallback(async (blob: Blob) => {
     if (blob.size === 0) {
       console.info("[whisper] empty chunk, skip");
+      return;
+    }
+    // A WebM header alone is ~18-32 bytes; one second of Opus audio is at
+    // least ~6 KB. Anything under 1 KB is a header-only artefact from a
+    // recorder that was stopped within milliseconds of starting (race with
+    // silence-detection auto-stop). Skip — Whisper rejects them with a 400.
+    if (blob.size < 1024) {
+      console.info("[whisper] tiny chunk, skip", { bytes: blob.size });
       return;
     }
     if (inflightRef.current >= MAX_INFLIGHT) {
@@ -290,8 +298,7 @@ export function useWhisperSTT(
               sumSq += timeBuf[i] * timeBuf[i];
             }
             const rms = Math.sqrt(sumSq / timeBuf.length);
-            // Throttled diagnostic: log RMS once per second so the user can
-            // see what's happening in DevTools.
+            setMicLevel(rms);
             const now = Date.now();
             if (now - lastDebugAt > 1000) {
               lastDebugAt = now;
