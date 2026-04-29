@@ -21,11 +21,13 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Extract storage path from URL
-  const url = new URL(note.file_url);
-  const pathParts = url.pathname.split("/user-notes/");
-  if (pathParts[1]) {
-    await supabase.storage.from("user-notes").remove([decodeURIComponent(pathParts[1])]);
+  if (note.file_url) {
+    const storagePath = note.file_url.startsWith("http")
+      ? new URL(note.file_url).pathname.split("/user-notes/")[1] ?? ""
+      : note.file_url;
+    if (storagePath) {
+      await supabase.storage.from("user-notes").remove([decodeURIComponent(storagePath)]);
+    }
   }
 
   // Delete from database (scoped to user for defense in depth)

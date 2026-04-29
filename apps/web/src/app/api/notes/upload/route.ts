@@ -78,7 +78,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
   }
 
-  const { data: { publicUrl } } = supabase.storage.from("user-notes").getPublicUrl(storagePath);
+  const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+    .from("user-notes")
+    .createSignedUrl(storagePath, 60 * 60);
+  const fileUrl = signedUrlError ? storagePath : signedUrlData.signedUrl;
 
   // Extract text
   let extractedText = "";
@@ -100,7 +103,7 @@ export async function POST(req: NextRequest) {
     .insert({
       user_id: user.id,
       filename: file.name,
-      file_url: publicUrl,
+      file_url: storagePath,
       extracted_text: extractedText,
       ai_summary: aiSummary,
       page_count: pageCount,

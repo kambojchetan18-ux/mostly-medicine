@@ -2,12 +2,12 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform,
-  PermissionsAndroid, Animated,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import Voice, { type SpeechResultsEvent, type SpeechErrorEvent } from '@react-native-voice/voice';
+import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
 import { scenarios } from '@mostly-medicine/ai';
@@ -16,10 +16,10 @@ import type { Scenario } from '@mostly-medicine/ai';
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
 
 const DIFF_COLOR: Record<string, string> = {
-  Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
+  easy: '#10b981', medium: '#f59e0b', hard: '#ef4444',
 };
 const DIFF_BG: Record<string, string> = {
-  Easy: '#064e3b', Medium: '#713f12', Hard: '#7f1d1d',
+  easy: '#064e3b', medium: '#713f12', hard: '#7f1d1d',
 };
 
 type Message = { role: 'user' | 'assistant'; content: string };
@@ -46,21 +46,8 @@ const MILESTONES = [
 ];
 
 async function requestMicPermission(): Promise<boolean> {
-  if (Platform.OS !== 'android') return true;
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      {
-        title: 'Microphone Permission',
-        message: 'Mostly Medicine needs microphone access to record your voice during roleplay.',
-        buttonPositive: 'Allow',
-        buttonNegative: 'Deny',
-      },
-    );
-    return granted === PermissionsAndroid.RESULTS.GRANTED;
-  } catch {
-    return false;
-  }
+  const { granted } = await Audio.requestPermissionsAsync();
+  return granted;
 }
 
 export default function RoleplayScreen() {
@@ -85,30 +72,13 @@ export default function RoleplayScreen() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
 
-  // ── Voice setup ─────────────────────────────────────────────────────────────
+  const recordingRef = useRef<Audio.Recording | null>(null);
+
   useEffect(() => {
-    Voice.onSpeechStart = () => setIsRecording(true);
-    Voice.onSpeechEnd = () => setIsRecording(false);
-    Voice.onSpeechPartialResults = (e: SpeechResultsEvent) => {
-      const partial = e.value?.[0];
-      if (partial) setInput(partial);
-    };
-    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
-      const result = e.value?.[0];
-      if (result) {
-        setInput(result);
-        setIsRecording(false);
-      }
-    };
-    Voice.onSpeechError = (e: SpeechErrorEvent) => {
-      const msg = e.error?.message ?? 'Voice error';
-      // 7 = no match (user stopped without speaking) — silent ignore
-      if (!msg.includes('7')) setVoiceError(msg);
-      setIsRecording(false);
-    };
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      playsInSilentModeIOS: true,
+    });
   }, []);
 
   // ── TTS ──────────────────────────────────────────────────────────────────────
@@ -148,11 +118,35 @@ export default function RoleplayScreen() {
     }
   }, [isRecording, pulseAnim]);
 
+  async function stopAndTranscribe() {
+    try {
+      const rec = recordingRef.current;
+      if (!rec) return;
+      await rec.stopAndUnloadAsync();
+      const uri = rec.getURI();
+      recordingRef.current = null;
+      setIsRecording(false);
+      if (!uri) return;
+      const token = await getToken();
+      const form = new FormData();
+      (form as any).append('audio', { uri, name: 'recording.m4a', type: 'audio/m4a' });
+      const res = await fetch(`${API_URL}/api/stt/transcribe`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      });
+      const data = await res.json();
+      if (data.text) setInput(data.text);
+    } catch {
+      setVoiceError('Failed to transcribe audio');
+      setIsRecording(false);
+    }
+  }
+
   async function toggleRecording() {
     setVoiceError(null);
     if (isRecording) {
-      await Voice.stop();
-      setIsRecording(false);
+      await stopAndTranscribe();
       return;
     }
     const ok = await requestMicPermission();
@@ -163,9 +157,13 @@ export default function RoleplayScreen() {
     stopSpeaking();
     setInput('');
     try {
-      await Voice.start('en-AU'); // Australian English for AMC context
-    } catch (e) {
-      setVoiceError('Could not start voice recognition');
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      recordingRef.current = recording;
+      setIsRecording(true);
+    } catch {
+      setVoiceError('Could not start recording');
     }
   }
 
@@ -210,7 +208,11 @@ export default function RoleplayScreen() {
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading || !scenario) return;
     // Stop any ongoing recording or TTS before sending
-    if (isRecording) await Voice.stop();
+    if (recordingRef.current) {
+      await recordingRef.current.stopAndUnloadAsync();
+      recordingRef.current = null;
+      setIsRecording(false);
+    }
     stopSpeaking();
     const newMsgs: Message[] = [...messages, { role: 'user', content: text }];
     setMessages(newMsgs);
@@ -237,7 +239,11 @@ export default function RoleplayScreen() {
 
   const getFeedback = useCallback(async () => {
     if (loading || messages.length <= 1 || !scenario) return;
-    if (isRecording) await Voice.stop();
+    if (recordingRef.current) {
+      await recordingRef.current.stopAndUnloadAsync();
+      recordingRef.current = null;
+      setIsRecording(false);
+    }
     stopTimer();
     setFetchingFeedback(true);
     try {
@@ -277,7 +283,10 @@ export default function RoleplayScreen() {
   }
 
   function endSession() {
-    if (isRecording) Voice.stop();
+    if (recordingRef.current) {
+      recordingRef.current.stopAndUnloadAsync();
+      recordingRef.current = null;
+    }
     stopSpeaking();
     stopTimer();
     setScenario(null);

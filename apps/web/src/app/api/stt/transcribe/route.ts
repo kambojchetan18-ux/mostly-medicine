@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClinicalRoleplay } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { checkAiRateLimit } from "@/lib/rate-limit";
@@ -9,7 +8,6 @@ export const maxDuration = 30;
 export async function POST(req: NextRequest) {
   let user = null;
 
-  // Check Bearer token (mobile) first, fall back to cookie session (web)
   const authHeader = req.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
     const token = authHeader.slice(7);
@@ -29,7 +27,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { allowed, retryAfterMs } = await checkAiRateLimit(user.id, "roleplay");
+  const { allowed, retryAfterMs } = await checkAiRateLimit(user.id, "stt-transcribe");
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
@@ -37,21 +35,35 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  try {
-    const { scenarioId, messages, requestFeedback } = await req.json();
-
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },
-        { status: 503 }
-      );
-    }
-
-    const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback });
-    return NextResponse.json({ reply });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[roleplay API error]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json({ error: "STT service not configured" }, { status: 503 });
   }
+
+  const formData = await req.formData();
+  const audio = formData.get("audio") as File | null;
+  if (!audio) {
+    return NextResponse.json({ error: "No audio file provided" }, { status: 400 });
+  }
+
+  if (audio.size > 25 * 1024 * 1024) {
+    return NextResponse.json({ error: "Audio file exceeds 25 MB limit" }, { status: 400 });
+  }
+
+  const groqForm = new FormData();
+  groqForm.append("file", audio, audio.name || "audio.m4a");
+  groqForm.append("model", "whisper-large-v3");
+  groqForm.append("language", "en");
+
+  const res = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+    body: groqForm,
+  });
+
+  if (!res.ok) {
+    return NextResponse.json({ error: "Transcription failed" }, { status: 500 });
+  }
+
+  const data = await res.json();
+  return NextResponse.json({ text: data.text ?? "" });
 }

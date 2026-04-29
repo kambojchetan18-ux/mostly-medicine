@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
+import { checkAiRateLimit } from "@/lib/rate-limit";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
+
+export const maxDuration = 60;
 
 interface GenerateRequest {
   blueprintId?: string;
@@ -24,6 +27,14 @@ export async function POST(req: NextRequest) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { allowed, retryAfterMs } = await checkAiRateLimit(auth.user.id, "roleplay-generate");
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((retryAfterMs ?? 60000) / 1000)) } }
+    );
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {

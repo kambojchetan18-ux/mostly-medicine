@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 
+export const maxDuration = 60;
+
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id: sessionId } = await ctx.params;
 
