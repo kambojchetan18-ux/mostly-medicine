@@ -34,14 +34,19 @@ export async function POST(req: NextRequest) {
   const stream = new ReadableStream({
     async start(controller) {
       try {
+        const MAX_MESSAGES = 20;
+        const MAX_CONTENT_LEN = 4000;
+        const validRoles = new Set(["user", "assistant"]);
+        const sanitized = (messages as { role: string; content: string }[])
+          .filter((m) => validRoles.has(m.role) && typeof m.content === "string")
+          .slice(-MAX_MESSAGES)
+          .map((m) => ({ role: m.role as "user" | "assistant", content: m.content.slice(0, MAX_CONTENT_LEN) }));
+
         const response = await client.messages.create({
           model: "claude-haiku-4-5-20251001",
           max_tokens: 1024,
-          system: systemPrompt,
-          messages: messages.map((m: { role: string; content: string }) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
+          system: [{ type: "text" as const, text: systemPrompt, cache_control: { type: "ephemeral" as const } }],
+          messages: sanitized,
           stream: true,
         });
 

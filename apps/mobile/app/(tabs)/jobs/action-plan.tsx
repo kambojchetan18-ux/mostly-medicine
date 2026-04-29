@@ -42,16 +42,16 @@ function buildPlan(profile: Profile): Step[] {
     steps.push({ step: steps.length + 1, title: 'Sit English Language Test', urgency: 'high', timeEstimate: '2–4 weeks to prepare', description: 'AHPRA requires OET (Medicine) with Grade B in all components, or IELTS Academic with 7.0 in each band. OET is preferred for medical graduates.', link: 'https://www.occupationalenglishtest.org', linkText: 'OET Website' });
   }
 
-  if (profile.amc_part1_status !== 'passed') {
+  if (profile.amc_cat1 !== 'passed') {
     steps.push({ step: steps.length + 1, title: 'Pass AMC Part 1 (CAT 1)', urgency: 'high', timeEstimate: '3–6 months preparation', description: 'Computer Adaptive Test — 150 MCQ questions on clinical medicine. Recommended: 3–6 months study with question banks. Use Mostly Medicine CAT 1 to practise daily.', link: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/', linkText: 'AMC CAT 1 Info' });
   }
 
-  if (profile.amc_part1_status === 'passed' && profile.amc_part2_status !== 'passed') {
+  if (profile.amc_cat1 === 'passed' && profile.amc_cat2 !== 'passed') {
     steps.push({ step: steps.length + 1, title: 'Pass AMC Part 2 (Clinical)', urgency: 'high', timeEstimate: '3–4 months preparation', description: 'OSCE-style clinical exam — 16 stations. Tests history-taking, examination, clinical reasoning, and communication. Prepare with clinical skills workshops.', link: 'https://www.amc.org.au/assessment/amc-clinical-examination/', linkText: 'AMC Clinical Exam' });
   }
 
   if (profile.ahpra_status !== 'registered') {
-    steps.push({ step: steps.length + 1, title: 'Apply for AHPRA Registration', urgency: profile.amc_part2_status === 'passed' ? 'high' : 'medium', timeEstimate: '4–8 weeks processing', description: 'Apply online with AMC certificate, identity documents, police check (Australian + home country), and 3 referee reports from supervisors.', link: 'https://www.ahpra.gov.au/Registration/New-Registrants.aspx', linkText: 'AHPRA Registration' });
+    steps.push({ step: steps.length + 1, title: 'Apply for AHPRA Registration', urgency: profile.amc_cat2 === 'passed' ? 'high' : 'medium', timeEstimate: '4–8 weeks processing', description: 'Apply online with AMC certificate, identity documents, police check (Australian + home country), and 3 referee reports from supervisors.', link: 'https://www.ahpra.gov.au/Registration/New-Registrants.aspx', linkText: 'AHPRA Registration' });
   }
 
   if (profile.doctor_type === 'specialist') {
@@ -76,7 +76,7 @@ export default function ActionPlanScreen() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase.from('img_profiles').select('*').eq('user_id', user.id).single();
+      const { data } = await supabase.from('img_profiles').select('*').eq('id', user.id).single();
       if (!data) { setNoProfile(true); } else { setProfile(data); }
       setLoading(false);
     }

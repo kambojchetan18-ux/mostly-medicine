@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 
-const client = new Anthropic();
-
 const SYSTEM = `You are an expert at parsing International Medical Graduate (IMG) CVs for Australian medical registration purposes.
 
 Extract the following fields and return ONLY valid JSON — no explanation, no markdown:
@@ -57,6 +55,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
     }
 
+    const MAX_CV_SIZE = 10 * 1024 * 1024; // 10 MB
+    const ALLOWED_CV_TYPES = ["application/pdf", "text/plain"];
+    if (file) {
+      if (file.size > MAX_CV_SIZE) {
+        return NextResponse.json({ error: "File exceeds 10 MB limit" }, { status: 400 });
+      }
+      if (!ALLOWED_CV_TYPES.includes(file.type) && !cvText) {
+        return NextResponse.json({ error: "Only PDF and text files are supported" }, { status: 400 });
+      }
+    }
+
+    const client = new Anthropic();
     let response;
 
     if (file && !cvText && file.type === "application/pdf") {
@@ -67,7 +77,7 @@ export async function POST(req: NextRequest) {
       response = await (client.messages.create as any)({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM,
+        system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
         messages: [{
           role: "user",
           content: [
@@ -86,7 +96,7 @@ export async function POST(req: NextRequest) {
       response = await client.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM,
+        system: [{ type: "text" as const, text: SYSTEM, cache_control: { type: "ephemeral" as const } }],
         messages: [{ role: "user", content: `CV TEXT:\n\n${text.slice(0, 8000)}` }],
       });
     }

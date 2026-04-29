@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 
-const client = new Anthropic();
-
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
+  }
 
   const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = await req.json();
 
@@ -44,9 +46,11 @@ Cite the specific Australian guideline, AMC Handbook chapter, or Therapeutic Gui
 
 Keep the total response under 350 words. Use plain language suitable for an AMC candidate.`;
 
+  const client = new Anthropic();
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 600,
+    system: [{ type: "text" as const, text: "You are an expert AMC exam tutor providing detailed explanations for MCQ questions.", cache_control: { type: "ephemeral" as const } }],
     messages: [{ role: "user", content: prompt }],
   });
 

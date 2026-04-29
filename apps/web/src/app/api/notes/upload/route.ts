@@ -35,6 +35,7 @@ async function generateSummary(text: string): Promise<string> {
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
+    system: [{ type: "text" as const, text: "You are a concise medical note summariser for AMC exam preparation.", cache_control: { type: "ephemeral" as const } }],
     messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
   });
   const block = message.content[0];
@@ -65,7 +66,8 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const storagePath = `${user.id}/${Date.now()}_${file.name}`;
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const storagePath = `${user.id}/${Date.now()}_${safeName}`;
 
   // Upload to Supabase Storage
   const { error: uploadError } = await supabase.storage

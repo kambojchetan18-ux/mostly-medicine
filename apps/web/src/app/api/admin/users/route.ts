@@ -30,6 +30,11 @@ export async function PATCH(req: NextRequest) {
   const { userId, plan, role } = await req.json();
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
+  const VALID_PLANS = ["free", "pro", "enterprise"];
+  const VALID_ROLES = ["user", "admin"];
+  if (plan && !VALID_PLANS.includes(plan)) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+  if (role && !VALID_ROLES.includes(role)) return NextResponse.json({ error: "Invalid role" }, { status: 400 });
+
   const updates: Record<string, string> = { updated_at: new Date().toISOString() };
   if (plan) updates.plan = plan;
   if (role) updates.role = role;

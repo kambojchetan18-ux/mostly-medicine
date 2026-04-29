@@ -8,7 +8,8 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { topic, count = 20 } = await req.json();
+  const { topic, count: rawCount = 20 } = await req.json();
+  const count = Math.min(Math.max(1, typeof rawCount === "number" ? rawCount : 20), 50);
 
   const pool = topic
     ? [...allQuestions.filter((q) => q.topic === topic)].sort(() => Math.random() - 0.5)

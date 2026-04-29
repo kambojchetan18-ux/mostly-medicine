@@ -15,7 +15,7 @@ export interface Scenario {
   title: string;
   category: "C" | "D" | "M" | "D/M" | "LEO";
   subcategory: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+  difficulty: "easy" | "medium" | "hard";
 
   /**
    * Mandatory provenance — must reference the exact publication and page/condition.
@@ -60,7 +60,7 @@ export const scenarios: Scenario[] = [
     title: "Tremor in a 40-year-old man",
     category: "D",
     subcategory: "2-A The Diagnostic Process — History-taking and Problem-Solving",
-    difficulty: "Medium",
+    difficulty: "medium",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 033",
     patientProfile: "40-year-old male storeman, married with two teenage children, smoker (10–15 cigarettes/day), drinks up to five 375 mL cans full-strength beer on most days",
     chiefComplaint: "the shakes",
@@ -122,7 +122,7 @@ export const scenarios: Scenario[] = [
     title: "Headache in a 35-year-old woman",
     category: "D",
     subcategory: "2-A The Diagnostic Process — History-taking and Problem-Solving",
-    difficulty: "Medium",
+    difficulty: "medium",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 034",
     patientProfile: "35-year-old female telecommunications manager, first visit to this doctor",
     chiefComplaint: "recurrent headaches, recently worsening",
@@ -192,7 +192,7 @@ export const scenarios: Scenario[] = [
     title: "Lethargy in a 50-year-old woman",
     category: "D",
     subcategory: "2-A The Diagnostic Process — History-taking and Problem-Solving",
-    difficulty: "Medium",
+    difficulty: "medium",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 035",
     patientProfile: "50-year-old widow, has come to stay with her daughter because she was unable to carry on living alone",
     chiefComplaint: "lethargy, tiredness, feeling unwell",
@@ -252,7 +252,7 @@ export const scenarios: Scenario[] = [
     title: "Syncope in a 52-year-old man",
     category: "D",
     subcategory: "2-A The Diagnostic Process — History-taking and Problem-Solving",
-    difficulty: "Hard",
+    difficulty: "hard",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 036",
     patientProfile: "52-year-old male technician, active tennis player, previously well",
     chiefComplaint: "sudden loss of consciousness whilst playing tennis",
@@ -314,7 +314,7 @@ export const scenarios: Scenario[] = [
     title: "A painful penile rash in a 23-year-old man",
     category: "D",
     subcategory: "2-A The Diagnostic Process — History-taking and Problem-Solving",
-    difficulty: "Medium",
+    difficulty: "medium",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 037",
     patientProfile: "23-year-old male carpenter, no steady partner, heterosexual",
     chiefComplaint: "painful penile rash with blisters",
@@ -380,7 +380,7 @@ export const scenarios: Scenario[] = [
     title: "Hair loss in a 38-year-old man",
     category: "C",
     subcategory: "1-A Communication, Counselling and Patient Education",
-    difficulty: "Easy",
+    difficulty: "easy",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 006",
     patientProfile: "38-year-old male newsagent, married with two children. General health excellent, non-smoker, no alcohol. No past medical history or significant family history including baldness.",
     chiefComplaint: "hair loss",
@@ -445,7 +445,7 @@ export const scenarios: Scenario[] = [
     title: "An unusual feeling in the throat in a 30-year-old man",
     category: "C",
     subcategory: "1-A Communication, Counselling and Patient Education",
-    difficulty: "Medium",
+    difficulty: "medium",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 007",
     patientProfile: "30-year-old man, happily married with two children. Parents and siblings in good health. Apart from vasectomy two years ago, past medical history clear. Smokes 10–15 cigarettes daily. Drinks socially at weekends.",
     chiefComplaint: "unusual feeling in the throat — 'a knot'",
@@ -504,7 +504,7 @@ export const scenarios: Scenario[] = [
     title: "Pain in the testis following mumps in a 25-year-old man",
     category: "C",
     subcategory: "1-A Communication, Counselling and Patient Education",
-    difficulty: "Medium",
+    difficulty: "medium",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 008",
     patientProfile: "25-year-old man, married with one son aged 5. Patient and wife would like to have another child. Has a younger son. Recovering from mumps contracted from older son.",
     chiefComplaint: "painful and tender left testicle following mumps",
@@ -573,7 +573,7 @@ export const scenarios: Scenario[] = [
     title: "Advice on breastfeeding versus bottle-feeding for a 28-year-old pregnant woman",
     category: "C",
     subcategory: "1-A Communication, Counselling and Patient Education",
-    difficulty: "Easy",
+    difficulty: "easy",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 002",
     patientProfile: "28-year-old pregnant woman, expecting first baby in five weeks. Always hoped to breastfeed but has doubts after mother's comment that formula-fed babies grow better.",
     chiefComplaint: "breastfeeding versus bottle-feeding advice",
@@ -631,7 +631,7 @@ export const scenarios: Scenario[] = [
     title: "Counselling a family after sudden infant death syndrome (SIDS)",
     category: "C",
     subcategory: "1-A Communication, Counselling and Patient Education",
-    difficulty: "Hard",
+    difficulty: "hard",
     source: "AMC Handbook of Clinical Assessment (Australian Medical Council, 2007), Condition 005",
     patientProfile: "Aunt of infant Andrew, who died apparently from SIDS the day before. Family members have come on behalf of the young single mother who is too distressed to attend. The aunt is the family spokesperson.",
     chiefComplaint: "sudden infant death — family seeking explanation and guidance",

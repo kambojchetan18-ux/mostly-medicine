@@ -28,8 +28,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     await supabase.storage.from("user-notes").remove([decodeURIComponent(pathParts[1])]);
   }
 
-  // Delete from database
-  await supabase.from("user_notes").delete().eq("id", id);
+  // Delete from database (scoped to user for defense in depth)
+  await supabase.from("user_notes").delete().eq("id", id).eq("user_id", user.id);
 
   return NextResponse.json({ success: true });
 }

@@ -2,8 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic();
-
 const SYSTEM_PROMPT = `You are a social media content creator for MostlyMedicine — an AMC exam prep platform for International Medical Graduates (IMGs) in Australia.
 
 Built by Dr. Amandeep Kamboj (IMG herself, co-founder) and her husband Chetan (tech co-founder).
@@ -68,10 +66,11 @@ export async function POST(req: NextRequest) {
 
   const monthName = new Date(`${month}-01`).toLocaleString("en-AU", { month: "long", year: "numeric" });
 
+  const anthropic = new Anthropic();
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 8000,
-    system: SYSTEM_PROMPT,
+    system: [{ type: "text" as const, text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" as const } }],
     messages: [
       {
         role: "user",

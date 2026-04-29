@@ -7,7 +7,8 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const rawNext = searchParams.get("next") ?? "/dashboard";
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/dashboard";
 
   // OAuth code exchange (Google SSO)
   // Cookies must be set directly on the redirect response — not on cookieStore —
@@ -44,6 +45,10 @@ export async function GET(request: NextRequest) {
         },
       }
     );
+    const validOtpTypes = ["signup", "email"];
+    if (!validOtpTypes.includes(type)) {
+      return NextResponse.redirect(`${origin}/auth/login?error=invalid_type`);
+    }
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" | "email" });
     if (!error) return redirectTo;
     return NextResponse.redirect(`${origin}/auth/login?error=email_confirmation_failed`);
