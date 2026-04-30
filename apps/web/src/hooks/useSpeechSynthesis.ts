@@ -266,6 +266,17 @@ export function useSpeechSynthesis() {
 
         // Strip markdown + stage directions before speaking.
         const speakable = text
+          // Normalise Unicode smart quotes / dashes BEFORE the strip+chunk
+          // pipeline. Some Chromium voices read curly apostrophes ('I'm')
+          // as the literal word "apostrophe" — straight ASCII (') is read
+          // silently as a contraction, which is the natural reading.
+          .replace(/[‘’‚‛]/g, "'")
+          .replace(/[“”„‟]/g, '"')
+          .replace(/[–—]/g, "-")
+          .replace(/[…]/g, "...")
+          // Strip any stray HTML / SSML-ish tags (Claude occasionally emits
+          // <break> or <emphasis> if it thinks the channel supports it).
+          .replace(/<[^>]+>/g, "")
           .replace(/\*\*([^*\n]+)\*\*/g, "$1")
           .replace(/__([^_\n]+)__/g, "$1")
           .replace(/\*[^*\n]+\*/g, "")
@@ -274,10 +285,9 @@ export function useSpeechSynthesis() {
           .replace(/\[[^\]\n]+\]/g, "")
           .replace(/[`#>~]+/g, "")
           // Strip quote marks that some Chromium voices announce literally
-          // ("double quote", "open quote") — straight + curly variants.
-          // Apostrophes ('don't', "I'm") are NOT stripped: they're needed
-          // for natural contraction pronunciation.
-          .replace(/["“”«»]/g, "")
+          // ("double quote", "open quote"). Straight apostrophes survive —
+          // they're needed for natural contraction pronunciation.
+          .replace(/["«»]/g, "")
           .replace(/\s{2,}/g, " ")
           .trim();
         if (!speakable) return;
@@ -286,8 +296,13 @@ export function useSpeechSynthesis() {
         // the pause/resume keepalive trick is unreliable on Android. Queueing
         // multiple short utterances avoids the timeout entirely.
         const chunks =
-          speakable.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)?.map((c) => c.trim()).filter(Boolean) ??
-          [speakable];
+          (speakable.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g) ?? [speakable])
+            .map((c) => c.trim())
+            // Drop chunks that are only punctuation/symbols — TTS engines
+            // sometimes pronounce these literally ("apostrophe", "period").
+            // A real chunk has at least one alphanumeric character.
+            .filter((c) => c && /[a-zA-Z0-9]/.test(c));
+        if (chunks.length === 0) return;
 
         currentTextRef.current = speakable;
         currentCharIndexRef.current = 0;
