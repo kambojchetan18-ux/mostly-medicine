@@ -13,6 +13,11 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void) {
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const liveTranscriptRef = useRef("");
+  // Latest interim transcript — fallback for browsers / sessions that never
+  // mark any result as `isFinal` (some Android Chrome versions, especially
+  // when continuous=true is wedged). Without this fallback the user's whole
+  // utterance disappears at onend → empty callback → 'couldn't catch' toast.
+  const liveInterimRef = useRef("");
   const onResultRef = useRef(onResult);
 
   useEffect(() => { onResultRef.current = onResult; }, [onResult]);
@@ -92,6 +97,7 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void) {
 
       const finals = compacted.join(" ").replace(/\s+/g, " ").trim();
       liveTranscriptRef.current = finals;
+      liveInterimRef.current = interim.trim();
       setDisplayTranscript((finals + " " + interim).replace(/\s+/g, " ").trim());
     };
 
@@ -102,11 +108,15 @@ export function useSpeechRecognition(onResult?: (transcript: string) => void) {
 
     recognition.onend = () => {
       setState("idle");
-      const final = liveTranscriptRef.current.trim();
+      // Prefer compacted-finals; fall back to the latest interim if the
+      // browser never finalised anything (Android Chrome sometimes never
+      // flips isFinal=true under continuous=true, especially on short
+      // utterances). Better to send the interim than nothing.
+      const final = (liveTranscriptRef.current.trim() || liveInterimRef.current.trim()).trim();
       liveTranscriptRef.current = "";
+      liveInterimRef.current = "";
       setDisplayTranscript("");
       recognitionRef.current = null;
-      // Fire for both manual stop and auto-stop (silence/timeout)
       if (final) onResultRef.current?.(final);
     };
 
