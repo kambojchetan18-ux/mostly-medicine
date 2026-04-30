@@ -1,6 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+
+// iPhone notch / Android punch-hole safe-areas — viewport-fit=cover lets us
+// paint right up to the edges and use env(safe-area-inset-*) for any sticky
+// chrome (mobile top-bar, mobile drawer). initialScale=1 + maximumScale=5
+// keeps pinch-zoom available (a11y) but stops iOS from auto-zooming text
+// inputs <16px.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#0f172a",
+};
 
 const inter = Inter({
   subsets: ["latin"],
@@ -68,6 +81,14 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE_URL,
+  },
+  // Web App Manifest — defined in `app/manifest.ts`. Lets iOS Safari / Android
+  // Chrome offer "Add to Home Screen" with a proper standalone shell.
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Mostly Medicine",
+    statusBarStyle: "black-translucent",
   },
   robots: {
     index: true,

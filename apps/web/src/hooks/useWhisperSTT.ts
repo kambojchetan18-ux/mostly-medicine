@@ -242,8 +242,17 @@ export function useWhisperSTT(
     }
     inflightRef.current += 1;
     const form = new FormData();
-    form.append("audio", blob, "chunk.webm");
-    console.info("[whisper] uploading chunk", { bytes: blob.size, type: blob.type });
+    // iOS Safari produces audio/mp4 (MediaRecorder doesn't support webm) —
+    // sending it as `chunk.webm` makes Groq's parser sniff the wrong codec
+    // and reject it with "could not process file". Pick the right extension
+    // from the actual blob.type so iOS Safari uploads work end-to-end.
+    const ext = /mp4|aac/i.test(blob.type)
+      ? "mp4"
+      : /ogg/i.test(blob.type)
+        ? "ogg"
+        : "webm";
+    form.append("audio", blob, `chunk.${ext}`);
+    console.info("[whisper] uploading chunk", { bytes: blob.size, type: blob.type, ext });
     try {
       const res = await fetch(TRANSCRIBE_URL, { method: "POST", body: form });
       if (!res.ok) {

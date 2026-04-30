@@ -232,7 +232,7 @@ export default function LibraryClient({
                       </div>
 
                       <div className="flex flex-wrap gap-1.5 text-xs text-gray-400">
-                        <span>{new Date(note.created_at).toLocaleDateString()}</span>
+                        <span>{new Date(note.created_at).toLocaleDateString("en-AU")}</span>
                         {note.page_count && <span>· {note.page_count}p</span>}
                         {note.file_size_bytes && (
                           <span>· {(note.file_size_bytes / 1024).toFixed(0)} KB</span>

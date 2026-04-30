@@ -114,8 +114,18 @@ export async function POST(req: NextRequest) {
     "prompt",
     "An Australian medical consultation in plain clinical English."
   );
-  // WebM/Opus is what MediaRecorder produces in Chrome; Groq accepts it.
-  groqForm.append("file", audio, "chunk.webm");
+  // Pick the filename extension from the actual blob mime-type. Chrome /
+  // Android produce audio/webm; iOS Safari produces audio/mp4 (it doesn't
+  // support WebM in MediaRecorder). Groq's Whisper accepts both, but the
+  // FILENAME hint matters — sending an mp4 blob as `chunk.webm` makes the
+  // upstream parser sniff the wrong container and 400 the request.
+  const audioType = (audio as Blob).type ?? "";
+  const ext = /mp4|aac/i.test(audioType)
+    ? "mp4"
+    : /ogg/i.test(audioType)
+      ? "ogg"
+      : "webm";
+  groqForm.append("file", audio, `chunk.${ext}`);
 
   // 6. Forward to Groq. fetch with FormData lets the runtime set the
   //    multipart boundary header automatically.

@@ -469,6 +469,24 @@ export default function LiveSessionClient({
         };
 
         let offerSent = false;
+        // Buffer ICE candidates that arrive BEFORE remoteDescription is set.
+        // Safari (and stricter Chromium versions) reject addIceCandidate when
+        // remoteDescription is null with `InvalidStateError`, where Chrome
+        // desktop happens to ignore the call silently. Queue them and drain
+        // once both setRemoteDescription paths complete. Without this, Safari
+        // peers see ICE stuck in 'new' and the partner tile stays black.
+        const pendingCandidates: RTCIceCandidateInit[] = [];
+        const drainPendingCandidates = async () => {
+          while (pendingCandidates.length > 0) {
+            const c = pendingCandidates.shift();
+            if (!c) continue;
+            try {
+              await pc.addIceCandidate(new RTCIceCandidate(c));
+            } catch {
+              /* race — ignore */
+            }
+          }
+        };
         // Helper: host sends an offer. Guarded so we only send once even if
         // presence fires multiple times.
         const sendHostOffer = async () => {
@@ -507,6 +525,9 @@ export default function LiveSessionClient({
                 event: "answer",
                 payload: { from: myPeerId, sdp: answer },
               });
+              // Drain any candidates that arrived before remoteDescription
+              // was set. Safari rejects addIceCandidate(null-remote) outright.
+              await drainPendingCandidates();
             } catch (err) {
               console.error("[live/rtc] offer handle failed", err);
             }
@@ -516,6 +537,7 @@ export default function LiveSessionClient({
             if (pc.signalingState === "have-local-offer") {
               try {
                 await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+                await drainPendingCandidates();
               } catch (err) {
                 console.error("[live/rtc] answer handle failed", err);
               }
@@ -523,6 +545,12 @@ export default function LiveSessionClient({
           })
           .on("broadcast", { event: "ice" }, async ({ payload }) => {
             if (payload.from === myPeerId) return;
+            // Safari throws InvalidStateError if remoteDescription is null —
+            // queue until the offer/answer handler completes, then flush.
+            if (!pc.remoteDescription) {
+              pendingCandidates.push(payload.candidate);
+              return;
+            }
             try {
               await pc.addIceCandidate(new RTCIceCandidate(payload.candidate));
             } catch {
@@ -881,12 +909,12 @@ export default function LiveSessionClient({
             ⚠️ {error}
           </div>
         )}
-        <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-2 shadow-sm">
-          <div className="text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm sm:px-4">
+          <div className="text-sm min-w-0">
             <span className="font-semibold capitalize text-gray-900">You: {myRole}</span>
-            <span className="ml-3 text-xs text-gray-500">Partner: {partnerOnline ? "🟢 online" : "🟡 connecting…"}</span>
+            <span className="ml-2 text-xs text-gray-500 sm:ml-3">Partner: {partnerOnline ? "🟢 online" : "🟡 connecting…"}</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <span
               className={`rounded-full border px-3 py-1 text-xs font-bold tabular-nums ${
                 roleplayLeft <= 60 ? "border-rose-300 bg-rose-50 text-rose-700" : "border-brand-200 bg-brand-50 text-brand-700"
@@ -897,7 +925,7 @@ export default function LiveSessionClient({
             <button
               type="button"
               onClick={handleEnd}
-              className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 min-h-[40px]"
             >
               End session
             </button>
@@ -986,7 +1014,7 @@ export default function LiveSessionClient({
             {/* Partner-audio controls — affect the remote <video> only.
                 Local mic is toggled by the "Start mic / Pause mic" button
                 further down (that one drives STT + transcript). */}
-            <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm">
               <button
                 type="button"
                 onClick={() => {
@@ -1001,7 +1029,7 @@ export default function LiveSessionClient({
                 }}
                 aria-label={remoteMuted ? "Unmute partner" : "Mute partner"}
                 title={remoteMuted ? "Unmute partner" : "Mute partner"}
-                className={`rounded-lg px-2.5 py-1.5 text-base ${
+                className={`rounded-lg w-11 h-11 flex items-center justify-center text-base ${
                   remoteMuted
                     ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -1009,9 +1037,11 @@ export default function LiveSessionClient({
               >
                 {remoteMuted || remoteVolume === 0 ? "🔇" : "🔊"}
               </button>
-              <label htmlFor="remote-volume" className="text-xs font-semibold text-gray-600">
+              <label htmlFor="remote-volume" className="text-xs font-semibold text-gray-600 shrink-0">
                 Partner volume
               </label>
+              {/* Slider takes remaining width but never less than 80px on phones
+                  so it stays draggable. */}
               <input
                 id="remote-volume"
                 type="range"
@@ -1029,9 +1059,9 @@ export default function LiveSessionClient({
                     setRemoteMuted(true);
                   }
                 }}
-                className="flex-1 accent-brand-600"
+                className="flex-1 min-w-[100px] accent-brand-600"
               />
-              <span className="w-10 text-right text-xs tabular-nums text-gray-500">
+              <span className="w-10 text-right text-xs tabular-nums text-gray-500 shrink-0">
                 {Math.round((remoteMuted ? 0 : remoteVolume) * 100)}%
               </span>
             </div>

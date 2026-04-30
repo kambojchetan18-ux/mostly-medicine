@@ -33,7 +33,7 @@ export default async function NoteReadingPage({ params }: { params: Promise<{ id
       <div className="mb-6">
         <h1 className="text-xl font-bold text-gray-900 break-words">{note.filename}</h1>
         <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-400">
-          <span>Uploaded {new Date(note.created_at).toLocaleDateString()}</span>
+          <span>Uploaded {new Date(note.created_at).toLocaleDateString("en-AU")}</span>
           {note.page_count && <span>{note.page_count} page{note.page_count !== 1 ? "s" : ""}</span>}
           {note.file_size_bytes && <span>{(note.file_size_bytes / 1024).toFixed(0)} KB</span>}
         </div>

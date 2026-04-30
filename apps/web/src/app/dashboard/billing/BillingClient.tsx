@@ -116,7 +116,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
           <p className="mt-1 text-xs text-gray-500">
             Subscription status: <span className="font-medium">{subscription.status}</span>
             {subscription.periodEnd && !subscription.cancelAtPeriodEnd && (
-              <> · renews {new Date(subscription.periodEnd).toLocaleDateString()}</>
+              <> · renews {new Date(subscription.periodEnd).toLocaleDateString("en-AU")}</>
             )}
           </p>
         )}
@@ -136,7 +136,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
                 <p className="mt-0.5 text-xs text-amber-800">
                   Thanks for being one of our first 100 users. You have full Pro access until{" "}
                   <span className="font-semibold">
-                    {new Date(subscription.proUntil).toLocaleDateString()}
+                    {new Date(subscription.proUntil).toLocaleDateString("en-AU")}
                   </span>
                   . No card needed. Subscribe anytime to extend.
                 </p>
@@ -153,7 +153,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
           <p className="font-semibold">⏳ Your {subscription.plan.toUpperCase()} plan is scheduled to end</p>
           <p className="mt-0.5 text-xs text-amber-800">
             You'll keep access until{" "}
-            <span className="font-semibold">{new Date(subscription.periodEnd).toLocaleDateString()}</span>,
+            <span className="font-semibold">{new Date(subscription.periodEnd).toLocaleDateString("en-AU")}</span>,
             then drop to Free. Reactivate anytime via the Billing Portal.
           </p>
         </div>

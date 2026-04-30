@@ -79,8 +79,12 @@ export default function SidebarUserCard() {
   const planBadge = effectivePlan === "pro" ? "⭐ Pro" : effectivePlan === "enterprise" ? "🏢 Enterprise" : "Free";
   const planColor = effectivePlan === "pro" ? "text-amber-400" : effectivePlan === "enterprise" ? "text-violet-400" : "text-slate-500";
 
+  // Pin locale to en-AU. Without an explicit locale, Safari and iOS use the
+  // user's OS locale (could be ar/he/ja) so the rendered date varies between
+  // server-render and client-hydrate → React hydration mismatch warning. The
+  // app is targeted at AMC candidates in Australia anyway.
   const founderProUntil = founderActive && user.pro_until
-    ? new Date(user.pro_until).toLocaleDateString(undefined, { month: "short", day: "numeric" })
+    ? new Date(user.pro_until).toLocaleDateString("en-AU", { month: "short", day: "numeric" })
     : null;
 
   const streakLabel =
