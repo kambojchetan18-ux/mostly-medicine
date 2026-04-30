@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { enforceDailyLimit } from "@/lib/permissions";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
+export const maxDuration = 30;
+
 const MODEL = "claude-haiku-4-5-20251001";
 
 let _client: Anthropic | null = null;

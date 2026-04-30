@@ -5,6 +5,8 @@ import { checkModulePermission } from "@/lib/permissions";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 
+export const maxDuration = 30;
+
 // SSE-streamed roleplay turn. The browser reads chunks via fetch + getReader
 // and renders patient text token-by-token, dropping perceived latency from
 // ~3-5s (full reply blocking) to ~600ms (first token).

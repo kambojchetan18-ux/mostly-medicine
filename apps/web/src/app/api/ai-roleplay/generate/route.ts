@@ -5,6 +5,8 @@ import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
 import { enforceDailyLimit } from "@/lib/permissions";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
 
+export const maxDuration = 30;
+
 interface GenerateRequest {
   blueprintId?: string;
   category?: string;

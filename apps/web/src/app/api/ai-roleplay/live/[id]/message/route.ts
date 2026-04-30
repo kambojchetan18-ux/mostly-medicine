@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { bumpStreak } from "@/lib/streaks";
 
+export const maxDuration = 30;
+
 // Persist a transcript snippet from the speaker's local STT.
 // Both clients also subscribe to acrp_live_messages via Realtime to render it.
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {

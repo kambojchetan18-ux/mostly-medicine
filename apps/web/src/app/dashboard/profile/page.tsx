@@ -49,6 +49,16 @@ export default function ProfilePage() {
   }
 
   function handleFile(file: File) {
+    const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+    if (file.size > MAX_SIZE) {
+      setError("File is too large. Maximum size is 10 MB.");
+      return;
+    }
+    if (file.type !== "application/pdf") {
+      setError("Only PDF files are accepted. Please upload a .pdf file.");
+      return;
+    }
+    setError(null);
     const fd = new FormData();
     fd.append("file", file);
     analyse(fd);

@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
   let user = null;
 
