@@ -85,14 +85,8 @@ export default function PlayClient({
     permissionDenied: micDenied,
     startRecording,
     stopRecording: stopWhisper,
-    micLevel,
     silentTooLong,
-    lastRawText,
-    chunkCount,
-  } = useWhisperSTT(handleSttChunk, {
-    autoStopOnSilence: true,
-    onAutoStop: () => void stopRecordingRef.current(),
-  });
+  } = useWhisperSTT(handleSttChunk);
 
   // stopRecording fires on manual tap OR auto-stop when silence is detected.
   // stopWhisper() resolves AFTER the final partial chunk uploads + all
@@ -439,30 +433,6 @@ export default function PlayClient({
             </div>
           )}
 
-          {sttState === "recording" && sttSupported && (
-            <div className="flex w-full flex-col gap-1 text-[10px] text-gray-500">
-              <div className="flex items-center gap-2">
-                <span>🎤</span>
-                <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-                  <div
-                    className={`h-full transition-all duration-100 ${
-                      micLevel > 0.02 ? "bg-emerald-500" : micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
-                    }`}
-                    style={{ width: `${Math.min(100, micLevel * 800)}%` }}
-                  />
-                </div>
-                <span className="tabular-nums w-10 text-right">{(micLevel * 100).toFixed(0)}%</span>
-              </div>
-              <div className="flex items-center gap-2 text-[10px]">
-                <span className="font-semibold text-gray-600">📡 chunks: {chunkCount}</span>
-                {lastRawText && (
-                  <span className="truncate text-gray-500" title={lastRawText}>
-                    last heard: &ldquo;{lastRawText.slice(0, 60)}&rdquo;
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
           {!sttSupported && (
             <div className="flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-center">
               <p className="text-xs text-amber-700">

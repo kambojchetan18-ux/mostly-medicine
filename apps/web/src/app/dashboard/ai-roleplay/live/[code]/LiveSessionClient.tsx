@@ -120,8 +120,6 @@ export default function LiveSessionClient({
   // know in real time whether STT and WebRTC are healthy. Mobile users can't
   // open DevTools easily; this replaces "is it broken?" with concrete signal.
   const [iceState, setIceState] = useState<string>("idle");
-  const [sttChunkCount, setSttChunkCount] = useState(0);
-  const [sttLastChunk, setSttLastChunk] = useState<string>("");
   const [sttError, setSttError] = useState<string | null>(null);
   // Which TURN provider actually got wired into the RTCPeerConnection. Lets
   // the diagnostic pill say "Cloudflare TURN" / "self-hosted" / "fallback".
@@ -165,8 +163,6 @@ export default function LiveSessionClient({
   const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const postMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
-    setSttChunkCount((c) => c + 1);
-    setSttLastChunk(content);
     setSttError(null);
     try {
       const res = await fetch(`/api/ai-roleplay/live/${sessionId}/message`, {
@@ -910,19 +906,6 @@ export default function LiveSessionClient({
           >
             📡 {iceState}
           </span>
-          <span
-            className={`rounded-full px-2 py-0.5 font-semibold ${
-              sttChunkCount > 0 ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-600"
-            }`}
-            title="Number of speech chunks transcribed by Groq Whisper"
-          >
-            🎤 {sttChunkCount} chunks
-          </span>
-          {sttLastChunk && (
-            <span className="truncate text-gray-500" title={sttLastChunk}>
-              last: &ldquo;{sttLastChunk.slice(0, 40)}{sttLastChunk.length > 40 ? "…" : ""}&rdquo;
-            </span>
-          )}
           {sttError && (
             <span className="rounded-full bg-rose-100 px-2 py-0.5 font-semibold text-rose-800" title={sttError}>
               ⚠️ {sttError.slice(0, 60)}
@@ -1105,30 +1088,6 @@ export default function LiveSessionClient({
               {stt.state === "recording" ? "Pause mic" : "Start mic"}
             </button>
             </div>
-            {stt.state === "recording" && (
-              <div className="flex flex-col gap-1 text-[10px] text-gray-500">
-                <div className="flex items-center gap-2">
-                  <span>🎤</span>
-                  <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
-                    <div
-                      className={`h-full transition-all duration-100 ${
-                        stt.micLevel > 0.02 ? "bg-emerald-500" : stt.micLevel > 0.005 ? "bg-amber-400" : "bg-gray-300"
-                      }`}
-                      style={{ width: `${Math.min(100, stt.micLevel * 800)}%` }}
-                    />
-                  </div>
-                  <span className="tabular-nums w-10 text-right">{(stt.micLevel * 100).toFixed(0)}%</span>
-                </div>
-                <div className="flex items-center gap-2 text-[10px]">
-                  <span className="font-semibold text-gray-600">📡 chunks: {stt.chunkCount}</span>
-                  {stt.lastRawText && (
-                    <span className="truncate text-gray-500" title={stt.lastRawText}>
-                      last heard: &ldquo;{stt.lastRawText.slice(0, 60)}&rdquo;
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         )}
         {!stt.supported && (
