@@ -101,15 +101,18 @@ export async function POST(req: NextRequest) {
   groqForm.append("response_format", "json");
   groqForm.append("temperature", "0");
   groqForm.append("language", "en");
-  // Conversational seed in the prompt — gives Whisper a concrete example of
-  // the dialogue style we expect, biasing away from YouTube training-data
-  // endings ("Thank you for watching", "Subscribe") AND toward sentence
-  // structures we actually need ("My chest hurts", "How long has it been?").
-  // This is the single highest-leverage Whisper param for taming
-  // hallucinations on noisy / soft-spoken / accented audio.
+  // VERY LIGHT vocabulary nudge — just hints the domain so Whisper picks
+  // medical English over generic. We deliberately do NOT include 'Doctor:'
+  // / 'Patient:' style dialogue in the prompt: a structured prompt biases
+  // the decoder to CONTINUE the template on unclear/silent audio, which is
+  // exactly how we ended up with hallucinations like 'Patient's voice is
+  // not the same. Doctor, doctor doctor always. I'm sorry about this,
+  // Margaret.' — the model is just continuing the doctor-patient pattern
+  // it was given. A single short clinical sentence is enough domain
+  // signal without giving the decoder a template to loop on.
   groqForm.append(
     "prompt",
-    "Doctor: Hello, what brings you in today? Patient: I have chest pain that started two hours ago. Doctor: Can you describe the pain? Patient: It is sharp and severe. Doctor: Any other symptoms? Patient: Yes, I feel short of breath."
+    "An Australian medical consultation in plain clinical English."
   );
   // WebM/Opus is what MediaRecorder produces in Chrome; Groq accepts it.
   groqForm.append("file", audio, "chunk.webm");

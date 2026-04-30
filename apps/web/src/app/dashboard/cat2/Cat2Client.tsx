@@ -362,14 +362,14 @@ export default function Cat2Client() {
     if (recState === "recording") {
       stopRecording(); // transcript arrives via sendMessage callback in onend
     } else {
-      // Barge-in: silence AI before opening the mic. window.speechSynthesis
-      // .cancel() returns sync but the speaker buffer can keep playing for
-      // ~300 ms; without a wait the first WebM chunk picks up TTS bleed and
-      // Whisper transcribes Patient's last line back as if the user said it.
+      // Barge-in: silence AI before opening the mic. cancel() returns sync
+      // but the macOS speaker buffer can keep playing for 500-800 ms; if
+      // the mic opens too soon the first WebM chunk picks up TTS bleed
+      // and Whisper conditions on it. 600 ms is the empirical floor.
       const wasSpeaking = speaking;
       stopSpeaking();
       if (wasSpeaking) {
-        setTimeout(() => startRecording(), 350);
+        setTimeout(() => startRecording(), 600);
       } else {
         startRecording();
       }

@@ -392,14 +392,15 @@ export default function PlayClient({
               if (sttState === "recording") {
                 stopRecording();
               } else {
-                // Barge-in: cancel() returns sync but the speaker buffer
-                // can keep playing for ~300 ms after; without a wait the
-                // first WebM chunk picks up TTS bleed and Whisper
-                // transcribes the patient's prior line back as the user.
+                // Barge-in: cancel() returns sync but the macOS speaker
+                // buffer can keep emitting for 500-800 ms; mic opening
+                // too soon picks up TTS bleed → Whisper conditions on it
+                // → patient's prior line transcribed as the user's. 600 ms
+                // is the empirical floor.
                 const wasSpeaking = speaking;
                 stopSpeaking();
                 if (wasSpeaking) {
-                  setTimeout(() => startRecording(), 350);
+                  setTimeout(() => startRecording(), 600);
                 } else {
                   startRecording();
                 }
