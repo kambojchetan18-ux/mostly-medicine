@@ -240,18 +240,17 @@ export default function Cat2Client() {
     }
   }, [micMuted, recState, stopRecording]);
 
-  // Auto-pause mic while AI patient is speaking. Without this, the laptop
-  // speaker's TTS bleeds back into the mic, Whisper transcribes a mix of
-  // user voice + AI voice, and emits multilingual gibberish like
-  // "Doctor diranks and I tested the abattoirs twice. También, type o
-  // Spider…". echoCancellation alone isn't enough on macOS Mac speakers.
-  // Re-stopping is fine — the mic button stays where it is and the user can
-  // tap it again to resume after the patient finishes.
-  useEffect(() => {
-    if (speaking && recState === "recording") {
-      void stopRecording();
-    }
-  }, [speaking, recState, stopRecording]);
+  // NOTE: an auto-`stopRecording-while-speaking` useEffect was tempting
+  // (TTS bleed → Whisper transcribes both voices) but it RACES with the
+  // intentional barge-in path in `handleMicButton`: when the user taps
+  // Mic-on mid-AI-reply, `handleMicButton` calls `stopSpeaking()` then
+  // `startRecording()`. The `speaking` state doesn't flip to `false` in
+  // the same React tick, so the auto-pause effect fires and immediately
+  // cancels the recording the user just started. The clean approach is the
+  // explicit barge-in: stopSpeaking() before startRecording() (already in
+  // handleMicButton). If the user has the mic on and AI happens to start
+  // a new turn (rare in solo flow — assistant replies AFTER user sends),
+  // they'll see the issue and can re-tap.
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -363,8 +362,17 @@ export default function Cat2Client() {
     if (recState === "recording") {
       stopRecording(); // transcript arrives via sendMessage callback in onend
     } else {
+      // Barge-in: silence AI before opening the mic. window.speechSynthesis
+      // .cancel() returns sync but the speaker buffer can keep playing for
+      // ~300 ms; without a wait the first WebM chunk picks up TTS bleed and
+      // Whisper transcribes Patient's last line back as if the user said it.
+      const wasSpeaking = speaking;
       stopSpeaking();
-      startRecording();
+      if (wasSpeaking) {
+        setTimeout(() => startRecording(), 350);
+      } else {
+        startRecording();
+      }
     }
   }
 

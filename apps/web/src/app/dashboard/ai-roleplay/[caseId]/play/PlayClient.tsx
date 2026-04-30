@@ -112,16 +112,10 @@ export default function PlayClient({
     }
   }, [micMuted, sttState, stopRecording]);
 
-  // Auto-pause mic while AI patient is speaking. echoCancellation alone
-  // doesn't fully block laptop-speaker TTS bleed back into the mic, so
-  // Whisper ends up decoding user-voice + AI-voice and emits multilingual
-  // gibberish ("También, type o Spider on the inside of the room forum").
-  // Stop the mic when speaking starts; user taps Mic on again to resume.
-  useEffect(() => {
-    if (speaking && sttState === "recording") {
-      void stopRecording();
-    }
-  }, [speaking, sttState, stopRecording]);
+  // NOTE: see Cat2Client for why we don't auto-stop the mic when `speaking`
+  // is true — it RACES with the explicit barge-in path (stopSpeaking() +
+  // startRecording() in the mic-toggle handler) and cancels the user's
+  // intentional tap. Barge-in itself silences AI before the mic opens.
 
   // Countdown
   useEffect(() => {
@@ -398,8 +392,17 @@ export default function PlayClient({
               if (sttState === "recording") {
                 stopRecording();
               } else {
+                // Barge-in: cancel() returns sync but the speaker buffer
+                // can keep playing for ~300 ms after; without a wait the
+                // first WebM chunk picks up TTS bleed and Whisper
+                // transcribes the patient's prior line back as the user.
+                const wasSpeaking = speaking;
                 stopSpeaking();
-                startRecording();
+                if (wasSpeaking) {
+                  setTimeout(() => startRecording(), 350);
+                } else {
+                  startRecording();
+                }
               }
             }}
             disabled={ended || sending || !sttSupported || micMuted}
