@@ -25,5 +25,23 @@ export async function GET() {
   const cloudflareKeys = Object.keys(process.env)
     .filter((k) => k.startsWith("CLOUDFLARE_") || k.startsWith("CLOUDFARE_") || k.startsWith("CF_"))
     .sort();
-  return NextResponse.json({ runtime: "ok", env: status, cloudflareKeys });
+  // Hidden gotcha we hit twice: Vercel UI sometimes pastes a trailing '\n'
+  // (or other whitespace) into NEXT_PUBLIC_SUPABASE_URL. The URL still
+  // 'looks set' — every truthy check passes — but the realtime WebSocket
+  // URL becomes wss://...supabase.co\n/realtime/v1/... which fails. Surface
+  // length + last codepoint so the corruption is detectable from the phone.
+  const v = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const lastCode = v.length > 0 ? v.charCodeAt(v.length - 1) : null;
+  const supabaseUrlHealth = {
+    length: v.length,
+    lastCharCode: lastCode,
+    trailingWhitespace: lastCode !== null && (lastCode <= 32 || lastCode === 0x7f),
+    looksValid: /^https?:\/\/[a-z0-9-]+\.supabase\.co$/.test(v),
+  };
+  return NextResponse.json({
+    runtime: "ok",
+    env: status,
+    cloudflareKeys,
+    supabaseUrlHealth,
+  });
 }
