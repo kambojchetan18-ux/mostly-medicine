@@ -351,10 +351,15 @@ export function useWhisperSTT(
       // Read + reset the per-chunk peak RMS so the next chunk starts fresh.
       const peakRms = chunkPeakRmsRef.current;
       chunkPeakRmsRef.current = 0;
-      // VAD-skip: if the user was below voice threshold the entire chunk,
-      // it's silence/ambient noise — skip uploading to avoid burning Groq
-      // rate-limit budget on hallucinations like "Thank you." / "Hello?".
-      const isSilentChunk = peakRms < VOICE_AMPLITUDE_THRESHOLD;
+      // VAD-skip is ONLY safe when the analyser is actually producing data.
+      // On mobile (Android Chrome / iOS Safari) the AudioContext stays
+      // `suspended` after the getUserMedia await — the click-handler user
+      // gesture has expired by then. With a suspended context the analyser
+      // emits zeros forever, peak stays 0, and a naive VAD-skip drops every
+      // chunk → empty transcript on phone even though the mic is fine.
+      // Trust the chunk if the analyser isn't trustworthy.
+      const analyserHealthy = audioCtxRef.current?.state === "running";
+      const isSilentChunk = analyserHealthy && peakRms < VOICE_AMPLITUDE_THRESHOLD;
       if (chunkData && !isSilentChunk) {
         void uploadChunk(chunkData);
       } else if (chunkData && isSilentChunk) {
@@ -496,11 +501,19 @@ export function useWhisperSTT(
       const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (Ctor) {
         const ctx = new Ctor();
-        // Some browsers start AudioContext "suspended" until a user gesture
-        // resumes it. We're already inside startRecording (called from a
-        // click handler), so resume immediately.
+        // Mobile browsers (Android Chrome / iOS Safari) park AudioContext at
+        // `suspended` until an EXPLICIT user-gesture-anchored resume() —
+        // and the click handler's gesture activation has already expired by
+        // the time we get here (after `await getUserMedia`). Try resume()
+        // synchronously AND awaited; either may succeed depending on the
+        // browser. If both fail the chunk loop will fall through to "trust
+        // the chunk" mode (analyserHealthy === false) so transcripts still
+        // flow even with a suspended context.
         if (ctx.state === "suspended") {
-          void ctx.resume().catch(() => {});
+          try { await ctx.resume(); } catch { /* will retry below */ }
+          if (ctx.state === "suspended") {
+            void ctx.resume().catch(() => {});
+          }
         }
         const src = ctx.createMediaStreamSource(stream);
         const analyser = ctx.createAnalyser();
@@ -542,12 +555,15 @@ export function useWhisperSTT(
             !hasHeardVoiceRef.current &&
             recordingStartedAtRef.current > 0 &&
             now - recordingStartedAtRef.current > 5000 &&
-            rms < SILENCE_AMPLITUDE_THRESHOLD
+            rms < SILENCE_AMPLITUDE_THRESHOLD &&
+            audioCtxRef.current?.state === "running"
           ) {
             // 5+ seconds since startRecording AND we have NEVER seen a voice
             // amplitude pop. Mic is almost certainly muted at the OS level,
             // pointed at a dead/virtual device, or the user revoked permission.
-            // Surface to the UI so phone users (no DevTools) can act.
+            // (Only trust the analyser when AudioContext is actually running —
+            // mobile browsers leave it suspended and the analyser emits zeros
+            // forever, which would falsely trigger this warning.)
             setSilentTooLong(true);
           } else if (
             autoStopOnSilenceRef.current &&
