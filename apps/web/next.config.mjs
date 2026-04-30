@@ -71,6 +71,14 @@ const nextConfig = {
           // Defense-in-depth XSS hint for legacy Safari. Modern browsers
           // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
+          // CSP — uses unsafe-inline/unsafe-eval because Next.js inline
+          // runtime and Tailwind need them. A nonce-based approach would
+          // require custom middleware which is more invasive.
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.anthropic.com; frame-src https://js.stripe.com; object-src 'none'; base-uri 'self';",
+          },
         ],
       },
     ];
