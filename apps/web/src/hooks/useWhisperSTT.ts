@@ -342,9 +342,15 @@ export function useWhisperSTT(
       return;
     }
 
-    let chunkData: Blob | null = null;
+    // Accumulate ALL ondataavailable parts into an array. Manual stop
+    // sequence (requestData + stop) fires ondataavailable TWICE — first with
+    // the buffered audio (~good), then with a tiny tail (often just an 18-
+    // byte WebM trailer). Earlier code overwrote chunkData on each event, so
+    // the meaningful audio got clobbered by the tail and Whisper saw a
+    // headers-only file. Concat at onstop into one valid WebM blob.
+    const chunkParts: Blob[] = [];
     recorder.ondataavailable = (ev: BlobEvent) => {
-      if (ev.data && ev.data.size > 0) chunkData = ev.data;
+      if (ev.data && ev.data.size > 0) chunkParts.push(ev.data);
     };
     recorder.onerror = () => {
       setState("idle");
@@ -353,6 +359,10 @@ export function useWhisperSTT(
       wantRecordingRef.current = false;
     };
     recorder.onstop = () => {
+      const chunkData: Blob | null =
+        chunkParts.length === 0
+          ? null
+          : new Blob(chunkParts, { type: chunkParts[0].type || mime });
       // Read + reset the per-chunk peak RMS so the next chunk starts fresh.
       const peakRms = chunkPeakRmsRef.current;
       chunkPeakRmsRef.current = 0;
@@ -619,6 +629,13 @@ export function useWhisperSTT(
     } catch {
       /* ignore */
     }
+    // Give recorder.onstop a moment to fire and queue the upload BEFORE we
+    // check inflightRef. Without this 300ms grace period the while loop
+    // sees inflight=0 and exits immediately — even though the final
+    // (concatenated) chunk is still moments away from being POSTed. Net
+    // effect was 'stopRecording flushed final: \"\"' even when the user had
+    // clearly spoken full sentences.
+    await new Promise((r) => setTimeout(r, 300));
     // Wait for all in-flight uploads to settle (with a hard cap so we never
     // hang forever on a stuck request). Whisper rarely takes > 5s for a 5s
     // chunk, but the 10s cap protects against network outages.
