@@ -101,13 +101,15 @@ export async function POST(req: NextRequest) {
   groqForm.append("response_format", "json");
   groqForm.append("temperature", "0");
   groqForm.append("language", "en");
-  // Context prompt heavily biases Whisper toward medical-conversation tokens
-  // and AWAY from its YouTube-trained default-ending hallucinations
-  // ("Thank you for watching", "Subscribe", etc) that show up on quiet audio.
-  // Single biggest reduction in the "Thank you. Thank you." loop.
+  // Conversational seed in the prompt — gives Whisper a concrete example of
+  // the dialogue style we expect, biasing away from YouTube training-data
+  // endings ("Thank you for watching", "Subscribe") AND toward sentence
+  // structures we actually need ("My chest hurts", "How long has it been?").
+  // This is the single highest-leverage Whisper param for taming
+  // hallucinations on noisy / soft-spoken / accented audio.
   groqForm.append(
     "prompt",
-    "A doctor is consulting with a patient. Medical English. Symptoms, history, examination, diagnosis."
+    "Doctor: Hello, what brings you in today? Patient: I have chest pain that started two hours ago. Doctor: Can you describe the pain? Patient: It is sharp and severe. Doctor: Any other symptoms? Patient: Yes, I feel short of breath."
   );
   // WebM/Opus is what MediaRecorder produces in Chrome; Groq accepts it.
   groqForm.append("file", audio, "chunk.webm");
