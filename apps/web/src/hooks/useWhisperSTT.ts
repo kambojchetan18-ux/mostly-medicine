@@ -342,15 +342,15 @@ export function useWhisperSTT(
       return;
     }
 
-    // Accumulate ALL ondataavailable parts into an array. Manual stop
-    // sequence (requestData + stop) fires ondataavailable TWICE — first with
-    // the buffered audio (~good), then with a tiny tail (often just an 18-
-    // byte WebM trailer). Earlier code overwrote chunkData on each event, so
-    // the meaningful audio got clobbered by the tail and Whisper saw a
-    // headers-only file. Concat at onstop into one valid WebM blob.
-    const chunkParts: Blob[] = [];
+    // recorder.stop() flushes a single complete WebM blob (header + clusters
+    // + trailer) in a single ondataavailable. We deliberately do NOT call
+    // requestData() — that pattern splits the WebM into a header part and a
+    // continuation part, and naively concatenating them produces an invalid
+    // container that Groq rejects with `invalid_request_error`. Letting
+    // stop() flush yields ONE valid file we upload as-is.
+    let chunkData: Blob | null = null;
     recorder.ondataavailable = (ev: BlobEvent) => {
-      if (ev.data && ev.data.size > 0) chunkParts.push(ev.data);
+      if (ev.data && ev.data.size > 0) chunkData = ev.data;
     };
     recorder.onerror = () => {
       setState("idle");
@@ -359,10 +359,6 @@ export function useWhisperSTT(
       wantRecordingRef.current = false;
     };
     recorder.onstop = () => {
-      const chunkData: Blob | null =
-        chunkParts.length === 0
-          ? null
-          : new Blob(chunkParts, { type: chunkParts[0].type || mime });
       // Read + reset the per-chunk peak RMS so the next chunk starts fresh.
       const peakRms = chunkPeakRmsRef.current;
       chunkPeakRmsRef.current = 0;
@@ -614,16 +610,11 @@ export function useWhisperSTT(
       cleanupStream();
       return fullTranscriptRef.current.trim();
     }
-    // Force any buffered audio < CHUNK_MS old to fire ondataavailable before
-    // we stop. Without this, a 2-3s utterance produces zero chunks because
-    // the timeslice never elapsed.
-    try {
-      if (recorder.state === "recording") {
-        recorder.requestData();
-      }
-    } catch (err) {
-      console.warn("[whisper] requestData() failed", err);
-    }
+    // Just stop() — DO NOT requestData() first. requestData splits the
+    // current WebM into a header part + a continuation part; concatenating
+    // them later produces an invalid container that Groq rejects with
+    // `invalid_request_error`. stop() alone flushes one complete WebM blob
+    // (header + clusters + trailer) in a single ondataavailable.
     try {
       if (recorder.state !== "inactive") recorder.stop();
     } catch {
