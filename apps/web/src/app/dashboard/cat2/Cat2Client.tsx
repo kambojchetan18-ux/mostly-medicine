@@ -240,6 +240,19 @@ export default function Cat2Client() {
     }
   }, [micMuted, recState, stopRecording]);
 
+  // Auto-pause mic while AI patient is speaking. Without this, the laptop
+  // speaker's TTS bleeds back into the mic, Whisper transcribes a mix of
+  // user voice + AI voice, and emits multilingual gibberish like
+  // "Doctor diranks and I tested the abattoirs twice. También, type o
+  // Spider…". echoCancellation alone isn't enough on macOS Mac speakers.
+  // Re-stopping is fine — the mic button stays where it is and the user can
+  // tap it again to resume after the patient finishes.
+  useEffect(() => {
+    if (speaking && recState === "recording") {
+      void stopRecording();
+    }
+  }, [speaking, recState, stopRecording]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);

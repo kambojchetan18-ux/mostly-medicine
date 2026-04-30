@@ -112,6 +112,17 @@ export default function PlayClient({
     }
   }, [micMuted, sttState, stopRecording]);
 
+  // Auto-pause mic while AI patient is speaking. echoCancellation alone
+  // doesn't fully block laptop-speaker TTS bleed back into the mic, so
+  // Whisper ends up decoding user-voice + AI-voice and emits multilingual
+  // gibberish ("También, type o Spider on the inside of the room forum").
+  // Stop the mic when speaking starts; user taps Mic on again to resume.
+  useEffect(() => {
+    if (speaking && sttState === "recording") {
+      void stopRecording();
+    }
+  }, [speaking, sttState, stopRecording]);
+
   // Countdown
   useEffect(() => {
     if (ended) return;

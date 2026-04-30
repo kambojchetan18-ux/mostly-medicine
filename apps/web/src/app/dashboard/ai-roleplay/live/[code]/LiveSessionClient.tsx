@@ -140,6 +140,19 @@ export default function LiveSessionClient({
   const lastNonZeroVolumeRef = useRef(1);
 
   const supabase = useMemo(() => createClient(), []);
+  // Per-tab unique ID. When the same user opens the session in two tabs/
+  // devices on the same account (the typical solo-launch test setup), both
+  // tabs share myUserId — and `payload.from === myUserId` filters wiped
+  // every cross-tab broadcast as 'own', so offer/answer/ICE never crossed,
+  // ICE stayed at 'new', and the partner tile stayed black. A per-tab UUID
+  // lets each side recognise its own broadcasts without depending on auth.
+  const myPeerId = useMemo(
+    () =>
+      `${myUserId}-${typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2)}`,
+    [myUserId]
+  );
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -441,7 +454,7 @@ export default function LiveSessionClient({
         };
 
         const rtcChannel = supabase.channel(`acrp_live_rtc_${sessionId}`, {
-          config: { broadcast: { self: false }, presence: { key: myUserId } },
+          config: { broadcast: { self: false }, presence: { key: myPeerId } },
         });
         rtcChannelRef.current = rtcChannel;
 
@@ -450,7 +463,7 @@ export default function LiveSessionClient({
             rtcChannel.send({
               type: "broadcast",
               event: "ice",
-              payload: { from: myUserId, candidate: ev.candidate.toJSON() },
+              payload: { from: myPeerId, candidate: ev.candidate.toJSON() },
             });
           }
         };
@@ -468,7 +481,7 @@ export default function LiveSessionClient({
             rtcChannel.send({
               type: "broadcast",
               event: "offer",
-              payload: { from: myUserId, sdp: offer },
+              payload: { from: myPeerId, sdp: offer },
             });
           } catch (err) {
             offerSent = false;
@@ -479,12 +492,12 @@ export default function LiveSessionClient({
         rtcChannel
           .on("broadcast", { event: "ready" }, async ({ payload }) => {
             // Guest signalled it joined the channel — host (re)sends offer.
-            if (payload.from === myUserId) return;
+            if (payload.from === myPeerId) return;
             offerSent = false; // allow re-send
             await sendHostOffer();
           })
           .on("broadcast", { event: "offer" }, async ({ payload }) => {
-            if (payload.from === myUserId) return;
+            if (payload.from === myPeerId) return;
             try {
               await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
               const answer = await pc.createAnswer();
@@ -492,14 +505,14 @@ export default function LiveSessionClient({
               rtcChannel.send({
                 type: "broadcast",
                 event: "answer",
-                payload: { from: myUserId, sdp: answer },
+                payload: { from: myPeerId, sdp: answer },
               });
             } catch (err) {
               console.error("[live/rtc] offer handle failed", err);
             }
           })
           .on("broadcast", { event: "answer" }, async ({ payload }) => {
-            if (payload.from === myUserId) return;
+            if (payload.from === myPeerId) return;
             if (pc.signalingState === "have-local-offer") {
               try {
                 await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
@@ -509,7 +522,7 @@ export default function LiveSessionClient({
             }
           })
           .on("broadcast", { event: "ice" }, async ({ payload }) => {
-            if (payload.from === myUserId) return;
+            if (payload.from === myPeerId) return;
             try {
               await pc.addIceCandidate(new RTCIceCandidate(payload.candidate));
             } catch {
@@ -520,7 +533,7 @@ export default function LiveSessionClient({
             const state = rtcChannel.presenceState();
             const others = Object.values(state)
               .flat()
-              .some((p) => (p as { user?: string }).user !== myUserId);
+              .some((p) => (p as { peer?: string }).peer !== myPeerId);
             setPresencePartnerOnline(others);
             // When partner becomes online, host (re)sends offer to handle the
             // case where the offer was sent before the guest's presence.
@@ -528,13 +541,13 @@ export default function LiveSessionClient({
           })
           .subscribe(async (s) => {
             if (s !== "SUBSCRIBED") return;
-            await rtcChannel.track({ user: myUserId, role: myRole });
+            await rtcChannel.track({ peer: myPeerId, user: myUserId, role: myRole });
             // Guest announces ready so host can send offer reliably.
             if (!isHost) {
               rtcChannel.send({
                 type: "broadcast",
                 event: "ready",
-                payload: { from: myUserId },
+                payload: { from: myPeerId },
               });
             }
             // Host also tries to send offer on subscribe (in case partner
