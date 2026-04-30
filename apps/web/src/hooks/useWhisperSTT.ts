@@ -16,7 +16,11 @@ type RecognitionState = "idle" | "recording";
 //   - The mic stream is owned by this hook (separate getUserMedia call) so
 //     the WebRTC video stream and the STT stream stay independent — pausing
 //     STT shouldn't tear down the call.
-const CHUNK_MS = 6000;
+// 8 s chunks — whisper-large-v3-turbo hallucinates much less on longer
+// clips (the model was trained on 30s windows; very short clips with quiet
+// audio are where 'Thank you.' fallbacks creep in). Trade ~2 s of extra
+// per-chunk latency for far fewer dropped utterances.
+const CHUNK_MS = 8000;
 const MAX_INFLIGHT = 1;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
 
@@ -327,11 +331,12 @@ export function useWhisperSTT(
     if (!wantRecordingRef.current) return;
     let recorder: MediaRecorder;
     try {
-      // 96 kbps Opus is well above the default ~32 kbps and gives Whisper a
-      // much clearer signal — soft consonants survive the encode, which is
-      // the difference between "I have chest pain" being transcribed
-      // correctly vs Whisper hallucinating "Thank you." on a smeared input.
-      recorder = new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 96000 });
+      // 128 kbps Opus — well above default ~32 kbps. Soft consonants /
+      // sibilants / nasals survive the encode, which is the difference
+      // between "I have chest pain" being transcribed correctly and Whisper
+      // hallucinating "Thank you." on a smeared input. 128 kbps is voice-
+      // grade clean even on a noisy laptop mic.
+      recorder = new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 128000 });
     } catch {
       setSupported(false);
       return;

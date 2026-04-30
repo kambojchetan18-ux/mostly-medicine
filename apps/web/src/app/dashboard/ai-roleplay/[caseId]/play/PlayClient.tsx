@@ -97,10 +97,16 @@ export default function PlayClient({
   // stopRecording fires on manual tap OR auto-stop when silence is detected.
   // stopWhisper() resolves AFTER the final partial chunk uploads + all
   // in-flight uploads settle.
+  const [transcribeWarning, setTranscribeWarning] = useState<string | null>(null);
   const stopRecording = useCallback(async () => {
     const final = (await stopWhisper()).trim() || sttBufferRef.current.trim();
     sttBufferRef.current = "";
-    if (final) sendRef.current?.(final);
+    if (final) {
+      setTranscribeWarning(null);
+      sendRef.current?.(final);
+    } else {
+      setTranscribeWarning("Couldn't catch what you said. Try again — speak a bit louder, closer to the mic, and away from background noise.");
+    }
   }, [stopWhisper]);
   useEffect(() => {
     stopRecordingRef.current = stopRecording;
@@ -424,6 +430,12 @@ export default function PlayClient({
           {silentTooLong && (
             <div className="w-full rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800 leading-relaxed">
               🚫 <strong>Mic seems silent.</strong> Check your phone/laptop mic permission for this site, close other apps using the mic (Zoom, Meet, FaceTime), then refresh.
+            </div>
+          )}
+
+          {transcribeWarning && (
+            <div className="w-full rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 leading-relaxed">
+              🎤 {transcribeWarning}
             </div>
           )}
 

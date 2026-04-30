@@ -222,10 +222,19 @@ export default function Cat2Client() {
   // When the user stops the mic (manual tap OR silence-detected auto-stop),
   // ship the buffered transcript as one message. stopWhisper() resolves AFTER
   // the final partial chunk uploads + all in-flight chunks settle.
+  const [transcribeWarning, setTranscribeWarning] = useState<string | null>(null);
   const stopRecording = useCallback(async () => {
     const final = (await stopWhisper()).trim() || sttBufferRef.current.trim();
     sttBufferRef.current = "";
-    if (final) sendMessage(final);
+    if (final) {
+      setTranscribeWarning(null);
+      sendMessage(final);
+    } else {
+      // Captured audio but Whisper couldn't extract usable words (all chunks
+      // were hallucinations / empty). Surface a clear retry prompt instead
+      // of silent failure — phone users especially can't tell otherwise.
+      setTranscribeWarning("Couldn't catch what you said. Try again — speak a bit louder, closer to the mic, and away from background noise.");
+    }
   }, [stopWhisper, sendMessage]);
   useEffect(() => {
     stopRecordingRef.current = stopRecording;
@@ -756,6 +765,13 @@ export default function Cat2Client() {
       {silentTooLong && (
         <div className="mb-2 px-3 py-2 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 leading-relaxed">
           🚫 <strong>Mic seems silent.</strong> Check your phone/laptop mic permission for this site, close other apps using the mic (Zoom, Meet, FaceTime), then refresh.
+        </div>
+      )}
+
+      {/* Empty-transcript retry hint — Whisper got chunks but couldn't extract words. */}
+      {transcribeWarning && (
+        <div className="mb-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed">
+          🎤 {transcribeWarning}
         </div>
       )}
 
