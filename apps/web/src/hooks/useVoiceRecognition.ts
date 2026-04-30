@@ -60,10 +60,18 @@ export function useVoiceRecognition(
 
   // Decide once on mount which engine to use. Stable for the session so the
   // UI doesn't flicker between two STT providers.
+  //
+  // On mobile we ALWAYS prefer Web Speech, even in Live Peer RolePlay where
+  // an externalStream is present. Reason: Whisper-via-Groq has been
+  // intermittent on Android Chrome due to suspended AudioContext + soft
+  // mic + Whisper hallucinations. Web Speech runs its OWN audio capture in
+  // parallel with the WebRTC stream — Chrome handles that fine on Android
+  // (multiple consumer access). Partner audio still flows through WebRTC
+  // unchanged; only the local STT path swaps.
   const [usingNative] = useState(() => {
     if (typeof window === "undefined") return false;
-    if (options.externalStream) return false; // Live mode keeps Whisper
-    return isMobileBrowser() && hasWebSpeech();
+    if (!isMobileBrowser() || !hasWebSpeech()) return false;
+    return true;
   });
 
   // Wrap Speech's stopRecording so callers get a Promise<string> just like

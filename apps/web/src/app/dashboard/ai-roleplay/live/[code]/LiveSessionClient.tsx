@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useWhisperSTT } from "@/hooks/useWhisperSTT";
+import { useVoiceRecognition } from "@/hooks/useVoiceRecognition";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import FunLoading from "@/components/FunLoading";
 
@@ -203,7 +203,7 @@ export default function LiveSessionClient({
   // returns a silent placeholder track, leaving the analyser stuck at RMS 0
   // and every chunk VAD-skipped). Pass localStream through so the hook
   // analyses + records from the SAME audio track WebRTC is sending.
-  const stt = useWhisperSTT(handleSttFinal, { externalStream: localStream });
+  const stt = useVoiceRecognition(handleSttFinal, { externalStream: localStream });
 
   // ─── Apply remote-volume / remote-mute to the <video> element ────────
   // Re-runs whenever the user drags the slider or hits the mute toggle.
@@ -954,12 +954,31 @@ export default function LiveSessionClient({
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-2">
             <div className="grid grid-cols-2 gap-3">
-              <video
-                ref={remoteVideoRef}
-                autoPlay
-                playsInline
-                className="aspect-video w-full rounded-xl border border-gray-300 bg-black"
-              />
+              <div className="relative">
+                <video
+                  ref={remoteVideoRef}
+                  autoPlay
+                  playsInline
+                  className="aspect-video w-full rounded-xl border border-gray-300 bg-black"
+                />
+                {/* Surface why the remote tile is black: either partner hasn't
+                    granted camera, or the WebRTC track simply hasn't arrived
+                    yet. Without this overlay users see a mute black square
+                    and assume the app is broken. */}
+                {(!remoteStream || remoteStream.getVideoTracks().length === 0) && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/80 px-3 text-center text-xs text-white">
+                    <span className="text-2xl">📵</span>
+                    <span className="mt-1 font-semibold">
+                      {iceState === "connected" || iceState === "completed"
+                        ? "Partner camera off"
+                        : "Waiting for partner video…"}
+                    </span>
+                    <span className="mt-1 text-[10px] text-white/70">
+                      Audio still flows. Ask them to allow camera + refresh.
+                    </span>
+                  </div>
+                )}
+              </div>
               <video
                 ref={localVideoRef}
                 autoPlay
