@@ -21,7 +21,13 @@ type RecognitionState = "idle" | "recording";
 // audio are where 'Thank you.' fallbacks creep in). Trade ~2 s of extra
 // per-chunk latency for far fewer dropped utterances.
 const CHUNK_MS = 8000;
-const MAX_INFLIGHT = 1;
+// 2 in-flight is the sweet spot for back-to-back chunks on continuous
+// speech ('user keeps on speaking without stopping'). MAX_INFLIGHT = 1
+// dropped chunks every time a new one arrived before the previous Groq
+// response landed — visible as `back-pressure: dropping chunk` in the
+// console + holes in the transcript. 2 is still too few to compound
+// rate-limit pressure if Groq slows down.
+const MAX_INFLIGHT = 2;
 const TRANSCRIBE_URL = "/api/stt/transcribe";
 
 // Exponential backoff bounds when Groq returns rate_limit_exceeded. The chunk
@@ -47,11 +53,24 @@ const WHISPER_HALLUCINATIONS = new Set([
   ".", "...", "?", "!", "♪", "♪♪", "(music)", "(silence)",
 ]);
 
+// Detect Whisper's repetition-loop hallucinations on long continuous audio
+// (e.g. 'ult reactor 4388989898989898989898989class' or 'I'm sorry, I'm
+// sorry, I'm sorry, I'm sorry…'). The decoder gets stuck and emits the
+// same short token over and over. If a single 4+ char substring repeats
+// six or more times back-to-back, the chunk is junk.
+function hasRepetitionLoop(text: string): boolean {
+  // Match any 4-12 char substring repeated at least 6 times consecutively.
+  // (?:...){6,} is the repetition; the inner backreference enforces 'same'.
+  return /(.{4,12}?)\1{5,}/.test(text);
+}
+
 function isHallucination(text: string): boolean {
   // Strip outer punctuation, lowercase
   const cleaned = text.trim().toLowerCase().replace(/[.!?,;:]+$/g, "").trim();
   if (!cleaned) return true;
   if (WHISPER_HALLUCINATIONS.has(cleaned)) return true;
+  // Repetition-loop hallucination — drop the whole chunk.
+  if (hasRepetitionLoop(text)) return true;
   // Split into sentences. If every non-empty sentence is a hallucination,
   // the whole chunk is hallucinated noise (e.g., "Hello? Hello? Hello.").
   const sentences = text
