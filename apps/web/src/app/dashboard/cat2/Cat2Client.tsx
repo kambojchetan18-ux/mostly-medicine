@@ -634,28 +634,29 @@ export default function Cat2Client() {
   const isRecording = recState === "recording";
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-3xl mx-auto">
+    <div className="flex flex-col h-[calc(100vh-9rem)] sm:h-[calc(100vh-8rem)] max-w-3xl mx-auto">
 
-      {/* Patient header */}
-      <div className="flex items-center justify-between mb-4 bg-white border border-gray-200 rounded-2xl px-4 py-3">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="text-4xl">{emoji}</div>
+      {/* Patient header — wraps to two rows on mobile so the timer + actions
+          drop below the patient identity instead of overflowing the line. */}
+      <div className="flex flex-wrap items-center justify-between gap-y-2 mb-4 bg-white border border-gray-200 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="relative shrink-0">
+            <div className="text-3xl sm:text-4xl">{emoji}</div>
             {speaking && (
               <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-500 rounded-full animate-ping" />
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-gray-900">{activeScenarioData?.title}</h2>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${difficultyColor[activeScenarioData?.difficulty ?? "Medium"]}`}>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h2 className="text-sm font-bold text-gray-900 break-words">{activeScenarioData?.title}</h2>
+              <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${difficultyColor[activeScenarioData?.difficulty ?? "Medium"]}`}>
                 {activeScenarioData?.difficulty}
               </span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
+              <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
                 {timerMode}
               </span>
             </div>
-            <p className="text-xs text-gray-500">{activeScenarioData?.category} · {activeScenarioData?.patientProfile}</p>
+            <p className="text-xs text-gray-500 break-words">{activeScenarioData?.category} · {activeScenarioData?.patientProfile}</p>
             {speaking && (
               <div className="flex items-center gap-2 mt-1">
                 <WaveformBars active={speaking} color="bg-brand-400" />
@@ -664,7 +665,7 @@ export default function Cat2Client() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
           {/* Countdown timer */}
           <div className={`text-right font-mono font-bold text-xl tabular-nums transition-colors ${timerColorClass(timeLeft)}`}>
             {formatTime(timeLeft)}
@@ -727,7 +728,7 @@ export default function Cat2Client() {
               <div className="text-2xl mr-2 self-end mb-1">{emoji}</div>
             )}
             <div
-              className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-sm ${
+              className={`max-w-[85%] sm:max-w-[78%] rounded-2xl px-4 py-2.5 text-sm break-words [overflow-wrap:anywhere] ${
                 m.role === "user"
                   ? "bg-brand-600 text-white"
                   : "bg-gray-100 text-gray-800"
@@ -791,8 +792,10 @@ export default function Cat2Client() {
       )}
 
 
-      {/* Input bar */}
-      <div className="flex items-center gap-2">
+      {/* Input bar — flex-wrap so the mute toggle drops to its own line on
+          narrow phones instead of squeezing the input field down to nothing.
+          Buttons sized to 44×44 minimum (Apple/Google touch-target spec). */}
+      <div className="flex items-center gap-2 flex-wrap">
 
         {/* Mic button */}
         {micSupported !== false && (
@@ -819,7 +822,7 @@ export default function Cat2Client() {
           </button>
         )}
 
-        {/* Mute toggle */}
+        {/* Mute toggle — short label on phone, long label from sm: up. */}
         {micSupported !== false && (
           <button
             onClick={() => setMicMuted((m) => !m)}
@@ -830,11 +833,18 @@ export default function Cat2Client() {
                 : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            {micMuted ? "🔇 Muted — tap to unmute" : "🎤 Mic on"}
+            {micMuted ? (
+              <>
+                <span className="sm:hidden">🔇 Muted</span>
+                <span className="hidden sm:inline">🔇 Muted — tap to unmute</span>
+              </>
+            ) : (
+              "🎤 Mic on"
+            )}
           </button>
         )}
 
-        {/* Text input */}
+        {/* Text input — 16px font on mobile prevents iOS auto-zoom on focus. */}
         <input
           value={isRecording ? displayTranscript : input}
           onChange={e => { if (!isRecording) setInput(e.target.value); }}
@@ -847,7 +857,7 @@ export default function Cat2Client() {
             : "🎤 Listening… speak naturally"
           }
           readOnly={isRecording}
-          className={`flex-1 border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition ${
+          className={`flex-1 min-w-[140px] border rounded-xl px-4 py-3 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition ${
             isRecording ? "bg-red-50 border-red-200 text-gray-500 cursor-not-allowed" : "border-gray-300"
           }`}
         />
@@ -857,7 +867,7 @@ export default function Cat2Client() {
           <button
             onClick={() => sendMessage(input)}
             disabled={loading || !input.trim()}
-            className="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl text-sm font-semibold transition disabled:opacity-40"
+            className="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl text-sm font-semibold transition disabled:opacity-40 min-h-[44px]"
           >
             Send
           </button>

@@ -265,18 +265,20 @@ export default function PlayClient({
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4">
-      {/* Sticky header with timer + end button */}
-      <div className="sticky top-0 z-10 -mx-4 flex items-center gap-3 border-b border-gray-200 bg-white/80 px-4 py-2 backdrop-blur sm:mx-0 sm:rounded-xl sm:border">
-        <div className="flex flex-col">
+      {/* Sticky header — wraps to two rows on phones so the timer + End
+          session button drop below the patient identity instead of
+          overflowing the line. */}
+      <div className="sticky top-0 z-10 -mx-3 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-gray-200 bg-white/85 px-3 py-2 backdrop-blur sm:-mx-0 sm:rounded-xl sm:border sm:px-4">
+        <div className="flex flex-col min-w-0">
           <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Patient</span>
-          <span className="text-sm font-semibold text-gray-900">{patientName}</span>
+          <span className="text-sm font-semibold text-gray-900 truncate">{patientName}</span>
         </div>
         <span className="hidden text-xs text-gray-400 sm:inline">·</span>
         <div className="hidden flex-col sm:flex">
           <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Setting</span>
-          <span className="text-xs text-gray-700">{setting}</span>
+          <span className="text-xs text-gray-700 truncate max-w-[180px]">{setting}</span>
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 flex-wrap justify-end">
           {voiceMode && (
             <VoiceControls
               muted={muted}
@@ -343,7 +345,7 @@ export default function PlayClient({
           messages.map((m) => (
             <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm shadow-sm ${
+                className={`max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                   m.role === "user"
                     ? "rounded-br-sm bg-brand-600 text-white"
                     : "rounded-bl-sm border border-gray-200 bg-white text-gray-800"
@@ -420,14 +422,21 @@ export default function PlayClient({
             type="button"
             onClick={() => setMicMuted((m) => !m)}
             disabled={ended}
-            className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${
+            className={`rounded-xl border px-4 py-2 text-xs font-semibold transition disabled:opacity-50 min-h-[44px] ${
               micMuted
                 ? "border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100"
                 : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             }`}
             title={micMuted ? "Tap to unmute mic" : "Tap to mute mic"}
           >
-            {micMuted ? "🔇 Muted — tap to unmute" : "🎤 Mic on"}
+            {micMuted ? (
+              <>
+                <span className="sm:hidden">🔇 Muted</span>
+                <span className="hidden sm:inline">🔇 Muted — tap to unmute</span>
+              </>
+            ) : (
+              "🎤 Mic on"
+            )}
           </button>
           <div className="min-h-[1.5rem] text-center text-sm text-gray-700">
             {micMuted && "🔇 Mic muted — unmute to speak"}
@@ -483,12 +492,12 @@ export default function PlayClient({
             rows={2}
             disabled={ended}
             placeholder={placeholderHint}
-            className="flex-1 resize-none rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-400 disabled:bg-gray-50"
+            className="flex-1 min-w-0 resize-none rounded-xl border border-gray-300 bg-white px-3 py-2 text-base sm:text-sm shadow-sm focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-400 disabled:bg-gray-50"
           />
           <button
             type="submit"
             disabled={sending || ended || !draft.trim()}
-            className="self-end rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="self-end rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60 min-h-[44px]"
           >
             {sending ? "…" : "Send"}
           </button>

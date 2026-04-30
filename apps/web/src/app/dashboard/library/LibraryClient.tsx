@@ -139,13 +139,14 @@ export default function LibraryClient({
         <p className="text-sm text-gray-500 mt-1">Handbook summaries grounded in eTG, Oxford, and AMC guidelines</p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      {/* Tabs — horizontal-scroll wrapper on phones so 4 long labels never
+          collapse onto two stacked rows that mess up the underline. */}
+      <div className="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {TABS.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition ${
+            className={`shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 text-sm font-medium rounded-t-lg transition min-h-[44px] ${
               activeTab === tab
                 ? "bg-white border border-b-white border-gray-200 text-brand-700 -mb-px"
                 : "text-gray-500 hover:text-gray-700"

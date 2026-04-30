@@ -171,11 +171,12 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
       )}
       {error && <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-900">⚠️ {error}</div>}
 
-      {/* Manage existing subscription */}
+      {/* Manage existing subscription — stacks on phones so the CTA stays
+          full-width and tappable instead of squishing the description. */}
       {subscription.hasCustomerId && subscription.plan !== "free" && (
         <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-sm font-semibold text-gray-900">Manage your subscription</p>
               <p className="text-xs text-gray-500">Update payment method, switch plans, or cancel.</p>
             </div>
@@ -183,7 +184,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
               type="button"
               onClick={openPortal}
               disabled={loading === "portal"}
-              className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
+              className="shrink-0 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-60 min-h-[44px]"
             >
               {loading === "portal" ? "Opening…" : "Open Billing Portal"}
             </button>

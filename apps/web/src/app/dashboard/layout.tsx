@@ -2,6 +2,7 @@ import Link from "next/link";
 import GlobalSearch from "@/components/GlobalSearch";
 import SearchTrigger from "@/components/SearchTrigger";
 import SidebarUserCard from "@/components/SidebarUserCard";
+import MobileNavDrawer from "@/components/MobileNavDrawer";
 
 const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-brand-300"  },
@@ -103,19 +104,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* ── Mobile top bar ────────────────────────────────────────────── */}
-      <div className="md:hidden fixed top-0 inset-x-0 z-50 flex items-center justify-between px-4 py-3 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70">
-        <Link href="/" className="font-display font-bold text-base hover:opacity-80 transition-opacity">
+      {/* ── Mobile top bar ──────────────────────────────────────────────
+          Hamburger + logo + search. The hamburger is in <MobileNavDrawer/>
+          alongside the slide-in drawer panel itself, both rendered inline
+          (md:hidden). Without this, mobile users had no way to switch
+          modules — the desktop sidebar was hidden but no drawer existed. */}
+      <div
+        className="md:hidden fixed top-0 inset-x-0 z-50 flex items-center justify-between gap-2 px-2 py-2 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70"
+        style={{ paddingTop: "calc(0.5rem + env(safe-area-inset-top))" }}
+      >
+        <MobileNavDrawer navItems={navItems} jobNavItems={jobNavItems} />
+        <Link href="/dashboard" className="font-display font-bold text-base hover:opacity-80 transition-opacity truncate">
           <span className="gradient-text">Mostly</span>
           <span className="text-white"> Medicine</span>
         </Link>
-        <div className="text-slate-400">
+        <div className="text-slate-400 flex items-center justify-center w-11 h-11">
           <SearchTrigger />
         </div>
       </div>
 
       {/* ── Main content ──────────────────────────────────────────────── */}
-      <main className="flex-1 min-w-0 p-4 pt-20 md:p-8 md:pt-8">
+      <main
+        className="flex-1 min-w-0 p-3 pt-[4.5rem] sm:p-4 sm:pt-20 md:p-8 md:pt-8"
+        style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+      >
         {children}
       </main>
 

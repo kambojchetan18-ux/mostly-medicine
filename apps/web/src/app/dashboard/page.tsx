@@ -182,10 +182,11 @@ export default async function DashboardHome() {
         ))}
       </div>
 
-      {/* Bottom tip card */}
-      <div className="mt-8 rounded-3xl p-5 bg-gradient-to-r from-violet-50 to-pink-50 border border-violet-100 flex items-center gap-4">
+      {/* Bottom tip card — wraps onto two rows on phones so the CTA button
+          drops below the copy instead of squeezing it. */}
+      <div className="mt-8 rounded-3xl p-4 sm:p-5 bg-gradient-to-r from-violet-50 to-pink-50 border border-violet-100 flex flex-wrap items-center gap-3 sm:gap-4">
         <span className="text-3xl shrink-0">💡</span>
-        <div>
+        <div className="min-w-0 flex-1">
           <p className="font-semibold text-gray-800 text-sm">Pro tip — start with AMC Handbook AI RolePlay</p>
           <p className="text-xs text-slate-500 mt-0.5">
             The AMC MCAT is an 8-minute OSCE. Practising with AI patients builds speed and confidence faster than MCQs alone.
@@ -193,7 +194,7 @@ export default async function DashboardHome() {
         </div>
         <Link
           href="/dashboard/cat2"
-          className="shrink-0 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap"
+          className="shrink-0 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap min-h-[40px] flex items-center"
         >
           Try a roleplay →
         </Link>
