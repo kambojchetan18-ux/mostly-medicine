@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get("q")?.trim();
@@ -9,6 +10,15 @@ export async function GET(req: NextRequest) {
   // Cap query length so the RPC can't be DoSed with a 1MB string.
   if (query.length > 200) {
     return NextResponse.json({ error: "Query too long" }, { status: 400 });
+  }
+
+  // Rate-limit search to prevent abuse (60 req / 60s per IP or user).
+  const rl = await aiRateLimit(clientKey(req, "search"), { max: 60, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   const supabase = await createClient();

@@ -48,6 +48,8 @@ export default function SidebarUserCard() {
 
   async function handleLogout() {
     setLoggingOut(true);
+    const supabase = createClient();
+    await supabase.auth.signOut();
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/auth/login");
   }

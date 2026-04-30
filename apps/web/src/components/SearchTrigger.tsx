@@ -1,16 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 export default function SearchTrigger() {
-  const [, setOpen] = useState(false);
-
   function trigger() {
     window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }));
   }
-
-  // Suppress unused state warning — state drives re-render on mount
-  useEffect(() => { setOpen(false); }, []);
 
   return (
     <button

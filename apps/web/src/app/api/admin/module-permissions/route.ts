@@ -31,8 +31,31 @@ export async function PATCH(req: NextRequest) {
   const { plan, module, enabled, daily_limit } = await req.json();
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
 
+  // Validate plan
+  const VALID_PLANS = ["free", "pro", "enterprise"];
+  if (!VALID_PLANS.includes(plan)) {
+    return NextResponse.json({ error: `Invalid plan. Must be one of: ${VALID_PLANS.join(", ")}` }, { status: 400 });
+  }
+
+  // Validate module name — alphanumeric + underscores/hyphens, reasonable length
+  if (typeof module !== "string" || !/^[a-zA-Z0-9_-]{1,64}$/.test(module)) {
+    return NextResponse.json({ error: "Invalid module name" }, { status: 400 });
+  }
+
+  // Validate enabled
+  if (typeof enabled !== "boolean") {
+    return NextResponse.json({ error: "enabled must be a boolean" }, { status: 400 });
+  }
+
+  // Validate daily_limit — must be a non-negative integer or null
+  if (daily_limit !== null && daily_limit !== undefined) {
+    if (!Number.isInteger(daily_limit) || daily_limit < 0) {
+      return NextResponse.json({ error: "daily_limit must be a non-negative integer or null" }, { status: 400 });
+    }
+  }
+
   const { error } = await supabase.from("module_permissions").upsert(
-    { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
+    { plan, module, enabled, daily_limit: daily_limit ?? null, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }
   );
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

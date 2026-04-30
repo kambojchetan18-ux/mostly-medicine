@@ -22,10 +22,15 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    return () => { abortRef.current?.abort(); };
+  }, []);
 
   async function sendMessage(content: string) {
     if (!content.trim() || isLoading) return;
@@ -34,6 +39,8 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
+
+    abortRef.current = new AbortController();
 
     try {
       const res = await fetch("/api/library-chat", {
@@ -44,6 +51,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
           topicTitle,
           topicContent,
         }),
+        signal: abortRef.current.signal,
       });
 
       if (!res.ok || !res.body) throw new Error("Request failed");

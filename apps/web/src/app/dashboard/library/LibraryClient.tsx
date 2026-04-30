@@ -128,8 +128,16 @@ export default function LibraryClient({
   }
 
   async function handleDelete(noteId: string) {
-    await fetch(`/api/notes/${noteId}`, { method: "DELETE" });
-    setNotes((prev) => prev.filter((n) => n.id !== noteId));
+    try {
+      const res = await fetch(`/api/notes/${noteId}`, { method: "DELETE" });
+      if (!res.ok) {
+        setUploadError("Failed to delete note");
+        return;
+      }
+      setNotes((prev) => prev.filter((n) => n.id !== noteId));
+    } catch {
+      setUploadError("Failed to delete note");
+    }
   }
 
   return (

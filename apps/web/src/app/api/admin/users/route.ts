@@ -30,6 +30,23 @@ export async function PATCH(req: NextRequest) {
   const { userId, plan, role } = await req.json();
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
+  // Self-demotion guard — prevent admins from accidentally removing their own admin role
+  if (userId === user.id && role && role !== "admin") {
+    return NextResponse.json({ error: "Cannot demote yourself" }, { status: 400 });
+  }
+
+  // Validate plan
+  const VALID_PLANS = ["free", "pro", "enterprise"];
+  if (plan && !VALID_PLANS.includes(plan)) {
+    return NextResponse.json({ error: `Invalid plan. Must be one of: ${VALID_PLANS.join(", ")}` }, { status: 400 });
+  }
+
+  // Validate role
+  const VALID_ROLES = ["user", "admin"];
+  if (role && !VALID_ROLES.includes(role)) {
+    return NextResponse.json({ error: `Invalid role. Must be one of: ${VALID_ROLES.join(", ")}` }, { status: 400 });
+  }
+
   const updates: Record<string, string> = { updated_at: new Date().toISOString() };
   if (plan) updates.plan = plan;
   if (role) updates.role = role;

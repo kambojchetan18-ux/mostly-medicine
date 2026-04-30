@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type RefObject } from "react";
 // Use the metadata-only export — pulling `scenarios` here would drop the
 // entire 720 kB handbook payload into the client chunk. The full data is
 // only needed server-side (the /api/ai/roleplay route handles that).
@@ -134,6 +134,8 @@ export default function Cat2Client() {
   const shownMilestonesRef = useRef<Set<number>>(new Set());
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef(messages);
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
 
   // Speech synthesis must come before sendMessage (sendMessage calls speak/stopSpeaking)
   const {
@@ -163,7 +165,7 @@ export default function Cat2Client() {
     // Prime mobile TTS while we still have a user-gesture token.
     if (ttsSupported) primeTts();
 
-    const newMessages = [...messages, { role: "user", content: text }];
+    const newMessages = [...messagesRef.current, { role: "user", content: text }];
     setMessages(newMessages);
     setInput("");
     setLoading(true);
@@ -189,7 +191,7 @@ export default function Cat2Client() {
     } finally {
       setLoading(false);
     }
-  }, [loading, messages, activeScenario, gender, speak, stopSpeaking, ttsSupported]);
+  }, [loading, activeScenario, gender, speak, stopSpeaking, ttsSupported]);
 
   // Buffer Whisper chunks until the user stops the mic, then send as one
   // user turn. Avoids spamming /api/ai/roleplay with every 5s of audio.
@@ -325,6 +327,16 @@ export default function Cat2Client() {
     }
   }
 
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+
   // Auto-request feedback when timer reaches 0
   const feedbackRequestedRef = useRef(false);
   useEffect(() => {
@@ -336,7 +348,7 @@ export default function Cat2Client() {
   }, [timeLeft, activeScenario, messages.length]);
 
   async function requestExaminerFeedback() {
-    if (loading || messages.length <= 1) return;
+    if (loading || messagesRef.current.length <= 1) return;
     stopSpeaking();
     stopTimer();
     setLoading(true);
@@ -344,7 +356,7 @@ export default function Cat2Client() {
       const res = await fetch("/api/ai/roleplay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenarioId: activeScenario, messages, requestFeedback: true }),
+        body: JSON.stringify({ scenarioId: activeScenario, messages: messagesRef.current, requestFeedback: true }),
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);

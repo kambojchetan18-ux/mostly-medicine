@@ -64,13 +64,20 @@ export default function AdminPage() {
 
   async function updateUser(userId: string, field: "plan" | "role", value: string) {
     setSaving(userId);
-    const res = await fetch("/api/admin/users", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, [field]: value }),
-    });
-    if (res.ok) {
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, [field]: value } : u));
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, [field]: value }),
+      });
+      if (res.ok) {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, [field]: value } : u));
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? `Failed to update user ${field}`);
+      }
+    } catch {
+      setError(`Failed to update user ${field}`);
     }
     setSaving(null);
   }
@@ -95,15 +102,23 @@ export default function AdminPage() {
   async function updateLimit(plan: string, module: string, daily_limit: number | null) {
     const key = `${plan}-${module}-limit`;
     setSaving(key);
-    const existing = permissions.find(p => p.plan === plan && p.module === module);
-    await fetch("/api/admin/module-permissions", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan, module, enabled: existing?.enabled ?? true, daily_limit }),
-    });
-    setPermissions(prev => prev.map(p =>
-      p.plan === plan && p.module === module ? { ...p, daily_limit } : p
-    ));
+    try {
+      const existing = permissions.find(p => p.plan === plan && p.module === module);
+      const res = await fetch("/api/admin/module-permissions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, module, enabled: existing?.enabled ?? true, daily_limit }),
+      });
+      if (res.ok) {
+        setPermissions(prev => prev.map(p =>
+          p.plan === plan && p.module === module ? { ...p, daily_limit } : p
+        ));
+      } else {
+        setError("Failed to update daily limit");
+      }
+    } catch {
+      setError("Failed to update daily limit");
+    }
     setSaving(null);
   }
 

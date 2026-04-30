@@ -4,11 +4,16 @@ import type { NextRequest } from "next/server";
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const MAX_ATTEMPTS = 5;
 
+let _serviceClient: ReturnType<typeof createClient> | null = null;
 function serviceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  if (!_serviceClient) {
+    _serviceClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } }
+    );
+  }
+  return _serviceClient;
 }
 
 // Best-effort client IP extractor for AI endpoint rate limiting. Vercel
@@ -46,6 +51,10 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: WINDOW_MS - (Date.now() - new Date(data.first_attempt_at).getTime()) };
   }
 
   return { allowed: true };

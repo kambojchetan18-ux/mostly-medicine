@@ -3,12 +3,16 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { stripe, planForPriceId } from "./stripe";
 
+let _serviceClient: ReturnType<typeof createServiceClient> | null = null;
 function service() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } }
-  );
+  if (!_serviceClient) {
+    _serviceClient = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } }
+    );
+  }
+  return _serviceClient;
 }
 
 // Fetch the user's existing Stripe customer or create one + persist the id.

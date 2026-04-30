@@ -136,7 +136,7 @@ async function main() {
   console.log("\n══════════════════════════════════════════════════════════");
   console.log(" Add these to Vercel env vars (Production + Preview + Dev):");
   console.log("══════════════════════════════════════════════════════════");
-  console.log(`STRIPE_SECRET_KEY=${SECRET}`);
+  console.log(`STRIPE_SECRET_KEY=${SECRET!.slice(0, 12)}...${SECRET!.slice(-4)}`);
   if (webhookSecret) {
     console.log(`STRIPE_WEBHOOK_SECRET=${webhookSecret}`);
   } else {

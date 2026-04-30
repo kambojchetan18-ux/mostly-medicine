@@ -43,6 +43,14 @@ export async function POST(req: NextRequest) {
 
   const { messages, topicTitle, topicContent } = await req.json();
 
+  if (!Array.isArray(messages) || messages.length > 50) {
+    return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
+  }
+  const validRoles = new Set(["user", "assistant"]);
+  const sanitized = messages
+    .filter((m: any) => validRoles.has(m.role) && typeof m.content === "string")
+    .map((m: any) => ({ role: m.role as "user" | "assistant", content: m.content.slice(0, 10000) }));
+
   const systemPrompt =
     topicTitle && topicContent
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
@@ -67,10 +75,7 @@ export async function POST(req: NextRequest) {
           model: MODEL,
           max_tokens: 1024,
           system: systemBlocks,
-          messages: messages.map((m: { role: string; content: string }) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
+          messages: sanitized,
           stream: true,
         });
 

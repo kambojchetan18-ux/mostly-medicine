@@ -72,6 +72,7 @@ export default function SignupScreen() {
                   onChangeText={f.set}
                   keyboardType={f.type}
                   autoCapitalize={f.type === 'email-address' ? 'none' : 'words'}
+                  autoCorrect={f.type === 'email-address' ? false : undefined}
                   secureTextEntry={f.secure}
                   placeholder={f.placeholder}
                   placeholderTextColor="#64748b"

@@ -141,8 +141,10 @@ export default function Cat1Client() {
 
     saveAttempt(q.id, correct, q.topic);
 
-    const newAnswers = [...answers, { id: q.id, correct, topic: q.topic }];
-    setAnswers(newAnswers);
+    setAnswers(prev => {
+      const newAnswers = [...prev, { id: q.id, correct, topic: q.topic }];
+      return newAnswers;
+    });
 
     if (current + 1 >= questions.length) {
       setMode("result");
@@ -153,7 +155,7 @@ export default function Cat1Client() {
       setDetailedExplanation(null);
       setSmartExplanation(null);
     }
-  }, [selected, questions, current, answers]);
+  }, [selected, questions, current]);
 
   async function fetchDetailedExplanation() {
     if (!selected) return;

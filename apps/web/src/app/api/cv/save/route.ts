@@ -7,10 +7,19 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const profile = await req.json();
+    const body = await req.json();
+    const allowed = [
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification", "cv_text",
+    ];
+    const filtered = Object.fromEntries(
+      Object.entries(body).filter(([k]) => allowed.includes(k))
+    );
     const { error } = await supabase
       .from("img_profiles")
-      .upsert({ ...profile, id: user.id, updated_at: new Date().toISOString() });
+      .upsert({ ...filtered, id: user.id, updated_at: new Date().toISOString() });
 
     if (error) throw new Error(error.message);
     return NextResponse.json({ ok: true });

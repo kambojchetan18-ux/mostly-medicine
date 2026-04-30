@@ -153,8 +153,16 @@ export default function ContentStudioPage() {
 
   async function deletePost(id: string) {
     if (!confirm("Delete this post?")) return;
-    await fetch(`/api/admin/content/${id}`, { method: "DELETE" });
-    setPosts(prev => prev.filter(p => p.id !== id));
+    try {
+      const res = await fetch(`/api/admin/content/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? `Delete failed: ${res.status}`);
+      }
+      setPosts(prev => prev.filter(p => p.id !== id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Delete failed");
+    }
   }
 
   function copyCaption(post: ContentPost) {

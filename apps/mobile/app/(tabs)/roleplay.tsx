@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   StyleSheet, KeyboardAvoidingView, Platform,
-  PermissionsAndroid, Animated,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,8 +10,8 @@ import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
-import { scenarios } from '@mostly-medicine/ai';
-import type { Scenario } from '@mostly-medicine/ai';
+import { scenariosMeta } from '@mostly-medicine/ai';
+import type { ScenarioMeta } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
@@ -46,26 +46,9 @@ const MILESTONES = [
   { time: 450, label: 'Safety-netting & close' },
 ];
 
-async function requestMicPermission(): Promise<boolean> {
-  if (Platform.OS !== 'android') return true;
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      {
-        title: 'Microphone Permission',
-        message: 'Mostly Medicine needs microphone access to record your voice during roleplay.',
-        buttonPositive: 'Allow',
-        buttonNegative: 'Deny',
-      },
-    );
-    return granted === PermissionsAndroid.RESULTS.GRANTED;
-  } catch {
-    return false;
-  }
-}
 
 export default function RoleplayScreen() {
-  const [scenario, setScenario] = useState<Scenario | null>(null);
+  const [scenario, setScenario] = useState<ScenarioMeta | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -76,6 +59,7 @@ export default function RoleplayScreen() {
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
+  const isMutedRef = useRef(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -111,7 +95,7 @@ export default function RoleplayScreen() {
 
   // ── TTS ──────────────────────────────────────────────────────────────────────
   const speakPatient = useCallback((text: string, profile: string) => {
-    if (isMuted) return;
+    if (isMutedRef.current) return;
     Speech.stop();
     const isFemale = /female|woman/i.test(profile);
     Speech.speak(text, {
@@ -123,7 +107,7 @@ export default function RoleplayScreen() {
       onStopped: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false),
     });
-  }, [isMuted]);
+  }, []);
 
   function stopSpeaking() {
     Speech.stop();
@@ -212,11 +196,6 @@ export default function RoleplayScreen() {
       return;
     }
     // Not recording → request permission and start
-    const ok = await requestMicPermission();
-    if (!ok) {
-      setVoiceError('Microphone permission denied');
-      return;
-    }
     stopSpeaking();
     try {
       const perm = await Audio.requestPermissionsAsync();
@@ -300,6 +279,11 @@ export default function RoleplayScreen() {
     setLoading(true);
     try {
       const token = await getToken();
+      if (!token) {
+        setMessages([...newMsgs, { role: 'assistant', content: '[Not signed in — cannot send message]' }]);
+        setLoading(false);
+        return;
+      }
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -324,6 +308,11 @@ export default function RoleplayScreen() {
     setFetchingFeedback(true);
     try {
       const token = await getToken();
+      if (!token) {
+        setFeedback('Not signed in — cannot retrieve feedback');
+        setFetchingFeedback(false);
+        return;
+      }
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -346,7 +335,7 @@ export default function RoleplayScreen() {
     }
   }, [timeLeft, scenario, messages.length, loading, getFeedback]);
 
-  function startScenario(sc: Scenario) {
+  function startScenario(sc: ScenarioMeta) {
     feedbackRequestedRef.current = false;
     setFeedback(null);
     setMessages([{ role: 'assistant', content: sc.openingStatement }]);
@@ -392,7 +381,7 @@ export default function RoleplayScreen() {
             </Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 10 }}>
-            {scenarios.map((sc) => (
+            {scenariosMeta.map((sc) => (
               <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenario(sc)} activeOpacity={0.7}>
                 <View style={s.scenarioTop}>
                   <Text style={s.scenarioEmoji}>{getEmoji(sc.patientProfile)}</Text>
@@ -496,7 +485,7 @@ export default function RoleplayScreen() {
                 )}
                 <TouchableOpacity
                   style={[s.exitBtn, isMuted && { borderColor: '#ef4444' }]}
-                  onPress={() => { setIsMuted(m => !m); if (isSpeaking) stopSpeaking(); }}
+                  onPress={() => { setIsMuted(m => { isMutedRef.current = !m; return !m; }); if (isSpeaking) stopSpeaking(); }}
                 >
                   <Ionicons name={isMuted ? 'volume-mute' : 'volume-medium'} size={16} color={isMuted ? '#ef4444' : '#64748b'} />
                 </TouchableOpacity>
