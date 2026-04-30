@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useWhisperSTT } from "@/hooks/useWhisperSTT";
+import { useVoiceRecognition as useWhisperSTT } from "@/hooks/useVoiceRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import FunLoading from "@/components/FunLoading";

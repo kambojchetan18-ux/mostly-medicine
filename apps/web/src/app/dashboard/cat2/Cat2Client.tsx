@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 // entire 720 kB handbook payload into the client chunk. The full data is
 // only needed server-side (the /api/ai/roleplay route handles that).
 import { scenariosMeta as scenarios } from "@mostly-medicine/ai";
-import { useWhisperSTT } from "@/hooks/useWhisperSTT";
+import { useVoiceRecognition as useWhisperSTT } from "@/hooks/useVoiceRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import { cleanForDisplay } from "@/lib/clean-message";
