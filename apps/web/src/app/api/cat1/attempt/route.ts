@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
   // Insert attempt log + read existing SR card in parallel — they're
   // independent. Cuts ~1 round-trip off the response.
-  const [, existingRes] = await Promise.all([
+  const [attemptRes, existingRes] = await Promise.all([
     supabase.from("attempts").insert({
       user_id: user.id,
       question_id: questionId,
@@ -58,6 +58,11 @@ export async function POST(req: NextRequest) {
       .eq("question_id", questionId)
       .single(),
   ]);
+  // Surface insert failures instead of silently swallowing them — this is the
+  // class of bug that left analytics showing 0 MCQs despite XP firing.
+  if (attemptRes.error) {
+    console.error("[cat1/attempt] insert into attempts failed", attemptRes.error);
+  }
   const existing = existingRes.data;
 
   const card = existing
