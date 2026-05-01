@@ -65,7 +65,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
       <header className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
         <h1 className="text-base font-semibold text-brand-900">Live session feedback</h1>
         <p className="mt-1 text-xs text-brand-700">
-          Scoring is based on the doctor's transcript against the case rubric. Code: <span className="font-mono">{inviteCode}</span>
+          Doctor performance against the AMC rubric, plus an adherence score for the peer playing the patient. Code: <span className="font-mono">{inviteCode}</span>
         </p>
       </header>
 
@@ -156,6 +156,57 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
               <p className="mt-2 text-sm text-gray-700">{feedback.retrySuggestion}</p>
             </section>
           )}
+
+          {feedback.patientFeedback && (() => {
+            const pf = feedback.patientFeedback;
+            const tone =
+              pf.adherenceScore >= 7 ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+              : pf.adherenceScore >= 4 ? "border-amber-200 bg-amber-50 text-amber-900"
+              : "border-rose-200 bg-rose-50 text-rose-900";
+            const pillTone =
+              pf.adherenceScore >= 7 ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+              : pf.adherenceScore >= 4 ? "bg-amber-100 text-amber-700 border-amber-200"
+              : "bg-rose-100 text-rose-700 border-rose-200";
+            return (
+              <section className={`rounded-2xl border p-5 ${tone}`}>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-semibold">🎭 Your partner&apos;s performance (as patient)</h2>
+                  <span className={`rounded-full border px-3 py-1 text-xs font-bold tabular-nums ${pillTone}`}>
+                    {pf.adherenceScore}/10 adherence
+                  </span>
+                </div>
+                <p className="mt-3 text-sm leading-relaxed">{pf.overallNote}</p>
+                <ul className="mt-3 space-y-1 text-xs">
+                  <li>
+                    <span className="font-semibold">Stayed in character:</span> {pf.stayedInCharacter ? "Yes" : "No — broke character at points"}
+                  </li>
+                  <li>
+                    <span className="font-semibold">Matched emotional tone:</span> {pf.ignoredEmotionalTone ? "No — felt flat / off-tone" : "Yes"}
+                  </li>
+                </ul>
+                {pf.leakedInformation.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs font-semibold">Information revealed unprompted (adherence violations)</p>
+                    <ul className="mt-1 space-y-1 text-xs">
+                      {pf.leakedInformation.map((item, i) => (
+                        <li key={i}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {pf.brokeRules.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs font-semibold">Patient-rule breaks</p>
+                    <ul className="mt-1 space-y-1 text-xs">
+                      {pf.brokeRules.map((item, i) => (
+                        <li key={i}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </section>
+            );
+          })()}
 
           <div className="flex gap-3 pt-2">
             <Link

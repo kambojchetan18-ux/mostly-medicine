@@ -169,6 +169,37 @@ export const CASE_VARIANT_SCHEMA = {
   additionalProperties: false,
 };
 
+const PATIENT_FEEDBACK_PROPS = {
+  adherenceScore: {
+    type: "integer",
+    minimum: 0,
+    maximum: 10,
+    description: "How closely the peer playing the patient followed their brief (0-10).",
+  },
+  stayedInCharacter: {
+    type: "boolean",
+    description: "True if the patient maintained the persona / emotional tone throughout.",
+  },
+  leakedInformation: {
+    type: "array",
+    items: { type: "string" },
+    description: "Items from the brief's hidden truth or 'onlyWhenAsked' clues that the patient revealed unprompted.",
+  },
+  ignoredEmotionalTone: {
+    type: "boolean",
+    description: "True if the patient consistently failed to portray the emotionalTone / personality from the brief.",
+  },
+  brokeRules: {
+    type: "array",
+    items: { type: "string" },
+    description: "Specific rules from the brief that the patient broke (e.g. 'named the diagnosis', 'lectured the doctor', 'invented info not in the brief').",
+  },
+  overallNote: {
+    type: "string",
+    description: "1-2 sentence summary of the patient's adherence to the brief.",
+  },
+} as const;
+
 export const FEEDBACK_SCHEMA = {
   type: "object" as const,
   properties: {
@@ -193,6 +224,21 @@ export const FEEDBACK_SCHEMA = {
     },
     differentialReview: { type: "string" },
     retrySuggestion: { type: "string" },
+    patientFeedback: {
+      type: "object",
+      description:
+        "Optional. Only populate when a patientBrief was supplied (Live Peer RolePlay). Score the peer playing the patient on how well they followed their brief.",
+      properties: PATIENT_FEEDBACK_PROPS,
+      required: [
+        "adherenceScore",
+        "stayedInCharacter",
+        "leakedInformation",
+        "ignoredEmotionalTone",
+        "brokeRules",
+        "overallNote",
+      ],
+      additionalProperties: false,
+    },
   },
   required: [
     "globalScore",

@@ -73,7 +73,10 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
 
   let feedback: SessionFeedback;
   try {
-    feedback = await scoreSession({ caseVariant: variant, transcript });
+    // isLiveSession=true unlocks the patient-adherence rubric so the
+    // examiner ALSO marks the peer playing the patient (vs the AI patient
+    // in solo modes which doesn't need to be graded).
+    feedback = await scoreSession({ caseVariant: variant, transcript, isLiveSession: true });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "Scoring failed" }, { status: 500 });
   }

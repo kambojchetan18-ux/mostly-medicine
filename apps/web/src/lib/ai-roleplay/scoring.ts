@@ -17,6 +17,14 @@ function client(): Anthropic {
 export interface ScoringInput {
   caseVariant: CaseVariant;
   transcript: Array<{ role: "user" | "assistant"; content: string }>;
+  /**
+   * Set true for Live Peer RolePlay — adds a patient-adherence rubric so
+   * the examiner ALSO grades how well the peer playing the patient followed
+   * the case brief (stayed in character, didn't volunteer hidden truths,
+   * matched the emotional tone). Solo modes leave this off because the
+   * "patient" is an AI patient (Claude) which is graded elsewhere.
+   */
+  isLiveSession?: boolean;
 }
 
 // A doctor turn count below this is treated as "session too short to score"
@@ -44,7 +52,11 @@ function emptyTranscriptFeedback(): SessionFeedback {
   };
 }
 
-export async function scoreSession({ caseVariant, transcript }: ScoringInput): Promise<SessionFeedback> {
+export async function scoreSession({
+  caseVariant,
+  transcript,
+  isLiveSession = false,
+}: ScoringInput): Promise<SessionFeedback> {
   // Short-circuit empty / near-empty transcripts before burning a Claude call
   // and before risking a "no tool_use block" throw that would surface as 500
   // in the live feedback flow.
@@ -76,7 +88,21 @@ ${JSON.stringify(
 TRANSCRIPT:
 ${transcriptText || "(no exchanges took place)"}
 
-Mark this candidate using the save_feedback tool. Be specific and fair.`;
+Mark this candidate using the save_feedback tool. Be specific and fair.${
+    isLiveSession
+      ? `
+
+LIVE PEER MODE — ALSO score the peer playing the patient on adherence to their brief. Populate the patientFeedback field with:
+- adherenceScore (0-10): how well the patient stayed within the case truth + portrayal rules.
+- stayedInCharacter: true if they consistently played the patient role, false if they broke character.
+- leakedInformation: hidden info from cluePool/redFlags that the patient REVEALED UNPROMPTED (the doctor never asked) — these are adherence violations.
+- ignoredEmotionalTone: true if the patient's portrayal felt flat / clinical when the brief specified an emotional tone.
+- brokeRules: any AMC-typical patient rules they violated — e.g. lecturing the doctor, self-diagnosing, narrating their own management plan.
+- overallNote: 1-2 sentences summarising patient performance, tone polite + constructive.
+
+Score adherence FAIRLY — the peer is a candidate too, not a professional simulated patient. 7+ for solid effort, 9+ only for excellent realistic acting.`
+      : ""
+  }`;
 
   const systemBlocks = [
     {

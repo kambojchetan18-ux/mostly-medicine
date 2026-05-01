@@ -131,6 +131,15 @@ export interface AcrpSession {
   createdAt: string;
 }
 
+export interface PatientFeedback {
+  adherenceScore: number; // 0-10, how well patient followed the brief
+  stayedInCharacter: boolean;
+  leakedInformation: string[]; // hidden info patient revealed unprompted
+  ignoredEmotionalTone: boolean;
+  brokeRules: string[]; // specific rules violated
+  overallNote: string; // 1-2 sentence summary
+}
+
 export interface SessionFeedback {
   globalScore: number; // 0-10
   communicationScore: number; // 0-10
@@ -141,6 +150,7 @@ export interface SessionFeedback {
   suggestedPhrasing: Array<{ original: string; better: string; reason: string }>;
   differentialReview: string;
   retrySuggestion: string;
+  patientFeedback?: PatientFeedback;
 }
 
 export interface AcrpMessage {

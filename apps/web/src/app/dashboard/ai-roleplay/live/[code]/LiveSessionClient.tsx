@@ -167,6 +167,14 @@ export default function LiveSessionClient({
   );
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  // Auto-scroll the live-transcript panel to the latest line as messages
+  // arrive — without this users have to manually scroll to see what's new.
+  const transcriptScrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = transcriptScrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [transcript]);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const stateChannelRef = useRef<RealtimeChannel | null>(null);
@@ -287,6 +295,30 @@ export default function LiveSessionClient({
       .subscribe();
     stateChannelRef.current = sessionChannel;
 
+    // Initial fetch — populate transcript with anything already persisted
+    // before this client mounted (page refresh mid-session, late join, etc).
+    // Without this the panel would start blank even though messages exist.
+    void supabase
+      .from("acrp_live_messages")
+      .select("id, sender_role, content")
+      .eq("session_id", sessionId)
+      .order("created_at")
+      .then(({ data }) => {
+        if (!data || data.length === 0) return;
+        setTranscript((prev) => {
+          // De-dupe in case the realtime INSERT raced ahead.
+          const seen = new Set(prev.map((p) => p.id));
+          const fresh = data
+            .filter((row) => !seen.has(row.id))
+            .map((row) => ({
+              id: row.id,
+              sender_role: row.sender_role as "doctor" | "patient",
+              content: row.content,
+            }));
+          return fresh.length === 0 ? prev : [...prev, ...fresh];
+        });
+      });
+
     const msgChannel = supabase
       .channel(`acrp_live_messages_${sessionId}`)
       .on(
@@ -294,7 +326,9 @@ export default function LiveSessionClient({
         { event: "INSERT", schema: "public", table: "acrp_live_messages", filter: `session_id=eq.${sessionId}` },
         (payload) => {
           const row = payload.new as { id: string; sender_role: "doctor" | "patient"; content: string };
-          setTranscript((t) => [...t, { id: row.id, sender_role: row.sender_role, content: row.content }]);
+          setTranscript((t) =>
+            t.some((m) => m.id === row.id) ? t : [...t, { id: row.id, sender_role: row.sender_role, content: row.content }]
+          );
         }
       )
       .subscribe();
@@ -1185,10 +1219,13 @@ export default function LiveSessionClient({
             </div>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Live transcript</p>
-            <div className="max-h-[50vh] space-y-2 overflow-y-auto text-sm">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Live transcript</p>
+              <span className="text-[10px] tabular-nums text-gray-400">{transcript.length} {transcript.length === 1 ? "line" : "lines"}</span>
+            </div>
+            <div ref={transcriptScrollRef} className="max-h-[50vh] space-y-2 overflow-y-auto text-sm">
               {transcript.length === 0 ? (
-                <p className="text-xs text-gray-400">Speech will appear here as it's captured…</p>
+                <p className="text-xs text-gray-400">Speech will appear here as it&apos;s captured…</p>
               ) : (
                 transcript.map((t) => (
                   <p key={t.id} className="leading-snug">
