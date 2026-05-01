@@ -33,6 +33,7 @@ const jobNavItems = [
   { href: "/dashboard/jobs/tracker",     label: "App Tracker", icon: "📋", hover: "hover:text-orange-300" },
   { href: "/dashboard/profile",          label: "My Profile",  icon: "👤", hover: "hover:text-rose-300"   },
   { href: "/dashboard/billing",          label: "Billing",     icon: "💳", hover: "hover:text-yellow-300" },
+  { href: "/dashboard/help",             label: "Help",        icon: "💬", hover: "hover:text-cyan-300"   },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

@@ -142,6 +142,12 @@ export default function AdminPage() {
             📊 Analytics
           </Link>
           <Link
+            href="/dashboard/admin/tickets"
+            className="text-sm font-semibold px-3 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
+          >
+            💬 Tickets
+          </Link>
+          <Link
             href="/dashboard/admin/users"
             className="text-sm font-semibold px-3 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
           >
