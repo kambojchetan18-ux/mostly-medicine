@@ -136,6 +136,29 @@ const websiteSchema = {
   description: DESCRIPTION,
   publisher: { "@id": `${SITE_URL}/#organization` },
   inLanguage: "en-AU",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${SITE_URL}/dashboard/cat1?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+// E-E-A-T signal — names a real founder behind the platform so AI engines
+// have a Person entity to attribute. Wife's involvement (Dr Amandeep, AMC
+// pass-graduate) is a real authority signal worth surfacing.
+const founderSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${SITE_URL}/#founder`,
+  name: "Chetan Kamboj",
+  jobTitle: "Founder, Mostly Medicine",
+  url: SITE_URL,
+  worksFor: { "@id": `${SITE_URL}/#organization` },
+  description:
+    "Engineer-turned-founder of Mostly Medicine, an AMC exam preparation platform built for International Medical Graduates after his wife (an AMC pass-graduate IMG) identified gaps in existing prep tools.",
 };
 
 export default function RootLayout({
@@ -157,6 +180,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(founderSchema) }}
         />
       </head>
       <body>{children}</body>

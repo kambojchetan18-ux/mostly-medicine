@@ -1,0 +1,59 @@
+# Mostly Medicine
+
+> AI-powered AMC (Australian Medical Council) exam preparation platform for International Medical Graduates (IMGs) seeking medical registration in Australia.
+
+Mostly Medicine is a free-to-start study platform built specifically for IMGs preparing for the AMC CAT 1 (MCQ) and CAT 2 (Clinical) examinations. The platform is aligned with the AMC Handbook 2026 and uses Anthropic's Claude AI for clinical roleplays, examiner-grade feedback, and personalised study guidance.
+
+## What we offer
+
+- **AMC CAT 1 MCQ practice**: 3,000+ multiple-choice questions across all specialties (cardiology, respiratory, endocrinology, neurology, gynaecology, paediatrics, surgery, psychiatry, etc.) with spaced repetition and AI-generated explanations.
+- **AMC CAT 2 Clinical roleplays**: AI-driven simulated patient consultations based on official MCAT (Multi-station Clinical Assessment Tool) blueprints. 151+ scenarios covering history-taking, examination, counselling, and procedural stations.
+- **Examiner-grade AI feedback**: Every clinical roleplay ends with structured feedback aligned to AMC marking domains (data gathering, clinical reasoning, communication, professionalism).
+- **Reference library**: Quick access to Murtagh's General Practice, RACGP Red Book, and AMC Handbook summaries.
+- **Spaced repetition recalls**: SR algorithm to retain high-yield facts long-term.
+- **Australian medical job search**: RMO pool tracker, GP pathway resources, application checklist for IMGs transitioning to Australian practice.
+
+## Who it's for
+
+- IMGs (International Medical Graduates) preparing for AMC CAT 1 (formerly AMC MCQ) or AMC CAT 2 (clinical exam).
+- Doctors trained outside Australia/New Zealand seeking AHPRA registration via the standard pathway.
+- Medical students and junior doctors in India, Pakistan, Sri Lanka, Bangladesh, the Philippines, and the Middle East planning to migrate to Australia.
+- RMOs and registrars revising for fellowship-track exams that overlap with AMC content.
+
+## AMC exam quick facts
+
+- **AMC CAT 1 (MCQ exam)**: 150 questions, computer-based, 3.5 hours, tests medical knowledge across all clinical disciplines.
+- **AMC CAT 2 (Clinical exam / MCAT)**: Multi-station OSCE-style assessment, ~16 stations, tests applied clinical skills.
+- **Pass rate**: Approximately 50–70% for CAT 1, varies by cohort.
+- **Eligibility**: Primary medical qualification verified via EPIC, English language requirement (IELTS/OET), and MCQ pass to sit clinical.
+- **Cost (2026)**: AMC CAT 1 ~AUD 2,690; AMC CAT 2 ~AUD 3,490 (refer to amc.org.au for current fees).
+
+## Key URLs
+
+- [Home](https://mostlymedicine.com): Platform overview and signup.
+- [AMC Guide](https://mostlymedicine.com/amc): Comprehensive guide to the AMC exam pathway.
+- [CAT 1 MCQ practice](https://mostlymedicine.com/dashboard/cat1): Interactive MCQ bank.
+- [CAT 2 Clinical roleplays](https://mostlymedicine.com/dashboard/cat2): AI patient simulations.
+- [Reference library](https://mostlymedicine.com/dashboard/reference): Murtagh, Red Book, AMC Handbook.
+- [Australian jobs](https://mostlymedicine.com/dashboard/jobs): RMO pools, GP pathway, application tracker.
+
+## Pricing
+
+- **Free tier**: Sample MCQs, limited roleplays, full reference access. No credit card required.
+- **Pro**: Full MCQ bank, unlimited roleplays, AI explanations, examiner feedback. Monthly or yearly billing.
+- **Enterprise**: Bulk licences for IMG coaching academies and hospitals.
+
+## Tech & trust
+
+- Powered by Anthropic Claude (Sonnet/Opus) for clinical reasoning and feedback.
+- Content reviewed and aligned with AMC Handbook of Multiple Choice Questions and the MCAT blueprint.
+- Built by IMGs, for IMGs.
+
+## Contact
+
+- Website: https://mostlymedicine.com
+- Support: via in-app chat after signup.
+
+## Full reference
+
+- For the long-form AMC reference document covering eligibility, exam formats, costs, timelines, pass rates, AHPRA registration, IMG visa pathway, RMO strategy, and FAQ — see [llms-full.txt](https://mostlymedicine.com/llms-full.txt).
