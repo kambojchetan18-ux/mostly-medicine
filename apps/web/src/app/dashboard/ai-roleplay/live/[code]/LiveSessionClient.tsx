@@ -120,6 +120,12 @@ export default function LiveSessionClient({
   // know in real time whether STT and WebRTC are healthy. Mobile users can't
   // open DevTools easily; this replaces "is it broken?" with concrete signal.
   const [iceState, setIceState] = useState<string>("idle");
+  // signalingState surfaces the SDP-negotiation half of the handshake
+  // (stable → have-local-offer → stable). When ICE never starts, it's almost
+  // always because signalingState was wrong at the moment we tried to send
+  // the offer. Surfacing it next to iceState turns "tile is black" into a
+  // diagnosable two-axis state for non-technical phone users.
+  const [signalingState, setSignalingState] = useState<string>("idle");
   const [sttError, setSttError] = useState<string | null>(null);
   // Which TURN provider actually got wired into the RTCPeerConnection. Lets
   // the diagnostic pill say "Cloudflare TURN" / "self-hosted" / "fallback".
@@ -129,6 +135,12 @@ export default function LiveSessionClient({
   // Surface the EXACT reason the broker fell back, so misconfigured env
   // vars / upstream errors show up next to the pill instead of being silent.
   const [turnError, setTurnError] = useState<string | null>(null);
+
+  // "No remote video" hard-fail timer — if 10 s pass after entering roleplay
+  // without a remote stream arriving, surface a refresh hint. This is what
+  // turns the "tile silently stays black forever" worst case into an
+  // actionable user instruction without DevTools.
+  const [showRefreshHint, setShowRefreshHint] = useState(false);
 
   // ─── Remote-peer audio controls ──────────────────────────────────────
   // The partner's voice arrives via the WebRTC remote stream attached to
@@ -452,6 +464,14 @@ export default function LiveSessionClient({
         pc.onconnectionstatechange = () => {
           console.info("[live/rtc] connectionState", pc.connectionState);
         };
+        // Surface signalingState — the SDP-negotiation half of the handshake.
+        // When ICE never starts, it's because we never reached have-local-offer
+        // / stable in the right order. This is the missing axis the previous
+        // diagnostic pill didn't show.
+        pc.onsignalingstatechange = () => {
+          console.info("[live/rtc] signalingState", pc.signalingState);
+          setSignalingState(pc.signalingState);
+        };
 
         const rtcChannel = supabase.channel(`acrp_live_rtc_${sessionId}`, {
           config: { broadcast: { self: false }, presence: { key: myPeerId } },
@@ -490,12 +510,23 @@ export default function LiveSessionClient({
         // Helper: host sends an offer. Guarded so we only send once even if
         // presence fires multiple times.
         const sendHostOffer = async () => {
+          console.info("[live/rtc] sendHostOffer called", {
+            isHost,
+            offerSent,
+            signalingState: pc.signalingState,
+            iceConnectionState: pc.iceConnectionState,
+            senders: pc.getSenders().length,
+          });
           if (!isHost || offerSent) return;
           if (pc.signalingState !== "stable") return;
           offerSent = true;
           try {
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
+            console.info("[live/rtc] setLocalDescription complete", {
+              sdpLen: offer.sdp?.length ?? 0,
+              type: offer.type,
+            });
             rtcChannel.send({
               type: "broadcast",
               event: "offer",
@@ -507,6 +538,24 @@ export default function LiveSessionClient({
           }
         };
 
+        // Belt-and-braces: when addTrack happens AFTER the channel subscribes
+        // (rare but possible — getUserMedia resolves slowly on cold-start
+        // mobile), the SDP needs to regenerate. onnegotiationneeded is the
+        // canonical signal for "your local description is now stale; send a
+        // new offer". Without this, the very first sendHostOffer can stabilise
+        // with zero senders and ICE never gathers any candidates → stuck "new"
+        // forever, exactly matching the bug evidence.
+        pc.onnegotiationneeded = () => {
+          console.info("[live/rtc] onnegotiationneeded fired", {
+            isHost,
+            signalingState: pc.signalingState,
+          });
+          if (!isHost) return;
+          // Allow re-send: the first offer (if any) was sent with stale SDP.
+          offerSent = false;
+          void sendHostOffer();
+        };
+
         rtcChannel
           .on("broadcast", { event: "ready" }, async ({ payload }) => {
             // Guest signalled it joined the channel — host (re)sends offer.
@@ -516,10 +565,17 @@ export default function LiveSessionClient({
           })
           .on("broadcast", { event: "offer" }, async ({ payload }) => {
             if (payload.from === myPeerId) return;
+            console.info("[live/rtc] offer received", {
+              fromLen: payload.sdp?.sdp?.length ?? 0,
+              signalingState: pc.signalingState,
+            });
             try {
               await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
               const answer = await pc.createAnswer();
               await pc.setLocalDescription(answer);
+              console.info("[live/rtc] answer sent", {
+                sdpLen: answer.sdp?.length ?? 0,
+              });
               rtcChannel.send({
                 type: "broadcast",
                 event: "answer",
@@ -568,6 +624,7 @@ export default function LiveSessionClient({
             if (others) sendHostOffer();
           })
           .subscribe(async (s) => {
+            console.info("[live/rtc] rtcChannel subscribe state", s);
             if (s !== "SUBSCRIBED") return;
             await rtcChannel.track({ peer: myPeerId, user: myUserId, role: myRole });
             // Guest announces ready so host can send offer reliably.
@@ -580,7 +637,20 @@ export default function LiveSessionClient({
             }
             // Host also tries to send offer on subscribe (in case partner
             // already present). The guard prevents duplicates.
-            if (isHost) sendHostOffer();
+            if (isHost) {
+              await sendHostOffer();
+              // Safety-net: if the initial sendHostOffer ran while
+              // signalingState wasn't yet stable (race between addTrack and
+              // subscribe), re-fire it after 1.5 s. By then the PC is
+              // guaranteed to have settled, and the offerSent guard keeps
+              // this idempotent in the happy path.
+              setTimeout(() => {
+                if (!offerSent) {
+                  console.info("[live/rtc] 1.5s fallback re-firing sendHostOffer");
+                  void sendHostOffer();
+                }
+              }, 1500);
+            }
           });
 
         // STT no longer auto-starts — strict browsers reject it without a
@@ -676,6 +746,24 @@ export default function LiveSessionClient({
     await advance("completed");
     router.push(`/dashboard/ai-roleplay/live/${inviteCode}/results`);
   }
+
+  // ─── 10s "no remote video" hard-fail timer ───────────────────────────
+  // If we enter roleplay and 10 s pass without ever receiving a remote
+  // stream, surface a refresh hint. The two-tab self-test confirmed the
+  // happy path takes <2 s; 10 s is a confident "something is broken"
+  // threshold without false-firing on slow mobile networks.
+  useEffect(() => {
+    if (status !== "roleplay") {
+      setShowRefreshHint(false);
+      return;
+    }
+    if (remoteStream) {
+      setShowRefreshHint(false);
+      return;
+    }
+    const t = setTimeout(() => setShowRefreshHint(true), 10000);
+    return () => clearTimeout(t);
+  }, [status, remoteStream]);
 
   // Auto-redirect the OTHER peer when the session flips to completed —
   // either via Realtime (the ender's DB row update broadcasts to us) or via
@@ -947,6 +1035,27 @@ export default function LiveSessionClient({
           >
             📡 {iceState}
           </span>
+          {/* signalingState — the SDP-negotiation half. Stays "stable" before
+              the offer is set and after the answer is applied; "have-local-offer"
+              between. If a phone shows "idle" forever, the offer never built. */}
+          <span
+            className={`rounded-full px-2 py-0.5 font-semibold ${
+              signalingState === "stable"
+                ? "bg-emerald-100 text-emerald-800"
+                : signalingState === "idle"
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-sky-100 text-sky-800"
+            }`}
+            title="WebRTC signaling state (SDP negotiation)"
+          >
+            🤝 {signalingState}
+          </span>
+          <span
+            className="rounded-full bg-gray-100 px-2 py-0.5 font-semibold text-gray-700"
+            title="Whether this tab is the session host (sends the offer)"
+          >
+            {isHost ? "👑 host" : "👤 guest"}
+          </span>
           {sttError && (
             <span className="rounded-full bg-rose-100 px-2 py-0.5 font-semibold text-rose-800" title={sttError}>
               ⚠️ {sttError.slice(0, 60)}
@@ -974,6 +1083,15 @@ export default function LiveSessionClient({
             </span>
           )}
         </div>
+
+        {showRefreshHint && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
+            ⚠️ <strong>Connection didn't establish.</strong> We haven't seen
+            your partner's video after 10 s. Please ask both of you to refresh
+            this page — that usually clears it. If it keeps failing, try a
+            different network (Wi-Fi vs mobile data).
+          </div>
+        )}
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-2">
