@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { questionId, correct, topic } = await req.json();
+  const { questionId, correct, topic, sessionId } = await req.json();
   if (!questionId || correct === undefined || !topic) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
       question_id: questionId,
       selected_answer: correct ? "correct" : "wrong",
       is_correct: correct,
+      ...(typeof sessionId === "string" ? { session_id: sessionId } : {}),
     }),
     supabase
       .from("sr_cards")

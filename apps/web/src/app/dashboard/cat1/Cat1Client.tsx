@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { MCQuestion } from "@mostly-medicine/content";
 import FunLoading from "@/components/FunLoading";
 
@@ -37,12 +38,12 @@ type Mode = "menu" | "reading" | "loading" | "quiz" | "result";
 
 const READING_SECONDS = 120; // 2 minutes
 
-async function saveAttempt(questionId: string, correct: boolean, topic: string) {
+async function saveAttempt(questionId: string, correct: boolean, topic: string, sessionId: string | null) {
   try {
     await fetch("/api/cat1/attempt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionId, correct, topic }),
+      body: JSON.stringify({ questionId, correct, topic, sessionId }),
     });
   } catch {
     // silently fail — offline
@@ -50,9 +51,12 @@ async function saveAttempt(questionId: string, correct: boolean, topic: string) 
 }
 
 export default function Cat1Client() {
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>("menu");
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [questions, setQuestions] = useState<MCQuestion[]>([]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [endingSession, setEndingSession] = useState(false);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -90,17 +94,27 @@ export default function Cat1Client() {
     setMode("reading");
   }
 
-  // Step 2: reading → loading → quiz. Fires the actual fetch.
+  // Step 2: reading → loading → quiz. Fires the actual fetch + creates the
+  // mcq_session row so every saved attempt this run can be grouped + scored.
   const runQuiz = useCallback(async (topic: string | null, count: number) => {
     setMode("loading");
     try {
-      const res = await fetch("/api/cat1/questions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, count }),
-      });
-      const data = await res.json();
+      const [qRes, sRes] = await Promise.all([
+        fetch("/api/cat1/questions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic, count }),
+        }),
+        fetch("/api/cat1/session/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic, targetCount: count }),
+        }),
+      ]);
+      const data = await qRes.json();
+      const sData = await sRes.json().catch(() => ({} as { sessionId?: string }));
       setQuestions(data.questions ?? []);
+      setSessionId(typeof sData.sessionId === "string" ? sData.sessionId : null);
       setSelectedTopic(topic);
       setCurrent(0);
       setSelected(null);
@@ -139,12 +153,29 @@ export default function Cat1Client() {
     const q = questions[current];
     const correct = selected === q.correctAnswer;
 
-    saveAttempt(q.id, correct, q.topic);
+    saveAttempt(q.id, correct, q.topic, sessionId);
 
     const newAnswers = [...answers, { id: q.id, correct, topic: q.topic }];
     setAnswers(newAnswers);
 
     if (current + 1 >= questions.length) {
+      // Finalise the session server-side (scores, percentile, AI learning
+      // points), then jump to the rich results page. Falls back to the
+      // legacy in-page result view if anything goes wrong.
+      if (sessionId) {
+        setEndingSession(true);
+        try {
+          const res = await fetch(`/api/cat1/session/${sessionId}/end`, { method: "POST" });
+          if (res.ok) {
+            router.push(`/dashboard/cat1/results/${sessionId}`);
+            return;
+          }
+        } catch {
+          /* fall through to legacy result */
+        } finally {
+          setEndingSession(false);
+        }
+      }
       setMode("result");
     } else {
       setCurrent((c) => c + 1);
@@ -153,7 +184,7 @@ export default function Cat1Client() {
       setDetailedExplanation(null);
       setSmartExplanation(null);
     }
-  }, [selected, questions, current, answers]);
+  }, [selected, questions, current, answers, sessionId, router]);
 
   async function fetchDetailedExplanation() {
     if (!selected) return;
