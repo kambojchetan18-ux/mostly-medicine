@@ -24,6 +24,19 @@ export async function POST(req: NextRequest) {
 
   const { messages, topicTitle, topicContent } = await req.json();
 
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > 50) {
+    return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
+  }
+  const validatedMessages = messages
+    .filter((m: { role: string; content: string }) => m.role === "user" || m.role === "assistant")
+    .map((m: { role: string; content: string }) => ({
+      role: m.role as "user" | "assistant",
+      content: typeof m.content === "string" ? m.content.slice(0, 4000) : "",
+    }));
+  if (validatedMessages.length === 0) {
+    return NextResponse.json({ error: "No valid messages" }, { status: 400 });
+  }
+
   const systemPrompt =
     topicTitle && topicContent
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
@@ -38,10 +51,7 @@ export async function POST(req: NextRequest) {
           model: "claude-haiku-4-5-20251001",
           max_tokens: 1024,
           system: systemPrompt,
-          messages: messages.map((m: { role: string; content: string }) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
+          messages: validatedMessages,
           stream: true,
         });
 

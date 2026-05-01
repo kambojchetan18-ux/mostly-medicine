@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const READING_SECONDS = 120; // 2 minutes
@@ -29,6 +30,7 @@ export default function ReadingClient({
   candidateTask,
   setting,
 }: Props) {
+  const router = useRouter();
   const [secondsLeft, setSecondsLeft] = useState(READING_SECONDS);
   const [autoStart, setAutoStart] = useState(true);
 
@@ -36,7 +38,7 @@ export default function ReadingClient({
     if (secondsLeft <= 0) {
       if (autoStart) {
         // Auto-redirect to roleplay phase when timer ends
-        window.location.href = `/dashboard/ai-roleplay/${caseId}/play`;
+        router.push(`/dashboard/ai-roleplay/${caseId}/play`);
       }
       return;
     }
@@ -72,7 +74,7 @@ export default function ReadingClient({
             type="button"
             onClick={() => {
               setAutoStart(false);
-              window.location.href = `/dashboard/ai-roleplay/${caseId}/play`;
+              router.push(`/dashboard/ai-roleplay/${caseId}/play`);
             }}
             className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
           >

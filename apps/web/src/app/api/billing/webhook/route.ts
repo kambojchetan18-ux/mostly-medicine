@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
     event = stripe().webhooks.constructEvent(raw, sig, secret);
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Bad signature";
-    return NextResponse.json({ error: msg }, { status: 400 });
+    console.error("[billing/webhook] signature:", msg);
+    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
 
   // Idempotency — store the event id and short-circuit on replay.

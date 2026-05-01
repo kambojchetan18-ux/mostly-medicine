@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   } catch {
     return Response.json({ error: "Invalid body" }, { status: 400 });
   }
-  const userMessage = body.content?.trim();
+  const userMessage = body.content?.trim()?.slice(0, 2000);
   if (!userMessage) return Response.json({ error: "content required" }, { status: 400 });
 
   // ─── Load session + case (must belong to this user) ──────────────────
@@ -87,7 +87,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     .from("acrp_messages")
     .insert({ session_id: sessionId, role: "user", content: userMessage });
   if (insertUserErr) {
-    return Response.json({ error: insertUserErr.message }, { status: 500 });
+    console.error("[acrp/message] insert error:", insertUserErr.message);
+    return Response.json({ error: "Failed to save message" }, { status: 500 });
   }
   if (session.status !== "roleplay") {
     await supabase
@@ -116,7 +117,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
           .insert({ session_id: sessionId, role: "assistant", content: full });
       } catch (err) {
         const message = err instanceof Error ? err.message : "AI error";
-        controller.enqueue(sse({ type: "error", error: message }));
+        console.error("[acrp/message] stream error:", message);
+        controller.enqueue(sse({ type: "error", error: "AI service temporarily unavailable" }));
       } finally {
         controller.close();
       }

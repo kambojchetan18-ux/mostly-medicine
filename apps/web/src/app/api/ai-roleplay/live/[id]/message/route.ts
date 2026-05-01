@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   } catch {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
-  const content = body.content?.trim();
+  const content = body.content?.trim()?.slice(0, 2000);
   if (!content) return NextResponse.json({ error: "content required" }, { status: 400 });
 
   const { data: session } = await supabase
@@ -42,6 +42,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   const { error } = await supabase
     .from("acrp_live_messages")
     .insert({ session_id: id, sender_role: role, sender_user_id: user.id, content });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[live/message] insert error:", error.message);
+    return NextResponse.json({ error: "Failed to save message" }, { status: 500 });
+  }
   return NextResponse.json({ ok: true });
 }

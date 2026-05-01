@@ -54,7 +54,8 @@ export async function POST(req: NextRequest) {
 
   const { data: bps, error: bpErr } = await bpQuery;
   if (bpErr) {
-    return NextResponse.json({ error: bpErr.message }, { status: 500 });
+    console.error("[ai-roleplay/generate] bp error:", bpErr.message);
+    return NextResponse.json({ error: "Failed to load blueprint" }, { status: 500 });
   }
   if (!bps || bps.length === 0) {
     return NextResponse.json({ error: "No matching blueprint found" }, { status: 404 });
@@ -112,7 +113,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Generation failed";
     console.error("[ai-roleplay/generate]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to generate case" }, { status: 500 });
   }
 
   // ─── Persist with service role (bypass RLS) so the case is reusable ──
@@ -141,7 +142,7 @@ export async function POST(req: NextRequest) {
 
   if (saveErr || !saved) {
     console.error("[ai-roleplay/generate] save error", saveErr);
-    return NextResponse.json({ error: saveErr?.message ?? "Save failed" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save case" }, { status: 500 });
   }
 
   // ─── Return ONLY the reading-screen view, never the hidden diagnosis ──

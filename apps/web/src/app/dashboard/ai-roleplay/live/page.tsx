@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { checkModulePermission } from "@/lib/permissions";
 import UpgradeGate from "../UpgradeGate";
@@ -10,9 +11,10 @@ export default async function LiveLandingPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login");
 
   const perm = await checkModulePermission(supabase, "acrp_live");
-  if (user && !perm.allowed) return <UpgradeGate module="acrp_live" currentPlan={perm.plan} />;
+  if (!perm.allowed) return <UpgradeGate module="acrp_live" currentPlan={perm.plan} />;
 
   const { data: bps } = await supabase
     .from("acrp_blueprints")

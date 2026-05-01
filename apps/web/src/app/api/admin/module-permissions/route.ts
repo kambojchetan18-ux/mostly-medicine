@@ -30,11 +30,18 @@ export async function PATCH(req: NextRequest) {
 
   const { plan, module, enabled, daily_limit } = await req.json();
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
+  if (typeof enabled !== "boolean") return NextResponse.json({ error: "enabled must be boolean" }, { status: 400 });
+  if (daily_limit !== null && (typeof daily_limit !== "number" || daily_limit < 1)) {
+    return NextResponse.json({ error: "daily_limit must be a positive number or null" }, { status: 400 });
+  }
 
   const { error } = await supabase.from("module_permissions").upsert(
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }
   );
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/module-permissions]", error.message);
+    return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+  }
   return NextResponse.json({ success: true });
 }

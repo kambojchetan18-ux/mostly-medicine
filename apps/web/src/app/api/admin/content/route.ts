@@ -2,7 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic();
+let _anthropic: Anthropic | null = null;
+function anthropic() {
+  if (!_anthropic) _anthropic = new Anthropic();
+  return _anthropic;
+}
 
 const SYSTEM_PROMPT = `You are a social media content creator for MostlyMedicine — an AMC exam prep platform for International Medical Graduates (IMGs) in Australia.
 
@@ -68,7 +72,7 @@ export async function POST(req: NextRequest) {
 
   const monthName = new Date(`${month}-01`).toLocaleString("en-AU", { month: "long", year: "numeric" });
 
-  const response = await anthropic.messages.create({
+  const response = await anthropic().messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 8000,
     system: SYSTEM_PROMPT,

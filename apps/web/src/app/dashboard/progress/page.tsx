@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 // Thresholds for topic status
@@ -32,7 +33,7 @@ function barColor(pct: number) {
 export default async function ProgressPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) redirect("/auth/login");
 
   // All queries in parallel — no sequential round trips
   const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([

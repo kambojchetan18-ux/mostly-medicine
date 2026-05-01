@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { checkModulePermission } from "@/lib/permissions";
 import LandingClient, { type BlueprintRow, type RecentAttempt } from "./LandingClient";
@@ -13,9 +14,10 @@ export default async function AiRoleplayPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login");
 
   const perm = await checkModulePermission(supabase, "acrp_solo");
-  if (user && !perm.allowed) {
+  if (!perm.allowed) {
     return <UpgradeGate module="acrp_solo" currentPlan={perm.plan} />;
   }
 

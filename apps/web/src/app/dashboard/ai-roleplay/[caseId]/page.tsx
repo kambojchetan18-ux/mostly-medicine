@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ReadingClient from "./ReadingClient";
 
@@ -13,7 +13,7 @@ export default async function ReadingPage({ params }: ReadingPageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) notFound();
+  if (!user) redirect("/auth/login");
 
   // Read ONLY the columns safe for the candidate. Hidden diagnosis, clue pool,
   // and red flags stay server-side and are read by the roleplay/feedback APIs.

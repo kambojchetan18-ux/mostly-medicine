@@ -108,7 +108,7 @@ export default function RmoPools() {
           </ol>
           <p className="text-gray-700">
             If No to questions 1–3 →{' '}
-            <Link href="/amc-cat-1" className="text-blue-600 hover:text-blue-800 font-semibold">
+            <Link href="/amc-cat1" className="text-blue-600 hover:text-blue-800 font-semibold">
               Start your AMC preparation first →
             </Link>
           </p>
@@ -295,7 +295,7 @@ export default function RmoPools() {
             </li>
             <li>
               <strong>Continue AMC exam preparation:</strong>{' '}
-              <Link href="/amc-cat-1" className="text-blue-600 hover:text-blue-800 font-semibold">
+              <Link href="/amc-cat1" className="text-blue-600 hover:text-blue-800 font-semibold">
                 Use Mostly Medicine tools →
               </Link>{' '}
               to fill the time productively and strengthen your application for the next cycle.
