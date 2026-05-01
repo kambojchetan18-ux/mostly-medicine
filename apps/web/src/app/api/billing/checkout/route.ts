@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit } from "@/lib/rate-limit";
 import { stripe, priceCatalog } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
 
@@ -10,6 +11,11 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
   if (!user || !user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(user.id, "billing_checkout", 10, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
   }
 
   let body: { priceId?: string };

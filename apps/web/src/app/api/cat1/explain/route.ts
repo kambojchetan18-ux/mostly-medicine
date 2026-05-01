@@ -2,14 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 
-const client = new Anthropic();
+let _client: Anthropic | null = null;
+function client() {
+  if (!_client) _client = new Anthropic();
+  return _client;
+}
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = await req.json();
+  const body = await req.json();
+  const stem = typeof body.stem === "string" ? body.stem.slice(0, 2000) : "";
+  const options = Array.isArray(body.options) ? body.options.slice(0, 10) : [];
+  const correctAnswer = typeof body.correctAnswer === "string" ? body.correctAnswer.slice(0, 10) : "";
+  const selectedAnswer = typeof body.selectedAnswer === "string" ? body.selectedAnswer.slice(0, 10) : "";
+  const topic = typeof body.topic === "string" ? body.topic.slice(0, 100) : "";
+  const subtopic = typeof body.subtopic === "string" ? body.subtopic.slice(0, 100) : "";
+  const explanation = typeof body.explanation === "string" ? body.explanation.slice(0, 1000) : "";
+
+  if (!stem) return NextResponse.json({ error: "stem required" }, { status: 400 });
 
   const optionLines = options
     .map((o: { label: string; text: string }) => `${o.label}. ${o.text}`)
@@ -44,7 +57,7 @@ Cite the specific Australian guideline, AMC Handbook chapter, or Therapeutic Gui
 
 Keep the total response under 350 words. Use plain language suitable for an AMC candidate.`;
 
-  const message = await client.messages.create({
+  const message = await client().messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 600,
     messages: [{ role: "user", content: prompt }],

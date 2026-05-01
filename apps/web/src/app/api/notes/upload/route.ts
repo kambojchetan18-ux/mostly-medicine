@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit } from "@/lib/rate-limit";
 import Anthropic from "@anthropic-ai/sdk";
 import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
 
@@ -47,6 +48,11 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(user.id, "notes_upload", 10, 600_000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many uploads. Please wait a few minutes." }, { status: 429 });
   }
 
   const formData = await req.formData();
