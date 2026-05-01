@@ -146,6 +146,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
+        {/* Standard Web App capable — Chrome warns when only the
+            apple-mobile-web-app-capable meta is present (Next 14's
+            appleWebApp emits that one but not its Android sibling). */}
+        <meta name="mobile-web-app-capable" content="yes" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
