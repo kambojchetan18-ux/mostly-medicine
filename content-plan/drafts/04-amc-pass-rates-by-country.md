@@ -5,7 +5,8 @@ description: "AMC Part 1 first-attempt pass rates sit around 60-70%, with countr
 keywords: ["amc pass rate", "amc cat 1 pass rate", "amc pass rate by country", "amc mcq pass percentage", "amc clinical pass rate", "amc first attempt pass rate", "amc pass rate india", "amc pass rate pakistan", "amc pass rate philippines", "amc vs plab pass rate"]
 publishedAt: "2026-05-02"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
+publishedUrl: "https://mostlymedicine.com/amc-pass-rates-by-country"
 estimatedWordCount: 2780
 ---
 
