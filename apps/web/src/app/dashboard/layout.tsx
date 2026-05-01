@@ -1,8 +1,17 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import GlobalSearch from "@/components/GlobalSearch";
 import SearchTrigger from "@/components/SearchTrigger";
 import SidebarUserCard from "@/components/SidebarUserCard";
 import MobileNavDrawer from "@/components/MobileNavDrawer";
+
+// Layouts are async server components — perfect place for a hard auth gate
+// that protects every /dashboard/* route regardless of middleware behaviour.
+// Middleware was bypassed in some prod requests (root /dashboard returning
+// 200 unauthenticated), so this is the authoritative check. Defense in depth.
+export const dynamic = "force-dynamic";
 
 const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-brand-300"  },
@@ -26,7 +35,20 @@ const jobNavItems = [
   { href: "/dashboard/billing",          label: "Billing",     icon: "💳", hover: "hover:text-yellow-300" },
 ];
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    // Preserve the intended URL so login can return the user there.
+    const h = await headers();
+    const path = h.get("x-pathname") ?? h.get("x-invoke-path") ?? "/dashboard";
+    const search = h.get("x-invoke-query") ?? "";
+    const next = encodeURIComponent(path + (search ? `?${search}` : ""));
+    redirect(`/auth/login?next=${next}`);
+  }
+  if (!user.email_confirmed_at) {
+    redirect("/auth/verify-email");
+  }
   return (
     <div className="flex min-h-screen bg-slate-50">
 
