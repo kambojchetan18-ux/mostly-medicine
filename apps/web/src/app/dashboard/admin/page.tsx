@@ -134,12 +134,20 @@ export default function AdminPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-1">⚙️ Admin Panel</h1>
           <p className="text-sm text-gray-500">{users.length} users · Manage access and freemium limits</p>
         </div>
-        <Link
-          href="/dashboard/admin/users"
-          className="text-sm font-semibold px-3 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
-        >
-          Manage Users →
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/dashboard/admin/analytics"
+            className="text-sm font-semibold px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700"
+          >
+            📊 Analytics
+          </Link>
+          <Link
+            href="/dashboard/admin/users"
+            className="text-sm font-semibold px-3 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800"
+          >
+            Manage Users →
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
