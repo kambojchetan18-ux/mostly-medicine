@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { notifyAdminOfTicket } from "@/lib/notify";
 
 export const dynamic = "force-dynamic";
 
@@ -118,10 +119,16 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const status =
-    answer && (confidence === "high" || confidence === "medium")
-      ? "ai_answered"
-      : "escalated";
+  // Tech-routing rule:
+  //   - Always escalate bug/account/billing categories — these need a human.
+  //   - Escalate anything where Claude's confidence is low.
+  //   - FAQ/feature/other with high/medium confidence stays as ai_answered.
+  const techCategories = new Set(["bug", "account", "billing"]);
+  const needsHuman =
+    !answer ||
+    confidence === "low" ||
+    (category != null && techCategories.has(category));
+  const status = needsHuman ? "escalated" : "ai_answered";
 
   await supabase
     .from("feedback_tickets")
@@ -133,6 +140,20 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", ticket.id);
+
+  // Fire-and-forget tech-routed notification (Slack + email per env vars).
+  // Skipped for plain FAQ-answered tickets — those don't need to wake Chetan.
+  if (needsHuman) {
+    void notifyAdminOfTicket({
+      ticketId: ticket.id,
+      subject,
+      body,
+      category,
+      confidence,
+      aiResponse: answer,
+      userEmail: user.email ?? "(unknown)",
+    });
+  }
 
   return NextResponse.json({
     ok: true,
