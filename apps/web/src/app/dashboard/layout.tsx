@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import GlobalSearch from "@/components/GlobalSearch";
 import SearchTrigger from "@/components/SearchTrigger";
 import SidebarUserCard, { type UserCardData } from "@/components/SidebarUserCard";
-import MobileNavDrawer from "@/components/MobileNavDrawer";
+import MobileTopBar from "@/components/MobileTopBar";
 
 // Layouts are async server components — perfect place for a hard auth gate
 // that protects every /dashboard/* route regardless of middleware behaviour.
@@ -149,23 +149,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       {/* ── Mobile top bar ──────────────────────────────────────────────
-          Hamburger + logo + search. The hamburger is in <MobileNavDrawer/>
-          alongside the slide-in drawer panel itself, both rendered inline
-          (md:hidden). Without this, mobile users had no way to switch
-          modules — the desktop sidebar was hidden but no drawer existed. */}
-      <div
-        className="md:hidden fixed top-0 inset-x-0 z-50 flex items-center justify-between gap-2 px-2 py-2 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70"
-        style={{ paddingTop: "calc(0.5rem + env(safe-area-inset-top))" }}
-      >
-        <MobileNavDrawer navItems={navItems} jobNavItems={jobNavItems} user={userCard} />
-        <Link href="/dashboard" className="font-display font-bold text-base hover:opacity-80 transition-opacity truncate">
-          <span className="gradient-text">Mostly</span>
-          <span className="text-white"> Medicine</span>
-        </Link>
-        <div className="text-slate-400 flex items-center justify-center w-11 h-11">
-          <SearchTrigger />
-        </div>
-      </div>
+          Auto-hides on scroll-down, slides back in on scroll-up. Hosts the
+          hamburger trigger (drawer panel itself lives inside MobileNavDrawer).
+          Polished with a thin brand-gradient hairline + button-affordance
+          on the menu / search icons. */}
+      <MobileTopBar navItems={navItems} jobNavItems={jobNavItems} user={userCard} />
 
       {/* ── Main content ──────────────────────────────────────────────── */}
       <main
