@@ -99,6 +99,16 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
     return <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold text-violet-700">🏢 ENTERPRISE</span>;
   };
 
+  // Founder promo: a "free" user inside the 30-day founder window has full Pro
+  // access — surface that in the header + plan-card labels so they don't see a
+  // contradictory "FREE" badge sitting next to a "Pro unlocked" banner.
+  const founderActive =
+    subscription.founderRank != null &&
+    subscription.proUntil != null &&
+    Date.parse(subscription.proUntil) > Date.now();
+  const effectivePlan: "free" | "pro" | "enterprise" =
+    subscription.plan === "free" && founderActive ? "pro" : subscription.plan;
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       {mode === "test" && (
@@ -109,7 +119,10 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
       <header>
         <h1 className="text-2xl font-bold text-gray-900">Billing & Plans</h1>
         <p className="mt-1 text-sm text-gray-600">
-          Your current plan: {planBadge(subscription.plan)}{" "}
+          Your current plan: {planBadge(effectivePlan)}{" "}
+          {founderActive && subscription.plan === "free" && (
+            <span className="ml-1 text-xs text-amber-700">(Founder — free for 30 days)</span>
+          )}
           {subscription.isAdmin && <span className="ml-2 text-xs text-gray-500">(admin — bypasses gating)</span>}
         </p>
         {subscription.status && (
@@ -227,7 +240,11 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
             disabled
             className="mt-6 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-gray-500"
           >
-            {subscription.plan === "free" ? "Current plan" : "Downgrade via portal"}
+            {founderActive && subscription.plan === "free"
+              ? "Founder Pro active"
+              : subscription.plan === "free"
+                ? "Current plan"
+                : "Downgrade via portal"}
           </button>
         </div>
 
@@ -257,7 +274,9 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
                 ? "Coming soon"
                 : loading === proPrice
                   ? "Loading…"
-                  : "Upgrade to Pro"}
+                  : founderActive
+                    ? "Subscribe to extend Pro"
+                    : "Upgrade to Pro"}
           </button>
         </div>
 
