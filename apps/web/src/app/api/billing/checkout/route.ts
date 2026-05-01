@@ -46,11 +46,20 @@ export async function POST(req: NextRequest) {
   );
   if (activeSub) {
     const origin = req.headers.get("origin") ?? new URL(req.url).origin;
-    const portal = await stripe().billingPortal.sessions.create({
-      customer: customerId,
-      return_url: `${origin}/dashboard/billing`,
-    });
-    return NextResponse.json({ url: portal.url, alreadySubscribed: true });
+    try {
+      const portal = await stripe().billingPortal.sessions.create({
+        customer: customerId,
+        return_url: `${origin}/dashboard/billing`,
+      });
+      return NextResponse.json({ url: portal.url, alreadySubscribed: true });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Portal session failed";
+      console.error("[billing/checkout] portal-redirect", msg);
+      return NextResponse.json(
+        { error: `You already have an active subscription. To manage it, activate the Stripe portal at https://dashboard.stripe.com/settings/billing/portal (one-time setup).` },
+        { status: 502 }
+      );
+    }
   }
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;

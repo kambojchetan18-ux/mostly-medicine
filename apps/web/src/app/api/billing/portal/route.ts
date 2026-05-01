@@ -29,10 +29,22 @@ export async function POST(req: NextRequest) {
   }
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
-  const session = await stripe().billingPortal.sessions.create({
-    customer: profile.stripe_customer_id,
-    return_url: `${origin}/dashboard/billing`,
-  });
-
-  return NextResponse.json({ url: session.url });
+  try {
+    const session = await stripe().billingPortal.sessions.create({
+      customer: profile.stripe_customer_id,
+      return_url: `${origin}/dashboard/billing`,
+    });
+    return NextResponse.json({ url: session.url });
+  } catch (err) {
+    // Most common live-mode failure: Stripe Customer Portal hasn't been
+    // configured at https://dashboard.stripe.com/settings/billing/portal.
+    // Surface a clean message instead of letting Next.js return an empty
+    // 500 that crashes the client's res.json().
+    const msg = err instanceof Error ? err.message : "Portal session failed";
+    console.error("[billing/portal] stripe", msg);
+    return NextResponse.json(
+      { error: `Stripe portal not available: ${msg}. If this is a fresh live-mode account, activate the portal at https://dashboard.stripe.com/settings/billing/portal.` },
+      { status: 502 }
+    );
+  }
 }
