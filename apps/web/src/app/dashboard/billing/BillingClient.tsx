@@ -253,7 +253,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
           <span className="absolute -top-3 left-6 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold text-white">MOST POPULAR</span>
           <h2 className="text-lg font-bold text-gray-900">⭐ Pro</h2>
           <p className="mt-1 text-3xl font-bold text-gray-900">
-            ${cadence === "monthly" ? "19" : "190"}
+            A${cadence === "monthly" ? "19" : "190"}
             <span className="text-sm font-normal text-gray-500">/{cadence === "monthly" ? "mo" : "yr"}</span>
           </p>
           <p className="text-xs text-gray-500">Clinical practice unlocked</p>
@@ -284,7 +284,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
         <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-pink-50 p-6 shadow-sm">
           <h2 className="text-lg font-bold text-gray-900">🏢 Enterprise</h2>
           <p className="mt-1 text-3xl font-bold text-gray-900">
-            ${cadence === "monthly" ? "49" : "490"}
+            A${cadence === "monthly" ? "49" : "490"}
             <span className="text-sm font-normal text-gray-500">/{cadence === "monthly" ? "mo" : "yr"}</span>
           </p>
           <p className="text-xs text-gray-500">Live partner practice</p>
