@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import GlobalSearch from "@/components/GlobalSearch";
 import SearchTrigger from "@/components/SearchTrigger";
-import SidebarUserCard from "@/components/SidebarUserCard";
+import SidebarUserCard, { type UserCardData } from "@/components/SidebarUserCard";
 import MobileNavDrawer from "@/components/MobileNavDrawer";
 
 // Layouts are async server components — perfect place for a hard auth gate
@@ -49,6 +49,27 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!user.email_confirmed_at) {
     redirect("/auth/verify-email");
   }
+
+  // Fetch the profile data the sidebar card needs ONCE on the server, so
+  // the client doesn't have to re-do auth + a select that occasionally
+  // races with cookie hydration and leaves the Sign Out button missing.
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("full_name, email, avatar_url, plan, role, current_streak, founder_rank, pro_until")
+    .eq("id", user.id)
+    .single();
+
+  const userCard: UserCardData | null = {
+    name: profile?.full_name ?? user.email?.split("@")[0] ?? "User",
+    email: profile?.email ?? user.email ?? "",
+    avatar_url: profile?.avatar_url ?? null,
+    plan: profile?.plan ?? "free",
+    role: profile?.role ?? "user",
+    current_streak: profile?.current_streak ?? 0,
+    founder_rank: profile?.founder_rank ?? null,
+    pro_until: profile?.pro_until ?? null,
+  };
+
   return (
     <div className="flex min-h-screen bg-slate-50">
 
@@ -109,7 +130,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </nav>
 
         {/* User card + logout */}
-        <SidebarUserCard />
+        <SidebarUserCard user={userCard} />
 
         {/* Bottom card */}
         <div className="mt-3 border-t border-slate-800/50 pt-3">
@@ -135,7 +156,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         className="md:hidden fixed top-0 inset-x-0 z-50 flex items-center justify-between gap-2 px-2 py-2 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/70"
         style={{ paddingTop: "calc(0.5rem + env(safe-area-inset-top))" }}
       >
-        <MobileNavDrawer navItems={navItems} jobNavItems={jobNavItems} />
+        <MobileNavDrawer navItems={navItems} jobNavItems={jobNavItems} user={userCard} />
         <Link href="/dashboard" className="font-display font-bold text-base hover:opacity-80 transition-opacity truncate">
           <span className="gradient-text">Mostly</span>
           <span className="text-white"> Medicine</span>

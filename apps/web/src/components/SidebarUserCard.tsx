@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 
-interface UserInfo {
+export interface UserCardData {
   name: string;
   email: string;
   avatar_url: string | null;
@@ -16,35 +15,12 @@ interface UserInfo {
   pro_until: string | null;
 }
 
-export default function SidebarUserCard() {
+// Server-side render (layout passes data as props) — no client-side fetch
+// dance, no race condition, no skeleton state where the Sign Out button
+// could disappear if cookies fail to round-trip to the client.
+export default function SidebarUserCard({ user }: { user: UserCardData | null }) {
   const router = useRouter();
-  const [user, setUser] = useState<UserInfo | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
-      if (!u) return;
-      // Fetch from user_profiles for name/plan/role/streak
-      supabase
-        .from("user_profiles")
-        .select("full_name, email, avatar_url, plan, role, current_streak, founder_rank, pro_until")
-        .eq("id", u.id)
-        .single()
-        .then(({ data }) => {
-          setUser({
-            name: data?.full_name ?? u.email?.split("@")[0] ?? "User",
-            email: data?.email ?? u.email ?? "",
-            avatar_url: data?.avatar_url ?? null,
-            plan: data?.plan ?? "free",
-            role: data?.role ?? "user",
-            current_streak: data?.current_streak ?? 0,
-            founder_rank: data?.founder_rank ?? null,
-            pro_until: data?.pro_until ?? null,
-          });
-        });
-    });
-  }, []);
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -52,10 +28,20 @@ export default function SidebarUserCard() {
     router.push("/auth/login");
   }
 
+  // Defensive fallback: if for any reason user data is missing, still render
+  // a working Sign Out button so the user is never locked into a dashboard
+  // they can't escape from.
   if (!user) {
     return (
       <div className="mt-4 pt-4 border-t border-slate-800/50">
-        <div className="h-12 bg-slate-800/40 rounded-xl animate-pulse" />
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/5 transition text-xs font-medium disabled:opacity-50"
+        >
+          <span>→</span>
+          {loggingOut ? "Signing out…" : "Sign Out"}
+        </button>
       </div>
     );
   }

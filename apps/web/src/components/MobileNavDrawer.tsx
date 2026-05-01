@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import SidebarUserCard from "@/components/SidebarUserCard";
+import SidebarUserCard, { type UserCardData } from "@/components/SidebarUserCard";
 
 interface NavItem {
   href: string;
@@ -15,6 +15,7 @@ interface NavItem {
 interface Props {
   navItems: NavItem[];
   jobNavItems: NavItem[];
+  user: UserCardData | null;
 }
 
 // Mobile-only nav drawer. The desktop sidebar is rendered in dashboard/layout
@@ -24,7 +25,7 @@ interface Props {
 // Why a client component: we need useState for open/closed and useEffect to
 // auto-close when the route changes (so tapping a nav link doesn't leave the
 // drawer hanging open over the new page).
-export default function MobileNavDrawer({ navItems, jobNavItems }: Props) {
+export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -132,7 +133,7 @@ export default function MobileNavDrawer({ navItems, jobNavItems }: Props) {
           ))}
         </nav>
 
-        <SidebarUserCard />
+        <SidebarUserCard user={user} />
       </aside>
     </>
   );
