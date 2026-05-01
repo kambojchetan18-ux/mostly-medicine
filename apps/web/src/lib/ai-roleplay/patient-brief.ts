@@ -76,12 +76,11 @@ export function buildPatientBrief(variant: CaseVariant): PatientBrief {
   };
 }
 
-// Short invite-code generator — 6 chars, unambiguous (no 0/O/1/I).
-export function generateInviteCode(length = 6): string {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let out = "";
-  for (let i = 0; i < length; i++) {
-    out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  }
-  return out;
+// Cryptographically secure invite-code generator — 8 chars, unambiguous (no 0/O/1/I).
+export function generateInviteCode(): string {
+  const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ2345679";
+  const LENGTH = 8;
+  const bytes = new Uint8Array(LENGTH);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => ALPHABET[b % ALPHABET.length]).join("");
 }

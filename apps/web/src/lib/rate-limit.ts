@@ -76,3 +76,56 @@ export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
 }
+
+/** Sliding-window rate limit for AI endpoints. Returns { allowed } based on
+ *  maxAttempts within windowMs for a composite key of userId + action. */
+export async function aiRateLimit(
+  userId: string,
+  action: string,
+  maxAttempts: number,
+  windowMs: number
+): Promise<{ allowed: boolean }> {
+  const key = `${action}:${userId}`;
+  const supabase = serviceClient();
+  const now = new Date().toISOString();
+
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (!data) {
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: now,
+      updated_at: now,
+    });
+    return { allowed: true };
+  }
+
+  const elapsed = Date.now() - new Date(data.first_attempt_at).getTime();
+  if (elapsed > windowMs) {
+    // Window expired — reset
+    await supabase.from("rate_limit_attempts").upsert({
+      key,
+      count: 1,
+      first_attempt_at: now,
+      updated_at: now,
+    });
+    return { allowed: true };
+  }
+
+  if (data.count >= maxAttempts) {
+    return { allowed: false };
+  }
+
+  await supabase.from("rate_limit_attempts").upsert({
+    key,
+    count: data.count + 1,
+    first_attempt_at: data.first_attempt_at,
+    updated_at: now,
+  });
+  return { allowed: true };
+}

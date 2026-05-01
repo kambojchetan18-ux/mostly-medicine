@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
+import { aiRateLimit } from "@/lib/rate-limit";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
 
 // SSE-streamed roleplay turn. The browser reads chunks via fetch + getReader
@@ -23,6 +24,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(user.id, "acrp_message", 30, 60_000);
+  if (!rl.allowed) {
+    return Response.json({ error: "Too many messages. Please slow down." }, { status: 429 });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json({ error: "AI service not configured" }, { status: 503 });

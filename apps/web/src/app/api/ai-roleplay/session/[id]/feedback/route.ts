@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { scoreSession } from "@/lib/ai-roleplay/scoring";
+import { aiRateLimit } from "@/lib/rate-limit";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -11,6 +12,11 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(user.id, "acrp_feedback", 5, 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many feedback requests. Please wait." }, { status: 429 });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
