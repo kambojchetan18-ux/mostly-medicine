@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "article:share": "npx tsx ../../scripts/share-draft.ts",
-    "social:amandeep": "npx tsx ../../scripts/generate-amandeep-social.ts"
+    "social:amandeep": "npx tsx ../../scripts/generate-amandeep-social.ts",
+    "carousel:generate": "npx tsx ../../scripts/generate-carousel.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.64",
