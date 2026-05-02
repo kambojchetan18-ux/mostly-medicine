@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 export interface UserCardData {
   name: string;
@@ -19,13 +19,32 @@ export interface UserCardData {
 // dance, no race condition, no skeleton state where the Sign Out button
 // could disappear if cookies fail to round-trip to the client.
 export default function SidebarUserCard({ user }: { user: UserCardData | null }) {
-  const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
+  // Two-step belt-and-suspenders sign out:
+  //   1. Server-side: POST /api/auth/logout → calls supabase.auth.signOut()
+  //      with the SSR cookie helper, which writes Set-Cookie deletion
+  //      headers in the response → browser drops the auth cookies.
+  //   2. Client-side: also call supabase.auth.signOut() to nuke any
+  //      in-memory session state in the browser SDK.
+  // Then HARD RELOAD via window.location — not router.push — so the next
+  // request actually re-reads cookies from disk instead of soft-navigating
+  // with cached React state. router.push was leaving a window where users
+  // appeared logged-out in the UI but cookies hadn't fully cleared, so
+  // clicking sidebar nav links got dashboard access without re-login.
   async function handleLogout() {
     setLoggingOut(true);
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/auth/login");
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      /* ignore — fall through to client signOut + hard redirect */
+    }
+    try {
+      await createClient().auth.signOut();
+    } catch {
+      /* ignore */
+    }
+    window.location.href = "/auth/login";
   }
 
   // Defensive fallback: if for any reason user data is missing, still render
