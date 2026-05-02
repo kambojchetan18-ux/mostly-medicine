@@ -10,8 +10,8 @@ import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
-import { scenarios } from '@mostly-medicine/ai';
-import type { Scenario } from '@mostly-medicine/ai';
+import { scenariosMeta } from '@mostly-medicine/ai';
+import type { ScenarioMeta } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
@@ -65,7 +65,7 @@ async function requestMicPermission(): Promise<boolean> {
 }
 
 export default function RoleplayScreen() {
-  const [scenario, setScenario] = useState<Scenario | null>(null);
+  const [scenario, setScenario] = useState<ScenarioMeta | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -346,7 +346,7 @@ export default function RoleplayScreen() {
     }
   }, [timeLeft, scenario, messages.length, loading, getFeedback]);
 
-  function startScenario(sc: Scenario) {
+  function startScenario(sc: ScenarioMeta) {
     feedbackRequestedRef.current = false;
     setFeedback(null);
     setMessages([{ role: 'assistant', content: sc.openingStatement }]);
@@ -392,7 +392,7 @@ export default function RoleplayScreen() {
             </Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 10 }}>
-            {scenarios.map((sc) => (
+            {scenariosMeta.map((sc) => (
               <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenario(sc)} activeOpacity={0.7}>
                 <View style={s.scenarioTop}>
                   <Text style={s.scenarioEmoji}>{getEmoji(sc.patientProfile)}</Text>
