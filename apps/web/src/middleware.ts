@@ -17,8 +17,14 @@ export async function middleware(request: NextRequest) {
   // Force www subdomain so auth cookies are always set against the same
   // origin. Without this, logging in at www.* and then navigating to the
   // bare domain (or vice versa) drops the session and redirects to login.
+  //
+  // Exempt the Stripe webhook route — Stripe does NOT follow 3xx redirects
+  // on webhook deliveries, so an apex→www redirect makes every event fail
+  // with a 307 and the DB never syncs. Webhooks are server-to-server and
+  // don't care about cookie origins, so handle the apex hit directly.
   const host = request.headers.get("host");
-  if (host === "mostlymedicine.com") {
+  const { pathname: earlyPath } = request.nextUrl;
+  if (host === "mostlymedicine.com" && earlyPath !== "/api/billing/webhook") {
     const url = request.nextUrl.clone();
     url.host = "www.mostlymedicine.com";
     return NextResponse.redirect(url, 308);

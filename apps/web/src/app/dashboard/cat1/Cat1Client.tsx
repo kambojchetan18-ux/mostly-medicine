@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { MCQuestion } from "@mostly-medicine/content";
 import FunLoading from "@/components/FunLoading";
 
@@ -678,5 +679,6 @@ export default function Cat1Client() {
         )}
       </div>
     </div>
+    </>
   );
 }
