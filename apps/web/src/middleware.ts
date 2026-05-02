@@ -89,9 +89,30 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Logged-in user landing on /auth/login or /auth/signup → bounce to
+  // dashboard. They're already in. Hitting these pages again is almost
+  // always a stray click on a marketing CTA the page didn't gate.
+  // Reset-password and verify-email stay accessible (real use cases).
+  if (
+    user &&
+    user.email_confirmed_at &&
+    (pathname === "/auth/login" || pathname === "/auth/signup")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   return supabaseResponse;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/:path*", "/auth/callback"],
+  matcher: [
+    "/dashboard/:path*",
+    "/api/:path*",
+    "/auth/callback",
+    "/auth/login",
+    "/auth/signup",
+  ],
 };
