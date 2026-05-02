@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "article:share": "tsx ../../scripts/share-draft.ts"
+    "article:share": "tsx ../../scripts/share-draft.ts",
+    "social:amandeep": "tsx ../../scripts/generate-amandeep-social.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.64",
