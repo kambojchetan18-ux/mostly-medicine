@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import HeroMiniCalc from "@/components/HeroMiniCalc";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -248,49 +249,60 @@ export default async function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 pt-16 pb-24 text-center">
+      <section className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 pt-16 pb-24">
 
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-10 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
-          AMC Handbook 2026 · AI-Powered Roleplays · Official MCAT Scenarios
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-12 items-center">
 
-        {/* Headline */}
-        <h1 className="text-hero font-display font-bold text-white mb-6">
-          Ace the{" "}
-          <span className="gradient-text">AMC.</span>
-        </h1>
+          {/* Hero text column — centered on mobile, left-aligned on md+ */}
+          <div className="md:col-span-3 text-center md:text-left">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-10 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
+              AMC Handbook 2026 · AI-Powered Roleplays · Official MCAT Scenarios
+            </div>
 
-        <p className="text-subhero text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-          AI-powered exam preparation for International Medical Graduates.
-          <br className="hidden sm:block" />
-          Clinical roleplays · 3 000+ MCQs · Handbook-aligned · Free to start.
-        </p>
+            {/* Headline */}
+            <h1 className="text-hero font-display font-bold text-white mb-6">
+              Ace the{" "}
+              <span className="gradient-text">AMC.</span>
+            </h1>
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
-          <Link
-            href={primaryCta}
-            className="group inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-display font-bold text-lg text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5"
-            style={{
-              background: "linear-gradient(135deg, #7c3aed 0%, #db2777 70%, #ea580c 100%)",
-              boxShadow: "0 8px 40px rgba(124,58,237,0.35)",
-            }}
-          >
-            {isLoggedIn ? "Continue your prep" : "Log in to continue"}
-            <span className="group-hover:translate-x-1 transition-transform text-xl">🚀</span>
-          </Link>
-          <Link
-            href={secondaryCta}
-            className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all backdrop-blur-sm"
-          >
-            {isLoggedIn ? "Cost calculator" : "New here? Sign up free"}
-          </Link>
+            <p className="text-subhero text-slate-400 max-w-2xl mx-auto md:mx-0 mb-10 leading-relaxed">
+              AI-powered exam preparation for International Medical Graduates.
+              <br className="hidden sm:block" />
+              Clinical roleplays · 3 000+ MCQs · Handbook-aligned · Free to start.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-10 md:mb-0">
+              <Link
+                href={primaryCta}
+                className="group inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-display font-bold text-lg text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5"
+                style={{
+                  background: "linear-gradient(135deg, #7c3aed 0%, #db2777 70%, #ea580c 100%)",
+                  boxShadow: "0 8px 40px rgba(124,58,237,0.35)",
+                }}
+              >
+                {isLoggedIn ? "Continue your prep" : "Log in to continue"}
+                <span className="group-hover:translate-x-1 transition-transform text-xl">🚀</span>
+              </Link>
+              <Link
+                href={secondaryCta}
+                className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all backdrop-blur-sm"
+              >
+                {isLoggedIn ? "Cost calculator" : "New here? Sign up free"}
+              </Link>
+            </div>
+          </div>
+
+          {/* Mini calculator — right column on md+, below CTAs on mobile */}
+          <div className="md:col-span-2 flex justify-center md:justify-end">
+            <HeroMiniCalc />
+          </div>
         </div>
 
         {/* Stats */}
-        <div className="flex flex-wrap justify-center gap-8 sm:gap-12">
+        <div className="flex flex-wrap justify-center gap-8 sm:gap-12 mt-14">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <p className="font-display font-bold text-2xl gradient-text">{s.value}</p>
