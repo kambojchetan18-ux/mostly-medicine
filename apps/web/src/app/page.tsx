@@ -186,8 +186,12 @@ export default async function HomePage() {
     // Auth check failure (env missing in preview build, etc.) should not
     // break the public marketing page.
   }
-  const primaryCta = isLoggedIn ? "/dashboard" : "/auth/signup";
-  const secondaryCta = isLoggedIn ? "/dashboard" : "/auth/login";
+  // Primary CTA defaults to LOGIN for signed-out visitors — most clickers
+  // are returning users (per Chetan's UX feedback: signup-first is
+  // frustrating for repeat visitors). New users can click "Sign up free"
+  // from the login page. Logged-in users skip auth entirely → /dashboard.
+  const primaryCta = isLoggedIn ? "/dashboard" : "/auth/login";
+  const secondaryCta = isLoggedIn ? "/amc-fee-calculator" : "/auth/signup";
 
   return (
     <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
@@ -228,17 +232,17 @@ export default async function HomePage() {
         <div className="flex items-center gap-2">
           {!isLoggedIn && (
             <Link
-              href="/auth/login"
+              href="/auth/signup"
               className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
             >
-              Log in
+              Sign up free
             </Link>
           )}
           <Link
             href={primaryCta}
             className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
-            {isLoggedIn ? "Open dashboard →" : "Get started →"}
+            {isLoggedIn ? "Open dashboard →" : "Log in →"}
           </Link>
         </div>
       </nav>
@@ -274,14 +278,14 @@ export default async function HomePage() {
               boxShadow: "0 8px 40px rgba(124,58,237,0.35)",
             }}
           >
-            {isLoggedIn ? "Continue your prep" : "Start for free"}
+            {isLoggedIn ? "Continue your prep" : "Log in to continue"}
             <span className="group-hover:translate-x-1 transition-transform text-xl">🚀</span>
           </Link>
           <Link
-            href={isLoggedIn ? "/amc-fee-calculator" : secondaryCta}
+            href={secondaryCta}
             className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all backdrop-blur-sm"
           >
-            {isLoggedIn ? "Cost calculator" : "Log in"}
+            {isLoggedIn ? "Cost calculator" : "New here? Sign up free"}
           </Link>
         </div>
 
@@ -362,8 +366,16 @@ export default async function HomePage() {
               boxShadow: "0 8px 40px rgba(124,58,237,0.4)",
             }}
           >
-            {isLoggedIn ? "Open my dashboard ✨" : "Create free account ✨"}
+            {isLoggedIn ? "Open my dashboard ✨" : "Log in to continue ✨"}
           </Link>
+          {!isLoggedIn && (
+            <Link
+              href="/auth/signup"
+              className="block mt-4 text-sm text-slate-400 hover:text-white transition-colors underline-offset-4 hover:underline"
+            >
+              First time here? Sign up free →
+            </Link>
+          )}
           <p className="text-xs text-slate-600 mt-5">
             {isLoggedIn ? "Welcome back — pick up where you left off." : "No credit card · Instant access · Cancel anytime"}
           </p>
