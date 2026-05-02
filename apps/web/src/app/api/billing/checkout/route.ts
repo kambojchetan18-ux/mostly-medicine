@@ -63,15 +63,26 @@ export async function POST(req: NextRequest) {
   }
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
-  const session = await stripe().checkout.sessions.create({
-    mode: "subscription",
-    customer: customerId,
-    line_items: [{ price: body.priceId, quantity: 1 }],
-    allow_promotion_codes: true,
-    success_url: `${origin}/dashboard/billing?success=1`,
-    cancel_url: `${origin}/dashboard/billing?canceled=1`,
-    subscription_data: { metadata: { user_id: user.id } },
-  });
-
-  return NextResponse.json({ url: session.url });
+  try {
+    const session = await stripe().checkout.sessions.create({
+      mode: "subscription",
+      customer: customerId,
+      line_items: [{ price: body.priceId, quantity: 1 }],
+      allow_promotion_codes: true,
+      success_url: `${origin}/dashboard/billing?success=1`,
+      cancel_url: `${origin}/dashboard/billing?canceled=1`,
+      subscription_data: { metadata: { user_id: user.id } },
+    });
+    return NextResponse.json({ url: session.url });
+  } catch (err) {
+    // Surface a clean error instead of letting Next.js return an empty 500
+    // that crashes the client's res.json() with "Unexpected end of JSON
+    // input" — the diagnostic chain we hit on 2026-05-01 + 2026-05-02.
+    const msg = err instanceof Error ? err.message : "Checkout session failed";
+    console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
+    return NextResponse.json(
+      { error: `Stripe checkout failed: ${msg}` },
+      { status: 502 }
+    );
+  }
 }
