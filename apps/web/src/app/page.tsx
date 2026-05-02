@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 const faqSchema = {
@@ -92,6 +91,45 @@ const features = [
     size:     "text-2xl",
   },
   {
+    href:     "/dashboard/ai-roleplay",
+    emoji:    "🎙️",
+    tag:      "BEYOND HANDBOOK",
+    tagColor: "text-fuchsia-300 bg-fuchsia-900/40 border-fuchsia-700/40",
+    title:    "AMC Clinical AI RolePlay",
+    desc:     "Voice-mode consultations with AI patients. Synthesised cases beyond the handbook. Unlimited reps.",
+    gradient: "from-fuchsia-950/80 via-purple-950/60 to-slate-900/80",
+    border:   "border-fuchsia-800/30",
+    glow:     "hover:shadow-[0_0_60px_rgba(217,70,239,0.15)]",
+    span:     "md:col-span-2",
+    size:     "text-2xl",
+  },
+  {
+    href:     "/dashboard/ai-roleplay/live",
+    emoji:    "🎥",
+    tag:      "LIVE · 2-PLAYER",
+    tagColor: "text-rose-300 bg-rose-900/40 border-rose-700/40",
+    title:    "AMC Peer RolePlay",
+    desc:     "Pair up with another candidate over live video and roleplay AMC scenarios. Real candidate, real feedback.",
+    gradient: "from-rose-950/80 via-pink-950/60 to-slate-900/80",
+    border:   "border-rose-800/30",
+    glow:     "hover:shadow-[0_0_60px_rgba(244,63,94,0.15)]",
+    span:     "",
+    size:     "text-2xl",
+  },
+  {
+    href:     "/amc-fee-calculator",
+    emoji:    "💰",
+    tag:      "COST PLANNER",
+    tagColor: "text-cyan-300 bg-cyan-900/40 border-cyan-700/40",
+    title:    "AMC Fee Calculator",
+    desc:     "See your real total cost in AUD/USD/INR — CAT 1, CAT 2, IELTS, EPIC, AHPRA. Live calculator. No signup.",
+    gradient: "from-cyan-950/80 via-sky-950/60 to-slate-900/80",
+    border:   "border-cyan-800/30",
+    glow:     "hover:shadow-[0_0_60px_rgba(34,211,238,0.15)]",
+    span:     "md:col-span-2",
+    size:     "text-2xl",
+  },
+  {
     href:     "/dashboard/reference",
     emoji:    "📖",
     tag:      "RESOURCES",
@@ -133,28 +171,23 @@ const features = [
 ];
 
 export default async function HomePage() {
-  // If a logged-in user lands on / (e.g. by tapping the "Mostly Medicine"
-  // wordmark in the dashboard mobile top bar), send them to /dashboard.
-  // This prevents a confusing flash of the marketing page and — more
-  // importantly — sidesteps the mobile-web edge case where a fresh GET to /
-  // (after a bare→www 308 hop) could leave the browser in a state where the
-  // next nav into /dashboard re-runs middleware without the freshly-set
-  // cookies and bounces to /auth/login. Doing the redirect here keeps the
-  // user on a single logged-in origin.
+  // Detect auth state so the marketing CTAs route smartly — logged-in
+  // visitors get sent to /dashboard, signed-out visitors keep the
+  // /auth/signup signup flow. We no longer redirect logged-in users away
+  // from / entirely (Chetan's ask): the homepage stays accessible so they
+  // can hit the AMC fee calculator card without leaving the marketing
+  // surface, but every primary CTA on the page routes to dashboard.
+  let isLoggedIn = false;
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      redirect("/dashboard");
-    }
-  } catch (err) {
-    // next/navigation's redirect() throws a special error to short-circuit
-    // rendering — re-throw it. Any other error (e.g. Supabase env missing
-    // in a preview build) should NOT break the public marketing page.
-    if (err && typeof err === "object" && "digest" in err && typeof (err as { digest?: string }).digest === "string" && (err as { digest: string }).digest.startsWith("NEXT_REDIRECT")) {
-      throw err;
-    }
+    isLoggedIn = !!user;
+  } catch {
+    // Auth check failure (env missing in preview build, etc.) should not
+    // break the public marketing page.
   }
+  const primaryCta = isLoggedIn ? "/dashboard" : "/auth/signup";
+  const secondaryCta = isLoggedIn ? "/dashboard" : "/auth/login";
 
   return (
     <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
@@ -193,17 +226,19 @@ export default async function HomePage() {
           <span className="text-white"> Medicine</span>
         </div>
         <div className="flex items-center gap-2">
+          {!isLoggedIn && (
+            <Link
+              href="/auth/login"
+              className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
+            >
+              Log in
+            </Link>
+          )}
           <Link
-            href="/auth/login"
-            className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/auth/signup"
+            href={primaryCta}
             className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
-            Get started →
+            {isLoggedIn ? "Open dashboard →" : "Get started →"}
           </Link>
         </div>
       </nav>
@@ -232,21 +267,21 @@ export default async function HomePage() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
           <Link
-            href="/auth/signup"
+            href={primaryCta}
             className="group inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-display font-bold text-lg text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5"
             style={{
               background: "linear-gradient(135deg, #7c3aed 0%, #db2777 70%, #ea580c 100%)",
               boxShadow: "0 8px 40px rgba(124,58,237,0.35)",
             }}
           >
-            Start for free
+            {isLoggedIn ? "Continue your prep" : "Start for free"}
             <span className="group-hover:translate-x-1 transition-transform text-xl">🚀</span>
           </Link>
           <Link
-            href="/auth/login"
+            href={isLoggedIn ? "/amc-fee-calculator" : secondaryCta}
             className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all backdrop-blur-sm"
           >
-            Log in
+            {isLoggedIn ? "Cost calculator" : "Log in"}
           </Link>
         </div>
 
@@ -320,16 +355,18 @@ export default async function HomePage() {
             Join IMGs using AI-powered tools to prepare smarter. Start free — no credit card needed.
           </p>
           <Link
-            href="/auth/signup"
+            href={primaryCta}
             className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl font-display font-bold text-lg text-white hover:opacity-90 transition-all hover:-translate-y-0.5"
             style={{
               background: "linear-gradient(135deg, #7c3aed, #db2777)",
               boxShadow: "0 8px 40px rgba(124,58,237,0.4)",
             }}
           >
-            Create free account ✨
+            {isLoggedIn ? "Open my dashboard ✨" : "Create free account ✨"}
           </Link>
-          <p className="text-xs text-slate-600 mt-5">No credit card · Instant access · Cancel anytime</p>
+          <p className="text-xs text-slate-600 mt-5">
+            {isLoggedIn ? "Welcome back — pick up where you left off." : "No credit card · Instant access · Cancel anytime"}
+          </p>
         </div>
       </section>
 
