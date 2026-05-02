@@ -117,7 +117,20 @@ export async function POST(req: NextRequest) {
 
     // Strip any accidental markdown fences
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
-    const extracted = JSON.parse(jsonStr);
+    const rawExtracted = JSON.parse(jsonStr);
+
+    // Whitelist only the known IMG profile fields — never let the AI output
+    // overwrite arbitrary columns (e.g. id, role, plan).
+    const ALLOWED_PROFILE_FIELDS = [
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification",
+    ] as const;
+    const extracted: Record<string, unknown> = {};
+    for (const key of ALLOWED_PROFILE_FIELDS) {
+      if (key in rawExtracted) extracted[key] = rawExtracted[key];
+    }
 
     // Upsert into Supabase
     const { error: dbError } = await supabase
@@ -133,8 +146,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ profile: extracted });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[cv/analyse]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/analyse]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Failed to analyse CV" }, { status: 500 });
   }
 }

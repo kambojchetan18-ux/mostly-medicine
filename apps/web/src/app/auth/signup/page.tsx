@@ -56,14 +56,20 @@ function SignupInner() {
     setError("");
     if (password !== confirmPassword) { setError("Passwords do not match."); return; }
     setLoading(true);
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, name }),
-    });
-    const data = await res.json();
-    if (!res.ok) { setError(data.error ?? "Signup failed."); setLoading(false); }
-    else { router.push("/auth/verify-email"); }
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error ?? "Signup failed."); }
+      else { router.push("/auth/verify-email"); }
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleGoogle() {

@@ -42,18 +42,23 @@ function LoginInner() {
     setError("");
     setInfo("");
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (res.ok) {
-      router.push(next);
-      router.refresh();
-    } else {
-      const data = await res.json();
-      setError(data.error ?? "Login failed. Please try again.");
+      if (res.ok) {
+        router.push(next);
+        router.refresh();
+      } else {
+        const data = await res.json();
+        setError(data.error ?? "Login failed. Please try again.");
+      }
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
       setLoading(false);
     }
   }

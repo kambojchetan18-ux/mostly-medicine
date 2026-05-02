@@ -4,6 +4,7 @@ import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
+import { checkModulePermission } from "@/lib/permissions";
 
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id: sessionId } = await ctx.params;
@@ -13,6 +14,11 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const perm = await checkModulePermission(supabase, "acrp_solo");
+  if (!perm.allowed) {
+    return NextResponse.json({ error: "Roleplay not available on your plan" }, { status: 403 });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });

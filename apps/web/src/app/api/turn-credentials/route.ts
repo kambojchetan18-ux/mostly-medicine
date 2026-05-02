@@ -50,12 +50,6 @@ export async function GET() {
   const keyId = process.env.CLOUDFLARE_TURN_KEY_ID;
   const apiToken = process.env.CLOUDFLARE_TURN_API_TOKEN;
   if (!keyId || !apiToken) {
-    // Tell the user EXACTLY which env var the runtime is missing so we
-    // don't go in circles. List every CLOUDFLARE_ key the runtime DOES see
-    // so a typo (extra space, wrong word) is obvious.
-    const seen = Object.keys(process.env)
-      .filter((k) => k.startsWith("CLOUDFLARE_"))
-      .sort();
     return NextResponse.json(
       {
         error: "TURN not configured",
@@ -63,7 +57,6 @@ export async function GET() {
           CLOUDFLARE_TURN_KEY_ID: !keyId,
           CLOUDFLARE_TURN_API_TOKEN: !apiToken,
         },
-        cloudflareKeysSeen: seen,
       },
       { status: 503 }
     );

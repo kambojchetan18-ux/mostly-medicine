@@ -42,26 +42,31 @@ export default function HomeScreen() {
       const name = user.user_metadata?.full_name?.split(' ')[0] ?? 'Doctor';
       setUserName(name);
 
-      const [attemptsRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
-        supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
-          .eq('user_id', user.id).lte('due', new Date().toISOString()),
-      ]);
-      if (cancelled) return;
+      try {
+        const [attemptsRes, streakRes, dueRes] = await Promise.all([
+          supabase.from('attempts').select('is_correct').eq('user_id', user.id),
+          supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
+          supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
+            .eq('user_id', user.id).lte('due', new Date().toISOString()),
+        ]);
+        if (cancelled) return;
 
-      const attempts = attemptsRes.data ?? [];
-      const total = attempts.length;
-      const correct = attempts.filter((a) => a.is_correct).length;
-      const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+        const attempts = attemptsRes.data ?? [];
+        const total = attempts.length;
+        const correct = attempts.filter((a) => a.is_correct).length;
+        const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
 
-      setStats([
-        { label: 'Questions Done', value: total, color: '#7c3aed' },
-        { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
-        { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
-        { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
-      ]);
-      setLoading(false);
+        setStats([
+          { label: 'Questions Done', value: total, color: '#7c3aed' },
+          { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
+          { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
+          { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
+        ]);
+      } catch (err) {
+        console.error('Failed to load home stats:', err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
     // Defer until first frame is on-screen so the home tab paints quickly.
     const handle = InteractionManager.runAfterInteractions(() => load());

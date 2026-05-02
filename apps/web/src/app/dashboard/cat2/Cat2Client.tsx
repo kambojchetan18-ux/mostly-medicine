@@ -133,6 +133,12 @@ export default function Cat2Client() {
   const elapsedRef = useRef(0);
   const shownMilestonesRef = useRef<Set<number>>(new Set());
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Speech synthesis must come before sendMessage (sendMessage calls speak/stopSpeaking)
@@ -397,8 +403,12 @@ export default function Cat2Client() {
     if (ttsSupported) primeTts();
     setExaminerFeedback(null);
     feedbackRequestedRef.current = false;
+    const scenario = scenarios.find(s => s.id === id);
+    if (!scenario) {
+      setActiveScenario(null);
+      return;
+    }
     setActiveScenario(id);
-    const scenario = scenarios.find(s => s.id === id)!;
     const opening = scenario.openingStatement;
     const openingMsg = { role: "assistant", content: opening };
     setMessages([openingMsg]);

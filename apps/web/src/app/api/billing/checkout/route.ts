@@ -3,13 +3,23 @@ import { createClient } from "@/lib/supabase/server";
 import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
 
+const ALLOWED_ORIGINS = [
+  "https://www.mostlymedicine.com",
+  "https://mostlymedicine.com",
+];
+
+function safeOrigin(req: NextRequest): string {
+  const origin = req.headers.get("origin");
+  if (origin && ALLOWED_ORIGINS.includes(origin)) return origin;
+  return new URL(req.url).origin;
+}
+
 export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/checkout] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/checkout] config", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Billing service unavailable" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -45,7 +55,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = safeOrigin(req);
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -53,16 +63,15 @@ export async function POST(req: NextRequest) {
       });
       return NextResponse.json({ url: portal.url, alreadySubscribed: true });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Portal session failed";
-      console.error("[billing/checkout] portal-redirect", msg);
+      console.error("[billing/checkout] portal-redirect", err instanceof Error ? err.message : err);
       return NextResponse.json(
-        { error: `You already have an active subscription. To manage it, activate the Stripe portal at https://dashboard.stripe.com/settings/billing/portal (one-time setup).` },
+        { error: "Unable to redirect to billing portal. Please try again later." },
         { status: 502 }
       );
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
@@ -75,13 +84,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    // Surface a clean error instead of letting Next.js return an empty 500
-    // that crashes the client's res.json() with "Unexpected end of JSON
-    // input" — the diagnostic chain we hit on 2026-05-01 + 2026-05-02.
-    const msg = err instanceof Error ? err.message : "Checkout session failed";
-    console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
+    console.error("[billing/checkout] session-create", err instanceof Error ? err.message : err, "priceId=", body.priceId);
     return NextResponse.json(
-      { error: `Stripe checkout failed: ${msg}` },
+      { error: "Checkout failed. Please try again later." },
       { status: 502 }
     );
   }

@@ -86,6 +86,8 @@ export default function GlobalSearch() {
       const data = await res.json();
       setResults(data.results ?? []);
       setActiveIndex(0);
+    } catch {
+      setResults([]);
     } finally {
       setLoading(false);
     }

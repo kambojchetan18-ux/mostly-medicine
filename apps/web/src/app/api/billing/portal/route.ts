@@ -2,15 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, assertStripeConfig } from "@/lib/stripe";
 
+const ALLOWED_ORIGINS = [
+  "https://www.mostlymedicine.com",
+  "https://mostlymedicine.com",
+];
+
+function safeOrigin(req: NextRequest): string {
+  const origin = req.headers.get("origin");
+  if (origin && ALLOWED_ORIGINS.includes(origin)) return origin;
+  return new URL(req.url).origin;
+}
+
 // Returns a Stripe Customer Portal URL so the user can update payment method,
 // switch plans, or cancel without us building UI for any of that.
 export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/portal] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/portal] config", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Billing service unavailable" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -28,7 +38,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No subscription on file" }, { status: 404 });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
@@ -36,14 +46,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    // Most common live-mode failure: Stripe Customer Portal hasn't been
-    // configured at https://dashboard.stripe.com/settings/billing/portal.
-    // Surface a clean message instead of letting Next.js return an empty
-    // 500 that crashes the client's res.json().
-    const msg = err instanceof Error ? err.message : "Portal session failed";
-    console.error("[billing/portal] stripe", msg);
+    console.error("[billing/portal] stripe", err instanceof Error ? err.message : err);
     return NextResponse.json(
-      { error: `Stripe portal not available: ${msg}. If this is a fresh live-mode account, activate the portal at https://dashboard.stripe.com/settings/billing/portal.` },
+      { error: "Billing portal unavailable. Please try again later." },
       { status: 502 }
     );
   }

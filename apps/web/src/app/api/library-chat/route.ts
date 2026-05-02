@@ -43,6 +43,20 @@ export async function POST(req: NextRequest) {
 
   const { messages, topicTitle, topicContent } = await req.json();
 
+  // ── Validate messages array ───────────────────────────────────────────
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return NextResponse.json({ error: "messages array required" }, { status: 400 });
+  }
+  if (messages.length > 50) {
+    return NextResponse.json({ error: "Too many messages" }, { status: 400 });
+  }
+  const sanitizedMessages = messages
+    .filter((m: { role: string }) => m.role === "user" || m.role === "assistant")
+    .map((m: { role: string; content: string }) => ({
+      role: m.role as "user" | "assistant",
+      content: typeof m.content === "string" ? m.content.slice(0, 10000) : "",
+    }));
+
   const systemPrompt =
     topicTitle && topicContent
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
@@ -67,10 +81,7 @@ export async function POST(req: NextRequest) {
           model: MODEL,
           max_tokens: 1024,
           system: systemBlocks,
-          messages: messages.map((m: { role: string; content: string }) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
+          messages: sanitizedMessages,
           stream: true,
         });
 

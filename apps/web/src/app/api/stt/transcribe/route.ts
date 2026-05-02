@@ -21,6 +21,7 @@ const GROQ_TRANSCRIPTIONS_URL =
 // whisper-large-v3-turbo: ~$0.04/hour, ~1s latency for 5s chunks.
 // Free $1/mo Groq credit covers ~25 hours/month per account before billing.
 const GROQ_MODEL = "whisper-large-v3-turbo";
+const MAX_AUDIO_SIZE = 5 * 1024 * 1024; // 5 MB
 
 export async function POST(req: NextRequest) {
   // 1. Auth — accept Bearer token (mobile native app) OR cookie session (web)
@@ -92,6 +93,12 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+  if (audio.size > MAX_AUDIO_SIZE) {
+    return NextResponse.json(
+      { error: "Audio file too large" },
+      { status: 400 }
+    );
+  }
 
   // 5. Build a fresh FormData for Groq — we can't forward the incoming one
   //    directly because the file part needs an explicit filename for Groq's
@@ -147,13 +154,10 @@ export async function POST(req: NextRequest) {
   if (!groqRes.ok) {
     const detail = await groqRes.text().catch(() => "");
     console.error("[stt/transcribe] groq error", groqRes.status, detail);
-    // Surface the upstream status + body so the diagnostic pill / console
-    // can show the actual Groq error (auth, quota, rate-limit, format).
     return NextResponse.json(
       {
         error: "Transcription upstream error",
         upstreamStatus: groqRes.status,
-        upstreamBody: detail.slice(0, 400),
       },
       { status: 502 }
     );

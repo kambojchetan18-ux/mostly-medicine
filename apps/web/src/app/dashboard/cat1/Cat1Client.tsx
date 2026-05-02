@@ -223,22 +223,27 @@ export default function Cat1Client() {
     if (!selected) return;
     const q = questions[current];
     setDetailLoading(true);
-    const res = await fetch("/api/cat1/explain", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        stem: q.stem,
-        options: q.options,
-        correctAnswer: q.correctAnswer,
-        selectedAnswer: selected,
-        topic: q.topic,
-        subtopic: q.subtopic,
-        explanation: q.explanation,
-      }),
-    });
-    const data = await res.json();
-    setDetailedExplanation(data.explanation ?? "Could not load explanation.");
-    setDetailLoading(false);
+    try {
+      const res = await fetch("/api/cat1/explain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stem: q.stem,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          selectedAnswer: selected,
+          topic: q.topic,
+          subtopic: q.subtopic,
+          explanation: q.explanation,
+        }),
+      });
+      const data = await res.json();
+      setDetailedExplanation(data.explanation ?? "Could not load explanation.");
+    } catch {
+      setDetailedExplanation("Could not load explanation. Please check your connection and try again.");
+    } finally {
+      setDetailLoading(false);
+    }
   }
 
   async function fetchSmartExplanation() {

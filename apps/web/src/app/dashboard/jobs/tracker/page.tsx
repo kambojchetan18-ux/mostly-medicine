@@ -57,7 +57,13 @@ export default function TrackerPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem("rmo_applications");
-    if (saved) setApps(JSON.parse(saved));
+    if (saved) {
+      try {
+        setApps(JSON.parse(saved));
+      } catch {
+        // Corrupted localStorage — reset gracefully
+      }
+    }
   }, []);
 
   const save = (updated: Application[]) => {

@@ -1,14 +1,30 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
-// Temporary diagnostic endpoint — returns ONLY whether specific env vars
-// are set on the runtime. Never returns values. Safe to expose publicly:
-// the names are not secrets, only the values are. Remove this route once
-// the Cloudflare TURN + Groq env-var debugging is finished.
+// Diagnostic endpoint — returns ONLY whether specific env vars are set on
+// the runtime. Never returns values. Restricted to admin users.
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function GET() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const want = [
     "CLOUDFLARE_TURN_KEY_ID",
     "CLOUDFLARE_TURN_API_TOKEN",
