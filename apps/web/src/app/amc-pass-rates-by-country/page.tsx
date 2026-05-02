@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import CalculatorTeaser from "@/components/CalculatorTeaser";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-pass-rates-by-country`;
@@ -164,6 +165,8 @@ export default function Page() {
         <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
           AMC Part 1 (MCQ) first-attempt pass rates have averaged roughly 60–70% across recent reporting cycles, with AMC Clinical (Part 2) sitting lower. The AMC has not published a country-of-training breakdown publicly — country-level claims online are usually inferred from AHPRA workforce data, not direct AMC stats. The biggest predictor of passing first time is structured, timed practice — not nationality.
         </blockquote>
+
+        <CalculatorTeaser />
 
         <p>
           If you are searching &ldquo;AMC pass rate India&rdquo; or &ldquo;is the AMC harder than PLAB&rdquo;, you&apos;re really asking whether people from your country actually clear this thing. Fair question. The honest answer: the AMC publishes far less granular data than the GMC does for PLAB, so most country-by-country numbers in forums are extrapolations. This piece walks through what&apos;s actually published, what isn&apos;t, and the real drivers of first-attempt success.
