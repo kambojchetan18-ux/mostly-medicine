@@ -5,8 +5,9 @@ description: "AMC and PLAB lead to different countries, not different leagues. C
 keywords: ["amc vs plab", "is plab easier than amc", "amc or plab first", "plab vs amc difficulty", "australia vs uk for img doctors", "amc exam cost vs plab cost", "plab to amc conversion", "img pathway comparison australia uk", "which is better amc or plab", "can plab doctors work in australia", "competent authority pathway uk"]
 publishedAt: "2026-05-02"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 2786
+publishedUrl: "https://mostlymedicine.com/amc-vs-plab"
 ---
 
 # AMC vs PLAB in 2026: Which Exam Should an IMG Take First (Australia or UK)?
