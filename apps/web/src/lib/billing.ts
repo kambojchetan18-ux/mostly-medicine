@@ -12,6 +12,9 @@ function service() {
 }
 
 // Fetch the user's existing Stripe customer or create one + persist the id.
+// If the saved customer was deleted in Stripe (a real ops scenario when
+// debugging billing), retrieve() returns a 'resource_missing' error and we
+// transparently create a fresh customer + overwrite the stale id.
 export async function getOrCreateStripeCustomer(userId: string, email: string): Promise<string> {
   const sb = service();
   const { data: profile } = await sb
@@ -20,7 +23,18 @@ export async function getOrCreateStripeCustomer(userId: string, email: string): 
     .eq("id", userId)
     .single();
 
-  if (profile?.stripe_customer_id) return profile.stripe_customer_id;
+  if (profile?.stripe_customer_id) {
+    try {
+      const existing = await stripe().customers.retrieve(profile.stripe_customer_id);
+      if (existing && !("deleted" in existing && existing.deleted)) {
+        return profile.stripe_customer_id;
+      }
+    } catch (err) {
+      const code = (err as { code?: string }).code;
+      if (code !== "resource_missing") throw err;
+      // fall through to recreate
+    }
+  }
 
   const customer = await stripe().customers.create({
     email,
