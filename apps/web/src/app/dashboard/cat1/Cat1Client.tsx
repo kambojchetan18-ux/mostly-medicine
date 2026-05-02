@@ -38,15 +38,39 @@ type Mode = "menu" | "reading" | "loading" | "quiz" | "result";
 
 const READING_SECONDS = 120; // 2 minutes
 
-async function saveAttempt(questionId: string, correct: boolean, topic: string, sessionId: string | null) {
+interface SaveAttemptResult {
+  ok: boolean;
+  limitReached?: { dailyLimit: number; used: number; plan: string };
+}
+
+async function saveAttempt(
+  questionId: string,
+  correct: boolean,
+  topic: string,
+  sessionId: string | null,
+): Promise<SaveAttemptResult> {
   try {
-    await fetch("/api/cat1/attempt", {
+    const res = await fetch("/api/cat1/attempt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ questionId, correct, topic, sessionId }),
     });
+    // 429 from enforceDailyLimit — surface to UI so we can show an upgrade
+    // modal instead of silently dropping the answer.
+    if (res.status === 429) {
+      const json = await res.json().catch(() => ({}));
+      return {
+        ok: false,
+        limitReached: {
+          dailyLimit: json.dailyLimit ?? 20,
+          used: json.used ?? json.dailyLimit ?? 20,
+          plan: json.plan ?? "free",
+        },
+      };
+    }
+    return { ok: res.ok };
   } catch {
-    // silently fail — offline
+    return { ok: false };
   }
 }
 
@@ -66,6 +90,7 @@ export default function Cat1Client() {
   const [smartExplanation, setSmartExplanation] = useState<string | null>(null);
   const [smartLoading, setSmartLoading] = useState(false);
   const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
+  const [limitReached, setLimitReached] = useState<{ dailyLimit: number; used: number; plan: string } | null>(null);
 
   // Pending request that travels through reading → loading → quiz
   const [pendingTopic, setPendingTopic] = useState<string | null>(null);
@@ -153,7 +178,14 @@ export default function Cat1Client() {
     const q = questions[current];
     const correct = selected === q.correctAnswer;
 
-    saveAttempt(q.id, correct, q.topic, sessionId);
+    const result = await saveAttempt(q.id, correct, q.topic, sessionId);
+    if (result.limitReached) {
+      // Free user hit their daily quota. Show the upgrade modal — don't
+      // advance to the next question; the user is gated until tomorrow OR
+      // they upgrade to Pro.
+      setLimitReached(result.limitReached);
+      return;
+    }
 
     const newAnswers = [...answers, { id: q.id, correct, topic: q.topic }];
     setAnswers(newAnswers);
@@ -462,6 +494,46 @@ export default function Cat1Client() {
   const isCorrect = selected === q.correctAnswer;
 
   return (
+    <>
+    {limitReached && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="max-w-md w-full rounded-3xl bg-white shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-br from-brand-600 via-violet-600 to-pink-500 px-6 pt-7 pb-5 text-white">
+            <p className="text-[10px] font-bold tracking-widest uppercase opacity-80">Daily limit reached</p>
+            <h2 className="mt-1 text-2xl font-bold leading-tight">
+              You smashed your {limitReached.dailyLimit} free MCQs today 🎯
+            </h2>
+            <p className="mt-2 text-sm text-white/90 leading-relaxed">
+              That&apos;s solid focus. Keep the momentum — Pro unlocks unlimited MCQs, AI examiner explanations, and Clinical RolePlay so today&apos;s streak doesn&apos;t cool off.
+            </p>
+          </div>
+          <div className="p-6 space-y-4">
+            <div className="flex items-baseline justify-between">
+              <p className="text-sm font-semibold text-gray-800">⭐ Pro</p>
+              <p className="text-2xl font-bold text-gray-900 tabular-nums">A$19<span className="text-sm font-normal text-gray-500">/mo</span></p>
+            </div>
+            <ul className="space-y-1.5 text-sm text-gray-700">
+              <li className="flex gap-2"><span className="text-amber-500">✓</span><span>Unlimited AMC MCQs</span></li>
+              <li className="flex gap-2"><span className="text-amber-500">✓</span><span>AMC Handbook AI RolePlay</span></li>
+              <li className="flex gap-2"><span className="text-amber-500">✓</span><span>AMC Clinical AI RolePlay (voice mode)</span></li>
+              <li className="flex gap-2"><span className="text-amber-500">✓</span><span>Examiner-style feedback every session</span></li>
+            </ul>
+            <Link
+              href="/dashboard/billing"
+              className="block w-full text-center rounded-xl bg-amber-500 px-4 py-3 text-sm font-bold text-white shadow hover:bg-amber-600 transition"
+            >
+              Upgrade to Pro — keep going →
+            </Link>
+            <button
+              onClick={() => { setLimitReached(null); reset(); }}
+              className="block w-full text-center text-xs text-gray-500 hover:text-gray-700"
+            >
+              I&apos;ll come back tomorrow
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-gray-500">
