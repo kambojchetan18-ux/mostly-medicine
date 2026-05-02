@@ -77,11 +77,18 @@ export function buildPatientBrief(variant: CaseVariant): PatientBrief {
 }
 
 // Short invite-code generator — 6 chars, unambiguous (no 0/O/1/I).
+// Uses crypto.randomInt (CSPRNG) instead of Math.random so codes can't be
+// predicted by an attacker observing prior codes — prevents brute-forcing
+// into another candidate's peer roleplay session. DB has a unique index on
+// invite_code so the rare birthday collision is rejected at insert time.
 export function generateInviteCode(length = 6): string {
+  // node:crypto is available in the Next.js Node runtime where this is called.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { randomInt } = require("node:crypto") as typeof import("node:crypto");
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
   for (let i = 0; i < length; i++) {
-    out += alphabet[Math.floor(Math.random() * alphabet.length)];
+    out += alphabet[randomInt(0, alphabet.length)];
   }
   return out;
 }
