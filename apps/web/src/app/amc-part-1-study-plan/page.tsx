@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -160,7 +160,7 @@ export default function Page() {
             AMC Part 1 Study Plan: A Realistic 16-Week Schedule for Working IMGs (2026)
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">Mostly Medicine</span> · medically reviewed
           </p>
         </header>
 
@@ -169,7 +169,7 @@ export default function Page() {
         </blockquote>
 
         <p>
-          I am Chetan Kamboj, founder of <Link href="/">Mostly Medicine</Link>. My wife is Dr Amandeep Kamboj &mdash; an IMG who passed AMC Part 1 while working full clinical shifts in Gurugram. Watching her prep, then building a platform for 136 other IMGs going through the same process, has taught me more about what actually works than any textbook. This plan reflects both.
+          If you are reading this, you are probably already working &mdash; clinically, long hours, in a system that is not the one you are training to enter. Maybe you have been searching for a study plan that does not assume you have eight free hours a day and zero responsibilities. That plan exists, and this is it. What follows is built from watching 136 IMGs go through AMC Part 1 prep on Mostly Medicine, seeing what got them across the line and what burned them out or left them two marks short. It is not theoretical. It reflects what actually works when you are juggling shifts and study sessions.
         </p>
 
         <h2>Quick answer</h2>
@@ -195,26 +195,19 @@ export default function Page() {
         </CitationHook>
 
         <p>
-          Do not start the 16-week clock until these are checked off. Starting without them guarantees a mid-prep derailment.
+          Do not start the 16-week clock until these are in place. Starting without them guarantees a mid-prep derailment &mdash; and that is a waste of months you cannot get back.
         </p>
         <p>
-          <strong>English test booked (not just planned).</strong> AHPRA requires OET, IELTS Academic, PTE Academic, or TOEFL iBT at specified minimums. English test results have a two-year validity window from the date of sitting, not the date of receipt. Book your test before week 1 begins so results arrive before you submit your AMC application. If English is your strength, IELTS Academic is the fastest path; if you are a hospital-based clinician, OET&apos;s medical scenarios play to your strength. See <Link href="/ielts-vs-oet">IELTS vs OET for AHPRA</Link>.
+          Your English test needs to be booked, not just planned. AHPRA requires OET, IELTS Academic, PTE Academic, or TOEFL iBT at specified minimums. What trips people up is that results have a two-year validity window from the <em>date of sitting</em>, not the date you receive the certificate. Book before week 1 begins so the result lands before you submit your AMC application. If English is your strong suit, IELTS Academic is the fastest path; if you have been working in a hospital setting, OET&apos;s clinical scenarios play to that experience. See <Link href="/ielts-vs-oet">IELTS vs OET for AHPRA</Link>.
         </p>
         <p>
-          <strong>AMC ID active.</strong> Go to amc.org.au, create your account, and submit your primary medical qualification for primary-source verification. This process takes 8&ndash;12 weeks via ECFMG/EPIC. Many IMGs start study before their AMC ID exists; then they cannot book an exam date. The AMC ID process should be running in parallel before week 1.
+          Your AMC ID needs to be active, or at least in process. Go to amc.org.au, create your account, and submit your primary medical qualification for primary-source verification through ECFMG/EPIC. This takes 8&ndash;12 weeks &mdash; which surprises almost everyone the first time they hear it. Plenty of IMGs start studying before their AMC ID exists, then hit week 12 and cannot book an exam date. Start the AMC ID process before week 1, even if you have not decided on a sitting date yet.
         </p>
         <p>
-          <strong>Core books in hand.</strong> You need two texts:
-        </p>
-        <ul>
-          <li><em>John Murtagh&apos;s General Practice</em> (7th or 8th edition) &mdash; your clinical reference backbone.</li>
-          <li><em>AMC Handbook of MCQs</em> (latest edition) &mdash; the AMC&apos;s own questions, the closest published signal to actual exam style.</li>
-        </ul>
-        <p>
-          If budget allows a third, add Therapeutic Guidelines (eTG) online for drug-specific questions.
+          You need your two core books in hand. <em>John Murtagh&apos;s General Practice</em> (7th or 8th edition) is your clinical reference backbone &mdash; it is the book that most closely maps to how AMC examiners think about diagnosis and management. The <em>AMC Handbook of MCQs</em> (latest edition) is the official question bank; nothing else gives you as close a signal to actual exam style. If you can only have one, get Murtagh first. If budget allows a third, add Therapeutic Guidelines (eTG) online for drug-specific questions.
         </p>
         <p>
-          <strong>Exam date booked (or a target window).</strong> Pearson VUE centres globally run AMC Part 1 year-round. Having a date creates real urgency. Without it, most IMGs drift. Pick a date 17&ndash;18 weeks from now and book it before starting week 1.
+          Finally, book your exam date before you start. Pearson VUE centres run AMC Part 1 globally, year-round. Having a fixed date creates real urgency &mdash; without it, most IMGs drift, extend their &ldquo;study phase&rdquo; indefinitely, and eventually sit underprepared anyway. Pick a date 17&ndash;18 weeks from now and lock it in before week 1 begins.
         </p>
 
         <h2>The 16-week structure at a glance</h2>
@@ -311,21 +304,27 @@ export default function Page() {
 
         <h3>Anatomy of an AMC stem</h3>
         <p>
-          Every AMC MCQ contains four components: a <strong>patient vignette</strong> (age, sex, presenting complaint, duration), <strong>context cues</strong> (occupation, social history, country of origin where relevant), a <strong>key discriminating clinical detail</strong> (the abnormal finding or lab value that changes management), and a <strong>question trigger</strong> (what the exam is actually asking &mdash; diagnosis, next investigation, first-line treatment, or immediate management).
+          Every AMC MCQ is built around four components: a <strong>patient vignette</strong> (age, sex, presenting complaint, duration), <strong>context cues</strong> (occupation, social history, country of origin where relevant), a <strong>key discriminating clinical detail</strong> (the abnormal finding or lab value that changes management), and a <strong>question trigger</strong> (what the exam is actually asking &mdash; diagnosis, next investigation, first-line treatment, or immediate management).
         </p>
         <p>
-          Work through 20&ndash;30 AMC Handbook questions in week 1 and do this exercise: underline the key discriminating detail and circle the question trigger before looking at the options. If you cannot identify both within 10 seconds, slow down and re-read. Most wrong answers happen because candidates answer the question they expected, not the question that was asked.
+          Work through 20&ndash;30 AMC Handbook questions in week 1 and force yourself to do this: underline the key discriminating detail and circle the question trigger before you look at the options. If you cannot identify both within 10 seconds, slow down and re-read. Most wrong answers happen not because candidates do not know the medicine, but because they answer the question they expected rather than the question that was actually asked.
         </p>
 
         <h3>The 4 distractor patterns AMC repeats</h3>
-        <ol>
-          <li><strong>The overseas-first-line trap.</strong> A treatment that is first-line in India, the UK, or the US but not in Australia. Know the PBS-listed first-line agents for the top 20 conditions &mdash; AMC tests against the PBS, not international guidelines.</li>
-          <li><strong>The &ldquo;most appropriate next step&rdquo; vs &ldquo;definitive diagnosis&rdquo; confusion.</strong> The question trigger changes everything. &ldquo;Most appropriate next step&rdquo; almost always means a bedside or cheap test before an expensive or invasive one. &ldquo;Definitive diagnosis&rdquo; means the pathology or imaging standard.</li>
-          <li><strong>The Australian referral pathway distractor.</strong> AMC heavily tests primary-care/GP context. &ldquo;Refer to specialist&rdquo; is wrong if the GP can manage. &ldquo;Admit to hospital&rdquo; is wrong if the clinical condition is stable and community management is safe.</li>
-          <li><strong>The overfit-to-the-rare-diagnosis trap.</strong> AMC Part 1 is a general practice exam. The common answer is usually right. If you are choosing between a rare genetic condition and a common Australian primary-care diagnosis, the common one is almost always the answer unless the vignette contains a very specific rare-disease cue.</li>
-        </ol>
         <p>
-          Spend 30 minutes in week 2 categorising your wrong answers from week 1 into these four patterns. You will likely find that 60&ndash;70% of your errors fall into one or two patterns &mdash; which tells you exactly where to direct attention in later phases.
+          The first is the <strong>overseas-first-line trap</strong> &mdash; a treatment that is first-line in India, the UK, or the US but not in Australia. AMC tests against the PBS, not international guidelines. Know the PBS-listed first-line agents for the top 20 conditions, because a DPP-4 inhibitor might be a reasonable choice abroad but metformin is still first-line for T2DM in Australia.
+        </p>
+        <p>
+          The second is the <strong>&ldquo;most appropriate next step&rdquo; vs &ldquo;definitive diagnosis&rdquo; confusion</strong>. The question trigger changes everything. &ldquo;Most appropriate next step&rdquo; almost always points toward a cheap bedside test before anything expensive or invasive. &ldquo;Definitive diagnosis&rdquo; means the pathology or imaging gold standard. Read the trigger carefully &mdash; you can know the medicine perfectly and still answer the wrong question.
+        </p>
+        <p>
+          The third is the <strong>Australian referral pathway distractor</strong>. AMC heavily tests primary-care context. &ldquo;Refer to specialist&rdquo; is wrong if a GP can manage. &ldquo;Admit to hospital&rdquo; is wrong if the condition is stable and community management is safe. Know where the GP&apos;s scope ends and a specialist&apos;s begins.
+        </p>
+        <p>
+          The fourth is the <strong>overfit-to-the-rare-diagnosis trap</strong>. You are a clinical doctor &mdash; you have seen zebras. AMC Part 1 is a general practice exam. If you are choosing between a rare genetic condition and a common Australian primary-care diagnosis, the common one is almost always correct unless the vignette contains a very specific rare-disease cue.
+        </p>
+        <p>
+          Spend 30 minutes in week 2 categorising your wrong answers from week 1 into these four patterns. Most people find that 60&ndash;70% of their errors fall into one or two patterns &mdash; which tells you exactly where to direct attention in the weeks ahead.
         </p>
 
         <h2>Weeks 3&ndash;6: System-by-system pass 1 (Cardio, Resp, GIT, Renal, Endo)</h2>
@@ -335,38 +334,27 @@ export default function Page() {
         </CitationHook>
 
         <p>
-          Weeks 3&ndash;6 are your highest-volume study weeks. The goal is not to memorise every detail of each system &mdash; it is to reach a state where you can reliably answer a well-formed MCQ on any topic within the system without reconstructing first principles under time pressure.
-        </p>
-        <p><strong>Suggested allocation (4 weeks, 5 systems):</strong></p>
-        <ul>
-          <li><strong>Week 3: Cardiovascular</strong> &mdash; ACS, heart failure, arrhythmias, hypertension (PBS first lines), rheumatic heart disease (high-yield for IMGs from South Asia).</li>
-          <li><strong>Week 4: Respiratory</strong> &mdash; asthma (stepwise Australian management per GINA/NPS), COPD, community-acquired pneumonia (empiric antibiotic choices per Therapeutic Guidelines), PE, pleural effusion.</li>
-          <li><strong>Week 5: Gastrointestinal + Renal</strong> &mdash; GI bleeding, IBD, hepatitis (screening in Australian primary care), CKD staging, AKI management, renal calculi.</li>
-          <li><strong>Week 6: Endocrine</strong> &mdash; diabetes (T1, T2, gestational), thyroid (hypothyroidism, Graves&apos;), adrenal emergencies, calcium disorders.</li>
-        </ul>
-        <p>
-          <strong>How to use Murtagh effectively:</strong> Read the chapter overview, then immediately do 30&ndash;40 MCQs on that topic. Every question you get wrong, find the relevant Murtagh paragraph and annotate it. Do not make long notes from Murtagh &mdash; annotate the book itself. You are building a retrieval system, not a summary document.
+          Weeks 3&ndash;6 are your highest-volume study weeks, and the goal is deceptively simple: reach a state where you can reliably answer a well-formed MCQ on any topic within each system without needing to reconstruct first principles from scratch. You do not need to memorise every detail &mdash; you need fluency.
         </p>
         <p>
-          MCQ target for this phase: 150&ndash;200 questions per week = 750&ndash;900 by end of week 6. Accuracy on timed blocks should be 55&ndash;65% at this checkpoint.
+          The suggested split across four weeks is one system per week, with endocrine getting a full week of its own because it catches more people than expected. In week 3, work through cardiovascular &mdash; ACS, heart failure, arrhythmias, hypertension (PBS first-line agents are frequently tested), and rheumatic heart disease, which is high-yield for IMGs from South Asia. Week 4 is respiratory: asthma using the stepwise Australian management framework per GINA and NPS, COPD, community-acquired pneumonia with empiric antibiotic choices from Therapeutic Guidelines, PE, and pleural effusion. Week 5 covers gastrointestinal and renal together &mdash; GI bleeding, IBD, hepatitis screening in Australian primary care, CKD staging, AKI management, and renal calculi. Week 6 is endocrine: diabetes across all three types, thyroid disorders including Graves&apos;, adrenal emergencies, and calcium disorders.
         </p>
         <p>
-          If you want a structured question bank that mirrors AMC exam style and tracks your performance by system and difficulty, this is where <Link href="/">Mostly Medicine&apos;s MCQ bank</Link> becomes genuinely useful &mdash; 3000+ questions organised by specialty with explanations tied to Australian guidelines.
+          The right way to use Murtagh for each system is not to read entire chapters before touching questions. Read the chapter overview, then immediately do 30&ndash;40 MCQs on that topic. For every question you get wrong, go back to the relevant Murtagh paragraph and annotate it directly. Do not make long notes from Murtagh &mdash; annotate the book itself. You are building a retrieval system, not a summary document, and the difference matters on exam day.
+        </p>
+        <p>
+          Your MCQ target for this phase is 150&ndash;200 questions per week, which puts you at 750&ndash;900 by the end of week 6. Accuracy on timed blocks should be sitting at 55&ndash;65% by that checkpoint. If you want a structured question bank that mirrors AMC exam style and tracks your performance by system and difficulty, this is where <Link href="/">Mostly Medicine&apos;s MCQ bank</Link> becomes genuinely useful &mdash; 3000+ questions organised by specialty with explanations tied to Australian guidelines.
         </p>
 
         <h2>Weeks 7&ndash;10: System-by-system pass 2 (Neuro, Psych, Paeds, O&amp;G, Surgery, Emergency)</h2>
         <p>
-          Pass 2 is faster than pass 1. You already know how to read stems and you have the Murtagh workflow. The systems in this phase tend to have more discrete, rule-based content &mdash; which suits rapid MCQ-driven study.
+          Pass 2 moves faster than pass 1, and that is not just because you have fewer systems left. You already know how to read stems and you have the Murtagh workflow locked in. The systems in this phase tend toward more discrete, rule-based content &mdash; which suits rapid MCQ-driven study rather than extended reading.
         </p>
-        <p><strong>Suggested allocation (4 weeks, 6 systems):</strong></p>
-        <ul>
-          <li><strong>Week 7: Neurology</strong> &mdash; stroke (tPA criteria, time windows, NIHSS interpretation), headache red flags, epilepsy management, Parkinson&apos;s, MS.</li>
-          <li><strong>Week 8: Psychiatry + Mental health law</strong> &mdash; depression (Kessler scales, first-line antidepressants on PBS), schizophrenia, involuntary admission criteria in Australian states (Mental Health Acts &mdash; AMC tests the principle, not the specific Act), suicide risk assessment, duty to warn.</li>
-          <li><strong>Week 9: Paediatrics + O&amp;G</strong> &mdash; developmental milestones (AMC loves these), febrile convulsions, failure to thrive; antenatal care schedule in Australia, GDM screening, pre-eclampsia diagnosis, postpartum haemorrhage management.</li>
-          <li><strong>Week 10: Surgery + Emergency</strong> &mdash; surgical abdomen differentials (appendicitis vs mesenteric adenitis vs ectopic &mdash; the triage order matters), FAST exam indications, trauma primary survey, anaphylaxis (EpiPen dose, IM vs IV, when to call an ambulance in a GP setting).</li>
-        </ul>
         <p>
-          <strong>Psych is higher yield than most IMGs allocate.</strong> In our data across 136 Mostly Medicine users, psychiatry and mental health law is consistently underprepared &mdash; particularly Australian-specific content like involuntary admission criteria, child protection notification duties, and capacity assessment. Spend an extra 2&ndash;3 hours here even if it feels like non-clinical law.
+          In week 7, focus on neurology: stroke (tPA criteria, time windows, NIHSS interpretation), headache red flags, epilepsy management, Parkinson&apos;s, and MS. Week 8 is psychiatry and mental health law &mdash; depression with Kessler scales and PBS-listed first-line antidepressants, schizophrenia, involuntary admission criteria across Australian states (the specific Mental Health Acts differ by state, but AMC tests the principle, not the Act), suicide risk assessment, and duty to warn. Week 9 covers paediatrics and O&amp;G together: developmental milestones (AMC tests these more than you might expect), febrile convulsions, failure to thrive, antenatal care in Australia, GDM screening, pre-eclampsia diagnosis, and postpartum haemorrhage management. Week 10 closes out with surgery and emergency &mdash; surgical abdomen differentials where the triage order between appendicitis, mesenteric adenitis, and ectopic matters, FAST exam indications, trauma primary survey, and anaphylaxis management including EpiPen dosing and when to call an ambulance from a GP setting.
+        </p>
+        <p>
+          One word of blunt advice on psychiatry: it is higher yield than most IMGs allocate. Across 136 Mostly Medicine users, psychiatry and mental health law is consistently the most underprepared area &mdash; and the Australian-specific content like involuntary admission criteria, child protection notification duties, and capacity assessment is the specific gap. Spend an extra 2&ndash;3 hours here even when it feels like non-clinical law. AMC will test it.
         </p>
 
         <CitationHook n={3}>
@@ -374,24 +362,32 @@ export default function Page() {
         </CitationHook>
 
         <p>
-          By end of week 10 your cumulative MCQ count should be 1700&ndash;2000. Accuracy on timed blocks should be 60&ndash;68%. If you are below 58% consistently at this point, spend an additional week on your worst two systems before moving to population health.
+          By the end of week 10, your cumulative MCQ count should be between 1700 and 2000, and your accuracy on timed blocks should be sitting at 60&ndash;68%. If you are consistently below 58% at this point, do not push ahead &mdash; spend an additional week on your worst two systems before moving into population health. The mocks in weeks 13 and 14 will not save you if the system-level gaps are still there.
         </p>
 
         <h2>Weeks 11&ndash;12: Population health, ethics, and Australia-specific content</h2>
         <p>
-          This is the phase most IMGs treat as a box-tick. It is not. About 15% of your exam is here &mdash; and it is the category where overseas-trained doctors on average score lowest. Two weeks of focused effort on this content alone can shift your overall score by 3&ndash;5 percentage points.
+          Let me be direct about this section: most IMGs treat it as a box-tick and that is a mistake that costs real marks. About 15% of your exam lives here &mdash; and it is consistently the category where overseas-trained doctors score lowest. Two weeks of focused work here can shift your overall result by 3&ndash;5 percentage points.
         </p>
 
         <CitationHook n={4}>
           Population health, ethics and medico-legal questions account for around 15% of AMC Part 1 and are routinely the lowest-scoring section for overseas-trained doctors.
         </CitationHook>
 
-        <p><strong>Australian healthcare system.</strong> Know the structure of Medicare (bulk billing, gap payments, MBS items), the PBS (authority prescriptions, streamlined authority, co-payment tiers), the NDIS (eligibility criteria and the GP&apos;s role), and the notifiable disease framework (who notifies, to whom, within what timeframe).</p>
-        <p><strong>Screening programs.</strong> BreastScreen Australia (50&ndash;74, two-yearly mammogram), National Bowel Cancer Screening Program (50&ndash;74, biennial iFOBT), National Cervical Screening Program (25&ndash;74, five-yearly primary HPV test since 2017 &mdash; this replaced the Pap smear and a meaningful number of AMC questions still test whether candidates know the change). NIP (National Immunisation Program) &mdash; know the schedule by age.</p>
-        <p><strong>Medico-legal and ethics.</strong> Consent (capacity, implied consent, advance care directives), confidentiality and its limits (public safety, mandatory reporting), duty of care, the four ethical principles (autonomy, beneficence, non-maleficence, justice) applied to clinical vignettes. Know the difference between a coroner referral and a death certificate. Child protection: mandatory reporting thresholds differ by state, but the principle AMC tests is &ldquo;reasonable suspicion of harm is sufficient to report.&rdquo;</p>
-        <p><strong>Aboriginal and Torres Strait Islander health.</strong> The &ldquo;Closing the Gap&rdquo; framework; targeted health checks (MBS items 715 and 228); higher prevalence conditions (rheumatic heart disease, type 2 diabetes, chronic otitis media, renal disease); cultural safety principles. AMC questions on Indigenous health test whether you approach the clinical context with cultural safety principles, not just clinical knowledge.</p>
         <p>
-          Target: 150&ndash;200 population health and ethics MCQs in this two-week block. Use the &ldquo;Public Health &amp; Ethics&rdquo; filter in <Link href="/">Mostly Medicine</Link>.
+          Start with the Australian healthcare system. You need to understand Medicare &mdash; bulk billing, gap payments, MBS items &mdash; the PBS including authority prescriptions, streamlined authority, and co-payment tiers, the NDIS including eligibility criteria and the GP&apos;s role in a NDIS plan, and the notifiable disease framework: who notifies, to whom, and within what timeframe. If this feels abstract, it becomes very concrete when a question puts you in a GP consultation and asks what you are legally required to do next.
+        </p>
+        <p>
+          For screening programs, the ones that appear most often are BreastScreen Australia (50&ndash;74, two-yearly mammogram), the National Bowel Cancer Screening Program (50&ndash;74, biennial iFOBT), and the National Cervical Screening Program, which switched to a five-yearly primary HPV test in 2017. That last one still catches candidates who know the old Pap smear model &mdash; a meaningful number of questions test whether you know the 2017 change. Also know the NIP schedule by age; developmental vaccine questions blend paediatrics and public health in ways the exam likes.
+        </p>
+        <p>
+          For medico-legal and ethics, the territory covers consent (capacity, implied consent, advance care directives), confidentiality and its limits including public safety and mandatory reporting, duty of care, and the four ethical principles applied to clinical vignettes. Know the difference between a coroner referral and a death certificate &mdash; AMC tests this more often than most candidates expect. On child protection: mandatory reporting thresholds differ by state, but the principle AMC tests is that reasonable suspicion of harm is sufficient to report.
+        </p>
+        <p>
+          Aboriginal and Torres Strait Islander health rounds this section out. The Closing the Gap framework, targeted health checks under MBS items 715 and 228, and the higher-prevalence conditions in Indigenous communities &mdash; rheumatic heart disease, type 2 diabetes, chronic otitis media, renal disease &mdash; are all testable. The questions in this area almost always test whether you approach the clinical context with cultural safety principles, not just clinical knowledge.
+        </p>
+        <p>
+          Aim for 150&ndash;200 population health and ethics MCQs in this two-week block. Use the &ldquo;Public Health &amp; Ethics&rdquo; filter in <Link href="/">Mostly Medicine</Link> to isolate exactly this content.
         </p>
 
         <h2>Weeks 13&ndash;14: Mocks &mdash; 3 full timed simulations</h2>
@@ -401,58 +397,47 @@ export default function Page() {
         </CitationHook>
 
         <p>
-          This is where most study plans fall apart. IMGs sit &ldquo;practice tests&rdquo; in untimed, open-book conditions and call them mocks. That is not a mock. A real mock is:
+          This is where most study plans fall apart, and the reason is almost always the same: IMGs sit &ldquo;practice tests&rdquo; in untimed, open-book conditions and file them as mocks. That is not a mock. A real mock is 150 questions in 3.5 hours with no pause, no notes, no interruptions, phone face-down, and a bathroom break only if you genuinely cannot wait. It happens in a quiet room at the same time of day as your actual exam sitting, and it gets reviewed in full immediately afterwards &mdash; every wrong answer, every question you flagged as uncertain.
         </p>
-        <ul>
-          <li>150 questions, 3.5 hours, no pause, no notes, no interruptions.</li>
-          <li>Phone face-down. Bathroom break only if you genuinely cannot wait.</li>
-          <li>A quiet room at the same time of day as your actual exam sitting.</li>
-          <li>Reviewed in full immediately afterwards &mdash; every wrong answer, every unsure answer.</li>
-        </ul>
-        <p><strong>Schedule:</strong></p>
-        <ul>
-          <li><strong>Mock 1</strong> (week 13, day 1): diagnostic baseline. Score honestly. Expect 58&ndash;68% &mdash; that is normal at this stage.</li>
-          <li><strong>Review</strong> (week 13, days 2&ndash;3): 2 hours of systematic wrong-answer review.</li>
-          <li><strong>Mock 2</strong> (week 13, day 5 or week 14, day 1): improvement check.</li>
-          <li><strong>Review</strong> (week 14, days 2&ndash;3).</li>
-          <li><strong>Mock 3</strong> (week 14, day 5): final simulation. Same start time, same hydration and food routine you plan for exam day.</li>
-        </ul>
         <p>
-          A scaled score equivalent of 230&ndash;245 on a quality mock (65&ndash;70% raw correct) suggests you are on track. Below 225 (60% raw) consistently across two mocks means you need more drilling before your exam date &mdash; seriously consider whether to postpone the sitting.
+          For scheduling: Mock 1 goes on day 1 of week 13 as a diagnostic baseline. You will likely score 58&ndash;68% at this stage, and that is expected &mdash; it is not a crisis. Take two days immediately after to review your wrong-answer log systematically. Mock 2 follows on day 5 of week 13 or day 1 of week 14 as an improvement check, with another review session in the two days after. Mock 3 happens on day 5 of week 14 and should be treated as close to the real thing as you can make it &mdash; same start time, same hydration and food routine you plan to use on exam day.
+        </p>
+        <p>
+          When you score your mocks, a scaled-score equivalent of 230&ndash;245 &mdash; roughly 65&ndash;70% raw correct on a quality mock &mdash; suggests you are on track. If you are consistently below 225 (about 60% raw) across two mocks, take that seriously. Consider whether you need to postpone the sitting before you commit to the attempt.
+        </p>
+        <p>
+          If you cannot source three full-length mocks, the AMC Handbook of MCQs contains enough questions to construct two, and a quality question bank like <Link href="/">Mostly Medicine&apos;s</Link> can provide the third with performance tracking built in.
         </p>
 
         <h2>Week 15: Targeted weakness drilling</h2>
         <p>
-          By this point you have a wrong-answer log from three mocks and 10 weeks of MCQ practice. Week 15 is not general review &mdash; it is surgical drilling of your specific gaps.
+          By week 15 you have something genuinely valuable: a wrong-answer log from three mocks and ten weeks of MCQ practice. Most people try to use this week for general review. Do not. Week 15 is surgical drilling of specific gaps, not a comfort pass over things you already know.
         </p>
         <p>
-          Build your weakness list: take every question you got wrong or flagged as uncertain across your mocks. Group them by system and topic. Identify the top 3 topic areas where your error rate exceeds 40%. Those are your week 15 targets only.
+          Build your weakness list by pulling every question you got wrong or flagged as uncertain across your mocks. Group them by system and topic, then identify the top three areas where your error rate exceeds 40%. Those are the only targets for week 15.
         </p>
-        <p><strong>Typical patterns in Mostly Medicine users:</strong></p>
-        <ul>
-          <li>IMGs from South Asian training systems tend to miss PBS-specific drug choices and the Australian GP referral threshold.</li>
-          <li>IMGs with hospital-heavy backgrounds tend to miss the primary-care/GP-first pathway questions and over-investigate where watchful waiting is the answer.</li>
-          <li>IMGs from countries without universal healthcare tend to find population screening and Medicare structure questions harder.</li>
-        </ul>
         <p>
-          <strong>The wrong-answer review protocol:</strong> (1) identify which of the 4 distractor patterns the error falls into, (2) find the definitive source (Murtagh chapter, eTG entry, or RACGP guideline), (3) write one sentence explaining the rule in plain language, (4) do 5 additional MCQs on that exact topic within 24 hours. Do not spend week 15 reviewing things you already know. That is comfort, not preparation.
+          A few patterns come up repeatedly in Mostly Medicine users. IMGs from South Asian training systems tend to miss PBS-specific drug choices and the Australian GP referral threshold &mdash; not because the medicine is different, but because the Australian-specific layer is genuinely different from what they trained on. IMGs with hospital-heavy backgrounds tend to miss primary-care-first pathway questions and over-investigate where watchful waiting is the correct answer. IMGs from countries without universal healthcare tend to find population screening and Medicare structure questions harder than expected.
+        </p>
+        <p>
+          The right protocol for each wrong answer is four steps: identify which of the four distractor patterns the error falls into, find the definitive source (a Murtagh chapter, an eTG entry, or a RACGP guideline), write one sentence in plain language explaining the rule, then do five additional MCQs on that exact topic within 24 hours. That last step is the one most people skip &mdash; and it is the one that actually closes the gap.
         </p>
 
         <h2>Week 16: Taper, sleep, exam logistics</h2>
         <p>
-          Week 16 is not a study week. It is a performance week.
+          Week 16 is not a study week. It is a performance week, and the distinction matters more than most people allow.
         </p>
         <p>
-          <strong>Reduce volume, not engagement.</strong> One hour of light MCQ review per day maximum. No new topics. No full-length mocks. Maintenance only.
+          Keep volume low but stay engaged. One hour of light MCQ review per day maximum. No new topics. No full-length mocks. What you are doing is maintenance, not learning &mdash; your brain needs to consolidate, not absorb.
         </p>
         <p>
-          <strong>Sort logistics completely by day 3.</strong> Confirm your Pearson VUE test centre address, ID requirements (passport), check-in time (usually 30 minutes before exam start), and what you can bring (nothing except permitted items). If the test centre is more than 45 minutes away, consider staying nearby the night before. Amandeep stayed in a hotel 10 minutes from her Pearson VUE centre for her Part 1 sitting &mdash; it eliminated one variable on a day that already had enough moving parts.
+          Sort logistics completely by day 3 of this week. Confirm your Pearson VUE test centre address, your ID requirements (passport), check-in time &mdash; usually 30 minutes before the exam starts &mdash; and a clear understanding of what you can bring into the room, which is essentially nothing except permitted items. If the test centre is more than 45 minutes away, consider staying nearby the night before. Removing that one logistical variable &mdash; the morning commute, the traffic uncertainty &mdash; is worth more than it sounds on a day that already has enough moving parts.
         </p>
         <p>
-          <strong>Sleep.</strong> Go to bed at the same time as your exam-day plan for the entire week. Sleep debt accumulated in the 3 days before an exam is not recoverable with an extra hour the night before.
+          Sleep is not optional. Go to bed at the same time as your exam-day plan every night this week. Sleep debt accumulated in the three days before an exam is not recoverable with an extra hour the night before &mdash; the research on this is unambiguous. Treat your bedtime as part of your exam preparation.
         </p>
         <p>
-          <strong>Exam day.</strong> Eat a real meal. Arrive early. Use the tutorial time at the start of the exam to settle, not to review notes. Flag questions you are uncertain about and return to them &mdash; never spend more than 90 seconds on one stem when uncompleted questions are waiting.
+          On exam day itself: eat a real meal, arrive early, and use the tutorial time at the start of the exam to settle &mdash; not to review anything. Flag questions you are uncertain about and come back to them. Never spend more than 90 seconds on a single stem when uncompleted questions are waiting.
         </p>
 
         <h2>What &ldquo;good&rdquo; looks like: accuracy benchmarks by checkpoint</h2>
@@ -507,17 +492,25 @@ export default function Page() {
         </div>
 
         <p>
-          These benchmarks are drawn from 136 Mostly Medicine users who tracked their practice performance across the platform. The range is wide because working hours, English proficiency, and prior system exposure vary significantly. What matters most is trajectory &mdash; consistent improvement across checkpoints. Flat or declining accuracy between system pass 1 and system pass 2 is a red flag worth investigating before the mocks.
+          These benchmarks are drawn from 136 Mostly Medicine users who tracked their practice performance across the platform. The ranges are wide because working hours, English proficiency, and prior system exposure vary significantly. What matters most is trajectory &mdash; consistent improvement across checkpoints. If your accuracy is flat or declining between system pass 1 and system pass 2, that is a signal worth investigating before the mocks, not something to hope improves on its own.
         </p>
 
         <h2>The 5 most common reasons IMGs fail AMC Part 1 first attempt</h2>
-        <ol>
-          <li><strong>Starting with too few questions.</strong> The instinct is to read first, then practise. The AMC rewards applied knowledge under time pressure. IMGs who spend 8 of 16 weeks reading and only 8 weeks doing MCQs consistently underperform against those who interleave reading and MCQ practice from week 3 onwards.</li>
-          <li><strong>Ignoring Australian-specific content.</strong> If your preparation is built entirely on Harrison&apos;s, Robbins, or a non-Australian question bank, you will pass the clinical medicine but lose marks on PBS first-line drugs, the Medicare/PBS structure, and Australian screening programs. Add eTG and Murtagh early, not as a late-stage add-on.</li>
-          <li><strong>Mocking badly.</strong> An untimed, open-book &ldquo;mock&rdquo; teaches nothing about exam performance. Every mock must be 150 questions, 3.5 hours, no reference material, in silence. The exam tests decision-making under time pressure &mdash; you have to practise that condition specifically.</li>
-          <li><strong>Not running a wrong-answer log.</strong> Doing 2000 MCQs without systematic review of errors is like practising free throws without watching the shot. Every wrong answer is data. The candidates who improve most rapidly are those who build and act on a wrong-answer log from week 3 onwards.</li>
-          <li><strong>Underestimating population health and ethics.</strong> About 15% of your exam is here, almost everyone underprepares it, and it is genuinely learnable content &mdash; not complex pathophysiology, but knowing the Australian healthcare system, consent framework, and public health programs. Two focused weeks here is one of the highest-ROI investments in your prep.</li>
-        </ol>
+        <p>
+          The most common failure pattern is starting with too few questions. The natural instinct is to read first, then practise &mdash; but the AMC rewards applied knowledge under time pressure, not accumulated reading. IMGs who spend 8 of 16 weeks in books and only 8 weeks doing MCQs consistently underperform against those who interleave reading and question practice from week 3 onwards. The questions are not a test of whether you read. They are the study.
+        </p>
+        <p>
+          The second is ignoring Australian-specific content. If your preparation is built entirely on Harrison&apos;s, Robbins, or a non-Australian question bank, you will be solid on the clinical medicine but you will lose marks on PBS first-line drugs, Medicare and PBS structure, and Australian screening programs. eTG and Murtagh need to be in your toolkit from the start, not added on at week 14 when you notice the gaps.
+        </p>
+        <p>
+          The third is mocking badly. An untimed, open-book &ldquo;practice test&rdquo; tells you nothing useful about exam performance. The exam is 150 questions, 3.5 hours, in silence, with a clock running. Every mock needs to replicate those conditions exactly. You cannot practise decision-making under time pressure in conditions that remove the time pressure.
+        </p>
+        <p>
+          The fourth is not keeping a wrong-answer log. Doing 2000 MCQs without systematically reviewing errors is like practising free throws while looking away from the basket. Every wrong answer is data. The candidates who improve most rapidly across their prep are those who build a log from week 3 and actually act on it, not just collect it.
+        </p>
+        <p>
+          The fifth is underestimating population health and ethics. About 15% of your exam is here, almost everyone underprepares it, and here is the thing &mdash; it is genuinely learnable content. It is not complex pathophysiology. It is the Australian healthcare system, the consent framework, and the public health programs. Two weeks of focused attention is one of the highest-return investments you can make in this prep.
+        </p>
 
         <h2>Tools and resources</h2>
         <p><strong>Core textbooks:</strong></p>
@@ -573,8 +566,7 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 3 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 3 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC-pass IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Publisher:</strong> Mostly Medicine</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">
