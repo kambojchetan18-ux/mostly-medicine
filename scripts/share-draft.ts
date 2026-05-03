@@ -14,12 +14,36 @@
  * phone-friendly review prompt without opening a laptop.
  */
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 const ROOT = resolve(__dirname, "..");
 const DRAFTS_DIR = resolve(ROOT, "content-plan/drafts");
 const REPO = "kambojchetan18-ux/mostly-medicine";
+
+// Inline .env.local loader so this tsx script picks up RESEND_API_KEY +
+// SLACK_WEBHOOK_URL + ALERT_EMAIL even when invoked from a shell that
+// hasn't pre-loaded apps/web/.env.local — same pattern as the social and
+// carousel scripts.
+function loadDotEnv() {
+  for (const path of [
+    resolve(ROOT, "apps/web/.env.local"),
+    resolve(ROOT, ".env.local"),
+  ]) {
+    if (!existsSync(path)) continue;
+    const raw = readFileSync(path, "utf-8");
+    for (const line of raw.split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eq = trimmed.indexOf("=");
+      if (eq < 0) continue;
+      const key = trimmed.slice(0, eq).trim();
+      const value = trimmed.slice(eq + 1).trim().replace(/^["'](.*)["']$/, "$1");
+      if (process.env[key] === undefined) process.env[key] = value;
+    }
+  }
+}
+loadDotEnv();
 
 interface Frontmatter {
   title?: string;
