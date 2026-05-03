@@ -8,14 +8,30 @@ export async function POST(req: NextRequest) {
 
   try {
     const profile = await req.json();
+
+    const allowedFields = [
+      "full_name", "email", "phone", "nationality", "current_country",
+      "medical_school", "graduation_year", "primary_degree", "postgraduate_qualifications",
+      "registration_status", "ahpra_number", "amc_mcq_status", "amc_clinical_status",
+      "work_experience", "skills", "languages", "visa_status", "preferred_locations",
+      "summary", "references",
+    ];
+    const sanitized: Record<string, unknown> = {};
+    for (const key of allowedFields) {
+      if (key in profile) sanitized[key] = profile[key];
+    }
+
     const { error } = await supabase
       .from("img_profiles")
-      .upsert({ ...profile, id: user.id, updated_at: new Date().toISOString() });
+      .upsert({ ...sanitized, id: user.id, updated_at: new Date().toISOString() });
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[cv/save]", error.message);
+      return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/save]", err);
+    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
   }
 }

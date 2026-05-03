@@ -48,6 +48,12 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     return { allowed: true };
   }
 
+  if (data.count >= MAX_ATTEMPTS) {
+    const windowStart = new Date(data.first_attempt_at).getTime();
+    const retryAfterMs = Math.max(0, windowStart + WINDOW_MS - Date.now());
+    return { allowed: false, retryAfterMs };
+  }
+
   return { allowed: true };
 }
 

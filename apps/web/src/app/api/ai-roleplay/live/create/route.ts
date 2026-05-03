@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
   const { data: bps, error: bpErr } = await q;
   if (bpErr) {
     console.error("[live/create] blueprint lookup error", bpErr);
-    return NextResponse.json({ error: bpErr.message }, { status: 500 });
+    return NextResponse.json({ error: "Blueprint lookup failed" }, { status: 500 });
   }
   if (!bps?.length) return NextResponse.json({ error: "No blueprints found" }, { status: 404 });
   const picked = body.blueprintId ? bps[0] : bps[Math.floor(Math.random() * bps.length)];
@@ -145,8 +145,7 @@ export async function POST(req: NextRequest) {
       });
     } catch (err) {
       console.error("[live/create] generateCase failed", err);
-      const message = err instanceof Error ? err.message : "Case generation failed";
-      return NextResponse.json({ error: message }, { status: 500 });
+      return NextResponse.json({ error: "Case generation failed" }, { status: 500 });
     }
 
     const { data: caseRow, error: caseErr } = await service
@@ -168,7 +167,7 @@ export async function POST(req: NextRequest) {
       .single();
     if (caseErr || !caseRow) {
       console.error("[live/create] case save failed", caseErr);
-      return NextResponse.json({ error: caseErr?.message ?? "Save failed" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to save case" }, { status: 500 });
     }
     caseId = caseRow.id;
     variantForBrief = variant;
@@ -201,7 +200,7 @@ export async function POST(req: NextRequest) {
     .single();
   if (sessErr || !sess) {
     console.error("[live/create] session save failed", sessErr);
-    return NextResponse.json({ error: sessErr?.message ?? "Save failed" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
   }
 
   return NextResponse.json({ sessionId: sess.id, inviteCode: sess.invite_code, hostRole });

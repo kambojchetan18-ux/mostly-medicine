@@ -56,8 +56,8 @@ export async function POST(req: NextRequest) {
       .select("guest_user_id")
       .maybeSingle();
     if (error) {
-      console.error("[live/join] claim error", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("[live/join] claim error", error.message);
+      return NextResponse.json({ error: "Failed to join session" }, { status: 500 });
     }
     // If the .is(null) filter lost the race, .update() returns no rows. Tell
     // the client the session is full so they don't navigate into a dead end

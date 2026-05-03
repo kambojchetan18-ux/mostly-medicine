@@ -29,9 +29,8 @@ export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/webhook] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/webhook] config", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Webhook misconfigured" }, { status: 500 });
   }
   const sig = req.headers.get("stripe-signature");
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -44,8 +43,8 @@ export async function POST(req: NextRequest) {
   try {
     event = stripe().webhooks.constructEvent(raw, sig, secret);
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Bad signature";
-    return NextResponse.json({ error: msg }, { status: 400 });
+    console.error("[billing/webhook] signature verification failed", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
 
   // Idempotency — atomically claim this event id. Two concurrent webhook

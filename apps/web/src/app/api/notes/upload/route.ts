@@ -67,7 +67,11 @@ export async function POST(req: NextRequest) {
   const buffer = Buffer.from(await file.arrayBuffer());
   // Sanitize the filename so the storage key never breaks RLS path matching
   // (auth.uid() = (storage.foldername(name))[1]). Slashes/odd chars are removed.
-  const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 120);
+  const safeName = file.name
+    .replace(/[^\w\-]+/g, "_")
+    .replace(/^\.+/, "")
+    .replace(/\.+$/, "")
+    .slice(0, 120) || "upload";
   const storagePath = `${user.id}/${Date.now()}_${safeName}`;
 
   // Upload to Supabase Storage (private bucket — only the storage path is stored)
