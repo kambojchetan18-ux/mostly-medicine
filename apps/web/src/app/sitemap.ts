@@ -54,6 +54,9 @@ const entries: Entry[] = [
   { path: "/ielts-vs-oet",           changeFrequency: "yearly",  priority: 0.7  },
   { path: "/amc-eligibility-checker", changeFrequency: "yearly", priority: 0.7  },
 
+  // Tier 5 — zero-signup taste experience (top-of-funnel activation)
+  { path: "/try-amc-clinical-roleplay", changeFrequency: "monthly", priority: 0.7 },
+
   // Existing dashboard
   { path: "/dashboard/cat1",      changeFrequency: "weekly",  priority: 0.6 },
   { path: "/dashboard/cat2",      changeFrequency: "weekly",  priority: 0.6 },
