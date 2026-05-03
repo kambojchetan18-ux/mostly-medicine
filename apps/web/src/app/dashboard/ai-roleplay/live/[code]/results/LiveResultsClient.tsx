@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { SessionFeedback } from "@/lib/ai-roleplay/types";
 import FunLoading from "@/components/FunLoading";
@@ -28,10 +28,18 @@ interface Props {
 export default function LiveResultsClient({ sessionId, inviteCode, myRole, initialFeedback }: Props) {
   const [feedback, setFeedback] = useState<SessionFeedback | null>(initialFeedback);
   const [error, setError] = useState<string | null>(null);
-  const [generating, setGenerating] = useState(false);
+  // generating is for UI only, never in the effect's dep array — see below.
+  const [, setGenerating] = useState(false);
+  // Single-fire guard: prevents the fetch from running twice in dev StrictMode
+  // and across re-renders. Critical because we deliberately drop `generating`
+  // from the dep array (its inclusion was causing the cleanup of the FIRST
+  // effect run to flip `cancelled = true` immediately after `setGenerating`
+  // toggled, which silently dropped the feedback that came back).
+  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    if (feedback || generating) return;
+    if (feedback || hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
     let cancelled = false;
     setGenerating(true);
     (async () => {
@@ -41,7 +49,11 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
         if (!res.ok) throw new Error(json.error ?? "Could not generate feedback");
         if (!cancelled) setFeedback(json.feedback);
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Could not generate feedback");
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Could not generate feedback");
+          // Allow a manual retry if the user refreshes/clicks again later.
+          hasFetchedRef.current = false;
+        }
       } finally {
         if (!cancelled) setGenerating(false);
       }
@@ -49,7 +61,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
     return () => {
       cancelled = true;
     };
-  }, [sessionId, feedback, generating]);
+  }, [sessionId, feedback]);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">

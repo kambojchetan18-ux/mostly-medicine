@@ -449,12 +449,57 @@ export default function PlayClient({
               "🎤 Mic on"
             )}
           </button>
-          <div className="min-h-[1.5rem] text-center text-sm text-gray-700">
-            {micMuted && "🔇 Mic muted — unmute to speak"}
-            {!micMuted && sttState === "recording" && (displayTranscript || "🎤 Listening… speak naturally")}
-            {!micMuted && sttState === "idle" && !sending && "🎤 Listening… speak naturally"}
-            {!micMuted && sending && "Patient is responding…"}
+          <div className="min-h-[2.5rem] text-center text-sm">
+            {micMuted && (
+              <span className="text-gray-700">🔇 Mic muted — unmute to speak</span>
+            )}
+            {!micMuted && sttState === "recording" && (
+              <div className="space-y-0.5">
+                <p className="font-semibold text-rose-600">
+                  <span className="inline-block h-2 w-2 rounded-full bg-rose-500 animate-pulse mr-1.5 align-middle" />
+                  Listening… speak naturally
+                </p>
+                <p className="text-xs text-gray-500">Tap the mic again when you're done to send your turn.</p>
+                {displayTranscript && (
+                  <p className="mt-1 text-xs italic text-gray-600">"{displayTranscript}"</p>
+                )}
+              </div>
+            )}
+            {!micMuted && sttState === "idle" && !sending && (
+              <div className="space-y-0.5">
+                <p className="font-semibold text-gray-800">🎙️ Tap the mic to start speaking</p>
+                <p className="text-xs text-gray-500">When you're done, tap the mic again — your turn is sent automatically.</p>
+              </div>
+            )}
+            {!micMuted && sending && (
+              <span className="text-gray-700">Patient is responding…</span>
+            )}
           </div>
+
+          {/* Tiny help disclosure — explains the tap-mic-twice flow without
+              cluttering the main UI. Default closed; users who already get
+              it never see it expanded. */}
+          {!ended && (
+            <details className="w-full text-xs text-gray-600">
+              <summary className="cursor-pointer select-none font-medium text-fuchsia-700 hover:text-fuchsia-800">
+                How does the mic work?
+              </summary>
+              <ol className="mt-2 list-decimal space-y-1 pl-5 text-gray-700">
+                <li>
+                  <strong>Tap the mic</strong> — a red dot appears and the mic icon pulses. You're being heard.
+                </li>
+                <li>
+                  <strong>Speak naturally</strong> as if you're with the patient. Don't worry about pauses.
+                </li>
+                <li>
+                  <strong>Tap the mic again</strong> when you're finished. Your turn is transcribed and the patient replies.
+                </li>
+              </ol>
+              <p className="mt-2 text-gray-500">
+                Prefer typing? Use the toggle at the top to switch to text mode anytime.
+              </p>
+            </details>
+          )}
 
           {silentTooLong && (
             <div className="w-full rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-800 leading-relaxed">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { SessionFeedback } from "@/lib/ai-roleplay/types";
@@ -57,6 +57,7 @@ export default function ResultsClient({
   const router = useRouter();
   const [feedback, setFeedback] = useState<SessionFeedback | null>(initialFeedback);
   const [error, setError] = useState<string | null>(null);
+  const [limitInfo, setLimitInfo] = useState<{ dailyLimit: number | null; used: number } | null>(null);
   const [generating, setGenerating] = useState(false);
   const [pending, startTransition] = useTransition();
   const [showTranscript, setShowTranscript] = useState(false);
@@ -101,9 +102,15 @@ export default function ResultsClient({
     };
   }, []);
 
+  // Single-fire guard. Mirrors LiveResultsClient: keeping `generating` out of
+  // the dep array prevents setGenerating(true) from triggering its own
+  // cleanup which would cancel the in-flight feedback fetch.
+  const hasFetchedRef = useRef(false);
+
   // Auto-trigger feedback generation if not yet present.
   useEffect(() => {
-    if (feedback || generating) return;
+    if (feedback || hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
     let cancelled = false;
     setGenerating(true);
     (async () => {
@@ -113,7 +120,10 @@ export default function ResultsClient({
         if (!res.ok) throw new Error(json.error ?? "Could not generate feedback");
         if (!cancelled) setFeedback(json.feedback as SessionFeedback);
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Could not generate feedback");
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Could not generate feedback");
+          hasFetchedRef.current = false;
+        }
       } finally {
         if (!cancelled) setGenerating(false);
       }
@@ -121,10 +131,11 @@ export default function ResultsClient({
     return () => {
       cancelled = true;
     };
-  }, [sessionId, feedback, generating]);
+  }, [sessionId, feedback]);
 
   async function regenerate(payload: Record<string, unknown>) {
     setError(null);
+    setLimitInfo(null);
     try {
       const res = await fetch("/api/ai-roleplay/generate", {
         method: "POST",
@@ -132,6 +143,13 @@ export default function ResultsClient({
         body: JSON.stringify(payload),
       });
       const json = await res.json();
+      if (res.status === 429 && json?.error === "daily_limit_reached") {
+        setLimitInfo({
+          dailyLimit: json.dailyLimit ?? null,
+          used: json.used ?? 0,
+        });
+        return;
+      }
       if (!res.ok) throw new Error(json.error ?? "Could not generate case");
       startTransition(() => router.push(`/dashboard/ai-roleplay/${json.caseId}`));
     } catch (err) {
@@ -365,6 +383,46 @@ export default function ResultsClient({
               {showTranscript ? "Hide transcript" : `View transcript (${transcript.length} turns)`}
             </button>
           </div>
+
+          {/* Daily-limit upgrade banner — only shows after a 429 from
+              /api/ai-roleplay/generate (i.e. user clicked "Retry similar"
+              or "New random" but already used today's quota). Without this
+              the buttons silently fail because the existing error block
+              upstream only renders before feedback loads. */}
+          {limitInfo && (
+            <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-amber-900">
+                    You've used your free Solo RolePlay for today
+                    {limitInfo.dailyLimit != null && limitInfo.dailyLimit > 0
+                      ? ` (${limitInfo.used} / ${limitInfo.dailyLimit})`
+                      : ""}
+                    .
+                  </p>
+                  <p className="mt-1 text-xs text-amber-800">
+                    Upgrade to Pro for unlimited Solo RolePlay sessions and spaced-repetition for your weak areas.
+                  </p>
+                </div>
+                <Link
+                  href="/dashboard/billing"
+                  className="inline-flex items-center justify-center rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-700"
+                >
+                  Upgrade to Pro — A$19/mo →
+                </Link>
+              </div>
+            </section>
+          )}
+
+          {/* Generic error banner for any non-429 failure (e.g. AI service
+              down, network error). Without this any error from regenerate()
+              after feedback has loaded is invisible — the upstream loading/
+              error block only renders before feedback exists. */}
+          {error && !limitInfo && (
+            <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              ⚠️ {error}
+            </p>
+          )}
 
           {showTranscript && (
             <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
