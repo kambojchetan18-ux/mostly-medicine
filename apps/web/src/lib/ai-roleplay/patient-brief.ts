@@ -81,7 +81,7 @@ export function buildPatientBrief(variant: CaseVariant): PatientBrief {
 // predicted by an attacker observing prior codes — prevents brute-forcing
 // into another candidate's peer roleplay session. DB has a unique index on
 // invite_code so the rare birthday collision is rejected at insert time.
-export function generateInviteCode(length = 6): string {
+export function generateInviteCode(length = 8): string {
   // node:crypto is available in the Next.js Node runtime where this is called.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { randomInt } = require("node:crypto") as typeof import("node:crypto");
