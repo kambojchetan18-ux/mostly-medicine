@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function GET(req: NextRequest) {
-  const query = req.nextUrl.searchParams.get("q")?.trim();
-  if (!query || query.length < 2) {
+  const rawQuery = req.nextUrl.searchParams.get("q")?.trim();
+  if (!rawQuery || rawQuery.length < 2) {
     return NextResponse.json({ results: [] });
   }
-  // Cap query length so the RPC can't be DoSed with a 1MB string.
-  if (query.length > 200) {
+  if (rawQuery.length > 200) {
     return NextResponse.json({ error: "Query too long" }, { status: 400 });
   }
+  const query = rawQuery.replace(/[^\w\s\-'.,:;()]/g, " ").trim();
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[search]", error.message);
+    return NextResponse.json({ error: "Search failed" }, { status: 500 });
   }
 
   return NextResponse.json({ results: data ?? [] });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
 import { syncSubscriptionToProfile } from "@/lib/billing";
+import { timingSafeEqual } from "crypto";
 import type Stripe from "stripe";
 
 // Daily Stripe resync. If a webhook delivery is missed (Stripe outage,
@@ -25,9 +26,15 @@ function service() {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get("authorization");
+  const auth = req.headers.get("authorization") ?? "";
   const secret = process.env.CRON_SECRET;
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!secret) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const expected = `Bearer ${secret}`;
+  const authBuf = Buffer.from(auth);
+  const expectedBuf = Buffer.from(expected);
+  if (authBuf.length !== expectedBuf.length || !timingSafeEqual(authBuf, expectedBuf)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -38,7 +45,8 @@ export async function GET(req: NextRequest) {
     .not("stripe_customer_id", "is", null);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[cron/billing-resync]", error.message);
+    return NextResponse.json({ error: "Database query failed" }, { status: 500 });
   }
 
   const total = rows?.length ?? 0;

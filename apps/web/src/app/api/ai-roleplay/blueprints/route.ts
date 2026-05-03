@@ -23,8 +23,8 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await query;
   if (error) {
-    console.error("[blueprints API]", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[blueprints]", error.message);
+    return NextResponse.json({ error: "Failed to load blueprints" }, { status: 500 });
   }
 
   return NextResponse.json({ blueprints: data ?? [] });

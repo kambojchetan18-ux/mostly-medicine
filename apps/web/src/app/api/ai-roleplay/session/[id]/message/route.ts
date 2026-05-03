@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
 import { checkModulePermission } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 
@@ -25,6 +26,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "acrp_message", user.id), { max: 20, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return Response.json({ error: "Too many requests" }, { status: 429 });
+  }
 
   const perm = await checkModulePermission(supabase, "acrp_solo");
   if (!perm.allowed) {

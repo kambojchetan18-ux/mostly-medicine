@@ -5,6 +5,7 @@ import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
@@ -18,6 +19,11 @@ export async function POST(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "mcq_attempt", user.id), { max: 60, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
   // Free plan caps MCQ attempts per UTC day. Pro/Enterprise = unlimited.
   // checkModulePermission would already have blocked plans where mcq is

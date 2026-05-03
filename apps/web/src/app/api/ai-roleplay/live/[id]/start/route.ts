@@ -51,6 +51,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   if (target === "completed" || target === "abandoned") updates.ended_at = now;
 
   const { error } = await supabase.from("acrp_live_sessions").update(updates).eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[live/start]", error.message);
+    return NextResponse.json({ error: "Failed to start session" }, { status: 500 });
+  }
   return NextResponse.json({ status: target });
 }

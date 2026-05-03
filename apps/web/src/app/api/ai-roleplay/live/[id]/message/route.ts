@@ -43,7 +43,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   const { error } = await supabase
     .from("acrp_live_messages")
     .insert({ session_id: id, sender_role: role, sender_user_id: user.id, content });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[live/message]", error.message);
+    return NextResponse.json({ error: "Message send failed" }, { status: 500 });
+  }
 
   await bumpStreak(supabase, user.id);
 
