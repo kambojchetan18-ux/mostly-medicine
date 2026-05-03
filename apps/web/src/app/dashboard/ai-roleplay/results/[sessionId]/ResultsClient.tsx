@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { SessionFeedback } from "@/lib/ai-roleplay/types";
 import FunLoading from "@/components/FunLoading";
+import RoleplayDiagnosticRadar from "@/components/RoleplayDiagnosticRadar";
+import { createClient } from "@/lib/supabase/client";
 
 interface TranscriptItem {
   id: string;
@@ -58,6 +60,46 @@ export default function ResultsClient({
   const [generating, setGenerating] = useState(false);
   const [pending, startTransition] = useTransition();
   const [showTranscript, setShowTranscript] = useState(false);
+  // "free" by default — only show CTA after we confirm user is on free tier.
+  // Pro/Enterprise (or active Founder) hides the CTA entirely.
+  const [planTier, setPlanTier] = useState<"free" | "paid" | "loading">("loading");
+
+  // Detect subscription tier client-side. Pulls from user_profiles which the
+  // billing page also reads — same logic for "founder" promo (free user with
+  // active pro_until counts as paid).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("plan, pro_until, founder_rank")
+          .eq("id", user.id)
+          .single();
+        if (cancelled || !profile) return;
+        const founderActive =
+          profile.founder_rank != null &&
+          profile.pro_until != null &&
+          Date.parse(profile.pro_until as string) > Date.now();
+        const isPaid =
+          profile.plan === "pro" ||
+          profile.plan === "enterprise" ||
+          founderActive;
+        setPlanTier(isPaid ? "paid" : "free");
+      } catch {
+        // Fail closed → assume free so the CTA still appears (better for funnel).
+        if (!cancelled) setPlanTier("free");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Auto-trigger feedback generation if not yet present.
   useEffect(() => {
@@ -149,6 +191,69 @@ export default function ResultsClient({
 
       {feedback && (
         <>
+          {/* AI Diagnostic Report — radar visualisation + Pro CTA. This is the
+              "Aha Moment" surface: the user sees their performance shape at a
+              glance, and (if free) gets the upgrade pitch right at peak insight. */}
+          {(() => {
+            const radarScores: Record<string, number> = {
+              Communication: Math.max(0, Math.min(100, feedback.communicationScore * 10)),
+              Reasoning: Math.max(0, Math.min(100, feedback.reasoningScore * 10)),
+              Global: Math.max(0, Math.min(100, feedback.globalScore * 10)),
+            };
+            const entries = Object.entries(radarScores);
+            const lowest = entries.reduce(
+              (acc, cur) => (cur[1] < acc[1] ? cur : acc),
+              entries[0]
+            );
+            const lowestAxis = lowest[0];
+            const lowestScore = Math.round(lowest[1]);
+            return (
+              <section className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-white p-5 shadow-sm md:p-6">
+                <header className="mb-4">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand-700">
+                    AI Diagnostic Report
+                  </p>
+                  <h2 className="mt-0.5 text-lg font-semibold text-gray-900">
+                    Your performance shape
+                  </h2>
+                </header>
+                <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
+                  <div className="flex w-full justify-center md:w-auto md:flex-shrink-0">
+                    <RoleplayDiagnosticRadar scores={radarScores} />
+                  </div>
+                  <div className="w-full md:flex-1 md:pl-2">
+                    {planTier === "paid" ? (
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                        <p className="text-sm font-semibold text-emerald-900">
+                          ✓ Pro member — your weak areas are queued for practice
+                        </p>
+                        <p className="mt-1.5 text-xs text-emerald-800">
+                          Spaced-repetition cards for <strong>{lowestAxis}</strong> ({lowestScore}%) will surface in your next session.
+                        </p>
+                      </div>
+                    ) : planTier === "free" ? (
+                      <div className="rounded-xl border border-amber-200 bg-white p-4 shadow-sm">
+                        <h3 className="text-sm font-semibold text-gray-900">
+                          Unlock spaced repetition
+                        </h3>
+                        <p className="mt-1.5 text-xs text-gray-600">
+                          Your weakest axis is <strong>{lowestAxis}</strong> at {lowestScore}%.
+                          Pro members get a personalised practice queue that targets exactly this.
+                        </p>
+                        <Link
+                          href="/dashboard/billing"
+                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-3.5 py-2 text-xs font-semibold text-white shadow hover:bg-brand-700"
+                        >
+                          Upgrade to Pro — A$19/mo →
+                        </Link>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </section>
+            );
+          })()}
+
           {/* Scores */}
           <section className="grid gap-3 sm:grid-cols-3">
             <ScorePill label="Global" score={feedback.globalScore} />
