@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import HeroMiniCalc from "@/components/HeroMiniCalc";
+import TrustBadges from "@/components/TrustBadges";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -293,6 +294,8 @@ export default async function HomePage() {
                 {isLoggedIn ? "Cost calculator" : "New here? Sign up free"}
               </Link>
             </div>
+
+            <TrustBadges />
           </div>
 
           {/* Mini calculator — right column on md+, below CTAs on mobile */}
