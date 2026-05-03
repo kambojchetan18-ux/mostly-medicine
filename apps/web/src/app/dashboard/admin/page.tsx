@@ -270,14 +270,22 @@ export default function AdminPage() {
                     const limit = perm?.daily_limit ?? null;
                     const toggleKey = `${plan}-${mod}`;
                     const limitKey = `${plan}-${mod}-limit`;
+                    // Warning state: a daily limit is set but the module toggle
+                    // is off, so the limit will never apply. Highlight the row
+                    // amber so admins notice the inconsistency.
+                    const limitOrphaned = !enabled && limit != null && limit > 0;
                     return (
-                      <tr key={mod} className="hover:bg-gray-50/50 transition">
+                      <tr
+                        key={mod}
+                        className={`transition ${limitOrphaned ? "bg-amber-50/80 hover:bg-amber-50" : "hover:bg-gray-50/50"}`}
+                      >
                         <td className="px-5 py-3 font-medium text-gray-700">{MODULE_LABELS[mod]}</td>
                         <td className="px-4 py-3 text-center">
                           <button
                             onClick={() => togglePermission(plan, mod, !enabled)}
                             disabled={saving === toggleKey}
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? "bg-brand-600" : "bg-gray-300"}`}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? "bg-brand-600" : limitOrphaned ? "bg-amber-400" : "bg-gray-300"}`}
+                            title={limitOrphaned ? "Limit set but module is off — toggle on to enforce" : undefined}
                           >
                             <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${enabled ? "translate-x-4" : "translate-x-0.5"}`} />
                           </button>
@@ -297,6 +305,11 @@ export default function AdminPage() {
                               className="w-20 border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40 disabled:bg-gray-50"
                             />
                             <span className="text-xs text-gray-400">per day</span>
+                            {limitOrphaned && (
+                              <span className="text-[11px] font-medium text-amber-700 ml-1">
+                                ⚠️ Module is off — limit not enforced
+                              </span>
+                            )}
                           </div>
                         </td>
                       </tr>
