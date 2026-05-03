@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { MCQuestion } from "@mostly-medicine/content";
 import FunLoading from "@/components/FunLoading";
+import MentorMessage from "@/components/MentorMessage";
 
 // Static topic list — avoids importing the 5 MB allQuestions bundle on the client.
 // Question counts are fetched from the server API on menu load.
@@ -93,6 +94,13 @@ export default function Cat1Client() {
   const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
   const [limitReached, setLimitReached] = useState<{ dailyLimit: number; used: number; plan: string } | null>(null);
 
+  // In-flow AI mentor nudge — fires when the user gets 2 wrong in a row.
+  // We bump a key each time the trigger fires so React remounts the banner
+  // (and re-fetches a fresh message) instead of reusing a stale instance.
+  const [consecutiveWrong, setConsecutiveWrong] = useState(0);
+  const [mentorKey, setMentorKey] = useState(0);
+  const [mentorContext, setMentorContext] = useState<{ wrongCount: number; topic?: string } | null>(null);
+
   // Pending request that travels through reading → loading → quiz
   const [pendingTopic, setPendingTopic] = useState<string | null>(null);
   const [pendingCount, setPendingCount] = useState<number>(20);
@@ -147,6 +155,8 @@ export default function Cat1Client() {
       setRevealed(false);
       setAnswers([]);
       setDetailedExplanation(null);
+      setConsecutiveWrong(0);
+      setMentorContext(null);
       setMode("quiz");
     } catch {
       setMode("menu");
@@ -172,6 +182,24 @@ export default function Cat1Client() {
   function handleReveal() {
     if (!selected) return;
     setRevealed(true);
+    const q = questions[current];
+    const wasCorrect = selected === q.correctAnswer;
+    if (wasCorrect) {
+      // Reset the streak the moment they're back on track.
+      setConsecutiveWrong(0);
+    } else {
+      const next = consecutiveWrong + 1;
+      setConsecutiveWrong(next);
+      // 2-in-a-row threshold per the in-flow mentor spec. Re-fires on every
+      // additional wrong so the rate-limited API + per-mount fetch guard
+      // (in MentorMessage) shape the actual cadence — server side caps it
+      // at 1 message per 5 min per user, so the banner just won't render
+      // again until the window opens.
+      if (next >= 2) {
+        setMentorContext({ wrongCount: next, topic: q.topic });
+        setMentorKey((k) => k + 1);
+      }
+    }
   }
 
   const handleNext = useCallback(async () => {
@@ -496,6 +524,15 @@ export default function Cat1Client() {
 
   return (
     <>
+    {mentorContext && (
+      <MentorMessage
+        key={`mentor-${mentorKey}`}
+        trigger="mcq_two_wrong"
+        context={mentorContext}
+        onDismiss={() => setMentorContext(null)}
+        floating
+      />
+    )}
     {limitReached && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="max-w-md w-full rounded-3xl bg-white shadow-2xl overflow-hidden">

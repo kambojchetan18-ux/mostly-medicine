@@ -6,6 +6,7 @@ import { useVoiceRecognition as useWhisperSTT } from "@/hooks/useVoiceRecognitio
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import FunLoading from "@/components/FunLoading";
+import MentorMessage from "@/components/MentorMessage";
 import { cleanForDisplay } from "@/lib/clean-message";
 
 const ROLEPLAY_SECONDS = 8 * 60;
@@ -260,11 +261,21 @@ export default function PlayClient({
     } catch {
       // Feedback API hookup arrives in Phase 6; navigate regardless.
     }
-    router.push(`/dashboard/ai-roleplay/results/${sessionId}`);
+    // Brief pause so the in-flow mentor nudge (rendered when `ended` flips
+    // true) has a chance to land before we push to the results page.
+    setTimeout(() => {
+      router.push(`/dashboard/ai-roleplay/results/${sessionId}`);
+    }, 4500);
   }
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4">
+      {ended && (
+        <MentorMessage
+          trigger="roleplay_complete"
+          context={{ topic: candidateTask }}
+        />
+      )}
       {/* Sticky header — wraps to two rows on phones so the timer + End
           session button drop below the patient identity instead of
           overflowing the line. */}
