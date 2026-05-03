@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const { data } = await supabase.from("user_profiles").select("role").eq("id", userId).single();
@@ -36,5 +37,13 @@ export async function PATCH(req: NextRequest) {
     { onConflict: "plan,module" }
   );
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Bust any cached dashboard pages so the new permissions are visible to
+  // free/pro users on their very next request, not after the natural cache
+  // window. dashboard/layout.tsx is already force-dynamic so this is mostly
+  // belt-and-suspenders, but explicit revalidation also covers any nested
+  // page that might add its own caching later.
+  revalidatePath("/dashboard", "layout");
+
   return NextResponse.json({ success: true });
 }
