@@ -21,6 +21,7 @@ const entries: Entry[] = [
   { path: "/amc-handbook-2026",     changeFrequency: "monthly", priority: 0.85 },
   { path: "/amc-pass-rates-by-country", changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-vs-plab", changeFrequency: "monthly", priority: 0.9 },
+  { path: "/ahpra-registration-for-imgs", changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-from-india",       changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-from-pakistan",    changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-from-philippines", changeFrequency: "monthly", priority: 0.9 },
