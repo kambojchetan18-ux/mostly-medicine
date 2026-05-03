@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { enforceDailyLimit } from "@/lib/permissions";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -35,6 +36,26 @@ export async function POST(req: NextRequest) {
         .eq("id", existing.id);
     }
     return NextResponse.json({ sessionId: existing.id, resumed: true });
+  }
+
+  // About to create a new session — enforce the daily quota.
+  const limit = await enforceDailyLimit(supabase, "acrp_solo");
+  if (!limit.allowed) {
+    if (limit.dailyLimit != null && limit.used >= limit.dailyLimit) {
+      return NextResponse.json(
+        {
+          error: "daily_limit_reached",
+          plan: limit.plan,
+          dailyLimit: limit.dailyLimit,
+          used: limit.used,
+        },
+        { status: 429 }
+      );
+    }
+    return NextResponse.json(
+      { error: "Your plan does not include AMC Clinical AI RolePlay. Upgrade to continue." },
+      { status: 403 }
+    );
   }
 
   const { data: created, error } = await supabase

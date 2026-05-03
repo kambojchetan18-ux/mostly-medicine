@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { enforceDailyLimit } from "@/lib/permissions";
 import PlayClient from "./PlayClient";
 
 interface PlayPageProps {
@@ -44,6 +45,19 @@ export default async function PlayPage({ params }: PlayPageProps) {
         .eq("id", existing.id);
     }
   } else {
+    // No active session — about to create a new one, so this counts toward
+    // today's quota. Enforce here too (the /generate route already does, but
+    // a user can land on /play directly via a bookmark, replay after ending,
+    // or by skipping /generate entirely).
+    const limit = await enforceDailyLimit(supabase, "acrp_solo");
+    if (!limit.allowed) {
+      const reason =
+        limit.dailyLimit != null && limit.used >= limit.dailyLimit
+          ? "daily_limit"
+          : "plan_locked";
+      redirect(`/dashboard/ai-roleplay?gate=${reason}&module=acrp_solo`);
+    }
+
     const { data: created } = await supabase
       .from("acrp_sessions")
       .insert({

@@ -1,9 +1,15 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import FunLoading from "@/components/FunLoading";
+
+interface LimitInfo {
+  plan: "free" | "pro" | "enterprise";
+  dailyLimit: number | null;
+  used: number;
+}
 
 export interface BlueprintRow {
   id: string;
@@ -52,9 +58,22 @@ export default function LandingClient({
   isAuthenticated: boolean;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [limitInfo, setLimitInfo] = useState<LimitInfo | null>(null);
   const [diffFilter, setDiffFilter] = useState<"all" | "easy" | "medium" | "hard">("all");
+
+  // If the user was redirected here from /play with ?gate=daily_limit, surface
+  // the upgrade banner so they understand why they were sent back.
+  useEffect(() => {
+    const gate = searchParams?.get("gate");
+    if (gate === "daily_limit") {
+      setLimitInfo({ plan: "free", dailyLimit: null, used: 0 });
+    } else if (gate === "plan_locked") {
+      setError("Your plan does not include AMC Clinical AI RolePlay. Upgrade to continue.");
+    }
+  }, [searchParams]);
 
   const filteredByDifficulty = useMemo(
     () => (diffFilter === "all" ? blueprints : blueprints.filter((b) => b.difficulty === diffFilter)),
@@ -73,6 +92,7 @@ export default function LandingClient({
 
   async function generate(payload: Record<string, unknown>) {
     setError(null);
+    setLimitInfo(null);
     try {
       const res = await fetch("/api/ai-roleplay/generate", {
         method: "POST",
@@ -80,6 +100,14 @@ export default function LandingClient({
         body: JSON.stringify(payload),
       });
       const json = await res.json();
+      if (res.status === 429 && json?.error === "daily_limit_reached") {
+        setLimitInfo({
+          plan: json.plan ?? "free",
+          dailyLimit: json.dailyLimit ?? null,
+          used: json.used ?? 0,
+        });
+        return;
+      }
       if (!res.ok) throw new Error(json.error ?? "Could not generate case");
       startTransition(() => router.push(`/dashboard/ai-roleplay/${json.caseId}`));
     } catch (err) {
@@ -142,6 +170,32 @@ export default function LandingClient({
         </div>
         {error && <p className="mt-3 text-sm text-rose-100">⚠️ {error}</p>}
       </section>
+
+      {/* Daily-limit upgrade banner — shown when /generate or /play returned a 429 */}
+      {limitInfo && (
+        <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-amber-900">
+                You've used your free Solo RolePlay for today
+                {limitInfo.dailyLimit != null && limitInfo.dailyLimit > 0
+                  ? ` (${limitInfo.used} / ${limitInfo.dailyLimit})`
+                  : ""}
+                .
+              </p>
+              <p className="mt-1 text-xs text-amber-800">
+                Pro members get unlimited Solo RolePlay sessions, spaced-repetition for weak areas, and priority support.
+              </p>
+            </div>
+            <Link
+              href="/dashboard/billing"
+              className="inline-flex items-center justify-center rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-700"
+            >
+              Upgrade to Pro — A$19/mo →
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Filters */}
       <section className="flex items-center gap-2">
