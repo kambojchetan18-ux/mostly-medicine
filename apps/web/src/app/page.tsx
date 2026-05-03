@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import HeroMiniCalc from "@/components/HeroMiniCalc";
 import TrustBadges from "@/components/TrustBadges";
+import FreeAccessCard from "@/components/FreeAccessCard";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -314,6 +315,11 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Free-access teaser — sits between hero/calc and bento grid so the
+          'no credit card needed' value prop hits visitors right after the
+          fee calculator and before they read the full feature tour. */}
+      <FreeAccessCard />
 
       {/* Bento grid */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 pb-28">
