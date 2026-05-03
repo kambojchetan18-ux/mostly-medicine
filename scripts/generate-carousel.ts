@@ -261,6 +261,43 @@ function buildEmailHtml(deck: Deck, fm: Frontmatter): string {
 </body></html>`;
 }
 
+function buildSlackMessage(deck: Deck, fm: Frontmatter) {
+  const liveUrl = fm.publishedUrl ?? `https://mostlymedicine.com/${fm.slug}`;
+  const slideBlocks = deck.slides.flatMap((s) => [
+    { type: "section", text: { type: "mrkdwn", text: `*Slide ${s.n} · ${s.role}*\n*${s.headline}*\n${s.subhead}${s.source ? `\n_Source: ${s.source}_` : ""}\n🎨 ${s.visual}` } },
+  ]);
+  return {
+    text: `📊 Carousel deck — ${deck.deckTitle}`,
+    blocks: [
+      { type: "header", text: { type: "plain_text", text: `📊 ${deck.deckTitle}`, emoji: true } },
+      { type: "section", text: { type: "mrkdwn", text: `_${deck.deckSubtitle}_\n${liveUrl}` } },
+      { type: "divider" },
+      ...slideBlocks,
+      {
+        type: "context",
+        elements: [
+          { type: "mrkdwn", text: "Build each slide in Canva → post as LinkedIn or Instagram carousel → export as PDF lead-magnet" },
+        ],
+      },
+    ],
+  };
+}
+
+async function sendSlack(deck: Deck, fm: Frontmatter, url: string): Promise<void> {
+  const message = buildSlackMessage(deck, fm);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(message),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error(`✗ Slack ${res.status}: ${text}`);
+    return;
+  }
+  console.log(`✓ Posted carousel deck to Slack`);
+}
+
 async function sendEmail(deck: Deck, fm: Frontmatter): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.ALERT_EMAIL;
@@ -350,9 +387,17 @@ async function main() {
   const savedAt = saveLocally(deck, fm);
   console.log(`✓ Saved deck to ${savedAt}`);
 
+  const slackUrl = process.env.SLACK_WEBHOOK_URL;
+  let didSendAnything = false;
+  if (slackUrl) {
+    try { await sendSlack(deck, fm, slackUrl); didSendAnything = true; }
+    catch (err) { console.error("✗ Slack failed:", err instanceof Error ? err.message : String(err)); }
+  }
   if (process.env.RESEND_API_KEY && process.env.ALERT_EMAIL) {
     await sendEmail(deck, fm);
-  } else {
+    didSendAnything = true;
+  }
+  if (!didSendAnything) {
     console.log(`\n──────── ${deck.deckTitle} ────────`);
     console.log(`> ${deck.deckSubtitle}\n`);
     for (const s of deck.slides) {

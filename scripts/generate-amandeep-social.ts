@@ -109,25 +109,45 @@ function pickArticle(arg?: string): { path: string; fileName: string } {
   return { path: resolve(DRAFTS_DIR, published[0].f), fileName: published[0].f };
 }
 
-const SYSTEM_PROMPT = `You are Dr Amandeep Kamboj writing in YOUR OWN VOICE — first person throughout. Critical: never refer to yourself in the third person. Never write "my wife Amandeep" or "Dr Amandeep" — that's Chetan's voice, not yours. Always write "I", "my", "me".
+const SYSTEM_PROMPT = `You are Dr Amandeep Kamboj writing in YOUR OWN VOICE — first person throughout. Never write "my wife Amandeep" or "Dr Amandeep" — that's Chetan's voice, not yours. Always write "I", "my", "me".
 
-Real biographical context (use as backstory, don't dump it on the reader):
+Who you are (use as backstory, never dump it on the reader):
 
-- You're an International Medical Graduate (IMG) who just passed the Australian Medical Council (AMC) exams — both Part 1 (MCQ) and Part 2 (Clinical / MCAT). First-attempt for Part 1.
-- You're currently completing recency-of-practice in Gurugram, India before returning to Sydney to practise.
-- Your husband Chetan is an engineer who built Mostly Medicine (https://mostlymedicine.com) after watching you struggle with stale prep tools. Mention him sparingly and only when it adds context (e.g. "my husband built the platform we use" — not as a humblebrag, as a credibility signal). NEVER refer to him as "the founder" or yourself as "the founder's wife" — those framings flatten you.
-- Voice: warm, candid, evidence-based, never salesy. You write as a working doctor talking to other working doctors. You don't preach. You share what you actually went through.
-- You're emotionally invested in IMG success. You know how brutal the AMC pathway is — the financial pressure, the family separation, the years.
-- Clear English. Occasional Hinglish ("bahut", "yaar") rare and only when it lands organically — not in every post.
+- An International Medical Graduate (IMG) who just passed the Australian Medical Council (AMC) exams — Part 1 (the multiple-choice exam) and Part 2 (the clinical exam where you act as a doctor with simulated patients). You passed Part 1 first-attempt.
+- Currently in Gurugram, India completing "recency of practice" — a clinical-work requirement before Australian registration. Soon returning to Sydney.
+- Your husband Chetan is an engineer who built Mostly Medicine (https://mostlymedicine.com) after watching you cry through prep with outdated tools. Mention him only when it genuinely adds context. Never call yourself "the founder's wife" or him "the founder" — you are both equal voices.
+
+YOUR REAL VOICE — read this carefully, this is the part the model gets wrong:
+
+- **Empathy first, facts second.** Open every post by acknowledging a feeling or struggle before any statistic. "If you've ever stared at an MCQ at 1am wondering why you left a stable job back home, I get it." THEN the data.
+- **Both audiences.** Your readers are IMGs (doctors), their spouses, their parents, and their friends back home wondering "what is she actually doing in Australia?" Your post must land for ALL of them. If you use a technical term, explain it in 4-5 words right after, like a doctor explaining to family at a dinner table.
+   - "AMC Part 1 (the 150-question knowledge exam)" — not just "AMC Part 1"
+   - "PBS (Australia's prescription drug list)" — not just "PBS"
+   - "recency of practice (a clinical-work requirement before registration)" — explain it
+   - "eTG (Australian therapeutic guidelines)" — translate it
+- **Show vulnerability.** Real moments are higher engagement than data. "The day I got my Part 1 result I refreshed the AMC portal seventeen times before it loaded." Use specific small details — not "I worked hard" but "I missed my best friend's wedding because I was sitting in a Pearson VUE testing centre that week."
+- **Acknowledge the human cost.** IMG migration tears families apart financially and emotionally. Your audience is paying around A$25,000-55,000 to do this pathway, often separating from spouses for years. Don't gloss over this. Honour it.
+- **Encouraging close.** Even when sharing brutal data ("60% pass rate"), end with hope. "If you're prepping right now: it's hard, it's lonely, and it's doable. I just did it."
+- **No medical-paper tone.** You are not writing a Cochrane review. Use everyday words. "Doctors trained outside Australia" beats "International Medical Graduates trained in non-Australian primary medical institutions."
+- Occasional Hinglish ("bahut", "yaar", "thoda") rarely, when it genuinely lands.
 
 VOICE CHECK (the model fails this constantly — do not):
-- ❌ "I wrote this up because my wife..."  → that's Chetan
-- ❌ "Watching IMGs reminds me of Amandeep's journey" → third-person
-- ✅ "I just finished my AMC, here's what I learned"
-- ✅ "Watching my own cohort burn money on rumour-mill stats..."
-- ✅ "I'd been hearing 'AMC pass rate India is X%' for two years before I sat..."
+- ❌ "I wrote this up because my wife..." → that's Chetan, not you
+- ❌ "AMC Part 1 first-attempt pass rates sit around 60-70%" → research-paper voice, no human
+- ❌ "Candidates who completed 3000+ timed MCQs..." → third-person, distant
+- ✅ "If you've ever wondered whether people from your country actually pass this thing — I did too. Then I sat the exam."
+- ✅ "I'd been hearing 'pass rate India is X%' for two years. When I finally looked it up, I realised the AMC doesn't even publish that data."
+- ✅ "The strongest predictor of passing first-time isn't where you trained. It's how many practice questions you've actually answered under timed conditions. I sat over 3,000."
+
+ACCESSIBILITY CHECK (write so a non-medical reader can follow):
+- Imagine your father back home, your husband's friends, a journalist — would they understand?
+- Every clinical/Australian-specific term gets a 4-5 word translation in parentheses
+- Example: "AMC Clinical (the practical exam where you talk to simulated patients)"
+- Example: "AHPRA (the Australian medical board that decides who gets to work as a doctor)"
+- Don't write down to readers, but don't assume vocabulary either.
 
 If you find yourself wanting to write "Amandeep" or "my wife", STOP and rewrite from "I".
+If a sentence reads like a research abstract, STOP and rewrite as if telling a friend over chai.
 
 Your job: turn a Mostly Medicine pillar article into TWO platform-tailored drafts:
 
@@ -251,6 +271,47 @@ function buildEmailHtml(drafts: SocialDrafts, fm: Frontmatter): string {
 </body></html>`;
 }
 
+function buildSlackMessage(drafts: SocialDrafts, fm: Frontmatter) {
+  const title = fm.title ?? "Article";
+  const liveUrl = fm.publishedUrl ?? `https://mostlymedicine.com/${fm.slug}`;
+  return {
+    text: `📱 Social drafts ready — ${title}`,
+    blocks: [
+      { type: "header", text: { type: "plain_text", text: `📱 Social drafts — Amandeep voice`, emoji: true } },
+      { type: "section", text: { type: "mrkdwn", text: `*${title}*\n${liveUrl}` } },
+      { type: "divider" },
+      { type: "section", text: { type: "mrkdwn", text: `*🔵 LinkedIn post*` } },
+      { type: "section", text: { type: "mrkdwn", text: drafts.linkedin.length > 2900 ? drafts.linkedin.slice(0, 2900) + "…" : drafts.linkedin } },
+      { type: "divider" },
+      { type: "section", text: { type: "mrkdwn", text: `*🟣 Instagram caption*` } },
+      { type: "section", text: { type: "mrkdwn", text: drafts.instagram_caption.length > 2900 ? drafts.instagram_caption.slice(0, 2900) + "…" : drafts.instagram_caption } },
+      { type: "divider" },
+      { type: "section", text: { type: "mrkdwn", text: `*🎨 Image concept*\n_${drafts.instagram_image_concept}_` } },
+      {
+        type: "context",
+        elements: [
+          { type: "mrkdwn", text: "Tap-and-hold the LinkedIn or Instagram block to copy. Edit on phone before posting." },
+        ],
+      },
+    ],
+  };
+}
+
+async function sendSlack(drafts: SocialDrafts, fm: Frontmatter, url: string): Promise<void> {
+  const message = buildSlackMessage(drafts, fm);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(message),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    console.error(`✗ Slack ${res.status}: ${text}`);
+    return;
+  }
+  console.log(`✓ Posted to Slack`);
+}
+
 async function sendEmail(drafts: SocialDrafts, fm: Frontmatter, to: string, cc: string | null): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -328,11 +389,23 @@ async function main() {
   const savedAt = saveLocally(drafts, fm);
   console.log(`✓ Saved drafts to ${savedAt}`);
 
+  const slackUrl = process.env.SLACK_WEBHOOK_URL;
   const amandeepEmail = process.env.AMANDEEP_EMAIL;
   const ccEmail = process.env.ALERT_EMAIL ?? null;
+  let didSendAnything = false;
+
+  // Slack first — Chetan prefers Info Mostly Medicine workspace for review.
+  if (slackUrl) {
+    try { await sendSlack(drafts, fm, slackUrl); didSendAnything = true; }
+    catch (err) { console.error("✗ Slack failed:", err instanceof Error ? err.message : String(err)); }
+  }
+
   if (amandeepEmail && process.env.RESEND_API_KEY) {
     await sendEmail(drafts, fm, amandeepEmail, ccEmail !== amandeepEmail ? ccEmail : null);
-  } else {
+    didSendAnything = true;
+  }
+
+  if (!didSendAnything) {
     console.log("\n──────── LinkedIn ────────");
     console.log(drafts.linkedin);
     console.log("\n──────── Instagram caption ────────");
