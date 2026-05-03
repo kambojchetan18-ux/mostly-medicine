@@ -21,12 +21,19 @@ interface ModulePermission {
   daily_limit: number | null;
 }
 
-const MODULES = ["cat1", "cat2", "library", "jobs", "reference", "progress"];
+// These are the ONLY module keys the permission system actually checks
+// (see ModuleKey in @/lib/permissions). Any other key sitting in the DB
+// (cat1, cat2, library, jobs…) is vestigial and doesn't gate anything,
+// so we deliberately don't expose those toggles here — flipping them
+// would feel like it "did something" but change no real behaviour.
+const MODULES = ["mcq", "roleplay", "acrp_solo", "acrp_live"];
 const PLANS   = ["free", "pro"];
 
 const MODULE_LABELS: Record<string, string> = {
-  cat1: "AMC MCQ", cat2: "AMC Handbook AI RolePlay", library: "Library",
-  jobs: "Jobs", reference: "Reference", progress: "Progress",
+  mcq: "AMC MCQ (CAT 1)",
+  roleplay: "AMC Handbook AI RolePlay (CAT 2)",
+  acrp_solo: "AMC Clinical AI RolePlay (Solo)",
+  acrp_live: "AMC Peer RolePlay (Live)",
 };
 
 export default function AdminPage() {

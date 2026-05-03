@@ -44,11 +44,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // 2. Plan gate — STT serves Cat2 + ACRP solo + Peer Live, all of which sit
-  //    behind the `roleplay` module flag (free=disabled, pro/enterprise=ok).
-  //    Earlier we gated on `acrp_live` which 403'd Pro users on Cat2 too.
-  const perm = await checkModulePermission(supabase, "roleplay");
-  if (!perm.allowed) {
+  // 2. Plan gate — STT is the mic input for THREE roleplay surfaces:
+  //    cat2 (`roleplay`), AMC Clinical AI RolePlay (`acrp_solo`), and
+  //    Peer RolePlay (`acrp_live`). Allow voice if the user has access
+  //    to ANY of them — otherwise enabling acrp_solo for free users
+  //    would leave the mic dead because `roleplay` stays off.
+  const [permRoleplay, permSolo, permLive] = await Promise.all([
+    checkModulePermission(supabase, "roleplay"),
+    checkModulePermission(supabase, "acrp_solo"),
+    checkModulePermission(supabase, "acrp_live"),
+  ]);
+  if (!permRoleplay.allowed && !permSolo.allowed && !permLive.allowed) {
     return NextResponse.json(
       { error: "Voice transcription not available on your plan" },
       { status: 403 }
