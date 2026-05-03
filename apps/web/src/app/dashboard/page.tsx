@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import StreakHeatmap from "@/components/StreakHeatmap";
 
 const modules = [
   {
@@ -159,6 +160,11 @@ export default async function DashboardHome() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Streak heatmap — daily MCQ activity, dopamine-loop retention */}
+      <div className="mb-8">
+        <StreakHeatmap />
       </div>
 
       {/* Module bento grid */}
