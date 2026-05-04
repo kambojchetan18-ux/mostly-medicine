@@ -35,30 +35,56 @@ function saveSettings(s: TtsSettings) {
   }
 }
 
-function scoreVoice(v: SpeechSynthesisVoice, gender: Gender): number {
-  let score = 0;
-  if (/^en[-_]AU$/i.test(v.lang)) score += 100;
-  else if (/^en[-_]GB$/i.test(v.lang)) score += 70;
-  else if (/^en[-_]US$/i.test(v.lang)) score += 50;
-  else if (/^en/i.test(v.lang)) score += 30;
-  const n = v.name.toLowerCase();
-  if (/(neural|premium|enhanced|natural|wavenet|studio)/.test(n)) score += 40;
-  if (/(karen|lee|nicky|aaron|isha|samantha|daniel|moira|tessa|veena|matilda|catherine)/.test(n)) score += 25;
-  if (n.includes("google")) score += 20;
-  if (n.includes("microsoft")) score += 15;
-  const isFemaleByName =
-    /(karen|samantha|nicky|moira|tessa|veena|catherine|isha|matilda|fiona|female|woman|kate|julia|allison|ava|emily|emma|olivia|sophie|amy)/i.test(
-      v.name
-    );
-  const isMaleByName =
-    /(lee|aaron|daniel|alex|tom|james|jack|fred|oliver|bruce|gordon|male|man|ralph|david|mark)/i.test(
-      v.name
-    );
-  if (gender === "female" && isFemaleByName) score += 50;
-  else if (gender === "male" && isMaleByName) score += 50;
-  if (/(zarvox|albert|bahh|bells|bubbles|cellos|deranged|trinoids|whisper)/i.test(v.name)) score -= 50;
-  if (v.default) score += 5;
-  return score;
+// Hardcoded en-AU voice name → gender lookup. Names below are the literal
+// strings that macOS / iOS / Android Chrome expose for Australian voices.
+const FEMALE_AU_NAMES = [
+  "Karen",
+  "Catherine",
+  "Olivia",
+  "Samantha (en-AU)",
+  "Google Australian English Female",
+];
+const MALE_AU_NAMES = [
+  "Lee",
+  "Gordon",
+  "Daniel (en-AU)",
+  "Google Australian English Male",
+];
+
+function voiceMatchesGender(v: SpeechSynthesisVoice, gender: Gender): boolean {
+  if (gender === "unknown") return false;
+  const list = gender === "female" ? FEMALE_AU_NAMES : MALE_AU_NAMES;
+  if (list.includes(v.name)) return true;
+  // Fall back to a "Female"/"Male" substring hint in the voice name.
+  const needle = gender === "female" ? "female" : "male";
+  return new RegExp(`\\b${needle}\\b`, "i").test(v.name);
+}
+
+function isLangAU(v: SpeechSynthesisVoice): boolean {
+  return /^en[-_]AU$/i.test(v.lang);
+}
+
+function isLangGB(v: SpeechSynthesisVoice): boolean {
+  return /^en[-_]GB$/i.test(v.lang);
+}
+
+// Tiered preference (strictly in this order):
+//   1) en-AU voice matching the requested gender
+//   2) any en-AU voice
+//   3) en-GB voice matching the requested gender
+//   4) first available voice (whatever the engine hands back)
+function selectVoice(
+  voices: readonly SpeechSynthesisVoice[],
+  gender: Gender,
+): SpeechSynthesisVoice | null {
+  if (voices.length === 0) return null;
+  const tier1 = voices.find((v) => isLangAU(v) && voiceMatchesGender(v, gender));
+  if (tier1) return tier1;
+  const tier2 = voices.find(isLangAU);
+  if (tier2) return tier2;
+  const tier3 = voices.find((v) => isLangGB(v) && voiceMatchesGender(v, gender));
+  if (tier3) return tier3;
+  return voices[0] ?? null;
 }
 
 export function useSpeechSynthesis() {
@@ -74,6 +100,11 @@ export function useSpeechSynthesis() {
   // swap between turns. Voices reload async in some browsers and sort
   // ordering can shift, which is what was causing voice drift.
   const lockedVoiceRef = useRef<Partial<Record<Gender, SpeechSynthesisVoice>>>({});
+
+  // Cache the voices list. speechSynthesis.getVoices() is async on Chrome —
+  // first call may return []. We refresh this ref whenever `voiceschanged`
+  // fires so pickVoice() always sees the freshest list synchronously.
+  const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
 
   // Track currently speaking utterance so mute can pause + unmute can resume
   // INSTEAD of cancelling — this lets the user hear the rest of an in-flight
@@ -91,8 +122,11 @@ export function useSpeechSynthesis() {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     setSupported(true);
     setSettings(loadSettings());
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    // Seed the cached voices synchronously, then refresh on `voiceschanged`.
+    voicesRef.current = window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => {
+      voicesRef.current = window.speechSynthesis.getVoices();
+    };
     return () => {
       window.speechSynthesis.onvoiceschanged = null;
       // Hard-stop any in-flight speech on unmount — without this, navigating
@@ -145,18 +179,21 @@ export function useSpeechSynthesis() {
     // Reuse the locked voice if we already chose one for this gender.
     const existing = lockedVoiceRef.current[gender];
     if (existing) return existing;
-    const voices = window.speechSynthesis.getVoices();
+    // Prefer the cached list, but fall back to a fresh getVoices() call in
+    // case the hook ran before `voiceschanged` had a chance to fire.
+    const voices =
+      voicesRef.current.length > 0
+        ? voicesRef.current
+        : window.speechSynthesis.getVoices();
     if (voices.length === 0) return null;
-    const best = voices
-      .map((v) => ({ v, score: scoreVoice(v, gender) }))
-      .sort((a, b) => b.score - a.score)[0]?.v;
-    if (best) {
-      lockedVoiceRef.current[gender] = best;
-      console.info("[tts] picked voice", { name: best.name, lang: best.lang, default: best.default, localService: best.localService });
-    } else {
-      console.warn("[tts] no voice available", { totalVoices: voices.length });
+    const chosen = selectVoice(voices, gender);
+    if (chosen) {
+      lockedVoiceRef.current[gender] = chosen;
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[tts] picked voice:", chosen.name, chosen.lang);
+      }
     }
-    return best ?? null;
+    return chosen;
   }
 
   // Mobile Chrome / iOS Safari require speechSynthesis.speak() to be called
