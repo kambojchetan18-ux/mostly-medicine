@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const token = newUnsubToken();
+  // Optional ?from= override so we can quickly test domain verification
+  // status without redeploying. Format: "Display Name <local@domain>".
+  const fromOverride = url.searchParams.get("from");
   // For a one-off test we don't bother persisting the unsub token — the
   // unsubscribe route just renders an "expired link" page if clicked, which
   // is fine for the test recipient.
@@ -91,6 +94,7 @@ export async function GET(req: NextRequest) {
     bodyHtml,
     unsubscribeUrl,
     preheader: "STEMI vs NSTEMI — posterior MI catch.",
+    from: fromOverride ?? undefined,
   });
 
   return NextResponse.json({

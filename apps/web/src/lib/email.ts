@@ -38,6 +38,8 @@ export interface SendBrandedArgs {
   preheader?: string;
   /** Reply-To override (defaults to the From address). */
   replyTo?: string;
+  /** Override the From address (defaults to RESEND_FROM_BRANDED env or onboarding@resend.dev). */
+  from?: string;
 }
 
 export interface SendBrandedResult {
@@ -106,7 +108,7 @@ export async function sendBranded(args: SendBrandedArgs): Promise<SendBrandedRes
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return { ok: false, skipped: "no_api_key" };
 
-  const from = process.env.RESEND_FROM_BRANDED ?? FROM_DEFAULT;
+  const from = args.from ?? process.env.RESEND_FROM_BRANDED ?? FROM_DEFAULT;
   const html = brandedShell({
     bodyHtml: args.bodyHtml,
     preheader: args.preheader,
