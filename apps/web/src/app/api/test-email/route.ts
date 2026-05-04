@@ -16,10 +16,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const to = process.env.ALERT_EMAIL;
-  if (!to) {
-    return NextResponse.json({ error: "ALERT_EMAIL not set in env" }, { status: 500 });
-  }
+  // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
+  const url = new URL(req.url);
+  const to =
+    url.searchParams.get("to") ??
+    process.env.ALERT_EMAIL ??
+    "kamboj.chetan18@gmail.com";
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const token = newUnsubToken();
