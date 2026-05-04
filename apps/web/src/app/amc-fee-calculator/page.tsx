@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Calculator from "./Calculator";
+import PillarPageNav from "@/components/PillarPageNav";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-fee-calculator`;
@@ -77,26 +78,7 @@ export default function AmcFeeCalculatorPage() {
       </div>
 
       {/* Nav */}
-      <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-7xl mx-auto">
-        <Link href="/" className="font-display font-bold text-[1.15rem] tracking-tight">
-          <span className="gradient-text">Mostly</span>
-          <span className="text-white"> Medicine</span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/auth/login"
-            className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
-          >
-            Get started →
-          </Link>
-        </div>
-      </nav>
+      <PillarPageNav />
 
       {/* Hero */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-12 pb-10 text-center">
