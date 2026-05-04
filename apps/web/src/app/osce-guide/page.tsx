@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CalculatorTeaser from "@/components/CalculatorTeaser";
+import { createClient } from "@/lib/supabase/server";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/osce-guide`;
@@ -160,7 +161,20 @@ const learningPath = [
   },
 ];
 
-export default function OsceGuidePage() {
+export default async function OsceGuidePage() {
+  // Auth-aware nav: logged-in users see "Back to dashboard" instead of
+  // login/signup CTAs, since they don't need them and the page is also
+  // surfaced from the dashboard sidebar.
+  let isLoggedIn = false;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    isLoggedIn = !!user;
+  } catch {
+    // Auth-check failure (env missing in preview build, RLS hiccup, etc.)
+    // should not break the public marketing page — fall back to logged-out.
+  }
+
   return (
     <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
@@ -179,15 +193,26 @@ export default function OsceGuidePage() {
           <span className="text-white"> Medicine</span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/auth/login" className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium">
-            Log in
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
-          >
-            Get started →
-          </Link>
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            >
+              ← Back to dashboard
+            </Link>
+          ) : (
+            <>
+              <Link href="/auth/login" className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium">
+                Log in
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+              >
+                Get started →
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
