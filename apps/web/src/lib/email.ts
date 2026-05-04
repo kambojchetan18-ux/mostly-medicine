@@ -6,9 +6,13 @@
 //
 // Required env:
 //   RESEND_API_KEY        — Resend API key
-//   RESEND_FROM_BRANDED   — optional, defaults to "Mostly Medicine <info@mostlymedicine.com>"
-//                           (mostlymedicine.com must already be verified in Resend, which it is —
-//                           notify.ts has been sending from alerts@mostlymedicine.com).
+//   RESEND_FROM_BRANDED   — optional, defaults to Resend's shared "onboarding@resend.dev"
+//                           sender so emails work BEFORE mostlymedicine.com is verified
+//                           in Resend. Once the domain is verified, set this to
+//                           "Mostly Medicine <info@mostlymedicine.com>" in Vercel env
+//                           and redeploy.
+//   RESEND_REPLY_TO       — optional, defaults to info@mostlymedicine.com so replies
+//                           land in your inbox even when sending from onboarding@resend.dev.
 //
 // During dev / pre-verification you can set RESEND_DRY_RUN=1 to log email
 // payloads to the console instead of hitting Resend.
@@ -16,7 +20,10 @@
 import crypto from "node:crypto";
 
 const RESEND_URL = "https://api.resend.com/emails";
-const FROM_DEFAULT = "Mostly Medicine <info@mostlymedicine.com>";
+// Default to Resend's shared verified sender. Switch to a custom domain
+// (info@mostlymedicine.com) once mostlymedicine.com is verified in Resend.
+const FROM_DEFAULT = "Mostly Medicine <onboarding@resend.dev>";
+const REPLY_TO_DEFAULT = "info@mostlymedicine.com";
 
 export interface SendBrandedArgs {
   to: string | string[];
@@ -124,7 +131,7 @@ export async function sendBranded(args: SendBrandedArgs): Promise<SendBrandedRes
         subject: args.subject,
         html,
         text: args.bodyText,
-        reply_to: args.replyTo ?? from,
+        reply_to: args.replyTo ?? process.env.RESEND_REPLY_TO ?? REPLY_TO_DEFAULT,
       }),
     });
     if (!res.ok) {
