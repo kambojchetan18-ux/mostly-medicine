@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 import TasteClient from "./TasteClient";
 
 const SITE_URL = "https://mostlymedicine.com";
@@ -138,6 +139,7 @@ export default function Page() {
           </div>
         </div>
       </section>
+    <SiteFooter />
     </main>
   );
 }

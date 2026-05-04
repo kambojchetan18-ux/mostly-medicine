@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 import Planner from "./Planner";
 
 const SITE_URL = "https://mostlymedicine.com";
@@ -131,6 +132,7 @@ export default function AmcTimelinePlannerPage() {
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>
+    <SiteFooter />
     </main>
   );
 }

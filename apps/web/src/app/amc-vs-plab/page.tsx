@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 import CalculatorTeaser from "@/components/CalculatorTeaser";
 import PillarPageNav from "@/components/PillarPageNav";
 
@@ -436,6 +437,7 @@ export default function Page() {
           </ul>
         </div>
       </article>
+    <SiteFooter />
     </main>
   );
 }

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import HeroMiniCalc from "@/components/HeroMiniCalc";
 import TrustBadges from "@/components/TrustBadges";
 import FreeAccessCard from "@/components/FreeAccessCard";
+import SiteFooter from "@/components/SiteFooter";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -434,16 +435,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-900/80 py-8 text-center">
-        <p className="font-display font-bold text-sm mb-1">
-          <span className="gradient-text">Mostly Medicine</span>
-          <span className="text-slate-700"> · AMC Exam Preparation</span>
-        </p>
-        <p className="text-xs text-slate-700 mt-1">
-          Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
-        </p>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

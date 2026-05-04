@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 import { useState } from "react";
 
 type CheckItem = { id: string; text: string; note?: string };
@@ -349,6 +350,7 @@ export default function AMCChecklistPage() {
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>
+    <SiteFooter />
     </main>
   );
 }

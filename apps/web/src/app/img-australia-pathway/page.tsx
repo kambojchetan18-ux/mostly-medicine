@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/img-australia-pathway`;
@@ -528,6 +529,7 @@ export default function ImgAustraliaPathwayPage() {
           </p>
         </footer>
       </article>
+    <SiteFooter />
     </main>
   );
 }

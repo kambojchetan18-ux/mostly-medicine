@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 import AskAiTaste from "./AskAiTaste";
 
 const SITE_URL = "https://mostlymedicine.com";
@@ -188,6 +189,7 @@ export default function AskAiPage() {
           </div>
         </div>
       </section>
+    <SiteFooter />
     </main>
   );
 }

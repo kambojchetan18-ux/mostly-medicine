@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-handbook-2026`;
@@ -440,6 +441,7 @@ export default function AmcHandbook2026Page() {
           </p>
         </footer>
       </article>
+    <SiteFooter />
     </main>
   );
 }

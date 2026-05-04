@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/ielts-vs-oet`;
@@ -334,6 +335,7 @@ export default function IeltsVsOetPage() {
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>
+    <SiteFooter />
     </main>
   );
 }

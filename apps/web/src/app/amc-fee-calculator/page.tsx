@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SiteFooter from "@/components/SiteFooter";
 import Calculator from "./Calculator";
 import PillarPageNav from "@/components/PillarPageNav";
 
@@ -167,6 +168,7 @@ export default function AmcFeeCalculatorPage() {
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>
+    <SiteFooter />
     </main>
   );
 }
