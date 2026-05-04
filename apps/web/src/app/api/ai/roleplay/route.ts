@@ -60,12 +60,14 @@ export async function POST(req: NextRequest) {
 
     // Plan + daily-limit enforcement. The cat2 conversation is stateless
     // turn-by-turn, so we treat the user's FIRST user-turn for a scenario
-    // as the session-start event: messages.length === 1 with role 'user'.
-    // Subsequent turns aren't gated — once a session is started, the user
-    // can finish it without re-checking. Same-day quota covers them on the
-    // next scenario.
+    // as the session-start event. Cat2Client pre-seeds the messages array
+    // with an `assistant`-role opening line BEFORE the user types, so the
+    // first user turn lives at index 1 (length 2), not index 0 (length 1).
+    // Counting role==='user' messages avoids that off-by-one and also
+    // works if a future client variant skips the opener.
     const msgs = (messages ?? []) as RoleplayMessage[];
-    const isFirstTurn = msgs.length === 1 && msgs[0]?.role === "user";
+    const userTurnCount = msgs.filter((m) => m?.role === "user").length;
+    const isFirstTurn = userTurnCount === 1;
 
     if (isFirstTurn && !requestFeedback) {
       const limit = await enforceDailyLimit(supabase, "roleplay");
