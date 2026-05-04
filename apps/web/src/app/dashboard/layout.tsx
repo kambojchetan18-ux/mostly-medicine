@@ -21,6 +21,7 @@ const navItems = [
   { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆", hover: "hover:text-amber-300" },
   { href: "/dashboard/cat2",      label: "AMC Handbook AI RolePlay", icon: "🩺", hover: "hover:text-pink-300"   },
   { href: "/dashboard/ai-roleplay", label: "AMC Clinical AI RolePlay", icon: "🎙️", hover: "hover:text-fuchsia-300" },
+  { href: "/osce-guide",          label: "OSCE Prep Guide", icon: "📋", hover: "hover:text-violet-300" },
   { href: "/dashboard/ai-roleplay/live", label: "AMC Peer RolePlay", icon: "🎥", hover: "hover:text-pink-300" },
   { href: "/dashboard/library",   label: "Library",   icon: "📚", hover: "hover:text-amber-300"  },
   { href: "/dashboard/reference", label: "Reference", icon: "📖", hover: "hover:text-emerald-300"},
