@@ -5,8 +5,9 @@ description: "AMC Part 1 first, then English, AMC Part 2, AHPRA, and finally rec
 keywords: ["ahpra recency of practice", "recency of practice img", "ahpra recency requirements", "recency before or after amc", "mba recency standard", "recency of practice 2 years", "supervised practice australia img", "return to practice img", "img gap years australia", "mba recency standard 2026"]
 publishedAt: "2026-05-04"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 3450
+publishedUrl: "https://mostlymedicine.com/ahpra-recency-of-practice"
 ---
 
 # Recency of Practice and AMC: What Order Should an IMG Do Things In?
