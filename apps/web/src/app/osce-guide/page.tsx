@@ -362,7 +362,7 @@ export default function OsceGuidePage() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-pink-300 mb-2">Step 1 · Handbook scenarios</p>
             <h3 className="text-base font-semibold text-white mb-1">AMC Handbook AI RolePlay</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Official MCAT scenarios with AI patients. Voice mode, examiner-grade feedback. Free plan: 2/day.
+              Official MCAT scenarios with AI patients. Voice mode, examiner-grade feedback. Free plan: 1/day.
             </p>
             <p className="mt-3 text-xs font-semibold text-pink-300 group-hover:text-pink-200">Open module →</p>
           </Link>

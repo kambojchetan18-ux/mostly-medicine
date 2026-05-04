@@ -49,7 +49,7 @@ const faqSchema = {
       name: "Do I need to sign up to use Ask AI?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "No. The first three questions are free without signup. After that, sign up free (no credit card needed) to keep asking and unlock 20 MCQs/day, 1 Solo Clinical RolePlay/day, and 2 AMC Handbook RolePlays/day.",
+        text: "No. The first three questions are free without signup. After that, sign up free (no credit card needed) to keep asking and unlock 20 MCQs/day, 1 Solo Clinical RolePlay/day, and 1 AMC Handbook RolePlay/day.",
       },
     },
     {
@@ -170,7 +170,7 @@ export default function AskAiPage() {
             Sign up to keep asking — and unlock the rest
           </h2>
           <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-xl mx-auto">
-            Free plan: unlimited Ask AI inside the library, 20 MCQs/day, 1 Solo Clinical AI RolePlay/day, 2 AMC Handbook AI RolePlays/day. No credit card. Pro is A$19/mo only when you want unlimited.
+            Free plan: unlimited Ask AI inside the library, 20 MCQs/day, 1 Solo Clinical AI RolePlay/day, 1 AMC Handbook AI RolePlay/day. No credit card. Pro is A$19/mo only when you want unlimited.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
