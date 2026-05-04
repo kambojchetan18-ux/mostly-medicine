@@ -171,7 +171,7 @@ function renderBody(args: { teaser: Teaser; specialty: Specialty; firstName: str
   return `
     <div style="text-align:center;margin:0 0 6px;">
       <h1 style="margin:0;font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.01em;">
-        🧠 Brain Teaser Challenge
+        🩺 Mostly Daily
       </h1>
       <p style="margin:6px 0 0;font-size:13px;font-weight:600;color:#7c3aed;text-transform:uppercase;letter-spacing:0.06em;">
         ${specialty}
@@ -329,7 +329,7 @@ export async function GET(
     }
 
     const origin = req.headers.get("origin") ?? new URL(req.url).origin;
-    const subject = `🧠 Brain Teaser Challenge — ${specialty}`;
+    const subject = `🩺 Mostly Daily — ${specialty}`;
 
     let sent = 0;
     let failed = 0;

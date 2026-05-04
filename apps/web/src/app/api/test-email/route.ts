@@ -35,8 +35,8 @@ export async function GET(req: NextRequest) {
   const unsubscribeUrl = `${origin}/api/email/unsubscribe?token=${token}`;
 
   const bodyHtml = `
-    <h2 style="margin:0 0 12px;font-size:24px;color:#0f172a;">🧠 Brain Teaser Challenge</h2>
-    <p style="margin:0 0 18px;font-size:14px;color:#64748b;">Cardiology · Test send</p>
+    <h2 style="margin:0 0 12px;font-size:24px;color:#0f172a;">🩺 Mostly Daily</h2>
+    <p style="margin:0 0 18px;font-size:14px;color:#64748b;">Cardiology</p>
 
     <p style="margin:0 0 16px;font-size:15px;color:#0f172a;">G'day Chetan,</p>
     <p style="margin:0 0 18px;font-size:14px;color:#334155;line-height:1.6;">
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
       };
     }
     return {
-      subject: "🧠 Brain Teaser Challenge — Cardiology",
+      subject: "🩺 Mostly Daily — Cardiology",
       bodyHtml,
       preheader: "STEMI vs NSTEMI — posterior MI catch.",
     };
