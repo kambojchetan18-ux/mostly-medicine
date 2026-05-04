@@ -1,14 +1,13 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { runChat } from "@mostly-medicine/ai";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Public, no-signup taste of Ask AI. Mirrors the system prompt of the
 // authed /api/library-chat route but is auth-bypassed and IP-rate-limited
 // so curious visitors can ask 3 questions before hitting the signup wall.
-// Once signed up they get the full streaming chat at /dashboard/ask-ai
-// with library context injection.
+// Once signed up they get the full chat at /dashboard/ask-ai with library
+// context injection.
 export const maxDuration = 30;
-const MODEL = "claude-haiku-4-5-20251001";
 
 const SYSTEM_PROMPT = `You are an AI assistant for Mostly Medicine, helping International Medical Graduates prepare for the AMC exams in Australia.
 
@@ -64,30 +63,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
   try {
-    const reply = await client.messages.create({
-      model: MODEL,
-      max_tokens: 350,
-      system: [
-        {
-          type: "text",
-          text: SYSTEM_PROMPT,
-          // cache_control is supported at runtime in @anthropic-ai/sdk@0.32.x
-          // but missing from the published types — cast workaround.
-          cache_control: { type: "ephemeral" },
-        },
-      ] as unknown as Anthropic.TextBlockParam[],
+    const result = await runChat({
+      useCase: "taste_chat",
+      system: SYSTEM_PROMPT,
       messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      maxTokens: 350,
+      cacheSystem: true,
     });
 
-    const text = reply.content
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("")
-      .trim();
-
-    return NextResponse.json({ reply: text, remaining: Math.max(0, 3 - userTurns) });
+    return NextResponse.json({ reply: result.text.trim(), remaining: Math.max(0, 3 - userTurns) });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[ask-ai-taste]", message);

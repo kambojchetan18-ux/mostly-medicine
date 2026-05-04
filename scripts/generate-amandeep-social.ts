@@ -25,7 +25,7 @@
 
 import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-import Anthropic from "@anthropic-ai/sdk";
+import { runChat } from "@mostly-medicine/ai";
 
 const ROOT = resolve(__dirname, "..");
 const DRAFTS_DIR = resolve(ROOT, "content-plan/drafts");
@@ -53,7 +53,6 @@ function loadDotEnv() {
 }
 loadDotEnv();
 const REPO = "kambojchetan18-ux/mostly-medicine";
-const MODEL = "claude-haiku-4-5-20251001";
 
 interface Frontmatter {
   title?: string;
@@ -175,12 +174,6 @@ Output STRICT JSON only — no prose around it:
   "instagram_image_concept": "<one-sentence visual brief>"
 }`;
 
-let _anth: Anthropic | null = null;
-function client() {
-  if (!_anth) _anth = new Anthropic();
-  return _anth;
-}
-
 interface SocialDrafts {
   linkedin: string;
   instagram_caption: string;
@@ -202,20 +195,17 @@ ${trimmed}
 ---
 
 Generate the LinkedIn + Instagram drafts now. Strict JSON only.`;
-  const response = await client().messages.create({
-    model: MODEL,
-    max_tokens: 1500,
-    temperature: 0.4,
-    system: [
-      { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
-    ] as unknown as Anthropic.TextBlockParam[],
+  // Routed via packages/ai/router → DeepSeek for content drafts, Anthropic
+  // fallback if DEEPSEEK_API_KEY missing or DeepSeek errors.
+  const result = await runChat({
+    useCase: "content_draft",
+    system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userMessage }],
+    maxTokens: 1500,
+    temperature: 0.4,
+    cacheSystem: true,
   });
-  const text = response.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b as Anthropic.TextBlock).text)
-    .join("");
-  const trimmedRes = text.trim().replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
+  const trimmedRes = result.text.trim().replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
   let parsed: Record<string, unknown>;
   try {
     parsed = JSON.parse(trimmedRes);

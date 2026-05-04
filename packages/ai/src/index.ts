@@ -6,3 +6,15 @@ export type { Scenario } from "./scenarios";
 // drops the heavy fields (history, exam findings, performance guidelines).
 export { scenariosMeta } from "./scenarios-meta";
 export type { ScenarioMeta } from "./scenarios-meta";
+// LLM router — dispatches low-stakes calls to cheaper OpenAI-compatible
+// providers (Groq + DeepSeek), falls back to Anthropic on missing key /
+// API error. Server-only — uses Node fetch + Anthropic SDK.
+export { runChat, pickModel } from "./router";
+export type {
+  LlmUseCase,
+  Provider,
+  ModelChoice,
+  ChatMessage,
+  RunChatInput,
+  RunChatResult,
+} from "./router";

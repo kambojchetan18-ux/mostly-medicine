@@ -1,19 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { runChat } from "@mostly-medicine/ai";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Public, auth-bypassed taste route. Hard-capped to a few short turns per
 // IP so a curious visitor can experience the AMC Clinical Roleplay product
 // in under 5 minutes without signing up. NOT linked from /dashboard, NOT
 // part of the authed roleplay flow — this is a top-of-funnel taster only.
-
-const MODEL = "claude-haiku-4-5-20251001";
-
-let _client: Anthropic | null = null;
-function client(): Anthropic {
-  if (!_client) _client = new Anthropic();
-  return _client;
-}
 
 // Hard cap: a session is 5 user turns. The client also enforces this, but we
 // re-enforce on the server so a hand-rolled curl can't exceed it. Session
@@ -70,9 +62,8 @@ const SAMPLE_CASE = {
   underlyingDiagnosis: "Acute coronary syndrome (likely unstable angina / NSTEMI)",
 };
 
-// Build the system prompt once per call. It's stable enough that prompt
-// caching gives us a >90% input-token discount on turns 2-5 of a single
-// session, and across sessions for the duration of the cache TTL.
+// Build the system prompt once per call. Stable enough that prompt caching
+// gives us a >90% input-token discount on the Anthropic fallback path.
 const SYSTEM_PROMPT = `You are an AI roleplaying as a patient in an AMC (Australian Medical Council) Clinical Roleplay practice scenario. The user is a doctor practising for the AMC Clinical exam.
 
 PATIENT PROFILE:
@@ -206,28 +197,17 @@ export async function POST(req: NextRequest) {
   // visitor refreshes mid-flight and we get an empty history, we still need
   // to return the patient's opening line — handle by injecting a synthetic
   // "begin" user turn.
-  const apiMessages: { role: "user" | "assistant"; content: string }[] =
+  const apiMessages: ClientMessage[] =
     cleanHistory.length === 0
-      ? [{ role: "user" as const, content: "(The doctor enters the room and greets you.)" }]
+      ? [{ role: "user", content: "(The doctor enters the room and greets you.)" }]
       : cleanHistory.map((m) => ({ role: m.role, content: m.content }));
-
-  // cache_control supported at runtime in @anthropic-ai/sdk@0.32.x but
-  // missing from published types — cast per CLAUDE.md note.
-  const systemBlocks = [
-    {
-      type: "text",
-      text: SYSTEM_PROMPT,
-      cache_control: { type: "ephemeral" },
-    },
-  ] as unknown as Anthropic.TextBlockParam[];
 
   // Branch 1 — classification call after turn 5.
   if (isClassifyRequest(body)) {
     try {
-      const classifyMsg = await client().messages.create({
-        model: MODEL,
-        max_tokens: 200,
-        system: systemBlocks,
+      const result = await runChat({
+        useCase: "taste_chat",
+        system: SYSTEM_PROMPT,
         messages: [
           ...apiMessages,
           {
@@ -236,9 +216,10 @@ export async function POST(req: NextRequest) {
               "BREAK CHARACTER. You are now a strict AMC examiner. Looking at the doctor's questions across this consultation, classify their consultation style as exactly ONE word from this list: empathetic, clinical, inquisitive, hesitant, structured. Then on a new line, count how many of these 5 differentials they reasonably explored: pain character, cardiac risk factors, family history, prior cardiac symptoms, examination request. Respond in this exact format and nothing else:\nstyle: <one_word>\ndifferentials_explored: <integer 0-5>",
           },
         ],
+        maxTokens: 200,
+        cacheSystem: true,
       });
-      const block = classifyMsg.content[0];
-      const text = block && block.type === "text" ? block.text : "";
+      const text = result.text;
       const styleMatch = text.match(/style:\s*(\w+)/i);
       const diffMatch = text.match(/differentials_explored:\s*(\d+)/i);
       const style = styleMatch?.[1]?.toLowerCase() ?? "promising";
@@ -254,17 +235,17 @@ export async function POST(req: NextRequest) {
 
   // Branch 2 — normal patient reply.
   try {
-    const response = await client().messages.create({
-      model: MODEL,
-      max_tokens: 280, // patient turns are short
-      system: systemBlocks,
+    const result = await runChat({
+      useCase: "taste_chat",
+      system: SYSTEM_PROMPT,
       messages: apiMessages,
+      maxTokens: 280, // patient turns are short
+      cacheSystem: true,
     });
-    const block = response.content[0];
-    if (!block || block.type !== "text") {
+    if (!result.text) {
       return NextResponse.json({ error: "Unexpected AI response" }, { status: 502 });
     }
-    return NextResponse.json({ reply: block.text, turnsRemaining: Math.max(0, MAX_USER_TURNS - userTurns) });
+    return NextResponse.json({ reply: result.text, turnsRemaining: Math.max(0, MAX_USER_TURNS - userTurns) });
   } catch (err) {
     const message = err instanceof Error ? err.message : "AI error";
     console.error("[try-roleplay error]", message);

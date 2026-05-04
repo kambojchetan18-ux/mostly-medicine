@@ -1,5 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { runChat } from "@mostly-medicine/ai";
 import {
   LIBRARY_CHAT_SYSTEM_PROMPT,
   LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC,
@@ -8,14 +8,6 @@ import { createClient } from "@/lib/supabase/server";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const maxDuration = 30;
-
-const MODEL = "claude-haiku-4-5-20251001";
-
-let _client: Anthropic | null = null;
-function client(): Anthropic {
-  if (!_client) _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  return _client;
-}
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -31,7 +23,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Per-user rolling-window throttle. Stops scripts hitting Anthropic on
+  // Per-user rolling-window throttle. Stops scripts hitting our LLMs on
   // our dime. 30 calls / 60s easily covers a chatty student typing fast.
   const rl = await aiRateLimit(clientKey(req, "library-chat", user.id), { max: 30, windowMs: 60_000 });
   if (!rl.allowed) {
@@ -48,40 +40,26 @@ export async function POST(req: NextRequest) {
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
       : LIBRARY_CHAT_SYSTEM_PROMPT;
 
-  // cache_control is a runtime feature in @anthropic-ai/sdk@0.32.x but
-  // missing from the published types — cast to TextBlockParam[].
-  // Caching the long static guideline preamble cuts input cost ~90% on
-  // repeat turns of the same chat session.
-  const systemBlocks = [
-    {
-      type: "text",
-      text: systemPrompt,
-      cache_control: { type: "ephemeral" },
-    },
-  ] as unknown as Anthropic.TextBlockParam[];
-
+  // Streaming choice: the original Anthropic implementation streamed token
+  // deltas. Now that this route can route through DeepSeek (no SSE parser
+  // here), we run runChat() in non-streaming mode and emit the full reply
+  // as a single chunk into the existing ReadableStream the client already
+  // reads. The client UX is identical — a slightly longer time-to-first-
+  // token in exchange for ~80% cost cut and a free Anthropic fallback.
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const response = await client().messages.create({
-          model: MODEL,
-          max_tokens: 1024,
-          system: systemBlocks,
-          messages: messages.map((m: { role: string; content: string }) => ({
+        const result = await runChat({
+          useCase: "general_chat",
+          system: systemPrompt,
+          messages: (messages as { role: string; content: string }[]).map((m) => ({
             role: m.role as "user" | "assistant",
             content: m.content,
           })),
-          stream: true,
+          maxTokens: 1024,
+          cacheSystem: true,
         });
-
-        for await (const event of response) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            controller.enqueue(new TextEncoder().encode(event.delta.text));
-          }
-        }
+        controller.enqueue(new TextEncoder().encode(result.text));
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
         controller.enqueue(new TextEncoder().encode(`Error: ${msg}`));

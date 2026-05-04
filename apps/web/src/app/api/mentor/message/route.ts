@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { runChat } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
-
-const MODEL = "claude-haiku-4-5-20251001";
-
-let _client: Anthropic | null = null;
-function client(): Anthropic {
-  if (!_client) _client = new Anthropic();
-  return _client;
-}
 
 const MENTOR_SYSTEM_PROMPT = `You are a warm, encouraging AMC exam mentor speaking to an IMG (international medical graduate) preparing for Australian medical registration. Keep the message under 25 words. Tone: empathetic, never patronising, never preachy. Address them as 'doctor'. End with a forward-looking nudge, not a platitude.`;
 
@@ -106,32 +98,22 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // cache_control on system prompt — runtime supported in @anthropic-ai/sdk@0.32.x
-  // but types don't expose it. Cast to TextBlockParam[] (see prompts.ts memory).
-  const systemBlocks = [
-    {
-      type: "text",
-      text: MENTOR_SYSTEM_PROMPT,
-      cache_control: { type: "ephemeral" },
-    },
-  ] as unknown as Anthropic.TextBlockParam[];
-
   try {
-    const response = await client().messages.create({
-      model: MODEL,
-      max_tokens: 120,
-      system: systemBlocks,
+    const result = await runChat({
+      useCase: "mentor_short",
+      system: MENTOR_SYSTEM_PROMPT,
       messages: [{ role: "user", content: buildUserPrompt(trigger, ctx) }],
+      maxTokens: 120,
+      cacheSystem: true,
     });
 
-    const block = response.content[0];
-    if (!block || block.type !== "text") {
+    const message = result.text.trim().replace(/^["']|["']$/g, "");
+    if (!message) {
       return NextResponse.json(
         { error: "Unexpected response from AI" },
         { status: 502 }
       );
     }
-    const message = block.text.trim().replace(/^["']|["']$/g, "");
 
     // Only mark rate window after a successful generation, so a 5xx doesn't
     // block the next attempt.
