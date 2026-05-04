@@ -59,7 +59,7 @@ function buildRequestParams({ caseVariant, history, newUserMessage }: RoleplayIn
   ];
   // Anthropic requires the message list to start with a user turn.
   const firstUserIdx = messages.findIndex((m) => m.role === "user");
-  const apiMessages = firstUserIdx >= 0 ? messages.slice(firstUserIdx) : messages;
+  const apiMessages = firstUserIdx >= 0 ? messages.slice(firstUserIdx) : [{ role: "user" as const, content: "(The doctor enters.)" }];
 
   return {
     model: MODEL,

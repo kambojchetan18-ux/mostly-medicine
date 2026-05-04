@@ -42,7 +42,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
 
   // Delete from database
-  await supabase.from("user_notes").delete().eq("id", id);
+  await supabase.from("user_notes").delete().eq("id", id).eq("user_id", user.id);
 
   return NextResponse.json({ success: true });
 }
