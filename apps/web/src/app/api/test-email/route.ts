@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendBranded, newUnsubToken } from "@/lib/email";
+import { buildWelcomeEmail } from "@/lib/email-templates";
 
 // Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
 // (Chetan's inbox). Used to verify Resend + brandedShell render correctly
@@ -88,12 +89,33 @@ export async function GET(req: NextRequest) {
     </p>
   `;
 
+  // Optional ?type=welcome switches to the warm-welcome preview email.
+  // Default = brain-teaser sample.
+  const type = url.searchParams.get("type") ?? "teaser";
+  const firstName = url.searchParams.get("firstName") ?? "Chetan";
+
+  const payload = (() => {
+    if (type === "welcome") {
+      const welcome = buildWelcomeEmail(firstName);
+      return {
+        subject: welcome.subject,
+        bodyHtml: welcome.bodyHtml,
+        preheader: welcome.preheader,
+      };
+    }
+    return {
+      subject: "🧠 Brain Teaser Challenge — Cardiology",
+      bodyHtml,
+      preheader: "STEMI vs NSTEMI — posterior MI catch.",
+    };
+  })();
+
   const result = await sendBranded({
     to,
-    subject: "🧠 Brain Teaser Challenge — Cardiology (test send)",
-    bodyHtml,
+    subject: payload.subject,
+    bodyHtml: payload.bodyHtml,
     unsubscribeUrl,
-    preheader: "STEMI vs NSTEMI — posterior MI catch.",
+    preheader: payload.preheader,
     from: fromOverride ?? undefined,
   });
 
