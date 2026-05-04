@@ -5,8 +5,9 @@ description: "OET Medicine is easier for working clinicians, IELTS Academic is c
 keywords: ["ielts vs oet for doctors", "is oet easier than ielts", "oet medicine pass score ahpra", "ahpra english requirement", "oet vs ielts which is easier", "oet medicine", "ielts academic for ahpra", "oet pass score ahpra", "ielts 7 each band ahpra", "oet b grade requirement", "english test for img australia"]
 publishedAt: "2026-05-03"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 2620
+publishedUrl: "https://mostlymedicine.com/ielts-vs-oet"
 ---
 
 # IELTS vs OET for AHPRA in 2026: Which English Test Should an IMG Doctor Take?

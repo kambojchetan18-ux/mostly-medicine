@@ -21,6 +21,7 @@ const entries: Entry[] = [
   { path: "/amc-handbook-2026",     changeFrequency: "monthly", priority: 0.85 },
   { path: "/amc-pass-rates-by-country", changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-vs-plab", changeFrequency: "monthly", priority: 0.9 },
+  { path: "/ielts-vs-oet", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ahpra-registration-for-imgs", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ahpra-recency-of-practice", changeFrequency: "monthly", priority: 0.9 },
   { path: "/osce-guide", changeFrequency: "monthly", priority: 0.92 },
@@ -55,7 +56,6 @@ const entries: Entry[] = [
   // Tier 4 — utility tools (link bait)
   { path: "/amc-fee-calculator",     changeFrequency: "yearly",  priority: 0.75 },
   { path: "/amc-timeline-planner",   changeFrequency: "yearly",  priority: 0.7  },
-  { path: "/ielts-vs-oet",           changeFrequency: "yearly",  priority: 0.7  },
   { path: "/amc-eligibility-checker", changeFrequency: "yearly", priority: 0.7  },
 
   // Tier 5 — zero-signup taste experience (top-of-funnel activation)
