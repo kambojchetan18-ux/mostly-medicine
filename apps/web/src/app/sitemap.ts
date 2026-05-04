@@ -67,6 +67,7 @@ const entries: Entry[] = [
   { path: "/dashboard/library",   changeFrequency: "monthly", priority: 0.5 },
   { path: "/dashboard/jobs",      changeFrequency: "weekly",  priority: 0.6 },
   { path: "/amc-checklist",       changeFrequency: "monthly", priority: 0.5 },
+  { path: "/contact",             changeFrequency: "yearly",  priority: 0.4 },
   { path: "/careers",             changeFrequency: "monthly", priority: 0.4 },
 ];
 
