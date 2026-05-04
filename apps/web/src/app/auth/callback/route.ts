@@ -12,6 +12,22 @@ function safeNext(raw: string | null): string {
   return "/dashboard";
 }
 
+// Fire-and-forget welcome email kick-off. The /api/email/welcome route is
+// idempotent (checks welcome_email_sent_at) so re-callbacks are safe. We
+// forward the user's cookie header so the welcome route can resolve the
+// Supabase session. Never await — user redirect must not wait on email send.
+function kickWelcomeEmail(req: NextRequest, origin: string): void {
+  try {
+    const cookieHeader = req.headers.get("cookie") ?? "";
+    void fetch(`${origin}/api/email/welcome`, {
+      method: "POST",
+      headers: { cookie: cookieHeader },
+    }).catch(() => {});
+  } catch {
+    // Swallow — welcome email failure must never block auth redirect.
+  }
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
@@ -45,7 +61,10 @@ export async function GET(request: NextRequest) {
       }
     );
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return redirectTo;
+    if (!error) {
+      if (!isRecovery) kickWelcomeEmail(request, origin);
+      return redirectTo;
+    }
   }
 
   // Email confirmation (signup / email change) and recovery OTP
@@ -65,7 +84,10 @@ export async function GET(request: NextRequest) {
       }
     );
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as "signup" | "email" | "recovery" });
-    if (!error) return redirectTo;
+    if (!error) {
+      if (type !== "recovery") kickWelcomeEmail(request, origin);
+      return redirectTo;
+    }
     return NextResponse.redirect(`${origin}/auth/login?error=email_confirmation_failed`);
   }
 
