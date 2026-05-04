@@ -175,6 +175,21 @@ export default function Cat2Client() {
         body: JSON.stringify({ scenarioId: activeScenario, messages: newMessages }),
       });
       const data = await res.json();
+      // Daily-limit gate: surface a clean upgrade prompt instead of a raw
+      // error in the chat. The user has used today's free Handbook RolePlay
+      // quota and needs to upgrade or wait for UTC midnight.
+      if (res.status === 429 && data?.error === "daily_limit_reached") {
+        const cap = data?.dailyLimit ?? 2;
+        const used = data?.used ?? cap;
+        setMessages([
+          ...newMessages,
+          {
+            role: "assistant",
+            content: `[You've used your free AMC Handbook RolePlay sessions for today (${used}/${cap}). Resets at UTC midnight. Upgrade to Pro at /dashboard/billing for unlimited sessions.]`,
+          },
+        ]);
+        return;
+      }
       if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);
 
       if (isExaminerFeedback(data.reply, newMessages.length)) {

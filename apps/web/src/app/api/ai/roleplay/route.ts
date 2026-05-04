@@ -3,27 +3,38 @@ import { createClinicalRoleplay } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { enforceDailyLimit } from "@/lib/permissions";
+
+interface RoleplayMessage {
+  role?: string;
+  content?: string;
+}
 
 export async function POST(req: NextRequest) {
   let user = null;
+  // Hold the supabase client we authenticated with so the daily-limit
+  // helper can read user_profiles + cat2_sessions through the same session.
+  type SupabaseLike = ReturnType<typeof createBrowserClient>;
+  let supabase: SupabaseLike | null = null;
 
   // Check Bearer token (mobile) first, fall back to cookie session (web)
   const authHeader = req.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
     const token = authHeader.slice(7);
-    const supabase = createBrowserClient(
+    supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     const { data } = await supabase.auth.getUser(token);
     user = data.user;
   } else {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
+    const cookieClient = await createClient();
+    supabase = cookieClient as unknown as SupabaseLike;
+    const { data } = await cookieClient.auth.getUser();
     user = data.user;
   }
 
-  if (!user) {
+  if (!user || !supabase) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,6 +56,47 @@ export async function POST(req: NextRequest) {
         { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },
         { status: 503 }
       );
+    }
+
+    // Plan + daily-limit enforcement. The cat2 conversation is stateless
+    // turn-by-turn, so we treat the user's FIRST user-turn for a scenario
+    // as the session-start event: messages.length === 1 with role 'user'.
+    // Subsequent turns aren't gated — once a session is started, the user
+    // can finish it without re-checking. Same-day quota covers them on the
+    // next scenario.
+    const msgs = (messages ?? []) as RoleplayMessage[];
+    const isFirstTurn = msgs.length === 1 && msgs[0]?.role === "user";
+
+    if (isFirstTurn && !requestFeedback) {
+      const limit = await enforceDailyLimit(supabase, "roleplay");
+      if (!limit.allowed) {
+        if (limit.dailyLimit != null && limit.used >= limit.dailyLimit) {
+          return NextResponse.json(
+            {
+              error: "daily_limit_reached",
+              plan: limit.plan,
+              dailyLimit: limit.dailyLimit,
+              used: limit.used,
+            },
+            { status: 429 }
+          );
+        }
+        return NextResponse.json(
+          { error: "Your plan does not include AMC Handbook AI RolePlay. Upgrade to continue." },
+          { status: 403 }
+        );
+      }
+
+      // Record this scenario start. Service-role insert so RLS can stay
+      // strict (users only SELECT their own rows; no client write path).
+      const service = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+      await service.from("cat2_sessions").insert({
+        user_id: user.id,
+        scenario_id: scenarioId ?? null,
+      });
     }
 
     const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback });

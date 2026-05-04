@@ -86,8 +86,9 @@ const USAGE_COUNTERS: Record<ModuleKey, { table: string; userColumn: string; tim
   mcq: { table: "attempts", userColumn: "user_id", timestampColumn: "attempted_at" },
   acrp_solo: { table: "acrp_sessions", userColumn: "user_id", timestampColumn: "created_at" },
   acrp_live: { table: "acrp_live_sessions", userColumn: "host_user_id", timestampColumn: "created_at" },
-  // No server-side usage table — daily limit not enforceable.
-  roleplay: null,
+  // /api/ai/roleplay inserts a cat2_sessions row on the user's first turn
+  // of each scenario, so this counts unique-scenario starts per UTC day.
+  roleplay: { table: "cat2_sessions", userColumn: "user_id", timestampColumn: "created_at" },
 };
 
 export interface DailyLimitResult extends PermissionResult {
