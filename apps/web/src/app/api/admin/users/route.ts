@@ -1,5 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+
+function service() {
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
+}
 
 export async function GET() {
   const supabase = await createClient();
@@ -69,5 +78,19 @@ export async function PATCH(req: NextRequest) {
 
   const { error } = await supabase.from("user_profiles").update(updates).eq("id", userId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const svc = service();
+  for (const field of ["plan", "role"] as const) {
+    const value = field === "plan" ? plan : role;
+    if (value !== undefined) {
+      await svc.from("audit_log").insert({
+        actor_id: user.id,
+        action: `user_update_${field}`,
+        target_id: userId,
+        details: { field, value },
+      });
+    }
+  }
+
   return NextResponse.json({ success: true });
 }

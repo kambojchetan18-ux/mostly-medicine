@@ -59,5 +59,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: delErr.message }, { status: 500 });
   }
 
+  await svc.from("audit_log").insert({
+    actor_id: user.id,
+    action: "user_delete",
+    target_id: userId,
+    target_email: null,
+    details: { reason: "admin_delete" },
+  });
+
   return NextResponse.json({ ok: true });
 }
