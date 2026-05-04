@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 // Use the metadata-only export — pulling `scenarios` here would drop the
 // entire 720 kB handbook payload into the client chunk. The full data is
 // only needed server-side (the /api/ai/roleplay route handles that).
@@ -117,6 +118,11 @@ export default function Cat2Client() {
   const [loading, setLoading] = useState(false);
   const [examinerFeedback, setExaminerFeedback] = useState<string | null>(null);
   const [micMuted, setMicMuted] = useState(false);
+  // When the API returns 429 daily_limit_reached, we freeze input + show a
+  // banner with the upgrade CTA. We render this OUTSIDE the chat transcript
+  // (so the patient avatar isn't reading out billing instructions) and the
+  // user can't send another turn until they upgrade or wait for UTC reset.
+  const [limitInfo, setLimitInfo] = useState<{ used: number; dailyLimit: number } | null>(null);
 
   // Reading-time briefing state (mirrors AMC Clinical AI RolePlay flow).
   // While readingScenarioId is set we render a 2-min countdown + Scenario +
@@ -175,19 +181,17 @@ export default function Cat2Client() {
         body: JSON.stringify({ scenarioId: activeScenario, messages: newMessages }),
       });
       const data = await res.json();
-      // Daily-limit gate: surface a clean upgrade prompt instead of a raw
-      // error in the chat. The user has used today's free Handbook RolePlay
-      // quota and needs to upgrade or wait for UTC midnight.
+      // Daily-limit gate: instead of injecting an in-character message
+      // (the previous version had the patient avatar reading out billing
+      // instructions, which looked broken), surface a separate upgrade
+      // banner via limitInfo and roll back the user message we optimistically
+      // appended — the user shouldn't see their unsent question hanging in
+      // the transcript with no reply.
       if (res.status === 429 && data?.error === "daily_limit_reached") {
-        const cap = data?.dailyLimit ?? 2;
-        const used = data?.used ?? cap;
-        setMessages([
-          ...newMessages,
-          {
-            role: "assistant",
-            content: `[You've used your free AMC Handbook RolePlay sessions for today (${used}/${cap}). Resets at UTC midnight. Upgrade to Pro at /dashboard/billing for unlimited sessions.]`,
-          },
-        ]);
+        const cap = Number(data?.dailyLimit ?? 2);
+        const used = Number(data?.used ?? cap);
+        setMessages(messages); // remove the optimistic user-turn append
+        setLimitInfo({ used, dailyLimit: cap });
         return;
       }
       if (!res.ok || data.error) throw new Error(data.error ?? `Server error: ${res.status}`);
@@ -412,6 +416,7 @@ export default function Cat2Client() {
     if (ttsSupported) primeTts();
     setExaminerFeedback(null);
     feedbackRequestedRef.current = false;
+    setLimitInfo(null);
     setActiveScenario(id);
     const scenario = scenarios.find(s => s.id === id)!;
     const opening = scenario.openingStatement;
@@ -806,11 +811,37 @@ export default function Cat2Client() {
         </div>
       )}
 
+      {/* Daily-limit banner — replaces the input row when the user hits the
+          free Handbook RolePlay quota. The Upgrade CTA carries ?next= so
+          Stripe success_url can return them straight to /dashboard/cat2. */}
+      {limitInfo && (
+        <div className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-amber-900">
+                You&apos;ve used your {limitInfo.dailyLimit} free AMC Handbook RolePlay {limitInfo.dailyLimit === 1 ? "session" : "sessions"} for today ({limitInfo.used}/{limitInfo.dailyLimit}).
+              </p>
+              <p className="mt-1 text-xs text-amber-800 leading-relaxed">
+                Upgrade to Pro for unlimited sessions. After upgrading you&apos;ll come right back to this scenario. Resets at UTC midnight if you&apos;d rather wait.
+              </p>
+            </div>
+            <Link
+              href="/dashboard/billing?next=/dashboard/cat2"
+              className="inline-flex items-center justify-center rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm px-4 py-2 shadow shrink-0"
+            >
+              Upgrade to Pro — A$19/mo →
+            </Link>
+          </div>
+        </div>
+      )}
+
 
       {/* Input bar — flex-wrap so the mute toggle drops to its own line on
           narrow phones instead of squeezing the input field down to nothing.
-          Buttons sized to 44×44 minimum (Apple/Google touch-target spec). */}
-      <div className="flex items-center gap-2 flex-wrap">
+          Buttons sized to 44×44 minimum (Apple/Google touch-target spec).
+          Suppressed entirely when the daily-limit banner is up — letting the
+          user keep typing past the gate is what created the original bug. */}
+      <div className={`flex items-center gap-2 flex-wrap ${limitInfo ? "hidden" : ""}`}>
 
         {/* Mic button */}
         {micSupported !== false && (

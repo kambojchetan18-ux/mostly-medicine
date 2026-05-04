@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export interface CurrentSubscription {
   plan: "free" | "pro" | "enterprise";
@@ -57,6 +58,12 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
   const proPrice = cadence === "monthly" ? prices.proMonthly : prices.proYearly;
   const entPrice = cadence === "monthly" ? prices.enterpriseMonthly : prices.enterpriseYearly;
 
+  // Optional `?next=` param: if a paywall on a feature page sent the user
+  // here, we forward the path to the checkout API so Stripe's success_url
+  // returns them to the same page after the subscription is active.
+  const searchParams = useSearchParams();
+  const next = searchParams?.get("next") ?? null;
+
   async function checkout(priceId: string | null, label: string) {
     if (!priceId) {
       setError(`${label} price not configured. Add the env var in Vercel.`);
@@ -68,7 +75,7 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ priceId, next }),
       });
       const json = await res.json();
       if (!res.ok || !json.url) throw new Error(json.error ?? "Checkout failed");

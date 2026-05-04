@@ -19,13 +19,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let body: { priceId?: string };
+  let body: { priceId?: string; next?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
   if (!body.priceId) return NextResponse.json({ error: "priceId required" }, { status: 400 });
+
+  // Whitelist `next` to internal /dashboard paths only — guards against
+  // open-redirect via Stripe success_url. Anything that doesn't match the
+  // whitelist falls back to /dashboard/billing.
+  const safeNext = typeof body.next === "string" && /^\/dashboard\/[a-z0-9/_-]*$/i.test(body.next)
+    ? body.next
+    : null;
 
   // Validate priceId is one we recognise — prevents tampering with the body.
   if (!priceCatalog().some((p) => p.id === body.priceId)) {
@@ -69,8 +76,15 @@ export async function POST(req: NextRequest) {
       customer: customerId,
       line_items: [{ price: body.priceId, quantity: 1 }],
       allow_promotion_codes: true,
-      success_url: `${origin}/dashboard/billing?success=1`,
-      cancel_url: `${origin}/dashboard/billing?canceled=1`,
+      // Land the user back on the page they were upgrading from, when
+      // provided. Falls back to the billing page so the success flash still
+      // renders. Stripe runs success_url after the subscription is active.
+      success_url: safeNext
+        ? `${origin}${safeNext}?upgraded=1`
+        : `${origin}/dashboard/billing?success=1`,
+      cancel_url: safeNext
+        ? `${origin}${safeNext}?upgrade_canceled=1`
+        : `${origin}/dashboard/billing?canceled=1`,
       subscription_data: { metadata: { user_id: user.id } },
     });
     return NextResponse.json({ url: session.url });

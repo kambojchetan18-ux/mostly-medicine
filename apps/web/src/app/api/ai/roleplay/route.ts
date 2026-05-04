@@ -5,11 +5,6 @@ import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import { enforceDailyLimit } from "@/lib/permissions";
 
-interface RoleplayMessage {
-  role?: string;
-  content?: string;
-}
-
 export async function POST(req: NextRequest) {
   let user = null;
   // Hold the supabase client we authenticated with so the daily-limit
@@ -58,47 +53,67 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Plan + daily-limit enforcement. The cat2 conversation is stateless
-    // turn-by-turn, so we treat the user's FIRST user-turn for a scenario
-    // as the session-start event. Cat2Client pre-seeds the messages array
-    // with an `assistant`-role opening line BEFORE the user types, so the
-    // first user turn lives at index 1 (length 2), not index 0 (length 1).
-    // Counting role==='user' messages avoids that off-by-one and also
-    // works if a future client variant skips the opener.
-    const msgs = (messages ?? []) as RoleplayMessage[];
-    const userTurnCount = msgs.filter((m) => m?.role === "user").length;
-    const isFirstTurn = userTurnCount === 1;
+    // Plan + daily-limit enforcement. cat2 conversation is stateless
+    // turn-by-turn, so we identify a "session start" by checking whether a
+    // cat2_sessions row already exists for (this user, this scenario, today).
+    // - No row yet → this is a fresh start. Run enforceDailyLimit and either
+    //   429 + insert nothing, or insert the row + let the turn through.
+    // - Row exists → user already started this scenario inside their quota
+    //   today; continuing turns are not gated.
+    //
+    // Earlier this gate fired only on the user's FIRST turn (userTurnCount
+    // === 1), which let blocked free users keep typing — once their second
+    // user-turn arrived, userTurnCount === 2 skipped the check and the API
+    // happily kept replying. The "row exists?" signal closes that hole and
+    // is also robust to client variants that pre-seed an opener message.
+    const scenarioKey = scenarioId != null ? String(scenarioId) : null;
 
-    if (isFirstTurn && !requestFeedback) {
-      const limit = await enforceDailyLimit(supabase, "roleplay");
-      if (!limit.allowed) {
-        if (limit.dailyLimit != null && limit.used >= limit.dailyLimit) {
-          return NextResponse.json(
-            {
-              error: "daily_limit_reached",
-              plan: limit.plan,
-              dailyLimit: limit.dailyLimit,
-              used: limit.used,
-            },
-            { status: 429 }
-          );
-        }
-        return NextResponse.json(
-          { error: "Your plan does not include AMC Handbook AI RolePlay. Upgrade to continue." },
-          { status: 403 }
-        );
+    if (!requestFeedback) {
+      const startOfDay = new Date();
+      startOfDay.setUTCHours(0, 0, 0, 0);
+
+      let alreadyStartedToday = false;
+      if (scenarioKey) {
+        const { count: priorRows } = await supabase
+          .from("cat2_sessions")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("scenario_id", scenarioKey)
+          .gte("created_at", startOfDay.toISOString());
+        alreadyStartedToday = (priorRows ?? 0) > 0;
       }
 
-      // Record this scenario start. Service-role insert so RLS can stay
-      // strict (users only SELECT their own rows; no client write path).
-      const service = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-      );
-      await service.from("cat2_sessions").insert({
-        user_id: user.id,
-        scenario_id: scenarioId ?? null,
-      });
+      if (!alreadyStartedToday) {
+        const limit = await enforceDailyLimit(supabase, "roleplay");
+        if (!limit.allowed) {
+          if (limit.dailyLimit != null && limit.used >= limit.dailyLimit) {
+            return NextResponse.json(
+              {
+                error: "daily_limit_reached",
+                plan: limit.plan,
+                dailyLimit: limit.dailyLimit,
+                used: limit.used,
+              },
+              { status: 429 }
+            );
+          }
+          return NextResponse.json(
+            { error: "Your plan does not include AMC Handbook AI RolePlay. Upgrade to continue." },
+            { status: 403 }
+          );
+        }
+
+        // Record this scenario start. Service-role insert so RLS can stay
+        // strict (users only SELECT their own rows; no client write path).
+        const service = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+        await service.from("cat2_sessions").insert({
+          user_id: user.id,
+          scenario_id: scenarioKey,
+        });
+      }
     }
 
     const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback });
