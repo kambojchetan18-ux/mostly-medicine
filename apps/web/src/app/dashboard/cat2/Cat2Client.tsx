@@ -819,7 +819,7 @@ export default function Cat2Client() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-semibold text-amber-900">
-                You&apos;ve used your {limitInfo.dailyLimit} free AMC Handbook RolePlay {limitInfo.dailyLimit === 1 ? "session" : "sessions"} for today ({limitInfo.used}/{limitInfo.dailyLimit}).
+                You&apos;ve used your {limitInfo.dailyLimit} free AMC Handbook RolePlay {limitInfo.dailyLimit === 1 ? "session" : "sessions"} for today ({Math.min(limitInfo.used, limitInfo.dailyLimit)}/{limitInfo.dailyLimit}).
               </p>
               <p className="mt-1 text-xs text-amber-800 leading-relaxed">
                 Upgrade to Pro for unlimited sessions. After upgrading you&apos;ll come right back to this scenario. Resets at UTC midnight if you&apos;d rather wait.

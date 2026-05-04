@@ -179,7 +179,7 @@ export default function LandingClient({
               <p className="text-sm font-semibold text-amber-900">
                 You've used your free Solo RolePlay for today
                 {limitInfo.dailyLimit != null && limitInfo.dailyLimit > 0
-                  ? ` (${limitInfo.used} / ${limitInfo.dailyLimit})`
+                  ? ` (${Math.min(limitInfo.used, limitInfo.dailyLimit)} / ${limitInfo.dailyLimit})`
                   : ""}
                 .
               </p>
