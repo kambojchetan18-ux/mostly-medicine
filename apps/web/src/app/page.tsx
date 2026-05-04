@@ -68,6 +68,19 @@ const stats = [
 
 const features = [
   {
+    href:     "/ask-ai",
+    emoji:    "✨",
+    tag:      "ASK AI · FREE · NO SIGNUP",
+    tagColor: "text-emerald-300 bg-emerald-900/40 border-emerald-700/40",
+    title:    "Ask AI — your AMC mentor on call",
+    desc:     "Source-grounded AI Q&A: Murtagh, RACGP, AMC Handbook, eTG. Three free questions before signup. Streamed live from Claude Haiku 4.5.",
+    gradient: "from-emerald-950/80 via-teal-950/60 to-slate-900/80",
+    border:   "border-emerald-800/40",
+    glow:     "hover:shadow-[0_0_70px_rgba(16,185,129,0.18)]",
+    span:     "md:col-span-3",
+    size:     "text-2xl",
+  },
+  {
     href:     "/dashboard/cat1",
     emoji:    "🧠",
     tag:      "AMC PART 1",
@@ -295,6 +308,24 @@ export default async function HomePage() {
                 {isLoggedIn ? "Cost calculator" : "New here? Sign up free"}
               </Link>
             </div>
+
+            {/* Ask AI hero strip — sits between primary CTAs and trust badges
+                so it can't be missed. Animated pulse + emerald glow draws the
+                eye. Public /ask-ai gives 3 free questions, no signup. */}
+            <Link
+              href="/ask-ai"
+              className="group mt-6 inline-flex items-center gap-3 rounded-2xl border border-emerald-700/50 bg-gradient-to-r from-emerald-900/40 via-teal-900/30 to-slate-900/40 px-5 py-3 text-sm font-semibold text-emerald-100 hover:border-emerald-500 hover:from-emerald-900/60 transition-all"
+            >
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+              </span>
+              <span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 mr-2">New</span>
+                Ask AI free — 3 questions, no signup
+              </span>
+              <span className="text-emerald-300 group-hover:translate-x-0.5 transition-transform">→</span>
+            </Link>
 
             <TrustBadges />
           </div>

@@ -14,6 +14,7 @@ const MODULE_LABEL: Record<string, string> = {
 };
 
 const ALWAYS_FREE: { label: string; href?: string }[] = [
+  { label: "Ask AI — 3 free questions, no signup", href: "/ask-ai" },
   { label: "AMC Fee Calculator", href: "/amc-fee-calculator" },
   { label: "AMC Eligibility Checker", href: "/amc-eligibility-checker" },
   { label: "Reference Library (Murtagh · RACGP · AMC Handbook)" },
