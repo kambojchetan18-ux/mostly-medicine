@@ -24,6 +24,7 @@ const entries: Entry[] = [
   { path: "/ielts-vs-oet", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ahpra-registration-for-imgs", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ahpra-recency-of-practice", changeFrequency: "monthly", priority: 0.9 },
+  { path: "/amc-clinical-exam-preparation", changeFrequency: "monthly", priority: 0.9 },
   { path: "/osce-guide", changeFrequency: "monthly", priority: 0.92 },
   { path: "/blog", changeFrequency: "weekly", priority: 0.9 },
   { path: "/ask-ai", changeFrequency: "weekly", priority: 0.95 },

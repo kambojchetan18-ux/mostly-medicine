@@ -33,6 +33,14 @@ interface BlogPost {
 // Sorted newest first. When a new pillar article is published, add a row here.
 const posts: BlogPost[] = [
   {
+    slug: "amc-clinical-exam-preparation",
+    title: "AMC Part 2 Clinical Exam: The IMG's Guide to Passing 16 Stations First Attempt (2026)",
+    description:
+      "AMC Clinical (Part 2) is 16 stations of 8 minutes — 14 examined, 10 to pass. The bottleneck is communication style, not knowledge. A 12-week first-attempt prep plan.",
+    publishedAt: "2026-05-05",
+    category: "OSCE",
+  },
+  {
     slug: "ahpra-recency-of-practice",
     title: "Recency of Practice and AMC: What Order Should an IMG Do Things In? (2026)",
     description:

@@ -5,8 +5,9 @@ description: "AMC Clinical (Part 2) is 16 stations of 8 minutes — 14 examined,
 keywords: ["amc part 2 clinical exam", "amc clinical preparation", "amc osce stations", "amc part 2 study material", "amc clinical pass rate", "amc clinical role play", "amc part 2 cost", "amc clinical exam dates", "amc clinical exam centres", "amc part 2 first attempt"]
 publishedAt: "2026-05-05"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 3636
+publishedUrl: "https://mostlymedicine.com/amc-clinical-exam-preparation"
 ---
 
 # AMC Part 2 Clinical Exam: The IMG's Guide to Passing 16 Stations First Attempt
