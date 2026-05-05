@@ -15,6 +15,66 @@ interface BeforeInstallPromptEvent extends Event {
 
 const DISMISS_KEY = "mm_pwa_install_dismissed_at";
 const DISMISS_TTL_DAYS = 14; // re-show banner two weeks after dismiss
+const SESSION_KEY = "mm_pwa_session_id"; // stable per-device id (lasts until cache cleared)
+const HEARTBEAT_KEY = "mm_pwa_heartbeat_last_date"; // YYYY-MM-DD of last heartbeat ping
+
+function getOrCreateSessionId(): string {
+  if (typeof window === "undefined") return "";
+  let id = window.localStorage.getItem(SESSION_KEY);
+  if (!id) {
+    id = (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : `sess_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    window.localStorage.setItem(SESSION_KEY, id);
+  }
+  return id;
+}
+
+function platformHint(): string {
+  if (typeof navigator === "undefined") return "unknown";
+  const ua = navigator.userAgent;
+  if (/iPad|iPhone|iPod/.test(ua)) return "ios";
+  if (/Android/.test(ua)) return "android";
+  if (/Macintosh/.test(ua)) return "macos";
+  if (/Windows/.test(ua)) return "windows";
+  return "other";
+}
+
+async function trackPwaEvent(eventType: "installed" | "heartbeat"): Promise<void> {
+  try {
+    await fetch("/api/track/pwa-install", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // Use keepalive so the request still fires if the page navigates
+      // away immediately after install (common on Android).
+      keepalive: true,
+      body: JSON.stringify({
+        session_id: getOrCreateSessionId(),
+        event_type: eventType,
+        platform_hint: platformHint(),
+      }),
+    });
+  } catch {
+    // Tracking is best-effort — never block UX.
+  }
+}
+
+function maybeFireHeartbeat(): void {
+  if (typeof window === "undefined") return;
+  // Only fires when running as installed PWA, NOT in browser tabs.
+  const navWithStandalone = window.navigator as Navigator & { standalone?: boolean };
+  const standalone =
+    navWithStandalone.standalone === true ||
+    window.matchMedia("(display-mode: standalone)").matches;
+  if (!standalone) return;
+
+  // Once-per-UTC-day dedup
+  const today = new Date().toISOString().slice(0, 10);
+  const last = window.localStorage.getItem(HEARTBEAT_KEY);
+  if (last === today) return;
+  window.localStorage.setItem(HEARTBEAT_KEY, today);
+  void trackPwaEvent("heartbeat");
+}
 
 function isIOS(): boolean {
   if (typeof navigator === "undefined") return false;
@@ -53,7 +113,13 @@ export default function InstallPwaBanner(): JSX.Element | null {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (isStandalone()) return; // already installed
+
+    // Fire-and-forget heartbeat for users running this as an installed PWA.
+    // Catches iOS Safari "Add to Home Screen" cohort that never triggers
+    // appinstalled. Once-per-UTC-day dedup at the localStorage layer.
+    maybeFireHeartbeat();
+
+    if (isStandalone()) return; // already installed — no banner
     if (dismissedRecently()) return;
 
     if (isIOS()) {
@@ -72,10 +138,14 @@ export default function InstallPwaBanner(): JSX.Element | null {
     };
     window.addEventListener("beforeinstallprompt", handler);
 
-    // If user installs via browser UI directly, hide banner.
+    // appinstalled fires on Android Chrome / Edge / Brave / Samsung
+    // Internet + desktop Chrome/Edge synchronously when the user accepts
+    // the install. iOS Safari Add-to-Home-Screen does NOT fire this; the
+    // heartbeat above covers that cohort.
     const installedHandler = () => {
       setShowBanner(false);
       setShowIosSheet(false);
+      void trackPwaEvent("installed");
     };
     window.addEventListener("appinstalled", installedHandler);
 
