@@ -22,6 +22,7 @@ const quickLinks: QuickLink[] = [
   { href: "/amc-fee-calculator",        label: "AMC Fee Calculator"      },
   { href: "/amc-eligibility-checker",   label: "AMC Eligibility Checker" },
   { href: "/osce-guide",                label: "OSCE Prep Guide"         },
+  { href: "/blog",                      label: "Blog"                    },
   { href: "/ask-ai",                    label: "Ask AI (Free)"           },
   { href: "/dashboard/billing",         label: "Pricing & Plans"         },
   { href: "/contact",                   label: "Contact Us"              },

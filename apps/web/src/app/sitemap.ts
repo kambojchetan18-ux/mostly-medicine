@@ -25,6 +25,7 @@ const entries: Entry[] = [
   { path: "/ahpra-registration-for-imgs", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ahpra-recency-of-practice", changeFrequency: "monthly", priority: 0.9 },
   { path: "/osce-guide", changeFrequency: "monthly", priority: 0.92 },
+  { path: "/blog", changeFrequency: "weekly", priority: 0.9 },
   { path: "/ask-ai", changeFrequency: "weekly", priority: 0.95 },
   { path: "/amc-from-india",       changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-from-pakistan",    changeFrequency: "monthly", priority: 0.9 },
