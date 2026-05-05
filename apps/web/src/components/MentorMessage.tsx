@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Sparkles, X } from "lucide-react";
 
 type Trigger = "mcq_streak_broken" | "mcq_two_wrong" | "roleplay_complete";
@@ -27,6 +27,12 @@ export default function MentorMessage({
   const [errored, setErrored] = useState(false);
   const requestedRef = useRef(false);
 
+  const stableContext = useMemo(
+    () => context,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [context?.wrongCount, context?.topic, context?.score]
+  );
+
   // Fetch on mount. Strict-mode double-invoke guard via ref so we only fire
   // once per mount and don't double-charge a Haiku call.
   useEffect(() => {
@@ -38,11 +44,9 @@ export default function MentorMessage({
         const res = await fetch("/api/mentor/message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ trigger, context }),
+          body: JSON.stringify({ trigger, context: stableContext }),
         });
         if (!res.ok) {
-          // 429 (rate limited) and 401 are both silent failures — the banner
-          // simply doesn't render. We don't want to surface noise.
           if (!cancelled) setErrored(true);
           return;
         }
@@ -56,7 +60,7 @@ export default function MentorMessage({
     return () => {
       cancelled = true;
     };
-  }, [trigger, context]);
+  }, [trigger, stableContext]);
 
   // Auto-dismiss after the message renders.
   useEffect(() => {

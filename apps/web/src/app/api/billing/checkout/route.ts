@@ -52,11 +52,11 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const portalOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mostlymedicine.com";
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
-        return_url: `${origin}/dashboard/billing`,
+        return_url: `${portalOrigin}/dashboard/billing`,
       });
       return NextResponse.json({ url: portal.url, alreadySubscribed: true });
     } catch (err) {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mostlymedicine.com";
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",

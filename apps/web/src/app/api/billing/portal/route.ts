@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No subscription on file" }, { status: 404 });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mostlymedicine.com";
   try {
     const session = await stripe().billingPortal.sessions.create({
       customer: profile.stripe_customer_id,

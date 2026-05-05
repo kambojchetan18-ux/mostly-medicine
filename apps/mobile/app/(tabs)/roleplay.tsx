@@ -14,7 +14,7 @@ import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://www.mostlymedicine.com';
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -284,9 +284,9 @@ export default function RoleplayScreen() {
   }
 
   // ── API ─────────────────────────────────────────────────────────────────────
-  async function getToken() {
+  async function getToken(): Promise<string | null> {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? '';
+    return session?.access_token || null;
   }
 
   const sendMessage = useCallback(async (text: string) => {
@@ -300,6 +300,11 @@ export default function RoleplayScreen() {
     setLoading(true);
     try {
       const token = await getToken();
+      if (!token) {
+        setMessages([...newMsgs, { role: 'assistant', content: '[Not signed in — please log in again]' }]);
+        setLoading(false);
+        return;
+      }
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -324,6 +329,11 @@ export default function RoleplayScreen() {
     setFetchingFeedback(true);
     try {
       const token = await getToken();
+      if (!token) {
+        setFeedback('Not signed in — please log in again');
+        setFetchingFeedback(false);
+        return;
+      }
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
