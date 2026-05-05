@@ -10,44 +10,27 @@ import FunLoading from "@/components/FunLoading";
 
 const READING_SECONDS = 120;
 const ROLEPLAY_SECONDS = 8 * 60;
-// ICE server priority (cheapest path first, fallback last):
-//   1. Google STUN — free, ~80% of users connect P2P with this alone.
-//   2. Self-hosted coturn (if NEXT_PUBLIC_TURN_* env vars are set) — private,
-//      reliable, low-latency relay for the ~20% of users on symmetric NAT
-//      (mobile data ↔ home Wi-Fi) or corporate firewalls. See
-//      /COTURN_SETUP.md for deployment guide.
-//   3. Open Relay (Metered.ca) — free public TURN, used ONLY when no
-//      self-hosted TURN is configured. It's a graceful fallback so the app
-//      still works during DevOps work, but it's rate-limited and noisy.
-// Setting NEXT_PUBLIC_TURN_URL="" in Vercel rolls back to STUN-only +
-// Open Relay — handy as an emergency kill-switch if our coturn box dies.
-const TURN_URL = process.env.NEXT_PUBLIC_TURN_URL;
-const TURN_USERNAME = process.env.NEXT_PUBLIC_TURN_USERNAME;
-const TURN_CREDENTIAL = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
-const HAS_PRIVATE_TURN = Boolean(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL);
-
-const RTC_CONFIG: RTCConfiguration = {
+// ICE server priority:
+//   1. Cloudflare per-session TURN — fetched at runtime from /api/turn-credentials
+//      (short-lived 24h creds, never shipped in the JS bundle).
+//   2. Google STUN — free, ~80% of users connect P2P with this alone.
+//   3. Open Relay (Metered.ca) — free public TURN fallback when Cloudflare
+//      is not configured. Rate-limited but functional.
+//
+// Static TURN credentials (NEXT_PUBLIC_TURN_*) were removed because they
+// shipped in the client bundle and were visible to any visitor.
+const FALLBACK_RTC_CONFIG: RTCConfiguration = {
   iceServers: [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
-    ...(HAS_PRIVATE_TURN
-      ? [
-          {
-            urls: [TURN_URL as string],
-            username: TURN_USERNAME as string,
-            credential: TURN_CREDENTIAL as string,
-          },
-        ]
-      : [
-          {
-            urls: [
-              "turn:openrelay.metered.ca:80",
-              "turn:openrelay.metered.ca:443",
-              "turn:openrelay.metered.ca:443?transport=tcp",
-            ],
-            username: "openrelayproject",
-            credential: "openrelayproject",
-          },
-        ]),
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80",
+        "turn:openrelay.metered.ca:443",
+        "turn:openrelay.metered.ca:443?transport=tcp",
+      ],
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
   ],
   iceTransportPolicy: "all",
 };
@@ -128,9 +111,9 @@ export default function LiveSessionClient({
   const [signalingState, setSignalingState] = useState<string>("idle");
   const [sttError, setSttError] = useState<string | null>(null);
   // Which TURN provider actually got wired into the RTCPeerConnection. Lets
-  // the diagnostic pill say "Cloudflare TURN" / "self-hosted" / "fallback".
+  // the diagnostic pill say "Cloudflare TURN" / "fallback".
   const [turnProvider, setTurnProvider] = useState<"cloudflare" | "self-hosted" | "fallback">(
-    HAS_PRIVATE_TURN ? "self-hosted" : "fallback"
+    "fallback"
   );
   // Surface the EXACT reason the broker fell back, so misconfigured env
   // vars / upstream errors show up next to the pill instead of being silent.
@@ -409,8 +392,8 @@ export default function LiveSessionClient({
         // first. If the env vars are set on the server, this returns a
         // short-lived (24h) credential pair that's far more reliable than
         // the public Open Relay. If not configured / errors, fall back to
-        // the static RTC_CONFIG (self-hosted coturn or Open Relay).
-        let rtcConfig: RTCConfiguration = RTC_CONFIG;
+        // the FALLBACK_RTC_CONFIG (STUN + Open Relay).
+        let rtcConfig: RTCConfiguration = FALLBACK_RTC_CONFIG;
         try {
           const res = await fetch("/api/turn-credentials", { cache: "no-store" });
           if (res.ok) {
