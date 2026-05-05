@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
@@ -35,6 +36,13 @@ async function generateSummary(text: string): Promise<string> {
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
+    system: [
+      {
+        type: "text",
+        text: "You summarise medical study notes concisely for AMC exam preparation.",
+        cache_control: { type: "ephemeral" },
+      },
+    ] as unknown as Anthropic.TextBlockParam[],
     messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
   });
   const block = message.content[0];
@@ -47,6 +55,14 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(clientKey(req, "notes-upload", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   const formData = await req.formData();
