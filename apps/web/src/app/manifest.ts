@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
 
-// Minimal Web App Manifest so iOS Safari + Android Chrome offer
-// "Add to Home Screen" with a proper standalone shell. No icons referenced
-// here yet — Next.js 14 auto-generates a 512x512 PNG from
-// `app/icon.tsx`/`app/apple-icon.tsx` if/when those get added. Until then
-// the OS falls back to a screenshot of the current page, which is fine for
-// launch.
+// Web App Manifest for "Add to Home Screen" on iOS Safari + Android Chrome.
+// Icons reference the /icon.svg (Next.js auto-served from app/icon.svg) and
+// the /icon-512.png ImageResponse-rendered PNG, both established with the
+// brand mark — emerald → violet → pink gradient "M" on dark canvas.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Mostly Medicine — AMC Exam Preparation for IMGs",
@@ -16,9 +14,14 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#0f172a",
-    theme_color: "#14b8a6",
+    background_color: "#070714",
+    theme_color: "#7c3aed",
     lang: "en-AU",
     categories: ["education", "medical", "productivity"],
+    icons: [
+      { src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+    ],
   };
 }

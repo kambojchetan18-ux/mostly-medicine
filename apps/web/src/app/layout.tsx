@@ -73,12 +73,21 @@ export const metadata: Metadata = {
     siteName: "Mostly Medicine",
     locale: "en_AU",
     type: "website",
+    images: [
+      {
+        url: `${SITE_URL}/icon-512.png`,
+        width: 512,
+        height: 512,
+        alt: "Mostly Medicine — AMC prep platform for IMGs",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
     creator: "@mostlymedicine",
+    images: [`${SITE_URL}/icon-512.png`],
   },
   alternates: {
     canonical: SITE_URL,
@@ -111,7 +120,12 @@ const organizationSchema = {
   name: "Mostly Medicine",
   url: SITE_URL,
   description: DESCRIPTION,
-  logo: `${SITE_URL}/icon.png`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/icon-512.png`,
+    width: 512,
+    height: 512,
+  },
   sameAs: [] as string[],
   knowsAbout: [
     "Australian Medical Council exam",

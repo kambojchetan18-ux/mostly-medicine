@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="aap-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="45%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <!-- iOS auto-applies its own corner radius — fill full bleed -->
+  <rect width="512" height="512" fill="#070714"/>
+  <path d="M76 416 V96 L256 320 L436 96 V416"
+        fill="none"
+        stroke="url(#aap-grad)"
+        stroke-width="68"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>
