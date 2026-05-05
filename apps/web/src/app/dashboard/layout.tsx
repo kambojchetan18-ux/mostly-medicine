@@ -6,6 +6,7 @@ import GlobalSearch from "@/components/GlobalSearch";
 import SearchTrigger from "@/components/SearchTrigger";
 import SidebarUserCard, { type UserCardData } from "@/components/SidebarUserCard";
 import MobileTopBar from "@/components/MobileTopBar";
+import InstallPwaBanner from "@/components/InstallPwaBanner";
 
 // Layouts are async server components — perfect place for a hard auth gate
 // that protects every /dashboard/* route regardless of middleware behaviour.
@@ -162,6 +163,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
         className="flex-1 min-w-0 p-3 pt-[4.5rem] sm:p-4 sm:pt-20 md:p-8 md:pt-8"
         style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
       >
+        {/* PWA install banner — auto-shows on Android Chrome via
+            beforeinstallprompt, plus a how-to sheet for iOS Safari.
+            Hides itself if already installed or recently dismissed. */}
+        <InstallPwaBanner />
         {children}
       </main>
 
