@@ -13,14 +13,18 @@ export async function GET(req: NextRequest) {
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { data, error } = await supabase.rpc("search_content", {
     search_query: query,
-    searching_user_id: user?.id ?? null,
+    searching_user_id: user.id,
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[search] rpc error", error.message);
+    return NextResponse.json({ error: "Search failed" }, { status: 500 });
   }
 
   return NextResponse.json({ results: data ?? [] });

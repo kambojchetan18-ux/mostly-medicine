@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 // Always fetch fresh progress data — the page reads per-user mutable state
@@ -38,7 +39,7 @@ function barColor(pct: number) {
 export default async function ProgressPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) redirect("/auth/login");
 
   // All queries in parallel — no sequential round trips
   const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([
@@ -124,7 +125,7 @@ export default async function ProgressPage() {
           <p className="text-[10px] text-amber-500 mt-0.5">Started, keep going</p>
         </div>
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-gray-500">{14 - completedCount - inProgressCount}</p>
+          <p className="text-2xl font-bold text-gray-500">{Math.max(0, 14 - completedCount - inProgressCount)}</p>
           <p className="text-xs text-gray-500 font-medium mt-0.5">Not Started</p>
           <p className="text-[10px] text-gray-400 mt-0.5">of 14 topics</p>
         </div>
@@ -186,7 +187,7 @@ export default async function ProgressPage() {
         </div>
         <div className="divide-y divide-gray-50">
           {topics.map((t) => {
-            const accuracy = Math.round((t.total_correct / t.total_attempted) * 100);
+            const accuracy = t.total_attempted > 0 ? Math.round((t.total_correct / t.total_attempted) * 100) : 0;
             return (
               <div key={t.topic} className="px-5 py-3.5">
                 <div className="flex items-center justify-between mb-1.5">

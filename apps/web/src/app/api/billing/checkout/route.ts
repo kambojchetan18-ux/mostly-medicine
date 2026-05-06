@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
