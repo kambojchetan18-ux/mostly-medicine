@@ -5,8 +5,9 @@ description: "Australian RMO recruitment runs state-by-state from May to Septemb
 keywords: ["rmo jobs for img australia", "how to get rmo job australia", "img first job australia", "rmo recruitment australia", "hospital jobs for img", "dpa locations australia", "rural generalist img", "rmo pool nsw", "rmo pool victoria", "rmo pool queensland", "img cv australia", "img salary australia"]
 publishedAt: "2026-05-06"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 2750
+publishedUrl: "https://mostlymedicine.com/rmo-jobs-for-img-australia"
 ---
 
 # How IMGs Land Their First RMO Job in Australia: State-by-State Strategy for 2026
