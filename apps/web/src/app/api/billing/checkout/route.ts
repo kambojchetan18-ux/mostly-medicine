@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +18,11 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
   if (!user || !user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(clientKey(req, "billing-checkout", user.id), { max: 5, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many checkout attempts. Try again shortly." }, { status: 429 });
   }
 
   let body: { priceId?: string; next?: string };
@@ -52,7 +58,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -69,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",

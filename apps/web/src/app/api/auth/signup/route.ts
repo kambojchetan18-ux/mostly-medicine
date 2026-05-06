@@ -30,7 +30,11 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     await recordFailedAttempt(key);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.error("[signup] auth error", error.message);
+    return NextResponse.json(
+      { error: "Signup failed. If an account with this email already exists, please log in instead." },
+      { status: 400 }
+    );
   }
 
   return NextResponse.json({ success: true });
