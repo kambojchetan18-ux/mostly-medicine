@@ -119,12 +119,21 @@ export async function POST(req: NextRequest) {
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
     const extracted = JSON.parse(jsonStr);
 
-    // Upsert into Supabase
+    const ALLOWED_FIELDS = [
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification",
+    ];
+    const safeFields = Object.fromEntries(
+      Object.entries(extracted).filter(([k]) => ALLOWED_FIELDS.includes(k))
+    );
+
     const { error: dbError } = await supabase
       .from("img_profiles")
       .upsert({
         id: user.id,
-        ...extracted,
+        ...safeFields,
         cv_text: cvText ? cvText.slice(0, 20000) : null,
         updated_at: new Date().toISOString(),
       });

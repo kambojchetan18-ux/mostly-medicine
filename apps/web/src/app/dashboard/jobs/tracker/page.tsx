@@ -56,8 +56,10 @@ export default function TrackerPage() {
   const [typeFilter, setTypeFilter] = useState<"All" | AppType>("All");
 
   useEffect(() => {
-    const saved = localStorage.getItem("rmo_applications");
-    if (saved) setApps(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem("rmo_applications");
+      if (saved) setApps(JSON.parse(saved));
+    } catch { /* corrupted localStorage — start fresh */ }
   }, []);
 
   const save = (updated: Application[]) => {

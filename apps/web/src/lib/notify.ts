@@ -46,7 +46,7 @@ async function sendSlack({
             { type: "mrkdwn", text: `*AI confidence:*\n${confidence ?? "—"}` },
             { type: "mrkdwn", text: `*Status:*\nescalated` },
           ]},
-          { type: "section", text: { type: "mrkdwn", text: `*User wrote:*\n>${body.slice(0, 800).replace(/\n/g, "\n>")}` } },
+          { type: "section", text: { type: "mrkdwn", text: `*User wrote:*\n>${escapeSlackMrkdwn(body.slice(0, 800)).replace(/\n/g, "\n>")}` } },
           aiResponse
             ? { type: "section", text: { type: "mrkdwn", text: `*AI suggested reply:*\n>${aiResponse.slice(0, 600).replace(/\n/g, "\n>")}` } }
             : null,
@@ -112,4 +112,11 @@ function escape(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function escapeSlackMrkdwn(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }

@@ -43,6 +43,7 @@ export default function ProgressScreen() {
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [due, setDue] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -54,13 +55,30 @@ export default function ProgressScreen() {
         return;
       }
 
-      const [attRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
-        supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
-          .eq('user_id', user.id).lte('due', new Date().toISOString()),
-      ]);
+      let attRes, streakRes, dueRes;
+      try {
+        [attRes, streakRes, dueRes] = await Promise.all([
+          supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
+          supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
+          supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
+            .eq('user_id', user.id).lte('due', new Date().toISOString()),
+        ]);
+      } catch (err) {
+        console.error('Progress data loading failed:', err);
+        if (!cancelled) {
+          setLoadError(true);
+          setLoading(false);
+        }
+        return;
+      }
       if (cancelled) return;
+
+      if (attRes.error || streakRes.error || dueRes.error) {
+        console.error('Progress data error:', attRes.error ?? streakRes.error ?? dueRes.error);
+        setLoadError(true);
+        setLoading(false);
+        return;
+      }
 
       const attempts = attRes.data ?? [];
       setTotalAttempts(attempts.length);
@@ -118,6 +136,15 @@ export default function ProgressScreen() {
 
           {loading ? (
             <ActivityIndicator color="#7c3aed" style={{ marginTop: 60 }} />
+          ) : loadError ? (
+            <View style={{ alignItems: 'center', marginTop: 60, paddingHorizontal: 24 }}>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: '#f1f5f9', marginBottom: 8 }}>
+                Unable to load progress
+              </Text>
+              <Text style={{ fontSize: 13, color: '#64748b', textAlign: 'center' }}>
+                Check your connection and try again.
+              </Text>
+            </View>
           ) : (
             <>
               {/* Stats row */}

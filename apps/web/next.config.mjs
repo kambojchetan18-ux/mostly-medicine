@@ -71,6 +71,23 @@ const nextConfig = {
           // Defense-in-depth XSS hint for legacy Safari. Modern browsers
           // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
+          // Report-Only CSP — gathers violations without blocking. Once
+          // Stripe Elements nonces and Next.js inline script hashes are
+          // wired, switch to enforcing Content-Security-Policy.
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https://*.supabase.co https://*.gravatar.com",
+              "font-src 'self'",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.anthropic.com",
+              "frame-src https://js.stripe.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join("; "),
+          },
         ],
       },
     ];
