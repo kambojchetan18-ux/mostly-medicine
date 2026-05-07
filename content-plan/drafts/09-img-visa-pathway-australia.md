@@ -5,8 +5,9 @@ description: "The realistic IMG visa stack in 2026: 485 for Australian graduates
 keywords: ["img visa pathway australia", "485 visa doctor", "482 visa medical practitioner", "dama doctor", "186 visa medical", "img pr australia", "anzsco 253111 medical practitioner", "doctor pr australia", "skills in demand medical practitioner"]
 publishedAt: "2026-05-07"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 2680
+publishedUrl: "https://mostlymedicine.com/img-visa-pathway-australia"
 ---
 
 # IMG Visa Pathway in Australia 2026: From Student or Graduate to Permanent Residency
