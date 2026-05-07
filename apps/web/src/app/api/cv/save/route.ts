@@ -6,8 +6,18 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const ALLOWED_FIELDS = [
+    "name", "degree_country", "graduation_year", "years_experience",
+    "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+    "english_test", "certifications", "location_preference", "doctor_type",
+    "specialist_qualification", "cv_text",
+  ];
+
   try {
-    const profile = await req.json();
+    const body = await req.json();
+    const profile = Object.fromEntries(
+      Object.entries(body).filter(([k]) => ALLOWED_FIELDS.includes(k))
+    );
     const { error } = await supabase
       .from("img_profiles")
       .upsert({ ...profile, id: user.id, updated_at: new Date().toISOString() });

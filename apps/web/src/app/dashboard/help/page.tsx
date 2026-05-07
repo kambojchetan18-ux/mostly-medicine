@@ -13,6 +13,7 @@ export default async function HelpPage() {
   const { data: tickets } = await supabase
     .from("feedback_tickets")
     .select("id, subject, body, category, status, ai_response, ai_confidence, created_at")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(25);
 

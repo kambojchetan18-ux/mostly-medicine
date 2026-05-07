@@ -31,14 +31,18 @@ type KeepaliveErr = {
 export async function GET(req: NextRequest): Promise<NextResponse<KeepaliveOk | KeepaliveErr>> {
   try {
     const secret = process.env.CRON_SECRET;
-    if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
-        return NextResponse.json<KeepaliveErr>(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
-      }
+    if (!secret) {
+      return NextResponse.json<KeepaliveErr>(
+        { ok: false, error: "CRON_SECRET not configured" },
+        { status: 503 }
+      );
+    }
+    const auth = req.headers.get("authorization");
+    if (auth !== `Bearer ${secret}`) {
+      return NextResponse.json<KeepaliveErr>(
+        { ok: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
