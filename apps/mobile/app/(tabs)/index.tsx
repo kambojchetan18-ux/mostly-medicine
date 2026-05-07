@@ -72,7 +72,11 @@ export default function HomeScreen() {
   }, []);
 
   const handleLogout = useCallback(async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error('Sign-out failed:', err);
+    }
   }, []);
 
   return (

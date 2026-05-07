@@ -35,6 +35,34 @@ export async function POST(req: NextRequest) {
 
   const { messages, topicTitle, topicContent } = await req.json();
 
+  // Input validation
+  if (!Array.isArray(messages)) {
+    return NextResponse.json(
+      { error: "messages must be an array" },
+      { status: 400 }
+    );
+  }
+  if (messages.length > 50) {
+    return NextResponse.json(
+      { error: "messages array exceeds maximum length of 50" },
+      { status: 400 }
+    );
+  }
+  for (const msg of messages) {
+    if (typeof msg.content === "string" && msg.content.length > 5000) {
+      return NextResponse.json(
+        { error: "Individual message content must not exceed 5000 characters" },
+        { status: 400 }
+      );
+    }
+  }
+  if (typeof topicContent === "string" && topicContent.length > 20000) {
+    return NextResponse.json(
+      { error: "topicContent must not exceed 20000 characters" },
+      { status: 400 }
+    );
+  }
+
   const systemPrompt =
     topicTitle && topicContent
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)

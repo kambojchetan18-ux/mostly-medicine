@@ -67,6 +67,32 @@ export async function POST(req: NextRequest) {
 
   const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = await req.json();
 
+  // Input validation — cap each string field at 5000 characters
+  const fieldLimits: Record<string, unknown> = { stem, correctAnswer, selectedAnswer, topic, subtopic, explanation };
+  for (const [name, value] of Object.entries(fieldLimits)) {
+    if (typeof value === "string" && value.length > 5000) {
+      return NextResponse.json(
+        { error: `${name} must not exceed 5000 characters` },
+        { status: 400 }
+      );
+    }
+  }
+  if (typeof options === "string" && options.length > 5000) {
+    return NextResponse.json(
+      { error: "options must not exceed 5000 characters" },
+      { status: 400 }
+    );
+  }
+  if (Array.isArray(options)) {
+    const serialized = JSON.stringify(options);
+    if (serialized.length > 5000) {
+      return NextResponse.json(
+        { error: "options must not exceed 5000 characters" },
+        { status: 400 }
+      );
+    }
+  }
+
   const optionLines = (options as { label: string; text: string }[])
     .map((o) => `${o.label}. ${o.text}`)
     .join("\n");
