@@ -83,22 +83,90 @@ export async function GET(req: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Pick the oldest row never posted to LinkedIn.
-  const { data: rows, error: queryErr } = await service
-    .from("social_posts")
-    .select("id, article_slug, article_title, article_url")
-    .is("linkedin_posted_at", null)
-    .order("created_at", { ascending: true })
-    .limit(1);
+  // Optional: ?replace=<slug> deletes the existing LinkedIn post for that
+  // slug, resets the DB row, then re-runs the normal flow against that row
+  // (used when an already-posted draft needs a fresh body — e.g. prompt
+  // fix landed after the original post went out). Same auth gate as above.
+  const url = new URL(req.url);
+  const replaceSlug = url.searchParams.get("replace");
 
-  if (queryErr) {
-    console.error("[publish-linkedin] query failed", queryErr);
-    return NextResponse.json({ ok: false, error: queryErr.message }, { status: 500 });
-  }
+  let next: SocialPost | undefined;
 
-  const next = (rows ?? [])[0] as SocialPost | undefined;
-  if (!next) {
-    return NextResponse.json({ ok: true, message: "queue_empty" });
+  if (replaceSlug) {
+    const { data: row, error: rowErr } = await service
+      .from("social_posts")
+      .select("id, article_slug, article_title, article_url, linkedin_post_urn")
+      .eq("article_slug", replaceSlug)
+      .single();
+    if (rowErr || !row) {
+      return NextResponse.json(
+        { ok: false, error: "slug_not_found", slug: replaceSlug },
+        { status: 404 }
+      );
+    }
+
+    // Delete the existing LinkedIn post if a URN was stamped.
+    const existingUrn = (row as { linkedin_post_urn: string | null }).linkedin_post_urn;
+    if (existingUrn) {
+      try {
+        const delRes = await fetch(
+          `https://api.linkedin.com/v2/ugcPosts/${encodeURIComponent(existingUrn)}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "X-Restli-Protocol-Version": "2.0.0",
+            },
+          }
+        );
+        if (!delRes.ok && delRes.status !== 404) {
+          const errText = await delRes.text();
+          console.warn(
+            `[publish-linkedin] delete returned ${delRes.status} for ${existingUrn}: ${errText.slice(0, 200)}`
+          );
+        }
+      } catch (err) {
+        console.warn(
+          `[publish-linkedin] delete threw for ${existingUrn}:`,
+          err instanceof Error ? err.message : String(err)
+        );
+      }
+    }
+
+    // Reset DB so the rest of the flow treats this row as unposted.
+    await service
+      .from("social_posts")
+      .update({
+        linkedin_posted_at: null,
+        linkedin_post_urn: null,
+        linkedin_error: null,
+      })
+      .eq("id", row.id);
+
+    next = {
+      id: row.id,
+      article_slug: row.article_slug,
+      article_title: row.article_title,
+      article_url: row.article_url,
+    };
+  } else {
+    // Default flow: pick the oldest row never posted to LinkedIn.
+    const { data: rows, error: queryErr } = await service
+      .from("social_posts")
+      .select("id, article_slug, article_title, article_url")
+      .is("linkedin_posted_at", null)
+      .order("created_at", { ascending: true })
+      .limit(1);
+
+    if (queryErr) {
+      console.error("[publish-linkedin] query failed", queryErr);
+      return NextResponse.json({ ok: false, error: queryErr.message }, { status: 500 });
+    }
+
+    next = (rows ?? [])[0] as SocialPost | undefined;
+    if (!next) {
+      return NextResponse.json({ ok: true, message: "queue_empty" });
+    }
   }
 
   // Generate the LinkedIn post body via runChat (DeepSeek with Anthropic
