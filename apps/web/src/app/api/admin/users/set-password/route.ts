@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
-    password,
+    passwordHint: `${password.slice(0, 3)}${"*".repeat(password.length - 3)}`,
+    message: "Temporary password set. Deliver it securely via WhatsApp/SMS — it is NOT included in this response for security.",
   });
 }

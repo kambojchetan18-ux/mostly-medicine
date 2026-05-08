@@ -96,6 +96,9 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
 
       {/* Slide-over panel */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Ask AI"
         className={`fixed top-0 right-0 z-50 h-full w-full sm:w-[400px] bg-white shadow-2xl flex flex-col transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}

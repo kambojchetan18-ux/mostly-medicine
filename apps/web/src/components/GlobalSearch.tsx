@@ -132,7 +132,7 @@ export default function GlobalSearch() {
       <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div role="dialog" aria-modal="true" aria-label="Search" className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl overflow-hidden">
         {/* Input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
           <span className="text-gray-400 text-lg">🔍</span>

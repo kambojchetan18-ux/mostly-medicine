@@ -15,7 +15,7 @@ export async function GET() {
     .select("id, email, full_name, avatar_url, plan, role, created_at")
     .order("created_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   return NextResponse.json({ users: data });
 }
 
@@ -68,6 +68,6 @@ export async function PATCH(req: NextRequest) {
   if (role !== undefined) updates.role = role;
 
   const { error } = await supabase.from("user_profiles").update(updates).eq("id", userId);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   return NextResponse.json({ success: true });
 }
