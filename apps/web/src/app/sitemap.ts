@@ -21,6 +21,7 @@ const entries: Entry[] = [
   { path: "/amc-handbook-2026",     changeFrequency: "monthly", priority: 0.85 },
   { path: "/amc-pass-rates-by-country", changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-vs-plab", changeFrequency: "monthly", priority: 0.9 },
+  { path: "/amc-mcq-tips", changeFrequency: "monthly", priority: 0.9 },
   { path: "/img-visa-pathway-australia", changeFrequency: "monthly", priority: 0.9 },
   { path: "/rmo-jobs-for-img-australia", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ielts-vs-oet", changeFrequency: "monthly", priority: 0.9 },

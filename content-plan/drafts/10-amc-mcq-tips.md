@@ -5,8 +5,9 @@ description: "AMC MCQs reward Australian-context, conservative, patient-centred 
 keywords: ["amc mcq tips", "amc mcq tricks", "amc question patterns", "amc most likely diagnosis", "amc next best step", "amc mcq distractors", "amc exam strategy", "how amc examiners think", "amc question stems"]
 publishedAt: "2026-05-08"
 author: "Chetan Kamboj"
-status: "draft"
+status: "published"
 estimatedWordCount: 2620
+publishedUrl: "https://mostlymedicine.com/amc-mcq-tips"
 ---
 
 # 12 AMC MCQ Traps That Catch Out IMGs (And How to Think Like an AMC Examiner) — 2026
