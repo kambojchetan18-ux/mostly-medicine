@@ -35,6 +35,15 @@ export async function POST(req: NextRequest) {
 
   const { messages, topicTitle, topicContent } = await req.json();
 
+  if (!Array.isArray(messages) || messages.length > 100) {
+    return NextResponse.json({ error: "messages must be an array of at most 100 items" }, { status: 400 });
+  }
+  for (const m of messages) {
+    if (typeof m.content === "string" && m.content.length > 10_000) {
+      return NextResponse.json({ error: "Individual message too long" }, { status: 400 });
+    }
+  }
+
   const systemPrompt =
     topicTitle && topicContent
       ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)

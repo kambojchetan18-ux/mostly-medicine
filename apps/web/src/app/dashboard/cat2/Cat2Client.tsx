@@ -275,6 +275,15 @@ export default function Cat2Client() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+
   // Reading-time countdown. When the timer hits 0 we auto-hand-off to the
   // active session by calling startScenario. Cleanup clears any pending tick
   // when the user backs out or hits Start manually.

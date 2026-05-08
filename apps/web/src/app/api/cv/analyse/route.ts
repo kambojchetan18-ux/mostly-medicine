@@ -64,6 +64,10 @@ export async function POST(req: NextRequest) {
     let cvText = formData.get("text") as string | null;
 
     const file = formData.get("file") as File | null;
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file && file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: "File too large. Maximum size is 10 MB." }, { status: 400 });
+    }
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
     }
