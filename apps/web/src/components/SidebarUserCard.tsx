@@ -65,7 +65,7 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
     );
   }
 
-  const initials = user.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+  const initials = (user.name || "?").split(" ").filter(Boolean).map((w) => w[0]).join("").toUpperCase().slice(0, 2) || "?";
 
   // Founder promo: free users inside the 30-day founder window are surfaced
   // as Pro because that's the access they have. Once they upgrade via Stripe,

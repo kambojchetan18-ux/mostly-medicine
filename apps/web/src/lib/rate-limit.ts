@@ -22,8 +22,6 @@ export function clientKey(req: NextRequest, prefix: string, userId?: string | nu
 
 export async function checkRateLimit(key: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
   const supabase = serviceClient();
-  const now = new Date();
-
   const { data } = await supabase
     .from("rate_limit_attempts")
     .select("count, first_attempt_at, locked_until")
@@ -46,6 +44,10 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: WINDOW_MS };
   }
 
   return { allowed: true };

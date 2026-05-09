@@ -75,7 +75,7 @@ async function persistAttempt(q: MCQuestion, isCorrect: boolean) {
   await supabase.from('attempts').insert({
     user_id: user.id,
     question_id: q.id,
-    selected_answer: isCorrect ? 'correct' : 'wrong',
+    selected_answer: isCorrect ? q.correctAnswer : 'wrong',
     is_correct: isCorrect,
   });
 

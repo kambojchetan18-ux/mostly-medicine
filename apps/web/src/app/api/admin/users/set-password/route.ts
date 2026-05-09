@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +49,11 @@ export async function POST(req: NextRequest) {
     .single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const rl = await aiRateLimit(clientKey(req, "admin-set-pw", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   let body: { userId?: string };
   try {
     body = await req.json();
@@ -83,6 +89,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
-    password,
+    passwordHint: `${password.slice(0, 3)}${"*".repeat(password.length - 3)}`,
+    message: "Temporary password set. Deliver it securely via WhatsApp/SMS — it is NOT included in this response for security.",
   });
 }

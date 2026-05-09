@@ -53,10 +53,7 @@ export default async function LeaderboardPage() {
   } = await supabase.auth.getUser();
 
   const { data: rows, error } = await supabase
-    .from("leaderboard_weekly")
-    .select("user_id, full_name, avatar_url, plan, weekly_xp, event_count")
-    .order("weekly_xp", { ascending: false })
-    .limit(50);
+    .rpc("get_leaderboard_weekly");
 
   if (error) {
     console.error("[leaderboard] query failed", error.message);

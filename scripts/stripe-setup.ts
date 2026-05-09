@@ -136,9 +136,9 @@ async function main() {
   console.log("\n══════════════════════════════════════════════════════════");
   console.log(" Add these to Vercel env vars (Production + Preview + Dev):");
   console.log("══════════════════════════════════════════════════════════");
-  console.log(`STRIPE_SECRET_KEY=${SECRET}`);
+  console.log(`STRIPE_SECRET_KEY=${SECRET.slice(0, 12)}...  (use the full key from your Stripe dashboard)`);
   if (webhookSecret) {
-    console.log(`STRIPE_WEBHOOK_SECRET=${webhookSecret}`);
+    console.log(`STRIPE_WEBHOOK_SECRET=${webhookSecret.slice(0, 12)}...  (use the full secret from your Stripe dashboard)`);
   } else {
     console.log(`STRIPE_WEBHOOK_SECRET=<copy from Stripe dashboard webhook page>`);
   }

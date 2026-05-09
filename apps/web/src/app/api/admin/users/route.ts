@@ -1,22 +1,39 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
-export async function GET() {
+const PAGE_SIZE = 50;
+
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Check admin
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { data, error } = await supabase
-    .from("user_profiles")
-    .select("id, email, full_name, avatar_url, plan, role, created_at")
-    .order("created_at", { ascending: false });
+  const rl = await aiRateLimit(clientKey(req, "admin-users", user.id), { max: 60, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ users: data });
+  const page = Math.max(0, parseInt(req.nextUrl.searchParams.get("page") ?? "0", 10) || 0);
+  const q = req.nextUrl.searchParams.get("q")?.trim();
+
+  let query = supabase
+    .from("user_profiles")
+    .select("id, email, full_name, avatar_url, plan, role, created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+  if (q && q.length >= 2) {
+    query = query.or(`email.ilike.%${q}%,full_name.ilike.%${q}%`);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  return NextResponse.json({ users: data, total: count, page, pageSize: PAGE_SIZE });
 }
 
 const ALLOWED_PLANS = new Set(["free", "pro", "enterprise"]);
@@ -30,12 +47,14 @@ export async function PATCH(req: NextRequest) {
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const rl = await aiRateLimit(clientKey(req, "admin-users-patch", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   const { userId, plan, role } = await req.json();
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
-  // Whitelist values — refusing arbitrary strings prevents an admin (or a
-  // compromised admin session) from setting role to gibberish that would
-  // bypass plan-gating logic, or 'superadmin' that future code might honour.
   if (plan !== undefined && !ALLOWED_PLANS.has(plan)) {
     return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
   }
@@ -43,12 +62,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Invalid role" }, { status: 400 });
   }
 
-  // Role-change guardrails:
-  //   - Admins cannot change their own role (prevents accidental self-demotion
-  //     locking the org out of admin access).
-  //   - Admins cannot demote ANOTHER admin via this endpoint — privilege
-  //     battles between admins should require a fresh login + explicit DB
-  //     edit, not a single PATCH. Mirrors set-password's guard.
   if (role !== undefined) {
     if (userId === user.id) {
       return NextResponse.json({ error: "Cannot change your own role" }, { status: 403 });
@@ -68,6 +81,6 @@ export async function PATCH(req: NextRequest) {
   if (role !== undefined) updates.role = role;
 
   const { error } = await supabase.from("user_profiles").update(updates).eq("id", userId);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   return NextResponse.json({ success: true });
 }

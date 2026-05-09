@@ -17,7 +17,18 @@ import { infectiousQuestions } from "./questions-infectious";
 import { surgeryQuestions } from "./questions-surgery";
 import { pharmacologyQuestions } from "./questions-pharmacology";
 
-export const allQuestions = [
+import type { MCQuestion } from "./questions";
+
+function dedup(questions: MCQuestion[]): MCQuestion[] {
+  const seen = new Set<string>();
+  return questions.filter((q) => {
+    if (seen.has(q.id)) return false;
+    seen.add(q.id);
+    return true;
+  });
+}
+
+export const allQuestions = dedup([
   ...seedQuestions,
   ...cardiovascularQuestions,
   ...respiratoryQuestions,
@@ -33,4 +44,4 @@ export const allQuestions = [
   ...infectiousQuestions,
   ...surgeryQuestions,
   ...pharmacologyQuestions,
-];
+]);
