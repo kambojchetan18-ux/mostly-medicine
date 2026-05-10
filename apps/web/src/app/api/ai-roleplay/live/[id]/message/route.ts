@@ -20,6 +20,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   }
   const content = body.content?.trim();
   if (!content) return NextResponse.json({ error: "content required" }, { status: 400 });
+  if (content.length > 5000) return NextResponse.json({ error: "Message too long" }, { status: 400 });
 
   const { data: session } = await supabase
     .from("acrp_live_sessions")

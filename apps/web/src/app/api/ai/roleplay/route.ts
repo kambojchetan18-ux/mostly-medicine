@@ -46,6 +46,18 @@ export async function POST(req: NextRequest) {
   try {
     const { scenarioId, messages, requestFeedback } = await req.json();
 
+    if (!Array.isArray(messages) || messages.length > 50) {
+      return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
+    }
+    for (const m of messages) {
+      if (typeof m.content !== "string" || m.content.length > 5000) {
+        return NextResponse.json({ error: "Message too long (max 5000 chars)" }, { status: 400 });
+      }
+    }
+    if (scenarioId != null && typeof scenarioId !== "number") {
+      return NextResponse.json({ error: "Invalid scenarioId" }, { status: 400 });
+    }
+
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
         { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },

@@ -65,10 +65,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
   }
 
-  const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = await req.json();
+  const body = await req.json();
+  const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = body;
+
+  if (typeof stem !== "string" || stem.length > 2000) {
+    return NextResponse.json({ error: "Invalid stem" }, { status: 400 });
+  }
+  if (!Array.isArray(options) || options.length > 10) {
+    return NextResponse.json({ error: "Invalid options" }, { status: 400 });
+  }
+  if (typeof correctAnswer !== "string" || correctAnswer.length > 200) {
+    return NextResponse.json({ error: "Invalid correctAnswer" }, { status: 400 });
+  }
 
   const optionLines = (options as { label: string; text: string }[])
-    .map((o) => `${o.label}. ${o.text}`)
+    .map((o) => `${String(o.label ?? "").slice(0, 5)}. ${String(o.text ?? "").slice(0, 500)}`)
     .join("\n");
 
   const userMessage = `QUESTION:

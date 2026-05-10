@@ -68,7 +68,8 @@ export async function GET(request: NextRequest) {
   }
 
   // Email confirmation (signup / email change) and recovery OTP
-  if (token_hash && type) {
+  const VALID_OTP_TYPES = ["signup", "email", "recovery"];
+  if (token_hash && type && VALID_OTP_TYPES.includes(type)) {
     const cookieStore = await cookies();
     const otpRedirectPath = type === "recovery" ? "/auth/reset-password" : "/dashboard";
     const redirectTo = NextResponse.redirect(`${origin}${otpRedirectPath}`);
