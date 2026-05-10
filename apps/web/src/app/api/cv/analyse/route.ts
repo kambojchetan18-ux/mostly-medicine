@@ -80,6 +80,10 @@ export async function POST(req: NextRequest) {
       },
     ] as unknown as Anthropic.TextBlockParam[];
 
+    if (file && file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: "File exceeds 10MB limit" }, { status: 400 });
+    }
+
     if (file && !cvText && file.type === "application/pdf") {
       // Send PDF directly to Claude — avoids pdfjs-dist browser-global issues entirely
       const bytes = await file.arrayBuffer();

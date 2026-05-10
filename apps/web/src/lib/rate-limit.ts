@@ -88,13 +88,8 @@ export async function clearAttempts(key: string): Promise<void> {
 }
 
 // Per-IP / per-user "calls in a rolling window" limiter for AI endpoints.
-// Cheap and good enough to block runaway scripts hitting Anthropic on our
-// dime. Reuses the rate_limit_attempts table — `count` is the call count,
-// `first_attempt_at` is the window start. When `count` exceeds `max` inside
-// `windowMs`, we deny until the window rolls over.
-//
-// Defaults: 30 calls / 60s. Tuned so a chatty student typing fast still
-// works but a `for i in {1..1000}` loop is stopped.
+// Uses an atomic Postgres function (migration 034) to eliminate the TOCTOU
+// race condition. Falls back to non-atomic upsert if the RPC is unavailable.
 export async function aiRateLimit(
   key: string,
   opts: { max?: number; windowMs?: number } = {}
@@ -102,8 +97,25 @@ export async function aiRateLimit(
   const max = opts.max ?? 30;
   const windowMs = opts.windowMs ?? 60 * 1000;
   const supabase = serviceClient();
-  const now = Date.now();
 
+  // Try atomic RPC first (available after migration 034)
+  const { data: rpcResult, error: rpcErr } = await supabase.rpc(
+    "check_and_increment_rate_limit",
+    { p_key: key, p_max: max, p_window_ms: windowMs }
+  );
+
+  if (!rpcErr && rpcResult && rpcResult.length > 0) {
+    const row = rpcResult[0];
+    return {
+      allowed: row.allowed,
+      retryAfterMs: row.allowed ? undefined : Number(row.retry_after_ms),
+      count: row.current_count,
+      max,
+    };
+  }
+
+  // Fallback: non-atomic (pre-migration 034 or RPC error)
+  const now = Date.now();
   const { data } = await supabase
     .from("rate_limit_attempts")
     .select("count, first_attempt_at")

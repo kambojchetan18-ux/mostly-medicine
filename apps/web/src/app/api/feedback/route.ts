@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { notifyAdminOfTicket } from "@/lib/notify";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +63,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Subject 3-200 chars" }, { status: 400 });
   if (body.length < 5 || body.length > 4000)
     return NextResponse.json({ error: "Body 5-4000 chars" }, { status: 400 });
+
+  const rl = await aiRateLimit(clientKey(req, "feedback", user.id), { max: 5, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
 
   // Insert open ticket first so we have a row even if Claude call fails.
   const { data: ticket, error: insertErr } = await supabase

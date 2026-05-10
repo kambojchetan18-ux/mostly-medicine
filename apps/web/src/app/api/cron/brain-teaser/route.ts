@@ -153,7 +153,7 @@ Each bullet ≤14 words. Clinically accurate. Australian context throughout.`;
 
 function bulletList(items: string[]): string {
   return `<ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:#334155;">${items
-    .map((b) => `<li>${b}</li>`)
+    .map((b) => `<li>${escape(b)}</li>`)
     .join("")}</ul>`;
 }
 
@@ -167,7 +167,11 @@ function section(title: string, bgColor: string, borderColor: string, inner: str
 function renderBody(args: { teaser: Teaser; specialty: Specialty; firstName: string }): string {
   const { teaser, specialty, firstName } = args;
   const safeName = escape(firstName);
-  // teaser strings are server-trusted (our own prompt) — no escape required.
+  const safeTopic = escape(teaser.topic);
+  const safeAmcKeyPoint = escape(teaser.amc_key_point);
+  const safeChallengeQ = escape(teaser.challenge_question);
+  const safeChallengeA = escape(teaser.challenge_answer_short);
+  const safeChallengeExpl = escape(teaser.challenge_answer_explanation);
   return `
     <div style="text-align:center;margin:0 0 6px;">
       <h1 style="margin:0;font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.01em;">
@@ -184,7 +188,7 @@ function renderBody(args: { teaser: Teaser; specialty: Specialty; firstName: str
     </p>
 
     <h2 style="margin:18px 0 6px;font-size:20px;font-weight:700;color:#0f766e;line-height:1.3;">
-      ${teaser.topic}
+      ${safeTopic}
     </h2>
 
     ${section("Definition", "#f0fdfa", "#99f6e4", bulletList(teaser.definition_bullets))}
@@ -197,7 +201,7 @@ function renderBody(args: { teaser: Teaser; specialty: Specialty; firstName: str
         AMC Key Point
       </p>
       <p style="margin:0;font-size:14px;line-height:1.6;color:#713f12;font-weight:600;">
-        ${teaser.amc_key_point}
+        ${safeAmcKeyPoint}
       </p>
     </div>
 
@@ -206,15 +210,15 @@ function renderBody(args: { teaser: Teaser; specialty: Specialty; firstName: str
         Quick Challenge
       </p>
       <p style="margin:0 0 10px;font-size:15px;line-height:1.6;color:#f8fafc;font-weight:600;">
-        ${teaser.challenge_question}
+        ${safeChallengeQ}
       </p>
       <details style="margin:8px 0 0;">
         <summary style="cursor:pointer;font-size:13px;font-weight:600;color:#a5f3fc;">Show answer</summary>
         <p style="margin:10px 0 6px;font-size:14px;line-height:1.6;color:#f8fafc;font-weight:600;">
-          ${teaser.challenge_answer_short}
+          ${safeChallengeA}
         </p>
         <p style="margin:0;font-size:13px;line-height:1.6;color:#cbd5e1;">
-          ${teaser.challenge_answer_explanation}
+          ${safeChallengeExpl}
         </p>
       </details>
     </div>
@@ -262,14 +266,18 @@ export async function GET(
 ): Promise<NextResponse<BrainTeaserOk | BrainTeaserErr>> {
   try {
     const secret = process.env.CRON_SECRET;
-    if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
-        return NextResponse.json<BrainTeaserErr>(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
-      }
+    if (!secret) {
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: "CRON_SECRET not configured" },
+        { status: 503 }
+      );
+    }
+    const auth = req.headers.get("authorization");
+    if (auth !== `Bearer ${secret}`) {
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {

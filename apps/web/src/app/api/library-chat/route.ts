@@ -33,11 +33,24 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages, topicTitle, topicContent } = await req.json();
+  const body = await req.json();
+  const { messages, topicTitle, topicContent } = body;
+
+  if (!Array.isArray(messages) || messages.length > 30) {
+    return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
+  }
+  for (const m of messages) {
+    if (typeof m.content !== "string" || m.content.length > 5000) {
+      return NextResponse.json({ error: "Message too long (max 5000 chars)" }, { status: 400 });
+    }
+  }
+
+  const safeTopicTitle = typeof topicTitle === "string" ? topicTitle.slice(0, 200) : undefined;
+  const safeTopicContent = typeof topicContent === "string" ? topicContent.slice(0, 10000) : undefined;
 
   const systemPrompt =
-    topicTitle && topicContent
-      ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
+    safeTopicTitle && safeTopicContent
+      ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(safeTopicTitle, safeTopicContent)
       : LIBRARY_CHAT_SYSTEM_PROMPT;
 
   // Streaming choice: the original Anthropic implementation streamed token

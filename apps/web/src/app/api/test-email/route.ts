@@ -3,18 +3,18 @@ import { sendBranded, newUnsubToken } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/email-templates";
 
 // Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
-// (Chetan's inbox). Used to verify Resend + brandedShell render correctly
-// before the DeepSeek balance is topped up. Auth: optional CRON_SECRET
-// bearer; open if unset.
+// (Chetan's inbox). Used to verify Resend + brandedShell render correctly.
+// Auth: CRON_SECRET bearer required. Disabled in production if unset.
 export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!secret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
+  }
+  const auth = req.headers.get("authorization");
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
@@ -26,9 +26,7 @@ export async function GET(req: NextRequest) {
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const token = newUnsubToken();
-  // Optional ?from= override so we can quickly test domain verification
-  // status without redeploying. Format: "Display Name <local@domain>".
-  const fromOverride = url.searchParams.get("from");
+  const fromOverride: string | undefined = undefined;
   // For a one-off test we don't bother persisting the unsub token — the
   // unsubscribe route just renders an "expired link" page if clicked, which
   // is fine for the test recipient.

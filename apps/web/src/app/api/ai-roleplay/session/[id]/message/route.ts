@@ -46,6 +46,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   }
   const userMessage = body.content?.trim();
   if (!userMessage) return Response.json({ error: "content required" }, { status: 400 });
+  if (userMessage.length > 5000) {
+    return Response.json({ error: "Message too long (max 5000 chars)" }, { status: 400 });
+  }
 
   // ─── Load session + case (must belong to this user) ──────────────────
   const { data: session } = await supabase

@@ -6,11 +6,15 @@ const PUBLIC_API_ROUTES = [
   "/api/auth/signup",
   "/api/auth/callback",
   "/api/search",
-  // Stripe webhook is signed (verified via STRIPE_WEBHOOK_SECRET); no user session.
   "/api/billing/webhook",
-  // Diagnostic — returns env-var presence flags only (never values). Safe to
-  // expose so support can confirm Vercel env-var bake without admin login.
-  "/api/health",
+  "/api/cron/",
+  "/api/health/",
+  "/api/health-keepalive",
+  "/api/ask-ai-taste",
+  "/api/try-roleplay",
+  "/api/track/pwa-install",
+  "/api/test-email",
+  "/api/email/unsubscribe",
 ];
 
 export async function middleware(request: NextRequest) {
