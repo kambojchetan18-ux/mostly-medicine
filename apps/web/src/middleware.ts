@@ -14,6 +14,7 @@ const PUBLIC_API_ROUTES = [
   "/api/try-roleplay",
   "/api/track/pwa-install",
   "/api/test-email",
+  "/api/email/unsubscribe",
 ];
 
 export async function middleware(request: NextRequest) {
