@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
   // Three independent reads in parallel — sr_card upsert, topic_progress
   // current row, and study_streaks current row. The previous code awaited
   // each sequentially, which added ~3 round-trips to the response.
-  const [, tpRes, streakRes] = await Promise.all([
+  const [, streakRes] = await Promise.all([
     supabase.from("sr_cards").upsert({
       user_id: user.id,
       question_id: questionId,
@@ -102,36 +102,22 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id,question_id" }),
     supabase
-      .from("topic_progress")
-      .select("total_attempted, total_correct")
-      .eq("user_id", user.id)
-      .eq("topic", topic)
-      .single(),
-    supabase
       .from("study_streaks")
       .select("*")
       .eq("user_id", user.id)
       .single(),
   ]);
-  const tp = tpRes.data;
   const streak = streakRes.data;
 
-  // Now compute the writes that depend on the read snapshots above and
-  // fire them in parallel as well.
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
 
-  // Supabase query builders are thenable but not actual Promises, so we
-  // type them as PromiseLike for Promise.all.
   const writes: PromiseLike<unknown>[] = [
-    supabase.from("topic_progress").upsert({
-      user_id: user.id,
-      topic,
-      total_attempted: (tp?.total_attempted ?? 0) + 1,
-      total_correct: (tp?.total_correct ?? 0) + (correct ? 1 : 0),
-      last_attempted_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id,topic" }),
+    supabase.rpc("increment_topic_progress", {
+      p_user_id: user.id,
+      p_topic: topic,
+      p_is_correct: correct,
+    }),
     // user_profiles streak counter — idempotent per UTC day (RPC).
     bumpStreak(supabase, user.id),
     // XP award — RPC, idempotent within 60s for same (user, source).

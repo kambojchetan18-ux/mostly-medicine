@@ -14,7 +14,7 @@ import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://www.mostlymedicine.com';
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -569,6 +569,8 @@ export default function RoleplayScreen() {
                 onPress={toggleRecording}
                 disabled={loading}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={isRecording ? 'Stop recording' : 'Start recording'}
               >
                 <Ionicons
                   name={isRecording ? 'stop' : 'mic'}
@@ -601,6 +603,8 @@ export default function RoleplayScreen() {
               style={[s.sendBtn, !canSend && s.sendBtnDisabled]}
               onPress={() => sendMessage(input)}
               disabled={!canSend}
+              accessibilityRole="button"
+              accessibilityLabel="Send message"
             >
               <Ionicons name="send" size={18} color="#fff" />
             </TouchableOpacity>

@@ -68,6 +68,8 @@ export default function LoginScreen() {
               style={[styles.btn, loading && styles.btnDisabled]}
               onPress={handleLogin}
               disabled={loading}
+              accessibilityRole="button"
+              accessibilityLabel={loading ? 'Logging in' : 'Log in'}
             >
               {loading
                 ? <FunLoading

@@ -13,19 +13,19 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([
+  const [topicsRes, streakRes, dueRes, statsRes] = await Promise.all([
     supabase.from("topic_progress").select("*").eq("user_id", user.id).order("total_attempted", { ascending: false }),
     supabase.from("study_streaks").select("*").eq("user_id", user.id).single(),
-    supabase.from("sr_cards").select("question_id").eq("user_id", user.id).lte("due", new Date().toISOString()),
-    supabase.from("attempts").select("is_correct").eq("user_id", user.id),
+    supabase.from("sr_cards").select("question_id", { count: "exact", head: true }).eq("user_id", user.id).lte("due", new Date().toISOString()),
+    supabase.rpc("get_attempt_stats", { p_user_id: user.id }).maybeSingle(),
   ]);
 
   const topics = topicsRes.data ?? [];
   const streak = streakRes.data;
-  const dueCount = dueRes.data?.length ?? 0;
-  const allAttempts = totalRes.data ?? [];
-  const totalAttempted = allAttempts.length;
-  const totalCorrect = allAttempts.filter((a) => a.is_correct).length;
+  const dueCount = dueRes.count ?? 0;
+  const stats = statsRes.data as { total: number; correct: number } | null;
+  const totalAttempted = Number(stats?.total ?? 0);
+  const totalCorrect = Number(stats?.correct ?? 0);
 
   // Weak topics: < 60% accuracy, min 5 attempts
   const weakTopics = topics
