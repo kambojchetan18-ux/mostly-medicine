@@ -32,6 +32,11 @@ export async function PATCH(req: NextRequest) {
   const { plan, module, enabled, daily_limit } = await req.json();
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
 
+  const VALID_PLANS = new Set(["free", "pro", "enterprise"]);
+  const VALID_MODULES = new Set(["mcq", "roleplay", "acrp_solo", "acrp_live", "library", "cv_analysis", "recalls"]);
+  if (!VALID_PLANS.has(plan)) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+  if (!VALID_MODULES.has(module)) return NextResponse.json({ error: "Invalid module" }, { status: 400 });
+
   const { error } = await supabase.from("module_permissions").upsert(
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }

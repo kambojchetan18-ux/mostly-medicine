@@ -10,19 +10,19 @@ export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!secret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
+  const auth = req.headers.get("authorization");
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
   const url = new URL(req.url);
-  const to =
-    url.searchParams.get("to") ??
-    process.env.ALERT_EMAIL ??
-    "kamboj.chetan18@gmail.com";
+  const to = process.env.ALERT_EMAIL;
+  if (!to) {
+    return NextResponse.json({ error: "ALERT_EMAIL not configured" }, { status: 500 });
+  }
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const token = newUnsubToken();

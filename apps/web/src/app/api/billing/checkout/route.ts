@@ -3,13 +3,23 @@ import { createClient } from "@/lib/supabase/server";
 import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
 
+const ALLOWED_ORIGINS = new Set([
+  "https://www.mostlymedicine.com",
+  "https://mostlymedicine.com",
+]);
+
+function safeOrigin(req: NextRequest): string {
+  const origin = req.headers.get("origin");
+  if (origin && ALLOWED_ORIGINS.has(origin)) return origin;
+  return new URL(req.url).origin;
+}
+
 export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/checkout] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/checkout] config", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Billing temporarily unavailable" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -52,7 +62,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = safeOrigin(req);
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -69,7 +79,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",

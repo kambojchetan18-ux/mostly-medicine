@@ -82,12 +82,15 @@ export default function RoleplayScreen() {
   const elapsedRef = useRef(0);
   const shownMilestonesRef = useRef<Set<number>>(new Set());
   const scrollRef = useRef<ScrollView>(null);
+  const messagesRef = useRef<Message[]>([]);
   const feedbackRequestedRef = useRef(false);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
   const recordingRef = useRef<Audio.Recording | null>(null);
   const transcribingRef = useRef(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
 
   // ── Cleanup any in-flight recording / timer / TTS on unmount ────────────────
   useEffect(() => {
@@ -284,50 +287,52 @@ export default function RoleplayScreen() {
   }
 
   // ── API ─────────────────────────────────────────────────────────────────────
-  async function getToken() {
+  async function getToken(): Promise<string | null> {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? '';
+    return session?.access_token ?? null;
   }
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading || !scenario) return;
-    // If still recording when user hits send, abort the recording (don't upload partial)
     if (recordingRef.current) await abortRecording();
     stopSpeaking();
-    const newMsgs: Message[] = [...messages, { role: 'user', content: text }];
-    setMessages(newMsgs);
+    const userMsg: Message = { role: 'user', content: text };
+    setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
     try {
       const token = await getToken();
+      if (!token) throw new Error('Please sign in to continue');
+      const currentMsgs = [...messagesRef.current, userMsg];
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
+        body: JSON.stringify({ scenarioId: scenario.id, messages: currentMsgs }),
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
-      setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
       speakPatient(data.reply, scenario?.patientProfile ?? '');
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Error';
-      setMessages([...newMsgs, { role: 'assistant', content: `[${msg}]` }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `[${msg}]` }]);
     } finally {
       setLoading(false);
     }
-  }, [loading, messages, scenario, speakPatient]);
+  }, [loading, scenario, speakPatient]);
 
   const getFeedback = useCallback(async () => {
-    if (loading || messages.length <= 1 || !scenario) return;
+    if (loading || messagesRef.current.length <= 1 || !scenario) return;
     if (recordingRef.current) await abortRecording();
     stopTimer();
     setFetchingFeedback(true);
     try {
       const token = await getToken();
+      if (!token) throw new Error('Please sign in to continue');
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ scenarioId: scenario.id, messages, requestFeedback: true }),
+        body: JSON.stringify({ scenarioId: scenario.id, messages: messagesRef.current, requestFeedback: true }),
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
@@ -337,7 +342,7 @@ export default function RoleplayScreen() {
     } finally {
       setFetchingFeedback(false);
     }
-  }, [loading, messages, scenario]);
+  }, [loading, scenario]);
 
   useEffect(() => {
     if (timeLeft === 0 && scenario && messages.length > 1 && !feedbackRequestedRef.current && !loading) {
