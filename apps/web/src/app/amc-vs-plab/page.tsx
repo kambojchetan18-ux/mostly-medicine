@@ -272,11 +272,11 @@ export default function Page() {
           <strong>MCQ paper.</strong> AMC Part 1 is 150 MCQs over 3.5 hours with ~120 scored items. PLAB 1 is 180 SBAs over 3 hours — faster-paced. AMC weights Australian-specific therapeutics heavily (PBS first lines, Therapeutic Guidelines, eTG). The trap on AMC isn&apos;t knowledge — it&apos;s the Australian-context distractor.
         </p>
         <p>
-          <strong>Clinical OSCE.</strong> Both are 16 stations × 8 minutes. AMC Part 2 has 14 examined cases plus 2 rest stations; you must pass 10 of 14. PLAB 2 uses a domain-based standard set per cycle. AMC clinical scenarios lean primary-care and Australian-context (&ldquo;PBS-listed antihypertensive&rdquo;, &ldquo;refer back to GP&rdquo;); PLAB 2 leans acute and NICE-aligned. IMGs trained in hospitalist-heavy systems sometimes find PLAB 2 closer to daily reasoning; IMGs with strong outpatient exposure often find AMC closer.
+          <strong>Clinical OSCE.</strong> Both are 16 stations × 8 minutes. AMC Part 2 has 14 examined cases plus 2 rest stations; you must pass 9 of 14 (revised from 10 in the 2026 cycle). PLAB 2 uses a domain-based standard set per cycle. AMC clinical scenarios lean primary-care and Australian-context (&ldquo;PBS-listed antihypertensive&rdquo;, &ldquo;refer back to GP&rdquo;); PLAB 2 leans acute and NICE-aligned. IMGs trained in hospitalist-heavy systems sometimes find PLAB 2 closer to daily reasoning; IMGs with strong outpatient exposure often find AMC closer.
         </p>
 
         <CitationHook n={3}>
-          AMC Clinical (Part 2) tests 16 stations across 14 examined cases — pass 10 to clear; PLAB 2 tests 16 OSCE stations of 8 minutes each, scored against domain-level standards set per cycle.
+          AMC Clinical (Part 2) tests 16 stations across 14 examined cases — pass 9 to clear (revised from 10 in 2026); PLAB 2 tests 16 OSCE stations of 8 minutes each, scored against domain-level standards set per cycle.
         </CitationHook>
 
         <h2>Pass rates compared</h2>

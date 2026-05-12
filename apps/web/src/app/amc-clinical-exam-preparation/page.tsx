@@ -8,8 +8,9 @@ const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-clinical-exam-preparation`;
 const TITLE = "AMC Part 2 Clinical Exam: The IMG's Guide to Passing 16 Stations First Attempt (2026)";
 const DESCRIPTION =
-  "AMC Clinical (Part 2) is 16 stations of 8 minutes — 14 examined, 10 to pass. The bottleneck is communication style, not knowledge. A 12-week first-attempt prep plan.";
+  "AMC Clinical (Part 2) is 16 stations of 8 minutes — 14 examined, 9 to pass. The bottleneck is communication style, not knowledge. A 12-week first-attempt prep plan.";
 const PUBLISHED = "2026-05-05";
+const MODIFIED = "2026-05-12";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -40,7 +41,7 @@ const articleSchema = {
   author: { "@id": `${SITE_URL}/#founder` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
-  dateModified: PUBLISHED,
+  dateModified: MODIFIED,
   inLanguage: "en-AU",
   keywords: [
     "amc part 2 clinical exam",
@@ -67,7 +68,7 @@ const breadcrumbSchema = {
 const faqs = [
   {
     q: "How many stations are there in AMC Part 2 and what is the pass mark?",
-    a: "There are 16 stations per circuit — 14 examined and 2 unmarked rest stations. The pass mark is 10 out of 14 examined stations. Each station is scored independently against a structured rubric covering Approach, Communication, Patient Education, Diagnosis & Investigations, and Management.",
+    a: "There are 16 stations per circuit — 14 examined and 2 unmarked rest stations. The pass mark is 9 out of 14 examined stations (reduced from 10 in the 2026 cycle). Each station is scored independently against a structured rubric covering Approach, Communication, Patient Education, Diagnosis & Investigations, and Management.",
   },
   {
     q: "How long is each station and what happens at the bell?",
@@ -91,7 +92,7 @@ const faqs = [
   },
   {
     q: "What if I fail one or two stations — do I have to re-sit the whole exam?",
-    a: "Yes. AMC Part 2 is sat as a complete circuit. Failing 5 or more of 14 examined stations means you re-sit all 16 stations at the next cycle. Failing 4 or fewer means you pass.",
+    a: "Yes. AMC Part 2 is sat as a complete circuit. Failing 6 or more of 14 examined stations means you re-sit all 16 stations at the next cycle. Failing 5 or fewer means you pass (the threshold was relaxed from 10 to 9 stations passed in 2026).",
   },
   {
     q: "How do I prepare for paediatric stations specifically — they feel different to adult ones?",
@@ -137,7 +138,7 @@ export default function Page() {
       <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
         <header className="mt-10 mb-10 not-prose">
           <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
-            AMC Part 2 Clinical &middot; Updated May 2026
+            AMC Part 2 Clinical &middot; Updated 12 May 2026
           </p>
           <h1
             className="font-display font-bold text-white mb-5"
@@ -151,7 +152,7 @@ export default function Page() {
         </header>
 
         <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
-          AMC Clinical (Part 2) is a 16-station OSCE &mdash; 14 examined cases plus 2 rest stations, 8 minutes each, candidates must pass 10 of 14 to be awarded the AMC Certificate. First-attempt pass rates sit lower than AMC MCQ &mdash; the bottleneck for International Medical Graduates is communication style and Australian consultation norms, not medical knowledge. A 12-week structured prep plan post Part 1, anchored on 30+ recorded mock stations, turns Part 2 into a single-attempt pass for most candidates with current clinical experience.
+          AMC Clinical (Part 2) is a 16-station OSCE &mdash; 14 examined cases plus 2 rest stations, 8 minutes each, candidates must pass 9 of 14 to be awarded the AMC Certificate. First-attempt pass rates sit lower than AMC MCQ &mdash; the bottleneck for International Medical Graduates is communication style and Australian consultation norms, not medical knowledge. A 12-week structured prep plan post Part 1, anchored on 30+ recorded mock stations, turns Part 2 into a single-attempt pass for most candidates with current clinical experience.
         </blockquote>
 
         <CalculatorTeaser />
@@ -165,7 +166,7 @@ export default function Page() {
 
         <h2>Quick answer</h2>
         <p>
-          AMC Clinical (Part 2) is a multi-station OSCE assessing applied clinical skills &mdash; history-taking, examination, counselling, procedural skills, management reasoning. The format: 16 stations, 8 minutes each, 14 scored and 2 rest stations. The pass mark is 10 out of 14 examined stations. First-attempt pass rates have historically sat 5&ndash;15 percentage points below AMC MCQ. The largest gap is communication style &mdash; Australian patient-centred consultation differs from many IMG home-country norms. Twelve weeks of structured prep with at least 30 recorded mock stations turns Part 2 into a first-attempt pass for most candidates with recent clinical exposure. Practice in voice mode and on video is more predictive of outcome than reading any textbook.
+          AMC Clinical (Part 2) is a multi-station OSCE assessing applied clinical skills &mdash; history-taking, examination, counselling, procedural skills, management reasoning. The format: 16 stations, 8 minutes each, 14 scored and 2 rest stations. The pass mark is 9 out of 14 examined stations (lowered from 10 in the 2026 cycle). First-attempt pass rates have historically sat 5&ndash;15 percentage points below AMC MCQ. The largest gap is communication style &mdash; Australian patient-centred consultation differs from many IMG home-country norms. Twelve weeks of structured prep with at least 30 recorded mock stations turns Part 2 into a first-attempt pass for most candidates with recent clinical exposure. Practice in voice mode and on video is more predictive of outcome than reading any textbook.
         </p>
 
         <h2>What AMC Part 2 actually tests</h2>
@@ -176,11 +177,11 @@ export default function Page() {
           The exam runs as a circuit. Each candidate moves between stations roughly every 8 minutes, signalled by a bell. At the start of each station you receive a written stem outside the door describing the patient (name, age, presentation), the setting (GP, ED, ward), and your specific task (e.g. &ldquo;take a focused history and explain your initial impression&rdquo;). You enter, perform the task with a simulated patient (and sometimes an examiner who interjects), and the bell ends the station regardless of whether you finished.
         </p>
         <p>
-          There are 16 stations in total per circuit. <strong>14 are examined</strong>, contributing to your score, and <strong>2 are unmarked rest stations</strong> &mdash; though they look identical to examined stations from the candidate&apos;s perspective, so you treat every station as scored. The pass standard is currently <strong>10 of the 14 examined stations</strong>, with each station independently scored against a structured rubric. Failing 4 or fewer stations means you pass; failing 5 or more means you re-sit the entire exam at the next available cycle.
+          There are 16 stations in total per circuit. <strong>14 are examined</strong>, contributing to your score, and <strong>2 are unmarked rest stations</strong> &mdash; though they look identical to examined stations from the candidate&apos;s perspective, so you treat every station as scored. The pass standard is currently <strong>9 of the 14 examined stations</strong> (reduced from 10 in the 2026 cycle), with each station independently scored against a structured rubric. Failing 5 or fewer stations means you pass; failing 6 or more means you re-sit the entire exam at the next available cycle.
         </p>
 
         <CitationHook n={1}>
-          AMC Clinical (Part 2) consists of 16 stations of 8 minutes each, with 14 examined cases and 2 rest stations; candidates must pass 10 of 14 examined stations to be awarded the AMC Certificate.
+          AMC Clinical (Part 2) consists of 16 stations of 8 minutes each, with 14 examined cases and 2 rest stations; candidates must pass 9 of 14 examined stations (revised from 10 in the 2026 cycle) to be awarded the AMC Certificate.
         </CitationHook>
 
         <p>

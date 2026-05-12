@@ -44,7 +44,7 @@ const posts: BlogPost[] = [
     slug: "amc-clinical-exam-preparation",
     title: "AMC Part 2 Clinical Exam: The IMG's Guide to Passing 16 Stations First Attempt (2026)",
     description:
-      "AMC Clinical (Part 2) is 16 stations of 8 minutes — 14 examined, 10 to pass. The bottleneck is communication style, not knowledge. A 12-week first-attempt prep plan.",
+      "AMC Clinical (Part 2) is 16 stations of 8 minutes — 14 examined, 9 to pass (revised 2026). The bottleneck is communication style, not knowledge. A 12-week first-attempt prep plan.",
     publishedAt: "2026-05-05",
     category: "OSCE",
   },
