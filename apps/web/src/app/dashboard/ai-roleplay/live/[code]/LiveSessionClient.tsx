@@ -21,33 +21,22 @@ const ROLEPLAY_SECONDS = 8 * 60;
 //      still works during DevOps work, but it's rate-limited and noisy.
 // Setting NEXT_PUBLIC_TURN_URL="" in Vercel rolls back to STUN-only +
 // Open Relay — handy as an emergency kill-switch if our coturn box dies.
-const TURN_URL = process.env.NEXT_PUBLIC_TURN_URL;
-const TURN_USERNAME = process.env.NEXT_PUBLIC_TURN_USERNAME;
-const TURN_CREDENTIAL = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
-const HAS_PRIVATE_TURN = Boolean(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL);
+const FALLBACK_ICE: RTCIceServer[] = [
+  {
+    urls: [
+      "turn:openrelay.metered.ca:80",
+      "turn:openrelay.metered.ca:443",
+      "turn:openrelay.metered.ca:443?transport=tcp",
+    ],
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+];
 
-const RTC_CONFIG: RTCConfiguration = {
+const BASE_RTC_CONFIG: RTCConfiguration = {
   iceServers: [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
-    ...(HAS_PRIVATE_TURN
-      ? [
-          {
-            urls: [TURN_URL as string],
-            username: TURN_USERNAME as string,
-            credential: TURN_CREDENTIAL as string,
-          },
-        ]
-      : [
-          {
-            urls: [
-              "turn:openrelay.metered.ca:80",
-              "turn:openrelay.metered.ca:443",
-              "turn:openrelay.metered.ca:443?transport=tcp",
-            ],
-            username: "openrelayproject",
-            credential: "openrelayproject",
-          },
-        ]),
+    ...FALLBACK_ICE,
   ],
   iceTransportPolicy: "all",
 };
@@ -410,7 +399,7 @@ export default function LiveSessionClient({
         // short-lived (24h) credential pair that's far more reliable than
         // the public Open Relay. If not configured / errors, fall back to
         // the static RTC_CONFIG (self-hosted coturn or Open Relay).
-        let rtcConfig: RTCConfiguration = RTC_CONFIG;
+        let rtcConfig: RTCConfiguration = BASE_RTC_CONFIG;
         try {
           const res = await fetch("/api/turn-credentials", { cache: "no-store" });
           if (res.ok) {

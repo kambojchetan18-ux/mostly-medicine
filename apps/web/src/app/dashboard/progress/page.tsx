@@ -38,14 +38,17 @@ function barColor(pct: number) {
 export default async function ProgressPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) {
+    const { redirect } = await import("next/navigation");
+    redirect("/auth/login");
+  }
 
   // All queries in parallel — no sequential round trips
   const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([
     supabase.from("topic_progress").select("*").eq("user_id", user.id).order("total_attempted", { ascending: false }),
     supabase.from("study_streaks").select("*").eq("user_id", user.id).single(),
     supabase.from("sr_cards").select("question_id", { count: "exact", head: true }).eq("user_id", user.id).lte("due", new Date().toISOString()),
-    supabase.from("attempts").select("is_correct").eq("user_id", user.id),
+    supabase.from("attempts").select("is_correct", { count: "exact" }).eq("user_id", user.id),
   ]);
 
   const topics = topicsRes.data ?? [];

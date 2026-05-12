@@ -56,7 +56,8 @@ export default function MentorMessage({
     return () => {
       cancelled = true;
     };
-  }, [trigger, context]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trigger, JSON.stringify(context)]);
 
   // Auto-dismiss after the message renders.
   useEffect(() => {

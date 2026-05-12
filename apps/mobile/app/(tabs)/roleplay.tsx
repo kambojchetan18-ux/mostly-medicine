@@ -76,6 +76,7 @@ export default function RoleplayScreen() {
   const [isRecording, setIsRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
+  const isMutedRef = useRef(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -111,7 +112,7 @@ export default function RoleplayScreen() {
 
   // ── TTS ──────────────────────────────────────────────────────────────────────
   const speakPatient = useCallback((text: string, profile: string) => {
-    if (isMuted) return;
+    if (isMutedRef.current) return;
     Speech.stop();
     const isFemale = /female|woman/i.test(profile);
     Speech.speak(text, {
@@ -123,7 +124,7 @@ export default function RoleplayScreen() {
       onStopped: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false),
     });
-  }, [isMuted]);
+  }, []);
 
   function stopSpeaking() {
     Speech.stop();
@@ -496,7 +497,7 @@ export default function RoleplayScreen() {
                 )}
                 <TouchableOpacity
                   style={[s.exitBtn, isMuted && { borderColor: '#ef4444' }]}
-                  onPress={() => { setIsMuted(m => !m); if (isSpeaking) stopSpeaking(); }}
+                  onPress={() => { setIsMuted(m => { isMutedRef.current = !m; return !m; }); if (isSpeaking) stopSpeaking(); }}
                 >
                   <Ionicons name={isMuted ? 'volume-mute' : 'volume-medium'} size={16} color={isMuted ? '#ef4444' : '#64748b'} />
                 </TouchableOpacity>
