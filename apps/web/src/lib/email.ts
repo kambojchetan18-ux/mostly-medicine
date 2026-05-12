@@ -63,7 +63,7 @@ export function brandedShell(args: {
   const unsub = args.unsubscribeUrl
     ? `<p style="margin:14px 0 0;font-size:11px;color:#94a3b8;">
          You&apos;re receiving this because you opted in for daily updates from Mostly Medicine.
-         <a href="${args.unsubscribeUrl}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
+         <a href="${escape(args.unsubscribeUrl)}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
          · <a href="https://mostlymedicine.com" style="color:#94a3b8;text-decoration:underline;">Mostly Medicine</a>
        </p>`
     : `<p style="margin:14px 0 0;font-size:11px;color:#94a3b8;">

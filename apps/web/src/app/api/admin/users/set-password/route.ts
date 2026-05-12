@@ -80,9 +80,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
 
-  return NextResponse.json({
-    ok: true,
-    email: target.user.email ?? null,
-    password,
-  });
+  return NextResponse.json(
+    { ok: true, email: target.user.email ?? null, password },
+    { headers: { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } }
+  );
 }

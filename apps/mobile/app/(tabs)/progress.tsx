@@ -54,27 +54,24 @@ export default function ProgressScreen() {
         return;
       }
 
-      const [attRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
+      const [statsRes, streakRes, dueRes, topicRes] = await Promise.all([
+        supabase.rpc('get_attempt_stats', { p_user_id: user.id }).maybeSingle(),
         supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
           .eq('user_id', user.id).lte('due', new Date().toISOString()),
+        supabase.from('topic_progress').select('topic, total_attempted, total_correct')
+          .eq('user_id', user.id),
       ]);
       if (cancelled) return;
 
-      const attempts = attRes.data ?? [];
-      setTotalAttempts(attempts.length);
-      setTotalCorrect(attempts.filter((a) => a.is_correct).length);
+      setTotalAttempts(Number(statsRes.data?.total ?? 0));
+      setTotalCorrect(Number(statsRes.data?.correct ?? 0));
       setStreak(streakRes.data?.current_streak ?? 0);
       setDue(dueRes.count ?? 0);
 
       const topicMap: Record<string, { done: number; correct: number }> = {};
-      for (const a of attempts) {
-        const topic = QUESTION_TOPIC_MAP.get(a.question_id);
-        if (!topic) continue;
-        if (!topicMap[topic]) topicMap[topic] = { done: 0, correct: 0 };
-        topicMap[topic].done++;
-        if (a.is_correct) topicMap[topic].correct++;
+      for (const tp of topicRes.data ?? []) {
+        topicMap[tp.topic] = { done: tp.total_attempted, correct: tp.total_correct };
       }
 
       if (cancelled) return;

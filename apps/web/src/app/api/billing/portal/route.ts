@@ -2,15 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, assertStripeConfig } from "@/lib/stripe";
 
-// Returns a Stripe Customer Portal URL so the user can update payment method,
-// switch plans, or cancel without us building UI for any of that.
+const ALLOWED_ORIGINS = new Set([
+  "https://www.mostlymedicine.com",
+  "https://mostlymedicine.com",
+]);
+
+function safeOrigin(req: NextRequest): string {
+  const origin = req.headers.get("origin");
+  if (origin && ALLOWED_ORIGINS.has(origin)) return origin;
+  return new URL(req.url).origin;
+}
+
 export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/portal] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/portal] config", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Billing temporarily unavailable" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -28,7 +36,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No subscription on file" }, { status: 404 });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
