@@ -46,6 +46,10 @@ export async function POST(req: NextRequest) {
   try {
     const { scenarioId, messages, requestFeedback } = await req.json();
 
+    if (Array.isArray(messages) && (messages.length > 100 || messages.some((m: { content?: string }) => typeof m.content === "string" && m.content.length > 5000))) {
+      return NextResponse.json({ error: "Message too long or too many messages" }, { status: 400 });
+    }
+
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
         { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },

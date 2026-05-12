@@ -14,7 +14,7 @@ import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://www.mostlymedicine.com';
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',

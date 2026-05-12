@@ -83,10 +83,9 @@ export async function POST(req: NextRequest) {
   const result = f.next(card as Parameters<typeof f.next>[0], new Date(), rating);
   const next = result.card;
 
-  // Three independent reads in parallel — sr_card upsert, topic_progress
-  // current row, and study_streaks current row. The previous code awaited
-  // each sequentially, which added ~3 round-trips to the response.
-  const [, tpRes, streakRes] = await Promise.all([
+  // Independent reads/writes in parallel — sr_card upsert, atomic topic_progress
+  // update via RPC, and study_streaks current row.
+  const [, , streakRes] = await Promise.all([
     supabase.from("sr_cards").upsert({
       user_id: user.id,
       question_id: questionId,
@@ -101,19 +100,17 @@ export async function POST(req: NextRequest) {
       last_review: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id,question_id" }),
-    supabase
-      .from("topic_progress")
-      .select("total_attempted, total_correct")
-      .eq("user_id", user.id)
-      .eq("topic", topic)
-      .single(),
+    supabase.rpc("upsert_topic_progress", {
+      p_user_id: user.id,
+      p_topic: topic,
+      p_is_correct: correct,
+    }),
     supabase
       .from("study_streaks")
       .select("*")
       .eq("user_id", user.id)
       .single(),
   ]);
-  const tp = tpRes.data;
   const streak = streakRes.data;
 
   // Now compute the writes that depend on the read snapshots above and
@@ -124,15 +121,6 @@ export async function POST(req: NextRequest) {
   // Supabase query builders are thenable but not actual Promises, so we
   // type them as PromiseLike for Promise.all.
   const writes: PromiseLike<unknown>[] = [
-    supabase.from("topic_progress").upsert({
-      user_id: user.id,
-      topic,
-      total_attempted: (tp?.total_attempted ?? 0) + 1,
-      total_correct: (tp?.total_correct ?? 0) + (correct ? 1 : 0),
-      last_attempted_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id,topic" }),
-    // user_profiles streak counter — idempotent per UTC day (RPC).
     bumpStreak(supabase, user.id),
     // XP award — RPC, idempotent within 60s for same (user, source).
     awardXp(supabase, user.id, correct ? "mcq_correct" : "mcq_incorrect", XP_POINTS[correct ? "mcq_correct" : "mcq_incorrect"]),

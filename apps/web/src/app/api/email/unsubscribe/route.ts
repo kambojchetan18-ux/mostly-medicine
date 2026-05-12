@@ -3,6 +3,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 interface TokenRow {
   user_id: string;
+  expires_at?: string | null;
 }
 
 const SHELL_HEAD = `
@@ -63,13 +64,18 @@ export async function GET(req: NextRequest) {
 
     const { data: tokenRaw } = await service
       .from("email_unsub_tokens")
-      .select("user_id")
+      .select("user_id, expires_at")
       .eq("token", token)
       .maybeSingle();
 
     const tokenRow = tokenRaw as unknown as TokenRow | null;
 
     if (!tokenRow?.user_id) {
+      return htmlResponse(expiredHtml);
+    }
+
+    if (tokenRow.expires_at && new Date(tokenRow.expires_at) < new Date()) {
+      await service.from("email_unsub_tokens").delete().eq("token", token);
       return htmlResponse(expiredHtml);
     }
 
