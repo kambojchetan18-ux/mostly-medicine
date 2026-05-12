@@ -33,7 +33,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages, topicTitle, topicContent } = await req.json();
+  const body = await req.json();
+  const { messages, topicTitle, topicContent } = body;
+
+  if (Array.isArray(messages) && (messages.length > 100 || messages.some((m: { content?: string }) => typeof m.content === "string" && m.content.length > 5000))) {
+    return NextResponse.json({ error: "Message too long or too many messages" }, { status: 400 });
+  }
 
   const systemPrompt =
     topicTitle && topicContent

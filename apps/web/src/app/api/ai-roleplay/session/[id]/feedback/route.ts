@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { scoreSession } from "@/lib/ai-roleplay/scoring";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
@@ -16,6 +17,12 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
+  }
+
+  const rateKey = clientKey(_req, "acrp_fb", user.id);
+  const rl = await aiRateLimit(rateKey, { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
   // ─── Load session (must belong to this user) ─────────────────────────

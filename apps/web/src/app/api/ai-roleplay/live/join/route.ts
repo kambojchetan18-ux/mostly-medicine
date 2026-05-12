@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { checkModulePermission } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -9,6 +10,10 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rlKey = clientKey(req, "live_join", user.id);
+  const rl = await aiRateLimit(rlKey, { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
 
   const perm = await checkModulePermission(supabase, "acrp_live");
   if (!perm.allowed) return NextResponse.json({ error: "upgrade_required" }, { status: 403 });

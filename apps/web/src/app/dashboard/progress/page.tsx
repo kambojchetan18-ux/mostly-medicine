@@ -38,22 +38,25 @@ function barColor(pct: number) {
 export default async function ProgressPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) {
+    const { redirect } = await import("next/navigation");
+    redirect("/auth/login");
+  }
 
   // All queries in parallel — no sequential round trips
   const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([
     supabase.from("topic_progress").select("*").eq("user_id", user.id).order("total_attempted", { ascending: false }),
     supabase.from("study_streaks").select("*").eq("user_id", user.id).single(),
     supabase.from("sr_cards").select("question_id", { count: "exact", head: true }).eq("user_id", user.id).lte("due", new Date().toISOString()),
-    supabase.from("attempts").select("is_correct").eq("user_id", user.id),
+    supabase.rpc("get_attempt_stats", { p_user_id: user.id }),
   ]);
 
   const topics = topicsRes.data ?? [];
   const streak = streakRes.data;
   const dueCount = dueRes.count ?? 0;
-  const allAttempts = totalRes.data ?? [];
-  const totalAttempted = allAttempts.length;
-  const totalCorrect = allAttempts.filter((a) => a.is_correct).length;
+  const stats = totalRes.data;
+  const totalAttempted = stats?.total_attempted ?? 0;
+  const totalCorrect = stats?.total_correct ?? 0;
   const overallAccuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
 
   const weakTopics = topics
