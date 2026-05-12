@@ -1,10 +1,12 @@
-#!/usr/bin/env -S npx ts-node --transpile-only
+#!/usr/bin/env npx ts-node
 /**
  * Validate question ID uniqueness across all content files.
  *
  * Run from the monorepo root:
  *
- *   npx ts-node scripts/validate-question-ids.ts
+ *   npx ts-node --skip-project --transpile-only \
+ *     --compiler-options '{"module":"node16","moduleResolution":"node16","esModuleInterop":true}' \
+ *     scripts/validate-question-ids.ts
  *
  * Exits 0 if all IDs are unique, 1 if duplicates are found.
  */
@@ -42,8 +44,6 @@ if (duplicates.length > 0) {
   console.error("");
   process.exit(1);
 } else {
-  console.log(
-    `All ${allQuestions.length} question IDs are unique.`
-  );
+  console.log(`All ${allQuestions.length} question IDs are unique.`);
   process.exit(0);
 }
