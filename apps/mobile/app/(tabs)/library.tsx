@@ -65,7 +65,7 @@ export default function LibraryScreen() {
             <View key={section.heading} style={{ marginBottom: 24 }}>
               <Text style={s.sectionTitle}>{section.heading}</Text>
               {section.items.map((item) => (
-                <TouchableOpacity key={item.title} style={s.card} onPress={() => Linking.openURL(item.url)} activeOpacity={0.7}>
+                <TouchableOpacity key={item.title} style={s.card} onPress={() => Linking.openURL(item.url).catch(() => {})} activeOpacity={0.7}>
                   <View style={[s.iconBox, { backgroundColor: item.color + '22' }]}>
                     <Ionicons name={item.icon} size={22} color={item.color} />
                   </View>

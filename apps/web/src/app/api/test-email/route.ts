@@ -17,10 +17,14 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
   const url = new URL(req.url);
+  const ALLOWED_TEST_RECIPIENTS = new Set([
+    "kamboj.chetan18@gmail.com",
+    "info@mostlymedicine.com",
+  ]);
+  const requestedTo = url.searchParams.get("to");
   const to =
-    url.searchParams.get("to") ??
+    (requestedTo && ALLOWED_TEST_RECIPIENTS.has(requestedTo) ? requestedTo : null) ??
     process.env.ALERT_EMAIL ??
     "kamboj.chetan18@gmail.com";
 

@@ -131,8 +131,16 @@ interface OpenAIChatResponse {
 
 function isOpenAIChatResponse(value: unknown): value is OpenAIChatResponse {
   if (!value || typeof value !== "object") return false;
-  const choices = (value as { choices?: unknown }).choices;
-  return choices === undefined || Array.isArray(choices);
+  const obj = value as Record<string, unknown>;
+  if (obj.choices === undefined) return true;
+  if (!Array.isArray(obj.choices)) return false;
+  if (obj.choices.length > 0) {
+    const first = obj.choices[0] as Record<string, unknown> | null;
+    if (!first || typeof first !== "object") return false;
+    const msg = first.message as Record<string, unknown> | undefined;
+    if (msg && typeof msg.content !== "string") return false;
+  }
+  return true;
 }
 
 async function callOpenAICompatible(args: {
