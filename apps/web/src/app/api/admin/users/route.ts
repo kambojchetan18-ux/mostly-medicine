@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function GET() {
   const supabase = await createClient();
@@ -29,6 +30,11 @@ export async function PATCH(req: NextRequest) {
 
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rl = await aiRateLimit(clientKey(req, "admin-users", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
 
   const { userId, plan, role } = await req.json();
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });

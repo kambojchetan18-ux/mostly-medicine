@@ -240,28 +240,36 @@ export async function runChat(input: RunChatInput): Promise<RunChatResult> {
     return { text, model: choice.model, provider: "anthropic" };
   }
 
-  // Path B: chosen provider is Groq or DeepSeek. Try the cheap path first,
-  // fall back to Anthropic on missing key or any error.
+  // Path B: chosen provider is Groq or DeepSeek. Try the cheap path first
+  // with one retry (exponential backoff), then fall back to Anthropic.
   const apiKey = process.env[choice.apiKeyEnv];
   if (apiKey && choice.baseURL) {
-    try {
-      const text = await callOpenAICompatible({
-        baseURL: choice.baseURL,
-        apiKey,
-        model: choice.model,
-        system: input.system,
-        messages: input.messages,
-        maxTokens: input.maxTokens,
-        temperature: input.temperature,
-      });
-      return { text, model: choice.model, provider: choice.provider };
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.warn(
-        `[llm-router] ${choice.provider} call failed for use case '${input.useCase}', falling back to Anthropic: ${msg}`
-      );
-      // fall through to Anthropic fallback
+    const MAX_RETRIES = 2;
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const text = await callOpenAICompatible({
+          baseURL: choice.baseURL,
+          apiKey,
+          model: choice.model,
+          system: input.system,
+          messages: input.messages,
+          maxTokens: input.maxTokens,
+          temperature: input.temperature,
+        });
+        return { text, model: choice.model, provider: choice.provider };
+      } catch (err) {
+        lastErr = err;
+        if (attempt < MAX_RETRIES - 1) {
+          const delayMs = (attempt + 1) * 1000;
+          await new Promise((r) => setTimeout(r, delayMs));
+        }
+      }
     }
+    const msg = lastErr instanceof Error ? (lastErr as Error).message : String(lastErr);
+    console.warn(
+      `[llm-router] ${choice.provider} failed after ${MAX_RETRIES} attempts for '${input.useCase}', falling back to Anthropic: ${msg}`
+    );
   } else {
     console.warn(
       `[llm-router] ${choice.apiKeyEnv} missing — using Anthropic fallback for use case '${input.useCase}'`
