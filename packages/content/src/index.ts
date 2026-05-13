@@ -16,6 +16,7 @@ import { rheumatologyQuestions } from "./questions-rheumatology";
 import { infectiousQuestions } from "./questions-infectious";
 import { surgeryQuestions } from "./questions-surgery";
 import { pharmacologyQuestions } from "./questions-pharmacology";
+import { dermatologyQuestions } from "./questions-dermatology";
 
 export const allQuestions = [
   ...seedQuestions,
@@ -33,4 +34,5 @@ export const allQuestions = [
   ...infectiousQuestions,
   ...surgeryQuestions,
   ...pharmacologyQuestions,
+  ...dermatologyQuestions,
 ];
