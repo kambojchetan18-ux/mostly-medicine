@@ -11278,4 +11278,21 @@ export const cardiovascularQuestions: MCQuestion[] = [
     reference: "amc",
     difficulty: "hard",
   },
+  {
+    id: "cv-amedex-0099",
+    topic: "Cardiovascular",
+    subtopic: "Atrial Fibrillation with Heart Failure - Rate Control",
+    stem: `A 78-year-old man presents to your clinic with a 3-week history of palpitation. On examination, he has a blood pressure of 135/80 mmHg and heart rate of 115 bpm and irregular. ECG reveals atrial fibrillation (AF). An echocardiography is arranged that shows an ejection fraction (EF) of 38%. Which one of the following is the most appropriate treatment option for him?`,
+    options: [
+      { label: "A", text: `Electrical cardioversion.` },
+      { label: "B", text: `Metoprolol.` },
+      { label: "C", text: `Digoxin.` },
+      { label: "D", text: `Flecainide.` },
+      { label: "E", text: `Verapamil.` },
+    ],
+    correctAnswer: "B",
+    explanation: `The main goals of treatment of patients with atrial AF who also have heart failure are control of symptoms and prevention of arterial thromboembolism. In patients with heart failure, hemodynamic consequences of AF results in decreased exercise capacity and the decompensation of heart failure. Similar to the general population either rate control or rhythm control are mainstay of therapy. Previously, rhythm control was considered the superior method for treatment of AF in patients with heart failure; however, recent data has challenged this approach. Currently, rate control is the most appropriate initial management in patients with AF and symptoms related to rapid ventricular response. Rate control to prevent rapid AF often leads to an improvement in symptoms in patients with heart failure. Moreover, slowing of the ventricular rate often leads to a moderate or even marked improvement in left ventricular function. Based on current evidence, cardiac-selective beta blockers (metoprolol, atenolol, carvedilol, bisoprolol) are preferred options to use for rate control in patients with AF and heart failure because they are also recommended for treatment of heart failure itself. Digoxin can be used as adjunctive therapy if beta blockers fail to adequately control the rate. Electrical cardioversion is used as an initial emergency treatment only if any of the 4 following conditions are present: active ischemia (symptomatic or electrocardiographic evidence), evidence of organ hypoperfusion, severe manifestations of heart failure including pulmonary edema, or the presence of a pre-excitation syndrome that may lead to an extremely rapid ventricular rate due to the presence of an accessory pathway. This patient has none of the above conditions to necessitate such treatment. Digoxin is the initial management of patients with AF and decompensated heart failure. This patient's heart failure is not decompensated. Even so, digoxin is not likely to slow the rate in the first hours of treatment. Flecainide is an option for conversion to or maintenance of sinus rhythm and is used for rhythm control. Unless the patient has severe symptoms caused by the arrhythmia rather than the rapid rate, cardioversion should be performed on an elective basis after adequate anticoagulation has been achieved. Verapamil is a non-dihydropyridine calcium channel blocker. These agents are appropriate options for rate control in the general population but should be avoided in heart failure due to significant risk of myocardial suppression and worsening of the heart failure associated with their use.`,
+    reference: "amc",
+    difficulty: "medium",
+  },
 ];
