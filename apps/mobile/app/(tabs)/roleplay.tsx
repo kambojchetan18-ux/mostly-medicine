@@ -79,6 +79,7 @@ export default function RoleplayScreen() {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const milestoneTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const elapsedRef = useRef(0);
   const shownMilestonesRef = useRef<Set<number>>(new Set());
   const scrollRef = useRef<ScrollView>(null);
@@ -100,6 +101,10 @@ export default function RoleplayScreen() {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
+      }
+      if (milestoneTimeoutRef.current) {
+        clearTimeout(milestoneTimeoutRef.current);
+        milestoneTimeoutRef.current = null;
       }
       // Stop the patient TTS so it doesn't keep speaking after we unmount.
       Speech.stop();
@@ -269,7 +274,8 @@ export default function RoleplayScreen() {
         if (elapsed === MILESTONES[i].time && !shownMilestonesRef.current.has(i)) {
           shownMilestonesRef.current.add(i);
           setMilestone(MILESTONES[i].label);
-          setTimeout(() => setMilestone(null), 4000);
+          if (milestoneTimeoutRef.current) clearTimeout(milestoneTimeoutRef.current);
+          milestoneTimeoutRef.current = setTimeout(() => setMilestone(null), 4000);
         }
       }
       setTimeLeft((prev) => {

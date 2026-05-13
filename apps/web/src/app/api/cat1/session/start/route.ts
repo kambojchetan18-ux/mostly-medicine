@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { enforceDailyLimit } from "@/lib/permissions";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,14 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const limit = await enforceDailyLimit(supabase, "mcq");
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "daily_limit_reached", plan: limit.plan, dailyLimit: limit.dailyLimit, used: limit.used },
+      { status: 429 }
+    );
+  }
 
   let body: StartBody = {};
   try {
