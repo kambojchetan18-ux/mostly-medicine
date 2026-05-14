@@ -78,17 +78,10 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
     percentile = Math.round((beat / peerScores.length) * 100);
   }
 
-  // Generate learning points via Claude Haiku — one call for the whole session
-  // returning a JSON array. ~ $0.001 per session at moderate quiz length.
-  let learningPoints: LearningPoint[] = [];
-  if (total > 0 && process.env.ANTHROPIC_API_KEY) {
-    try {
-      learningPoints = await generateLearningPoints(list, session.topic ?? null);
-    } catch (err) {
-      console.error("[cat1/session/end] learning points failed", err);
-    }
-  }
-
+  // Mark the session completed FIRST so the user is never blocked by a slow
+  // or failing AI call. Empty learning_points are populated below in a
+  // bounded follow-up; if that step also fails the user still gets a valid
+  // results page.
   await supabase
     .from("mcq_sessions")
     .update({
@@ -99,9 +92,30 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
       correct_count: correctCount,
       score_pct: scorePct,
       percentile,
-      learning_points: learningPoints,
+      learning_points: [],
     })
     .eq("id", id);
+
+  // Best-effort AI learning points — bounded to 8s so we never starve the
+  // route's overall budget on a Vercel cold start. Falls back silently.
+  if (total > 0 && process.env.ANTHROPIC_API_KEY) {
+    try {
+      const learningPoints = await Promise.race<LearningPoint[]>([
+        generateLearningPoints(list, session.topic ?? null),
+        new Promise<LearningPoint[]>((_, reject) =>
+          setTimeout(() => reject(new Error("learning_points_timeout")), 8000),
+        ),
+      ]);
+      if (learningPoints.length > 0) {
+        await supabase
+          .from("mcq_sessions")
+          .update({ learning_points: learningPoints })
+          .eq("id", id);
+      }
+    } catch (err) {
+      console.error("[cat1/session/end] learning points skipped:", (err as Error).message);
+    }
+  }
 
   return NextResponse.json({ ok: true, sessionId: id });
 }
