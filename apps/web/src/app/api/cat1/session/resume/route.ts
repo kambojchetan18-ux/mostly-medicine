@@ -5,6 +5,11 @@ export const dynamic = "force-dynamic";
 
 interface ResumeBody {
   topic?: string | null;
+  // Optional: client tells us the session size it wants. If the existing
+  // active session has a smaller target_count (e.g. an older 20-count row
+  // created before Pro's full-pool option), we bump it here so the resumed
+  // session's stored size matches what the user is about to attempt.
+  desiredTargetCount?: number;
 }
 
 // Returns the user's latest still-active mcq_session for the given topic
@@ -57,11 +62,23 @@ export async function POST(req: NextRequest) {
     .map((a) => a.question_id)
     .filter((id): id is string => typeof id === "string" && id.length > 0);
 
+  // Bump target_count if the client is about to attempt more than the row
+  // currently stores. Capped at 2000 to match session/start.
+  let effectiveTargetCount = session.target_count ?? 0;
+  const desired = Number(body.desiredTargetCount) || 0;
+  if (desired > effectiveTargetCount && desired <= 2000) {
+    effectiveTargetCount = desired;
+    await supabase
+      .from("mcq_sessions")
+      .update({ target_count: desired })
+      .eq("id", session.id);
+  }
+
   return NextResponse.json({
     active: true,
     sessionId: session.id,
     startedAt: session.started_at,
-    targetCount: session.target_count,
+    targetCount: effectiveTargetCount,
     attemptedIds,
   });
 }

@@ -170,7 +170,7 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       const resumeRes = await fetch("/api/cat1/session/resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, desiredTargetCount: count }),
       });
       const resumeData = (await resumeRes.json().catch(() => ({}))) as {
         active?: boolean;
@@ -180,7 +180,11 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       };
       const reusing = !!(resumeData.active && resumeData.sessionId);
       const skipIds = new Set<string>(resumeData.attemptedIds ?? []);
-      const targetCount = reusing && resumeData.targetCount ? resumeData.targetCount : count;
+      // Always honour the count the user just clicked. Older active sessions
+      // were created with target_count=20 before Pro got the full-topic pool
+      // option, so without this a Pro user clicking "Practice all 472" would
+      // silently be capped at the legacy 20.
+      const targetCount = Math.max(count, resumeData.targetCount ?? 0);
 
       // Always fetch a generous pool from the questions API so the post-skip
       // filter still leaves enough to fill the requested target.
