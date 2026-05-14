@@ -89,9 +89,10 @@ export async function clearAttempts(key: string): Promise<void> {
 
 // Per-IP / per-user "calls in a rolling window" limiter for AI endpoints.
 // Cheap and good enough to block runaway scripts hitting Anthropic on our
-// dime. Reuses the rate_limit_attempts table — `count` is the call count,
-// `first_attempt_at` is the window start. When `count` exceeds `max` inside
-// `windowMs`, we deny until the window rolls over.
+// dime. Uses an atomic Postgres function (check_and_increment_rate_limit)
+// so that concurrent requests cannot both read the same low count and slip
+// through — fixing the old TOCTOU race where a SELECT-then-UPSERT pattern
+// let two simultaneous requests both pass.
 //
 // Defaults: 30 calls / 60s. Tuned so a chatty student typing fast still
 // works but a `for i in {1..1000}` loop is stopped.
@@ -102,32 +103,25 @@ export async function aiRateLimit(
   const max = opts.max ?? 30;
   const windowMs = opts.windowMs ?? 60 * 1000;
   const supabase = serviceClient();
-  const now = Date.now();
 
-  const { data } = await supabase
-    .from("rate_limit_attempts")
-    .select("count, first_attempt_at")
-    .eq("key", key)
-    .single();
-
-  const windowStart = data?.first_attempt_at ? new Date(data.first_attempt_at).getTime() : now;
-  const windowExpired = now - windowStart > windowMs;
-  const currentCount = !data || windowExpired ? 0 : data.count ?? 0;
-
-  if (currentCount >= max) {
-    const retryAfterMs = Math.max(0, windowStart + windowMs - now);
-    return { allowed: false, retryAfterMs, count: currentCount, max };
-  }
-
-  const newCount = currentCount + 1;
-  const firstAttempt = windowExpired ? new Date(now).toISOString() : data?.first_attempt_at ?? new Date(now).toISOString();
-  await supabase.from("rate_limit_attempts").upsert({
-    key,
-    count: newCount,
-    first_attempt_at: firstAttempt,
-    locked_until: null,
-    updated_at: new Date(now).toISOString(),
+  const { data, error } = await supabase.rpc("check_and_increment_rate_limit", {
+    p_key: key,
+    p_window_ms: windowMs,
+    p_max_count: max,
   });
 
-  return { allowed: true, count: newCount, max };
+  if (error) {
+    // If the RPC fails (e.g. function not deployed yet), allow the request
+    // rather than blocking legitimate users. Log for observability.
+    console.error("[aiRateLimit] RPC error, allowing request:", error.message);
+    return { allowed: true, count: 0, max };
+  }
+
+  const result = data as { allowed: boolean; count: number; retry_after_ms: number };
+  return {
+    allowed: result.allowed,
+    retryAfterMs: result.retry_after_ms > 0 ? result.retry_after_ms : undefined,
+    count: result.count,
+    max,
+  };
 }
