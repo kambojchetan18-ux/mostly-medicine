@@ -714,14 +714,16 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         </div>
       </div>
     )}
-    <div className="grid grid-cols-1 md:grid-cols-[240px_1fr_260px] gap-4 max-w-7xl mx-auto px-2">
-      <QuizNavigator
-        total={questions.length}
-        current={current}
-        answers={answers}
-        resumedAlreadyDone={resumedAlreadyDone}
-        onJump={handleJumpTo}
-      />
+    <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)_260px] gap-4 max-w-7xl mx-auto lg:px-2">
+      <div className="hidden lg:block">
+        <QuizNavigator
+          total={questions.length}
+          current={current}
+          answers={answers}
+          resumedAlreadyDone={resumedAlreadyDone}
+          onJump={handleJumpTo}
+        />
+      </div>
     <div className="min-w-0">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-gray-500">
@@ -736,6 +738,36 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         <button onClick={reset} className="text-xs text-gray-400 hover:text-gray-600">
           Exit
         </button>
+      </div>
+
+      {/* Mobile-only compact navigator strip — horizontal scroll of question
+          status pills. Hidden on lg+ because the QuizNavigator sidebar covers it. */}
+      <div className="lg:hidden mb-3 -mx-2 px-2 overflow-x-auto">
+        <div className="flex gap-1.5 w-max">
+          {questions.map((_, idx) => {
+            const a = answers[idx];
+            const isCur = idx === current;
+            const cls = isCur
+              ? "bg-brand-600 text-white"
+              : !a
+                ? "bg-white border border-gray-200 text-gray-700"
+                : a.correct
+                  ? "bg-emerald-100 border border-emerald-300 text-emerald-700"
+                  : "bg-rose-100 border border-rose-300 text-rose-700";
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleJumpTo(idx)}
+                className={`h-8 min-w-8 px-2 rounded-md text-xs font-semibold transition shrink-0 ${cls}`}
+                aria-label={`Question ${idx + 1 + resumedAlreadyDone}`}
+              >
+                {idx + 1 + resumedAlreadyDone}
+                {a && (a.correct ? " ✓" : " ✗")}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="h-1.5 bg-gray-100 rounded-full mb-5 overflow-hidden">
@@ -894,7 +926,9 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         )}
       </div>
     </div>
-      <QuizMeta questionId={q.id} current={current} />
+      <div className="hidden lg:block">
+        <QuizMeta questionId={q.id} current={current} />
+      </div>
     </div>
     </>
   );
