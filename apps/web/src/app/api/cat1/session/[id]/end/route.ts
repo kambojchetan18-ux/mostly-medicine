@@ -61,7 +61,34 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
 
   const startedAtMs = new Date(session.started_at as string).getTime();
   const endedAtMs = Date.now();
-  const durationSeconds = Math.max(0, Math.round((endedAtMs - startedAtMs) / 1000));
+
+  // Active duration = sum of per-question gaps in the attempts table, with
+  // each gap capped at MAX_GAP_SEC. This filters out wall-clock idle time
+  // (e.g. user opens the quiz at 8:32am, walks away, finishes at 7pm — the
+  // raw elapsed would otherwise show 10+ hours / 20-min-per-question and
+  // misrepresent the actual time-on-task). The first question's gap is
+  // approximated from the average of the remaining gaps so we don't
+  // under-count single-attempt sessions.
+  const MAX_GAP_SEC = 5 * 60;
+  let durationSeconds = 0;
+  if (list.length >= 2) {
+    const times = list.map((a) => new Date(a.attempted_at as string).getTime());
+    const gaps: number[] = [];
+    for (let i = 1; i < times.length; i++) {
+      const gap = Math.max(0, Math.round((times[i] - times[i - 1]) / 1000));
+      gaps.push(Math.min(MAX_GAP_SEC, gap));
+    }
+    const sumGaps = gaps.reduce((s, g) => s + g, 0);
+    const avgGap = Math.round(sumGaps / gaps.length);
+    // The unobserved Q1 gap is approximated as the average per-question gap.
+    durationSeconds = sumGaps + avgGap;
+  } else if (list.length === 1) {
+    // Single-question session — no gaps to measure; use a sane default.
+    durationSeconds = 60;
+  }
+  // Final safety: never exceed wall-clock time, never below 0.
+  const wallClockSec = Math.max(0, Math.round((endedAtMs - startedAtMs) / 1000));
+  durationSeconds = Math.max(0, Math.min(durationSeconds, wallClockSec));
 
   // Percentile vs all completed sessions across all users (service role bypass
   // RLS so we can read everyone's score_pct). Cheap aggregate query.
