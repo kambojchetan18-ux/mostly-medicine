@@ -433,20 +433,37 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
           </a>
         </div>
 
-        <h3 className="font-semibold text-gray-700 mb-3">Practice by Topic</h3>
+        <h3 className="font-semibold text-gray-700 mb-3">
+          Practice by Topic
+          {isPro && (
+            <span className="ml-2 text-xs font-normal text-amber-700">
+              ⭐ Pro: tap a topic to practice the entire pool
+            </span>
+          )}
+        </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {TOPIC_NAMES.map((topic) => (
-            <button
-              key={topic}
-              onClick={() => startQuiz(topic)}
-              className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-brand-400 hover:bg-brand-50 transition group"
-            >
-              <p className="font-medium text-gray-800 text-sm group-hover:text-brand-700">{topic}</p>
-              <p className="text-xs text-gray-400 mt-1">
-                {topicCounts[topic] ? `${topicCounts[topic]} questions` : "Practice →"}
-              </p>
-            </button>
-          ))}
+          {TOPIC_NAMES.map((topic) => {
+            const total = topicCounts[topic] ?? 0;
+            // Pro users get the full topic pool in one session; free users
+            // stay on the 20-question default so the daily limit is meaningful.
+            const sessionCount = isPro && total > 0 ? Math.min(total, 2000) : 20;
+            return (
+              <button
+                key={topic}
+                onClick={() => startQuiz(topic, sessionCount)}
+                className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-brand-400 hover:bg-brand-50 transition group"
+              >
+                <p className="font-medium text-gray-800 text-sm group-hover:text-brand-700">{topic}</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {total
+                    ? isPro
+                      ? `Practice all ${total} →`
+                      : `${total} questions`
+                    : "Practice →"}
+                </p>
+              </button>
+            );
+          })}
         </div>
       </div>
     );

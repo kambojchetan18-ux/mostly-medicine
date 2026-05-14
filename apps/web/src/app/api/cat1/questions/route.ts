@@ -9,7 +9,9 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { topic, count = 20 } = await req.json();
-  const safeCount = Math.min(Math.max(1, Number(count) || 20), 100);
+  // Cap raised from 100 → 2000 so Pro users can request the full pool of a
+  // specialty (e.g. OBG now has 470+ entries after the AMEDEX 2026 import).
+  const safeCount = Math.min(Math.max(1, Number(count) || 20), 2000);
 
   const filtered = topic
     ? allQuestions.filter((q) => q.topic === topic)
