@@ -139,18 +139,17 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   }, []);
 
   // Auto-start a topic when arriving from /dashboard/progress (or any deep
-  // link) with ?topic=<name>. We wait until topic counts have loaded so a Pro
-  // user gets the full pool size; free users always get 20.
+  // link) with ?topic=<name>. Pro users always request the full pool; the
+  // questions API caps server-side at the topic's actual count so we don't
+  // need topicCounts to be loaded first.
   useEffect(() => {
     const t = searchParams?.get("topic");
     if (!t) return;
     if (mode !== "menu") return;
-    if (isPro && Object.keys(topicCounts).length === 0) return;
-    const total = topicCounts[t];
-    const count = isPro && total ? Math.min(total, 2000) : 20;
+    const count = isPro ? 2000 : 20;
     startQuiz(t, count);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, topicCounts, isPro, mode]);
+  }, [searchParams, isPro, mode]);
 
   // Step 1: menu → reading. Sets up the pending request and starts the 2-min timer.
   function startQuiz(topic: string | null, count = 20) {
@@ -561,9 +560,11 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {TOPIC_NAMES.map((topic) => {
             const total = topicCounts[topic] ?? 0;
-            // Pro users get the full topic pool in one session; free users
-            // stay on the 20-question default so the daily limit is meaningful.
-            const sessionCount = isPro && total > 0 ? Math.min(total, 2000) : 20;
+            // Pro/Enterprise users always request the full pool (server caps
+            // at the topic's actual count). Sending the hard cap 2000 avoids
+            // a race where topicCounts hasn't loaded yet at click time and
+            // the user falls back to a 20-question session.
+            const sessionCount = isPro ? 2000 : 20;
             return (
               <button
                 key={topic}
@@ -576,7 +577,9 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
                     ? isPro
                       ? `Practice all ${total} →`
                       : `${total} questions`
-                    : "Practice →"}
+                    : isPro
+                      ? "Practice all →"
+                      : "Practice →"}
                 </p>
               </button>
             );
