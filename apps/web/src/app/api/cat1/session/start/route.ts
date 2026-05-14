@@ -20,7 +20,9 @@ export async function POST(req: NextRequest) {
     /* empty body is fine */
   }
 
-  const targetCount = Math.max(1, Math.min(100, Number(body.targetCount) || 20));
+  // Cap raised from 100 → 2000 to allow Pro "practice the whole specialty"
+  // sessions; UI gates large counts to plan === pro/enterprise.
+  const targetCount = Math.max(1, Math.min(2000, Number(body.targetCount) || 20));
   const topic = typeof body.topic === "string" && body.topic.trim() ? body.topic.trim() : null;
 
   const { data, error } = await supabase
