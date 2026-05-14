@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { MCQuestion } from "@mostly-medicine/content";
 import FunLoading from "@/components/FunLoading";
@@ -82,6 +82,7 @@ interface Cat1ClientProps {
 
 export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isPro = plan === "pro" || plan === "enterprise";
   const [mode, setMode] = useState<Mode>("menu");
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
@@ -124,6 +125,20 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       })
       .catch(() => {});
   }, []);
+
+  // Auto-start a topic when arriving from /dashboard/progress (or any deep
+  // link) with ?topic=<name>. We wait until topic counts have loaded so a Pro
+  // user gets the full pool size; free users always get 20.
+  useEffect(() => {
+    const t = searchParams?.get("topic");
+    if (!t) return;
+    if (mode !== "menu") return;
+    if (isPro && Object.keys(topicCounts).length === 0) return;
+    const total = topicCounts[t];
+    const count = isPro && total ? Math.min(total, 2000) : 20;
+    startQuiz(t, count);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, topicCounts, isPro, mode]);
 
   // Step 1: menu → reading. Sets up the pending request and starts the 2-min timer.
   function startQuiz(topic: string | null, count = 20) {

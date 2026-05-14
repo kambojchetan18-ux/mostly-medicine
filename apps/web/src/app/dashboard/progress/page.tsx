@@ -165,10 +165,10 @@ export default async function ProgressPage() {
                   </div>
                 </div>
                 <Link
-                  href="/dashboard/cat1"
+                  href={`/dashboard/cat1?topic=${encodeURIComponent(t.topic)}`}
                   className="text-xs text-red-700 font-semibold border border-red-300 px-3 py-1 rounded-lg hover:bg-red-100 transition whitespace-nowrap"
                 >
-                  Practise
+                  Resume
                 </Link>
               </div>
             ))}
@@ -188,7 +188,11 @@ export default async function ProgressPage() {
           {topics.map((t) => {
             const accuracy = Math.round((t.total_correct / t.total_attempted) * 100);
             return (
-              <div key={t.topic} className="px-5 py-3.5">
+              <Link
+                key={t.topic}
+                href={`/dashboard/cat1?topic=${encodeURIComponent(t.topic)}`}
+                className="block px-5 py-3.5 hover:bg-gray-50 transition"
+              >
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-sm font-medium text-gray-800 truncate">{t.topic}</span>
@@ -197,6 +201,7 @@ export default async function ProgressPage() {
                   <div className="flex items-center gap-3 shrink-0 ml-2">
                     <span className="text-xs text-gray-400">{t.total_correct}/{t.total_attempted}</span>
                     <span className={`text-sm font-bold ${accuracyColor(accuracy)}`}>{accuracy}%</span>
+                    <span className="text-brand-600 text-xs">→</span>
                   </div>
                 </div>
                 <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -205,7 +210,7 @@ export default async function ProgressPage() {
                     style={{ width: `${accuracy}%` }}
                   />
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
