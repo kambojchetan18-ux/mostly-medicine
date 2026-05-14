@@ -262,14 +262,18 @@ export async function GET(
 ): Promise<NextResponse<BrainTeaserOk | BrainTeaserErr>> {
   try {
     const secret = process.env.CRON_SECRET;
-    if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
-        return NextResponse.json<BrainTeaserErr>(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
-      }
+    if (!secret) {
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: "CRON_SECRET not configured" },
+        { status: 503 }
+      );
+    }
+    const auth = req.headers.get("authorization");
+    if (auth !== `Bearer ${secret}`) {
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {

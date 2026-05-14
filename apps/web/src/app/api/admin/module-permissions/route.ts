@@ -19,7 +19,10 @@ export async function GET() {
     .order("plan")
     .order("module");
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/module-permissions GET]", error.message);
+    return NextResponse.json({ error: "Failed to load module permissions" }, { status: 500 });
+  }
   return NextResponse.json({ permissions: data });
 }
 
@@ -32,11 +35,23 @@ export async function PATCH(req: NextRequest) {
   const { plan, module, enabled, daily_limit } = await req.json();
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
 
+  const VALID_PLANS = ["free", "pro", "enterprise"];
+  const VALID_MODULES = ["mcq", "roleplay", "acrp_solo", "acrp_live"];
+  if (!VALID_PLANS.includes(plan)) {
+    return NextResponse.json({ error: `Invalid plan. Must be one of: ${VALID_PLANS.join(", ")}` }, { status: 400 });
+  }
+  if (!VALID_MODULES.includes(module)) {
+    return NextResponse.json({ error: `Invalid module. Must be one of: ${VALID_MODULES.join(", ")}` }, { status: 400 });
+  }
+
   const { error } = await supabase.from("module_permissions").upsert(
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }
   );
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/module-permissions PATCH]", error.message);
+    return NextResponse.json({ error: "Failed to update module permissions" }, { status: 500 });
+  }
 
   // Bust any cached dashboard pages so the new permissions are visible to
   // free/pro users on their very next request, not after the natural cache

@@ -2,8 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, assertStripeConfig } from "@/lib/stripe";
 
-// Returns a Stripe Customer Portal URL so the user can update payment method,
-// switch plans, or cancel without us building UI for any of that.
+const ALLOWED_ORIGINS = [
+  "https://mostlymedicine.com",
+  "https://www.mostlymedicine.com",
+  "http://localhost:3000",
+];
+function safeOrigin(req: NextRequest): string {
+  const raw = req.headers.get("origin") ?? new URL(req.url).origin;
+  return ALLOWED_ORIGINS.includes(raw) ? raw : "https://mostlymedicine.com";
+}
+
 export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
@@ -28,7 +36,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No subscription on file" }, { status: 404 });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
