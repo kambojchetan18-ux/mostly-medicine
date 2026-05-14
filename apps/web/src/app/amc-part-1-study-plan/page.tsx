@@ -344,7 +344,7 @@ export default function Page() {
           The right way to use Murtagh for each system is not to read entire chapters before touching questions. Read the chapter overview, then immediately do 30&ndash;40 MCQs on that topic. For every question you get wrong, go back to the relevant Murtagh paragraph and annotate it directly. Do not make long notes from Murtagh &mdash; annotate the book itself. You are building a retrieval system, not a summary document, and the difference matters on exam day.
         </p>
         <p>
-          Your MCQ target for this phase is 150&ndash;200 questions per week, which puts you at 750&ndash;900 by the end of week 6. Accuracy on timed blocks should be sitting at 55&ndash;65% by that checkpoint. If you want a structured question bank that mirrors AMC exam style and tracks your performance by system and difficulty, this is where <Link href="/">Mostly Medicine&apos;s MCQ bank</Link> becomes genuinely useful &mdash; 3000+ questions organised by specialty with explanations tied to Australian guidelines.
+          Your MCQ target for this phase is 150&ndash;200 questions per week, which puts you at 750&ndash;900 by the end of week 6. Accuracy on timed blocks should be sitting at 55&ndash;65% by that checkpoint. If you want a structured question bank that mirrors AMC exam style and tracks your performance by system and difficulty, this is where <Link href="/">Mostly Medicine&apos;s MCQ bank</Link> becomes genuinely useful &mdash; 4,400+ questions organised by specialty with explanations tied to Australian guidelines.
         </p>
 
         <h2>Weeks 7&ndash;10: System-by-system pass 2 (Neuro, Psych, Paeds, O&amp;G, Surgery, Emergency)</h2>
@@ -523,7 +523,7 @@ export default function Page() {
         </ul>
         <p><strong>Question bank:</strong></p>
         <ul>
-          <li><Link href="/">Mostly Medicine MCQ bank</Link> &mdash; 3000+ questions mapped to AMC topic areas, with performance tracking, wrong-answer log, and difficulty progression. Start free, Pro is A$19/month. Built specifically for IMGs on the AMC pathway, with explanations tied to Australian guidelines rather than US or UK sources.</li>
+          <li><Link href="/">Mostly Medicine MCQ bank</Link> &mdash; 4,400+ questions mapped to AMC topic areas, with performance tracking, wrong-answer log, and difficulty progression. Start free, Pro is A$19/month. Built specifically for IMGs on the AMC pathway, with explanations tied to Australian guidelines rather than US or UK sources.</li>
           <li>AMC Handbook of MCQs &mdash; book format, no adaptive tracking, but high validity for question style.</li>
         </ul>
         <p><strong>Australian clinical guidelines:</strong></p>
@@ -542,7 +542,7 @@ export default function Page() {
         <div className="not-prose my-10 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-6">
           <p className="text-sm font-semibold text-white mb-2">Start your AMC Part 1 prep today</p>
           <p className="text-sm text-slate-300 leading-relaxed mb-4">
-            Mostly Medicine&apos;s MCQ bank is free to try &mdash; 3000+ questions mapped to AMC topic areas, wrong-answer log built in, performance tracked by system and difficulty. Pro is A$19/month with no lock-in.
+            Mostly Medicine&apos;s MCQ bank is free to try &mdash; 4,400+ questions mapped to AMC topic areas, wrong-answer log built in, performance tracked by system and difficulty. Pro is A$19/month with no lock-in.
           </p>
           <Link
             href="/auth/signup"

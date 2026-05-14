@@ -344,7 +344,7 @@ export default function Page() {
 
         <h2>Where Mostly Medicine fits</h2>
         <p>
-          The platform is built around the gap between knowing the standard and knowing the order. Our <Link href="/amc-part-1-study-plan">AMC Part 1 study plan</Link>, <Link href="/amc-vs-plab">AMC vs PLAB pillar</Link> and <Link href="/ahpra-registration-for-imgs">AHPRA registration guide</Link> are the natural next reads after this. Our 3,000+ MCQ bank tagged by Australian context is what most IMGs use to refresh clinical reasoning during a recency block.
+          The platform is built around the gap between knowing the standard and knowing the order. Our <Link href="/amc-part-1-study-plan">AMC Part 1 study plan</Link>, <Link href="/amc-vs-plab">AMC vs PLAB pillar</Link> and <Link href="/ahpra-registration-for-imgs">AHPRA registration guide</Link> are the natural next reads after this. Our 4,400+ MCQ bank tagged by Australian context is what most IMGs use to refresh clinical reasoning during a recency block.
         </p>
         <p>
           If you are sitting AMC Part 1 from a home country with a 1&ndash;2 year clinical gap, our Part 1 prep is the cheapest single intervention to fix the rust before Part 2.

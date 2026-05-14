@@ -10,7 +10,7 @@ import {
 const PAGE_URL = `${SITE_URL}/amc-mcq`;
 const TITLE = "AMC MCQ Practice — Free Sample Questions by Specialty";
 const DESCRIPTION =
-  "Free AMC MCQ practice for International Medical Graduates. 3,000+ Australian-aligned questions across cardiology, respiratory, gastroenterology, neurology, paediatrics, O&G, emergency, and more.";
+  "Free AMC MCQ practice for International Medical Graduates. 4,400+ Australian-aligned questions across cardiology, respiratory, gastroenterology, neurology, paediatrics, O&G, emergency, and more.";
 
 export const metadata: Metadata = {
   title: TITLE,

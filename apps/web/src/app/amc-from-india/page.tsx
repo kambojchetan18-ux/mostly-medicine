@@ -343,7 +343,7 @@ export default function Page() {
 
         <h2>How Mostly Medicine helps Indian candidates specifically</h2>
         <p>
-          Built by a Chetan-Amandeep team that walked this exact path: 3,000+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal with another Indian-trained IMG. Pricing is in AUD but accessible from India - free tier is honest, Pro is A$19/mo (roughly INR 1,050). Indian-specific content drilling: PBS first lines, Australian-context ethics and population-health items - the three areas Indian-trained candidates routinely under-score on.
+          Built by a Chetan-Amandeep team that walked this exact path: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal with another Indian-trained IMG. Pricing is in AUD but accessible from India - free tier is honest, Pro is A$19/mo (roughly INR 1,050). Indian-specific content drilling: PBS first lines, Australian-context ethics and population-health items - the three areas Indian-trained candidates routinely under-score on.
         </p>
 
         <CitationHook n={4}>

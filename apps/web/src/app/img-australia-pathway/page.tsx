@@ -421,7 +421,7 @@ export default function ImgAustraliaPathwayPage() {
               <Link href="/dashboard/cat1">
                 <strong>AMC MCQ question bank</strong>
               </Link>{" "}
-              with 3,000+ MCQs and analytics targeting weak areas.
+              with 4,400+ MCQs and analytics targeting weak areas.
             </li>
             <li>
               <Link href="/dashboard/cat2">

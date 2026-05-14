@@ -32,7 +32,7 @@ const spaceGrotesk = Space_Grotesk({
 const SITE_URL = "https://mostlymedicine.com";
 const TITLE = "Mostly Medicine — AMC Exam Preparation for IMGs";
 const DESCRIPTION =
-  "AI-powered AMC MCQ and AMC Handbook AI RolePlay (Clinical) exam preparation for International Medical Graduates. 3,000+ MCQs, 151+ clinical roleplays, examiner-grade feedback. Aligned with the AMC Handbook 2026. Free to start.";
+  "AI-powered AMC MCQ and AMC Handbook AI RolePlay (Clinical) exam preparation for International Medical Graduates. 4,400+ MCQs, 151+ clinical roleplays, examiner-grade feedback. Aligned with the AMC Handbook 2026. Free to start.";
 
 export const metadata: Metadata = {
   title: {

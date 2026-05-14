@@ -344,7 +344,7 @@ export default function AmcHandbook2026Page() {
           <ul>
             <li>
               <Link href="/dashboard/cat1">
-                <strong>3,000+ AMC MCQ questions</strong>
+                <strong>4,400+ AMC MCQ questions</strong>
               </Link>{" "}
               tagged to AMC blueprint disciplines and Handbook sub-topics.
             </li>

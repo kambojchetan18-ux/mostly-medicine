@@ -36,7 +36,7 @@ const COPY = {
   mcq: {
     title: "AMC MCQ — Practice",
     bullets: [
-      "3,000+ AMC-style MCQs across 14 topics",
+      "4,400+ AMC-style MCQs across 14 topics",
       "Spaced-repetition recalls + smart explanations",
       "Topic-level progress tracking and weak-area targeting",
     ],

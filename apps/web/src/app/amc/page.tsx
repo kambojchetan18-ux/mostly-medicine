@@ -305,7 +305,7 @@ export default function AmcGuidePage() {
           <ul>
             <li>
               <Link href="/dashboard/cat1">
-                <strong>3,000+ AMC MCQ MCQs</strong>
+                <strong>4,400+ AMC MCQs</strong>
               </Link>{" "}
               with AI explanations, spaced repetition, and weak-area targeting.
             </li>

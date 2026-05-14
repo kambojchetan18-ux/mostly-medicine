@@ -358,7 +358,7 @@ export default function Page() {
           The platform was built specifically because Amandeep — and the IMGs around her — kept hitting the same gap: lots of static PDFs and decade-old question recalls, very little Australian-context drilling under timed conditions. Mostly Medicine gives IMGs:
         </p>
         <ul>
-          <li>3,000+ AMC MCQs filterable by system, difficulty and Australian-context tag, attempt-tracked so you can see your timed-conditions volume rise.</li>
+          <li>4,400+ AMC MCQs filterable by system, difficulty and Australian-context tag, attempt-tracked so you can see your timed-conditions volume rise.</li>
           <li>AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API, simulating examiner pressure for Part 2.</li>
           <li>Peer RolePlay for live station rehearsal with another IMG.</li>
         </ul>

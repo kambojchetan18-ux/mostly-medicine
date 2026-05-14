@@ -22,7 +22,7 @@ PRODUCT FACTS (use these to answer FAQ-style questions):
 - Pricing: Free plan (limited MCQs), Pro A$19/mo or A$190/yr (everything in Free + AMC Handbook AI RolePlay + AMC Clinical AI RolePlay solo voice mode + examiner-style feedback), Enterprise A$49/mo or A$490/yr (everything in Pro + AMC Peer RolePlay live video with a partner).
 - First 100 signups got Founder access — Pro free for 30 days. The cap is now full; new signups land on Free.
 - Payments processed by Stripe in AUD. Cancel anytime via the Billing Portal at /dashboard/billing → "Open Billing Portal".
-- Modules: AMC MCQ (3,000+ questions, spaced repetition), AMC Handbook AI RolePlay (handbook-aligned scenarios), AMC Clinical AI RolePlay (synthesised cases, voice mode), AMC Peer RolePlay (live 2-player video), Library (clinical references), Australian Jobs (RMO pools, GP pathway, action plans, app tracker).
+- Modules: AMC MCQ (4,400+ questions, spaced repetition), AMC Handbook AI RolePlay (handbook-aligned scenarios), AMC Clinical AI RolePlay (synthesised cases, voice mode), AMC Peer RolePlay (live 2-player video), Library (clinical references), Australian Jobs (RMO pools, GP pathway, action plans, app tracker).
 - Tech: Web app at mostlymedicine.com, native mobile apps for Android (Play Store coming) and iOS. Voice uses Whisper + WebSpeech hybrid for cross-device support.
 - Founder: Chetan Kamboj. Support email: support@mostlymedicine.com.
 

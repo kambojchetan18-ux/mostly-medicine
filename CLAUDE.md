@@ -13,7 +13,7 @@ mostly-medicine/
 │   └── web/        # Next.js + Tailwind (Vercel)
 ├── packages/
 │   ├── ai/         # @mostly-medicine/ai — Anthropic SDK wrappers + clinical scenarios
-│   ├── content/    # @mostly-medicine/content — 3000+ MCQ questions + recalls by specialty
+│   ├── content/    # @mostly-medicine/content — 4,400+ MCQ questions + recalls by specialty
 │   └── ui/         # @mostly-medicine/ui — shared components
 ├── supabase/       # DB migrations + edge functions
 └── turbo.json

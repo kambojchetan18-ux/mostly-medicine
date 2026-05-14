@@ -62,7 +62,7 @@ const faqSchema = {
 
 const stats = [
   { value: "151",   label: "MCAT scenarios"     },
-  { value: "3000+", label: "Practice MCQs"      },
+  { value: "4,400+", label: "Practice MCQs"      },
   { value: "AI",    label: "Examiner feedback"  },
   { value: "Free",  label: "to get started"     },
 ];

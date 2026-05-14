@@ -316,7 +316,7 @@ export default function AMCChecklistPage() {
             Ready to start preparing?
           </h2>
           <p className="text-slate-400 mb-8 max-w-lg mx-auto text-base leading-relaxed">
-            Use Mostly Medicine to practice 3,000+ MCQs, run AI clinical roleplays, and get examiner-grade feedback — all in one place.
+            Use Mostly Medicine to practice 4,400+ MCQs, run AI clinical roleplays, and get examiner-grade feedback — all in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
