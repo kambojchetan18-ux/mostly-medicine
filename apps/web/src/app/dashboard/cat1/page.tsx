@@ -18,5 +18,5 @@ export default async function Cat1Page() {
     return <UpgradeGate module="mcq" currentPlan={perm.plan} />;
   }
 
-  return <Cat1Client />;
+  return <Cat1Client plan={perm.plan} />;
 }

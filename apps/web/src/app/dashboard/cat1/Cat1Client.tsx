@@ -76,8 +76,13 @@ async function saveAttempt(
   }
 }
 
-export default function Cat1Client() {
+interface Cat1ClientProps {
+  plan?: "free" | "pro" | "enterprise";
+}
+
+export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   const router = useRouter();
+  const isPro = plan === "pro" || plan === "enterprise";
   const [mode, setMode] = useState<Mode>("menu");
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [questions, setQuestions] = useState<MCQuestion[]>([]);
@@ -412,6 +417,14 @@ export default function Cat1Client() {
           >
             Mock Exam (50 questions)
           </button>
+          {isPro && (
+            <button
+              onClick={() => startQuiz(null, 100)}
+              className="border border-amber-400 bg-amber-50 text-amber-800 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-amber-100 transition"
+            >
+              ⭐ Pro: Continuous (100)
+            </button>
+          )}
           <a
             href="/dashboard/progress"
             className="border border-brand-300 text-brand-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-brand-50 transition"
@@ -533,7 +546,7 @@ export default function Cat1Client() {
         floating
       />
     )}
-    {limitReached && (
+    {limitReached && !isPro && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="max-w-md w-full rounded-3xl bg-white shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-br from-brand-600 via-violet-600 to-pink-500 px-6 pt-7 pb-5 text-white">
