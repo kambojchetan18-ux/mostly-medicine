@@ -6,7 +6,12 @@ import BillingClient, { type CurrentSubscription } from "./BillingClient";
 export const metadata = { title: "Billing & Plans — Mostly Medicine" };
 
 interface PageProps {
-  searchParams: Promise<{ success?: string; canceled?: string }>;
+  searchParams: Promise<{
+    success?: string;
+    canceled?: string;
+    from?: string;     // 'mock' = redirected here after a free Mock Exam preview
+    session?: string;  // mcq_sessions.id of the just-finished sample
+  }>;
 }
 
 export default async function BillingPage({ searchParams }: PageProps) {
@@ -22,6 +27,32 @@ export default async function BillingPage({ searchParams }: PageProps) {
     .select("plan, role, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_period_end, subscription_cancel_at_period_end, founder_rank, pro_until")
     .eq("id", user.id)
     .single();
+
+  // If we arrived from a free Mock Exam preview, fetch the session's score so
+  // the upgrade pitch can lead with the user's own performance number rather
+  // than a generic call to action.
+  let mockResult: {
+    sessionId: string;
+    correctCount: number;
+    questionsAnswered: number;
+    scorePct: number;
+  } | null = null;
+  if (params.from === "mock" && params.session) {
+    const { data: s } = await supabase
+      .from("mcq_sessions")
+      .select("id, correct_count, questions_answered, score_pct")
+      .eq("id", params.session)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (s) {
+      mockResult = {
+        sessionId: s.id as string,
+        correctCount: (s.correct_count as number) ?? 0,
+        questionsAnswered: (s.questions_answered as number) ?? 0,
+        scorePct: (s.score_pct as number) ?? 0,
+      };
+    }
+  }
 
   const sub: CurrentSubscription = {
     plan: (profile?.plan as CurrentSubscription["plan"]) ?? "free",
@@ -55,6 +86,7 @@ export default async function BillingPage({ searchParams }: PageProps) {
       prices={prices}
       mode={mode}
       flash={params.success ? "success" : params.canceled ? "canceled" : null}
+      mockResult={mockResult}
     />
   );
 }

@@ -21,11 +21,19 @@ interface Prices {
   enterpriseYearly: string | null;
 }
 
+interface MockResult {
+  sessionId: string;
+  correctCount: number;
+  questionsAnswered: number;
+  scorePct: number;
+}
+
 interface Props {
   subscription: CurrentSubscription;
   prices: Prices;
   mode: "test" | "live" | null;
   flash: "success" | "canceled" | null;
+  mockResult?: MockResult | null;
 }
 
 const FEATURES = {
@@ -50,7 +58,7 @@ const FEATURES = {
   ],
 };
 
-export default function BillingClient({ subscription, prices, mode, flash }: Props) {
+export default function BillingClient({ subscription, prices, mode, flash, mockResult }: Props) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [cadence, setCadence] = useState<"monthly" | "yearly">("monthly");
@@ -123,7 +131,50 @@ export default function BillingClient({ subscription, prices, mode, flash }: Pro
           ⚠️ Stripe TEST mode — payments are not real.
         </div>
       )}
-      <header>
+
+      {/* Free Mock Exam preview → upgrade pitch with their actual score. */}
+      {mockResult && subscription.plan === "free" && (
+        <div className="rounded-3xl border-2 border-brand-300 bg-gradient-to-br from-brand-50 via-violet-50 to-pink-50 p-6 shadow-sm">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-brand-700">
+            Mock Exam preview complete
+          </p>
+          <h2 className="mt-1 text-2xl font-bold text-gray-900">
+            You scored {mockResult.scorePct}% ({mockResult.correctCount}/{mockResult.questionsAnswered}) on the {mockResult.questionsAnswered}-question sample 🎯
+          </h2>
+          <p className="mt-2 text-sm text-gray-700 leading-relaxed">
+            That was {mockResult.questionsAnswered} of the real AMC CAT 1&apos;s 150-question paper.
+            Upgrade to <strong>Pro</strong> to sit the full 150-question Mock under
+            strict exam conditions — same one-way pattern, same pacing, examiner-style
+            feedback at the end. Plus unlimited practice across all 4,400+ MCQs and
+            AMC Handbook AI RolePlay for CAT 2.
+          </p>
+          <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-gray-700">
+            <li className="flex gap-2"><span className="text-amber-500">✓</span><span>Full 150-question Mock paper</span></li>
+            <li className="flex gap-2"><span className="text-amber-500">✓</span><span>Unlimited topic practice</span></li>
+            <li className="flex gap-2"><span className="text-amber-500">✓</span><span>AMC Handbook AI RolePlay</span></li>
+            <li className="flex gap-2"><span className="text-amber-500">✓</span><span>Examiner-style feedback every session</span></li>
+          </ul>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById("billing-plans")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+            >
+              See plans ↓
+            </button>
+            <a
+              href={`/dashboard/cat1/results/${mockResult.sessionId}`}
+              className="text-xs font-semibold text-brand-700 underline"
+            >
+              View my sample results →
+            </a>
+          </div>
+        </div>
+      )}
+
+      <header id="billing-plans">
         <h1 className="text-2xl font-bold text-gray-900">Billing & Plans</h1>
         <p className="mt-1 text-sm text-gray-600">
           Your current plan: {planBadge(effectivePlan)}{" "}
