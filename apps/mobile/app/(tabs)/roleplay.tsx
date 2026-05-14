@@ -16,6 +16,11 @@ import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
 
+const LOADING_POOL = [
+  '🤔 Patient is thinking…',
+  '💭 Recalling symptoms…',
+];
+
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
 };
@@ -294,8 +299,8 @@ export default function RoleplayScreen() {
     // If still recording when user hits send, abort the recording (don't upload partial)
     if (recordingRef.current) await abortRecording();
     stopSpeaking();
-    const newMsgs: Message[] = [...messages, { role: 'user', content: text }];
-    setMessages(newMsgs);
+    const userMsg: Message = { role: 'user', content: text };
+    setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
     try {
@@ -303,15 +308,16 @@ export default function RoleplayScreen() {
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
+        body: JSON.stringify({ scenarioId: scenario.id, messages: [...messages, userMsg] }),
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
-      setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
+      const assistantMsg: Message = { role: 'assistant', content: data.reply };
+      setMessages(prev => [...prev, assistantMsg]);
       speakPatient(data.reply, scenario?.patientProfile ?? '');
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Error';
-      setMessages([...newMsgs, { role: 'assistant', content: `[${msg}]` }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `[${msg}]` }]);
     } finally {
       setLoading(false);
     }
@@ -429,10 +435,7 @@ export default function RoleplayScreen() {
         <Text style={[s.sub, { textAlign: 'center', marginTop: 8 }]}>Reviewing against AMC performance guidelines</Text>
         <FunLoading
           style={{ marginTop: 24 }}
-          pool={[
-            '🤔 Patient is thinking…',
-            '💭 Recalling symptoms…',
-          ]}
+          pool={LOADING_POOL}
         />
       </View>
     );
@@ -535,10 +538,7 @@ export default function RoleplayScreen() {
                 <Text style={s.msgEmoji}>{emoji}</Text>
                 <View style={s.bubbleAI}>
                   <FunLoading
-                    pool={[
-                      '🤔 Patient is thinking…',
-                      '💭 Recalling symptoms…',
-                    ]}
+                    pool={LOADING_POOL}
                   />
                 </View>
               </View>

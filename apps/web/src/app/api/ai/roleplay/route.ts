@@ -121,6 +121,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[roleplay API error]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "AI service temporarily unavailable. Please try again." }, { status: 500 });
   }
 }

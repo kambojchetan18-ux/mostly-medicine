@@ -7,7 +7,25 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const profile = await req.json();
+    const body = await req.json();
+    const profile: Record<string, unknown> = {};
+    const SAFE_FIELDS = [
+      "full_name",
+      "date_of_birth",
+      "nationality",
+      "medical_school",
+      "graduation_year",
+      "amc_cat1_status",
+      "amc_cat2_status",
+      "visa_status",
+      "current_location",
+      "preferred_locations",
+      "specialties_of_interest",
+      "experience_summary",
+    ];
+    for (const key of SAFE_FIELDS) {
+      if (key in body) profile[key] = body[key];
+    }
     const { error } = await supabase
       .from("img_profiles")
       .upsert({ ...profile, id: user.id, updated_at: new Date().toISOString() });

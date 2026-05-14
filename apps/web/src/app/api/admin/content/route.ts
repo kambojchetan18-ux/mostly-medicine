@@ -38,7 +38,10 @@ export async function GET(req: NextRequest) {
     .lte("post_date", `${month}-${lastDay}`)
     .order("post_date", { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/content GET]", error.message);
+    return NextResponse.json({ error: "Failed to load content posts" }, { status: 500 });
+  }
   return NextResponse.json({ posts: data });
 }
 
@@ -146,6 +149,9 @@ Spread posts evenly, only on weekdays (Mon-Fri) preferred.`
     .insert(toInsert)
     .select();
 
-  if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 });
+  if (insertError) {
+    console.error("[admin/content POST insert]", insertError.message);
+    return NextResponse.json({ error: "Failed to save generated posts" }, { status: 500 });
+  }
   return NextResponse.json({ posts: inserted, count: inserted?.length });
 }
