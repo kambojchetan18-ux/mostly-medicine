@@ -516,8 +516,11 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
     return (
       <div>
         <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC MCQ — Practice</h2>
-        <p className="text-gray-500 text-sm mb-6">
+        <p className="text-gray-500 text-sm mb-2">
           4,400+ questions across 14 topics. Your progress is saved and spaced repetition adapts to your weak areas.
+        </p>
+        <p className="text-[10px] text-gray-400 mb-6 font-mono">
+          plan:{plan} isPro:{String(isPro)} topicsLoaded:{Object.keys(topicCounts).length}
         </p>
 
         <div className="flex gap-3 mb-8 flex-wrap">
