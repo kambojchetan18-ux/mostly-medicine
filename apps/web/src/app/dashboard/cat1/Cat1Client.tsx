@@ -81,9 +81,13 @@ async function saveAttempt(
 
 interface Cat1ClientProps {
   plan?: "free" | "pro" | "enterprise";
+  initialTopicCounts?: Record<string, number>;
 }
 
-export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
+export default function Cat1Client({
+  plan = "free",
+  initialTopicCounts = {},
+}: Cat1ClientProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isPro = plan === "pro" || plan === "enterprise";
@@ -102,7 +106,9 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   const [detailLoading, setDetailLoading] = useState(false);
   const [smartExplanation, setSmartExplanation] = useState<string | null>(null);
   const [smartLoading, setSmartLoading] = useState(false);
-  const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
+  // Seed from server-rendered prop so the topic tiles + click counts are
+  // correct on first paint — no race with the GET /api/cat1/questions fetch.
+  const [topicCounts, setTopicCounts] = useState<Record<string, number>>(initialTopicCounts);
   const [limitReached, setLimitReached] = useState<{ dailyLimit: number; used: number; plan: string } | null>(null);
 
   // In-flow AI mentor nudge — fires when the user gets 2 wrong in a row.
@@ -139,17 +145,17 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   }, []);
 
   // Auto-start a topic when arriving from /dashboard/progress (or any deep
-  // link) with ?topic=<name>. Pro users always request the full pool; the
-  // questions API caps server-side at the topic's actual count so we don't
-  // need topicCounts to be loaded first.
+  // link) with ?topic=<name>. Pro users get the exact topic pool size from
+  // the server-seeded topicCounts; free users always get 20.
   useEffect(() => {
     const t = searchParams?.get("topic");
     if (!t) return;
     if (mode !== "menu") return;
-    const count = isPro ? 2000 : 20;
+    const total = topicCounts[t];
+    const count = isPro ? (total && total > 0 ? total : 2000) : 20;
     startQuiz(t, count);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, isPro, mode]);
+  }, [searchParams, isPro, mode, topicCounts]);
 
   // Step 1: menu → reading. Sets up the pending request and starts the 2-min timer.
   function startQuiz(topic: string | null, count = 20) {
@@ -519,11 +525,6 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         <p className="text-gray-500 text-sm mb-2">
           4,400+ questions across 14 topics. Your progress is saved and spaced repetition adapts to your weak areas.
         </p>
-        {searchParams?.get("debug") === "1" && (
-          <p className="text-[10px] text-gray-400 mb-6 font-mono">
-            plan:{plan} isPro:{String(isPro)} topicsLoaded:{Object.keys(topicCounts).length}
-          </p>
-        )}
 
         <div className="flex gap-3 mb-8 flex-wrap">
           <button
@@ -565,11 +566,15 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {TOPIC_NAMES.map((topic) => {
             const total = topicCounts[topic] ?? 0;
-            // Pro/Enterprise users always request the full pool (server caps
-            // at the topic's actual count). Sending the hard cap 2000 avoids
-            // a race where topicCounts hasn't loaded yet at click time and
-            // the user falls back to a 20-question session.
-            const sessionCount = isPro ? 2000 : 20;
+            // Pro/Enterprise users get the EXACT topic pool size, served by
+            // page.tsx as initialTopicCounts (no client fetch wait). 2000 is
+            // a safe fallback if the prop somehow shipped empty; the server
+            // routes cap at 2000 anyway.
+            const sessionCount = isPro
+              ? total > 0
+                ? total
+                : 2000
+              : 20;
             return (
               <button
                 key={topic}
