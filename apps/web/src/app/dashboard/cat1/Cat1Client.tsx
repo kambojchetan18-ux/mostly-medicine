@@ -148,27 +148,53 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
     setMode("reading");
   }
 
-  // Step 2: reading → loading → quiz. Fires the actual fetch + creates the
-  // mcq_session row so every saved attempt this run can be grouped + scored.
+  // Step 2: reading → loading → quiz. Probes for an active session for this
+  // topic first; if one exists, RESUMES it (filters already-answered question
+  // ids out of the new pool and reuses the existing mcq_session row). Otherwise
+  // creates a fresh mcq_session via /session/start.
   const runQuiz = useCallback(async (topic: string | null, count: number) => {
     setMode("loading");
     try {
-      const [qRes, sRes] = await Promise.all([
-        fetch("/api/cat1/questions", {
+      const resumeRes = await fetch("/api/cat1/session/resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic }),
+      });
+      const resumeData = (await resumeRes.json().catch(() => ({}))) as {
+        active?: boolean;
+        sessionId?: string;
+        targetCount?: number;
+        attemptedIds?: string[];
+      };
+      const reusing = !!(resumeData.active && resumeData.sessionId);
+      const skipIds = new Set<string>(resumeData.attemptedIds ?? []);
+      const targetCount = reusing && resumeData.targetCount ? resumeData.targetCount : count;
+
+      // Always fetch a generous pool from the questions API so the post-skip
+      // filter still leaves enough to fill the requested target.
+      const poolReq = Math.min(2000, Math.max(targetCount, count) + skipIds.size);
+      const qRes = await fetch("/api/cat1/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, count: poolReq }),
+      });
+      const data = (await qRes.json().catch(() => ({}))) as { questions?: MCQuestion[] };
+      const remaining = (data.questions ?? []).filter((q) => !skipIds.has(q.id));
+
+      let sessionIdToUse = reusing ? resumeData.sessionId! : null;
+      // If nothing left to resume from, transparently create a fresh session.
+      if (!remaining.length || !reusing) {
+        const sRes = await fetch("/api/cat1/session/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topic, count }),
-        }),
-        fetch("/api/cat1/session/start", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topic, targetCount: count }),
-        }),
-      ]);
-      const data = await qRes.json();
-      const sData = await sRes.json().catch(() => ({} as { sessionId?: string }));
-      setQuestions(data.questions ?? []);
-      setSessionId(typeof sData.sessionId === "string" ? sData.sessionId : null);
+          body: JSON.stringify({ topic, targetCount }),
+        });
+        const sData = (await sRes.json().catch(() => ({}))) as { sessionId?: string };
+        sessionIdToUse = typeof sData.sessionId === "string" ? sData.sessionId : null;
+      }
+
+      setQuestions(remaining.slice(0, targetCount));
+      setSessionId(sessionIdToUse);
       setSelectedTopic(topic);
       setCurrent(0);
       setSelected(null);
