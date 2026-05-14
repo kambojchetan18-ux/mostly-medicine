@@ -92,7 +92,9 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const [answers, setAnswers] = useState<{ id: string; correct: boolean; topic: string }[]>([]);
+  // selected stored alongside id/correct so the Previous button can restore
+  // the picked option when the user revisits an already-answered question.
+  const [answers, setAnswers] = useState<{ id: string; correct: boolean; topic: string; selected: string }[]>([]);
   const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [smartExplanation, setSmartExplanation] = useState<string | null>(null);
@@ -262,8 +264,14 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
     setSubmitting(true);
     const q = questions[current];
     const correct = selected === q.correctAnswer;
+    // If we are revisiting a question the user already answered (Previous →
+    // Next round-trip), the attempt is already in the DB. Skip the save and
+    // just advance — never insert a duplicate row.
+    const alreadyAnswered = answers[current] !== undefined;
 
-    const result = await saveAttempt(q.id, correct, q.topic, sessionId);
+    const result = alreadyAnswered
+      ? { ok: true as const }
+      : await saveAttempt(q.id, correct, q.topic, sessionId);
     if (result.limitReached) {
       // Free user hit their daily quota. Show the upgrade modal — don't
       // advance to the next question; the user is gated until tomorrow OR
@@ -272,8 +280,10 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       return;
     }
 
-    const newAnswers = [...answers, { id: q.id, correct, topic: q.topic }];
-    setAnswers(newAnswers);
+    const newAnswers = alreadyAnswered
+      ? answers
+      : [...answers, { id: q.id, correct, topic: q.topic, selected }];
+    if (!alreadyAnswered) setAnswers(newAnswers);
 
     if (current + 1 >= questions.length) {
       // Finalise the session server-side (scores, percentile, AI learning
@@ -295,14 +305,42 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       }
       setMode("result");
     } else {
-      setCurrent((c) => c + 1);
-      setSelected(null);
-      setRevealed(false);
+      // Advancing — if the next question was previously answered (user came
+      // back via Previous), pre-load their answer so the UI shows the picked
+      // option + revealed explanation rather than a fresh empty state.
+      const nextIdx = current + 1;
+      const prior = answers[nextIdx];
+      setCurrent(nextIdx);
+      if (prior) {
+        setSelected(prior.selected);
+        setRevealed(true);
+      } else {
+        setSelected(null);
+        setRevealed(false);
+      }
       setDetailedExplanation(null);
       setSmartExplanation(null);
     }
     setSubmitting(false);
   }, [selected, questions, current, answers, sessionId, router, submitting]);
+
+  // ← Previous: restores the prior question's picked option + revealed state
+  // so the user can review their answer / explanation. Does not touch the DB.
+  const handlePrev = useCallback(() => {
+    if (current === 0) return;
+    const prevIdx = current - 1;
+    const prior = answers[prevIdx];
+    setCurrent(prevIdx);
+    if (prior) {
+      setSelected(prior.selected);
+      setRevealed(true);
+    } else {
+      setSelected(null);
+      setRevealed(false);
+    }
+    setDetailedExplanation(null);
+    setSmartExplanation(null);
+  }, [current, answers]);
 
   async function fetchDetailedExplanation() {
     if (!selected) return;
@@ -785,6 +823,14 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       })()}
 
       <div className="flex gap-3">
+        {current > 0 && (
+          <button
+            onClick={handlePrev}
+            className="border border-gray-300 text-gray-700 font-semibold py-2.5 px-4 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap"
+          >
+            ← Previous
+          </button>
+        )}
         {!revealed ? (
           <button
             onClick={handleReveal}
