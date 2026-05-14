@@ -122,6 +122,12 @@ export default function Cat1Client({
   const [pendingTopic, setPendingTopic] = useState<string | null>(null);
   const [pendingCount, setPendingCount] = useState<number>(20);
   const [readingSecondsLeft, setReadingSecondsLeft] = useState(READING_SECONDS);
+  // Sticky for the duration of a Mock Exam session: hides the question
+  // navigator + Previous button so the user can only move forward, mirroring
+  // the real AMC CAT 1 paper. Free users get a 20-question sample then a
+  // hard upgrade gate; Pro/Enterprise get the full 150 paper.
+  const [pendingMock, setPendingMock] = useState(false);
+  const [isMockSession, setIsMockSession] = useState(false);
   // How many questions in this topic the user already attempted before the
   // resume — used to display absolute progress ("Question 9 of 135") instead
   // of the misleading within-pool count ("Question 1 of 130").
@@ -158,9 +164,10 @@ export default function Cat1Client({
   }, [searchParams, isPro, mode, topicCounts]);
 
   // Step 1: menu → reading. Sets up the pending request and starts the 2-min timer.
-  function startQuiz(topic: string | null, count = 20) {
+  function startQuiz(topic: string | null, count = 20, mock = false) {
     setPendingTopic(topic);
     setPendingCount(count);
+    setPendingMock(mock);
     setReadingSecondsLeft(READING_SECONDS);
     setMode("reading");
   }
@@ -225,6 +232,9 @@ export default function Cat1Client({
       setConsecutiveWrong(0);
       setMentorContext(null);
       setResumedAlreadyDone(reusing && remaining.length ? skipIds.size : 0);
+      // Capture the pending Mock flag so the quiz screen can hide the
+      // navigator + Previous button + skip the deep-link auto-resume etc.
+      setIsMockSession(pendingMock);
       setMode("quiz");
     } catch {
       setMode("menu");
@@ -306,7 +316,14 @@ export default function Cat1Client({
         try {
           const res = await fetch(`/api/cat1/session/${sessionId}/end`, { method: "POST" });
           if (res.ok) {
-            router.push(`/dashboard/cat1/results/${sessionId}`);
+            // Free user finishing a Mock-Exam preview → hard upgrade gate
+            // before they ever see the rich results page. Pro/Enterprise
+            // get the normal results flow.
+            if (isMockSession && !isPro) {
+              router.push(`/dashboard/billing?from=mock&session=${sessionId}`);
+            } else {
+              router.push(`/dashboard/cat1/results/${sessionId}`);
+            }
             return;
           }
         } catch {
@@ -334,7 +351,7 @@ export default function Cat1Client({
       setSmartExplanation(null);
     }
     setSubmitting(false);
-  }, [selected, questions, current, answers, sessionId, router, submitting]);
+  }, [selected, questions, current, answers, sessionId, router, submitting, isMockSession, isPro]);
 
   // ← Previous: restores the prior question's picked option + revealed state
   // so the user can review their answer / explanation. Does not touch the DB.
@@ -434,13 +451,15 @@ export default function Cat1Client({
     const pct = (readingSecondsLeft / READING_SECONDS) * 100;
 
     const topicLabel = pendingTopic ?? "Mixed";
-    const isMockExam = !pendingTopic && pendingCount === 50;
+    const isMockExam = pendingMock;
 
     let scenarioBody: string;
-    if (pendingTopic) {
+    if (isMockExam) {
+      scenarioBody = isPro
+        ? `Mock Exam — strict AMC CAT 1 pattern. ${pendingCount} mixed-specialty MCQs in one continuous paper. No "Previous" button, no question grid, no jumping around — once you submit an answer it is locked in, just like the real exam. References: eTG / RACGP / AMC Handbook 2026.`
+        : `Mock Exam preview — ${pendingCount} mixed-specialty MCQs in strict AMC pattern (no Previous, no grid, one-way forward). Upgrade to Pro for the full 150-question paper.`;
+    } else if (pendingTopic) {
       scenarioBody = `You are about to attempt ${pendingCount} AMC-style MCQs in ${pendingTopic}. The questions test core clinical knowledge across this specialty as expected of a junior doctor in Australia. References include eTG / RACGP / AMC Handbook 2026.`;
-    } else if (isMockExam) {
-      scenarioBody = `You are about to attempt ${pendingCount} mixed AMC-style MCQs across all 14 clinical specialties. The questions test core clinical knowledge expected of a junior doctor in Australia. References include eTG / RACGP / AMC Handbook 2026.\n\nThis 50-question Mock Exam mirrors the breadth and pacing of AMC CAT 1.`;
     } else {
       scenarioBody = `You are about to attempt ${pendingCount} mixed AMC-style MCQs across all 14 clinical specialties. The questions test core clinical knowledge expected of a junior doctor in Australia. References include eTG / RACGP / AMC Handbook 2026.`;
     }
@@ -534,10 +553,15 @@ export default function Cat1Client({
             ⚡ Quick Quiz (20 random)
           </button>
           <button
-            onClick={() => startQuiz(null, 50)}
+            onClick={() => startQuiz(null, isPro ? 150 : 20, true)}
             className="border border-gray-300 text-gray-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-gray-50 transition"
+            title={
+              isPro
+                ? "Real AMC pattern — 150 questions, no Previous, no question grid"
+                : "Free preview: 20 questions in AMC pattern; upgrade to Pro for the full 150-question paper"
+            }
           >
-            Mock Exam (50 questions)
+            🧪 Mock Exam {isPro ? "(150 questions)" : "(20 sample · Pro = 150)"}
           </button>
           {isPro && (
             <button
@@ -733,21 +757,30 @@ export default function Cat1Client({
       </div>
     )}
     <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)_260px] gap-4 max-w-7xl mx-auto lg:px-2">
-      <div className="hidden lg:block">
-        <QuizNavigator
-          total={questions.length}
-          current={current}
-          answers={answers}
-          resumedAlreadyDone={resumedAlreadyDone}
-          onJump={handleJumpTo}
-        />
-      </div>
+      {!isMockSession ? (
+        <div className="hidden lg:block">
+          <QuizNavigator
+            total={questions.length}
+            current={current}
+            answers={answers}
+            resumedAlreadyDone={resumedAlreadyDone}
+            onJump={handleJumpTo}
+          />
+        </div>
+      ) : (
+        <div className="hidden lg:block" />
+      )}
     <div className="min-w-0">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-gray-500">
           Question {current + 1 + resumedAlreadyDone} of {questions.length + resumedAlreadyDone}
           {selectedTopic && <span className="ml-2 text-brand-600 font-medium">· {selectedTopic}</span>}
-          {resumedAlreadyDone > 0 && (
+          {isMockSession && (
+            <span className="ml-2 text-rose-600 font-semibold text-xs uppercase tracking-wider">
+              · Mock Exam · no Previous
+            </span>
+          )}
+          {resumedAlreadyDone > 0 && !isMockSession && (
             <span className="ml-2 text-amber-600 font-medium text-xs">
               · resumed ({resumedAlreadyDone} already done)
             </span>
@@ -758,8 +791,9 @@ export default function Cat1Client({
         </button>
       </div>
 
-      {/* Mobile-only compact navigator strip — horizontal scroll of question
-          status pills. Hidden on lg+ because the QuizNavigator sidebar covers it. */}
+      {/* Mobile-only compact navigator strip — hidden in Mock Exam (strict
+          AMC pattern: no question grid, no jumping). */}
+      {!isMockSession && (
       <div className="lg:hidden mb-3 -mx-2 px-2 overflow-x-auto">
         <div className="flex gap-1.5 w-max">
           {questions.map((_, idx) => {
@@ -787,6 +821,7 @@ export default function Cat1Client({
           })}
         </div>
       </div>
+      )}
 
       <div className="h-1.5 bg-gray-100 rounded-full mb-5 overflow-hidden">
         <div
@@ -923,7 +958,8 @@ export default function Cat1Client({
       </div>
 
       <div className="flex gap-3">
-        {current > 0 && (
+        {/* Previous is hidden in Mock Exam — strict AMC pattern, one-way only. */}
+        {current > 0 && !isMockSession && (
           <button
             onClick={handlePrev}
             className="border border-gray-300 text-gray-700 font-semibold py-2.5 px-4 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap"
