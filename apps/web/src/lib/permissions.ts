@@ -59,9 +59,19 @@ export async function checkModulePermission(
     .eq("id", user.id)
     .maybeSingle();
 
-  // Admins bypass module gating entirely.
+  // Admins bypass module gating entirely. The previous code returned
+  // `profile.plan ?? "enterprise"` which collapsed to plan="free" for any
+  // admin who happened to have plan='free' on their profile (founder /
+  // dogfooding accounts), making downstream `isPro` checks treat the admin
+  // as a free user — including the 20-question topic-tile cap. Now we
+  // return their actual paid tier when they have one, otherwise pretend
+  // they're enterprise so every UI gate opens.
   if (profile?.role === "admin") {
-    return { allowed: true, plan: (profile.plan as PermissionResult["plan"]) ?? "enterprise", dailyLimit: null };
+    const adminPlan: PermissionResult["plan"] =
+      profile.plan === "pro" || profile.plan === "enterprise"
+        ? (profile.plan as PermissionResult["plan"])
+        : "enterprise";
+    return { allowed: true, plan: adminPlan, dailyLimit: null };
   }
 
   const plan = resolveEffectivePlan(profile);
