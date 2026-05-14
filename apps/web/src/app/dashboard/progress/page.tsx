@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 // Always fetch fresh progress data — the page reads per-user mutable state
@@ -6,6 +7,14 @@ import { createClient } from "@/lib/supabase/server";
 // renders the page at build time and the "In Progress" stats stay at zero
 // even after the user completes MCQs.
 export const dynamic = "force-dynamic";
+
+// All available AMC topics — kept in sync with Cat1Client.tsx TOPIC_NAMES.
+const TOPIC_NAMES = [
+  "Cardiovascular", "Emergency Medicine", "Endocrinology", "Gastroenterology",
+  "Infectious Disease", "Neurology", "Obstetrics & Gynaecology", "Paediatrics",
+  "Pharmacology", "Psychiatry", "Renal", "Respiratory", "Rheumatology", "Surgery",
+];
+const TOTAL_TOPICS = TOPIC_NAMES.length;
 
 // Thresholds for topic status
 const COMPLETED_MIN = 20;   // ≥20 attempts = completed at least one full quiz
@@ -38,7 +47,7 @@ function barColor(pct: number) {
 export default async function ProgressPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) redirect("/auth/login");
 
   // All queries in parallel — no sequential round trips
   const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([
@@ -124,9 +133,9 @@ export default async function ProgressPage() {
           <p className="text-[10px] text-amber-500 mt-0.5">Started, keep going</p>
         </div>
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-gray-500">{14 - completedCount - inProgressCount}</p>
+          <p className="text-2xl font-bold text-gray-500">{TOTAL_TOPICS - completedCount - inProgressCount}</p>
           <p className="text-xs text-gray-500 font-medium mt-0.5">Not Started</p>
-          <p className="text-[10px] text-gray-400 mt-0.5">of 14 topics</p>
+          <p className="text-[10px] text-gray-400 mt-0.5">of {TOTAL_TOPICS} topics</p>
         </div>
       </div>
 

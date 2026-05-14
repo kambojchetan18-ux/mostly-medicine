@@ -239,7 +239,7 @@ export default function Cat1Client({
     } catch {
       setMode("menu");
     }
-  }, []);
+  }, [pendingMock]);
 
   // Reading-screen countdown — auto-redirects to loading when it hits 0.
   useEffect(() => {
