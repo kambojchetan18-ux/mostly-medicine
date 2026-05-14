@@ -6,6 +6,8 @@ import Link from "next/link";
 import type { MCQuestion } from "@mostly-medicine/content";
 import FunLoading from "@/components/FunLoading";
 import MentorMessage from "@/components/MentorMessage";
+import QuizNavigator from "./QuizNavigator";
+import QuizMeta from "./QuizMeta";
 
 // Static topic list — avoids importing the 5 MB allQuestions bundle on the client.
 // Question counts are fetched from the server API on menu load.
@@ -341,6 +343,26 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
     setDetailedExplanation(null);
     setSmartExplanation(null);
   }, [current, answers]);
+
+  // Jump to an arbitrary question via the QuizNavigator grid. Bounds-checked,
+  // restores the picked-answer + revealed state if the destination has one.
+  const handleJumpTo = useCallback(
+    (idx: number) => {
+      if (idx < 0 || idx >= questions.length || idx === current) return;
+      const target = answers[idx];
+      setCurrent(idx);
+      if (target) {
+        setSelected(target.selected);
+        setRevealed(true);
+      } else {
+        setSelected(null);
+        setRevealed(false);
+      }
+      setDetailedExplanation(null);
+      setSmartExplanation(null);
+    },
+    [current, questions.length, answers],
+  );
 
   async function fetchDetailedExplanation() {
     if (!selected) return;
@@ -692,7 +714,15 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
         </div>
       </div>
     )}
-    <div className="max-w-2xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-[240px_1fr_260px] gap-4 max-w-7xl mx-auto px-2">
+      <QuizNavigator
+        total={questions.length}
+        current={current}
+        answers={answers}
+        resumedAlreadyDone={resumedAlreadyDone}
+        onJump={handleJumpTo}
+      />
+    <div className="min-w-0">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-gray-500">
           Question {current + 1 + resumedAlreadyDone} of {questions.length + resumedAlreadyDone}
@@ -739,14 +769,29 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
           } else if (opt.label === selected) {
             style = "bg-brand-50 border-brand-500 text-brand-800";
           }
+          const isYourPick = opt.label === selected;
+          const isCorrectOpt = opt.label === q.correctAnswer;
           return (
             <button
               key={opt.label}
               onClick={() => handleSelect(opt.label)}
-              className={`w-full text-left rounded-xl px-4 py-3 text-sm transition border ${style}`}
+              className={`w-full text-left rounded-xl px-4 py-3 text-sm transition border flex items-center gap-2 ${style}`}
             >
-              <span className="font-bold mr-2">{opt.label}.</span>
-              {opt.text}
+              <span className="font-bold">{opt.label}.</span>
+              <span className="flex-1">{opt.text}</span>
+              {revealed && isYourPick && (
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                  isCorrectOpt ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
+                }`}>
+                  Your Answer
+                </span>
+              )}
+              {revealed && isCorrectOpt && (
+                <span className="text-emerald-600 text-base font-bold">✓</span>
+              )}
+              {revealed && isYourPick && !isCorrectOpt && (
+                <span className="text-rose-600 text-base font-bold">✗</span>
+              )}
             </button>
           );
         })}
@@ -848,6 +893,8 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
           </button>
         )}
       </div>
+    </div>
+      <QuizMeta questionId={q.id} current={current} />
     </div>
     </>
   );
