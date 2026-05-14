@@ -6,6 +6,7 @@
 // same key as QuizMeta so notes follow the question across devices/sessions.
 
 import { useEffect, useRef, useState } from "react";
+import AttachmentPicker from "./AttachmentPicker";
 
 interface InlineNotepadProps {
   questionId: string;
@@ -70,7 +71,7 @@ export default function InlineNotepad({ questionId }: InlineNotepadProps) {
         <span className="text-amber-700 text-xs">{open ? "Hide ▴" : "Open ▾"}</span>
       </button>
       {open && (
-        <div className="px-3 pb-3">
+        <div className="px-3 pb-3 space-y-2">
           <textarea
             value={note}
             onChange={(e) => onChange(e.target.value)}
@@ -79,6 +80,7 @@ export default function InlineNotepad({ questionId }: InlineNotepadProps) {
             className="w-full bg-white border border-amber-200 rounded-lg p-2 text-sm text-amber-900 placeholder-amber-400 focus:outline-none focus:border-amber-400 resize-y"
             spellCheck={false}
           />
+          <AttachmentPicker questionId={questionId} />
         </div>
       )}
     </div>

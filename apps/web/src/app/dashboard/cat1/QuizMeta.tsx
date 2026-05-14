@@ -6,6 +6,7 @@
 // sessions for the same question.
 
 import { useEffect, useRef, useState } from "react";
+import AttachmentPicker from "./AttachmentPicker";
 
 interface QuizMetaProps {
   questionId: string;
@@ -97,7 +98,7 @@ export default function QuizMeta({ questionId, current }: QuizMetaProps) {
 
   return (
     <aside className="space-y-3 md:sticky md:top-4 md:max-h-[calc(100vh-2rem)] md:overflow-auto">
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3">
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 space-y-2">
         <textarea
           value={note}
           onChange={(e) => onNoteChange(e.target.value)}
@@ -106,6 +107,7 @@ export default function QuizMeta({ questionId, current }: QuizMetaProps) {
           className="w-full bg-transparent text-sm text-amber-900 placeholder-amber-400 focus:outline-none resize-none"
           spellCheck={false}
         />
+        <AttachmentPicker questionId={questionId} />
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-3 flex items-center gap-3">
