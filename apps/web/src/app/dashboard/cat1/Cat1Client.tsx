@@ -111,6 +111,13 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
   const [pendingTopic, setPendingTopic] = useState<string | null>(null);
   const [pendingCount, setPendingCount] = useState<number>(20);
   const [readingSecondsLeft, setReadingSecondsLeft] = useState(READING_SECONDS);
+  // How many questions in this topic the user already attempted before the
+  // resume — used to display absolute progress ("Question 9 of 135") instead
+  // of the misleading within-pool count ("Question 1 of 130").
+  const [resumedAlreadyDone, setResumedAlreadyDone] = useState(0);
+  // Guards Check-Answer / Next-Question against double-clicks that were
+  // producing duplicate attempt rows in the DB (1 click → 2 inserts).
+  const [submitting, setSubmitting] = useState(false);
 
   // Fetch topic counts once on menu mount — tiny payload from server
   useEffect(() => {
@@ -203,6 +210,7 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       setDetailedExplanation(null);
       setConsecutiveWrong(0);
       setMentorContext(null);
+      setResumedAlreadyDone(reusing && remaining.length ? skipIds.size : 0);
       setMode("quiz");
     } catch {
       setMode("menu");
@@ -250,6 +258,8 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
 
   const handleNext = useCallback(async () => {
     if (!selected) return;
+    if (submitting) return; // double-click guard — prevents duplicate inserts
+    setSubmitting(true);
     const q = questions[current];
     const correct = selected === q.correctAnswer;
 
@@ -291,7 +301,8 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
       setDetailedExplanation(null);
       setSmartExplanation(null);
     }
-  }, [selected, questions, current, answers, sessionId, router]);
+    setSubmitting(false);
+  }, [selected, questions, current, answers, sessionId, router, submitting]);
 
   async function fetchDetailedExplanation() {
     if (!selected) return;
@@ -646,8 +657,13 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-gray-500">
-          Question {current + 1} of {questions.length}
+          Question {current + 1 + resumedAlreadyDone} of {questions.length + resumedAlreadyDone}
           {selectedTopic && <span className="ml-2 text-brand-600 font-medium">· {selectedTopic}</span>}
+          {resumedAlreadyDone > 0 && (
+            <span className="ml-2 text-amber-600 font-medium text-xs">
+              · resumed ({resumedAlreadyDone} already done)
+            </span>
+          )}
         </p>
         <button onClick={reset} className="text-xs text-gray-400 hover:text-gray-600">
           Exit
