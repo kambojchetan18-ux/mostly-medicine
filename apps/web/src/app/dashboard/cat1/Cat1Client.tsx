@@ -8,6 +8,7 @@ import FunLoading from "@/components/FunLoading";
 import MentorMessage from "@/components/MentorMessage";
 import QuizNavigator from "./QuizNavigator";
 import QuizMeta from "./QuizMeta";
+import InlineNotepad from "./InlineNotepad";
 
 // Static topic list — avoids importing the 5 MB allQuestions bundle on the client.
 // Question counts are fetched from the server API on menu load.
@@ -898,6 +899,11 @@ export default function Cat1Client({ plan = "free" }: Cat1ClientProps = {}) {
           </div>
         );
       })()}
+
+      {/* Mobile-only inline notepad — desktop already has it inside QuizMeta. */}
+      <div className="lg:hidden">
+        <InlineNotepad questionId={q.id} />
+      </div>
 
       <div className="flex gap-3">
         {current > 0 && (
