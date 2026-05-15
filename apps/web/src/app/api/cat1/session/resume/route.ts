@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   // be exact OR both null (the "mixed pool" sessions).
   const sessionQuery = supabase
     .from("mcq_sessions")
-    .select("id, started_at, target_count, topic")
+    .select("id, started_at, target_count, topic, question_ids")
     .eq("user_id", user.id)
     .eq("status", "active")
     .order("started_at", { ascending: false })
@@ -51,16 +51,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ active: false });
   }
 
-  // Question IDs already answered in this session — to be excluded from the
-  // next quiz pool by the client.
-  const { data: attempts } = await supabase
+  // Full attempt history for this session, including the picked option
+  // letter so the client can re-render the user's original choice when
+  // they navigate to a previously-answered question.
+  const { data: attemptRows } = await supabase
     .from("attempts")
-    .select("question_id")
-    .eq("session_id", session.id);
+    .select("question_id, is_correct, selected_label, attempted_at")
+    .eq("session_id", session.id)
+    .order("attempted_at", { ascending: true });
 
-  const attemptedIds = (attempts ?? [])
-    .map((a) => a.question_id)
-    .filter((id): id is string => typeof id === "string" && id.length > 0);
+  const attempts = (attemptRows ?? [])
+    .filter((a) => typeof a.question_id === "string" && a.question_id.length > 0)
+    .map((a) => ({
+      questionId: a.question_id as string,
+      isCorrect: !!a.is_correct,
+      selected: typeof a.selected_label === "string" ? a.selected_label : null,
+    }));
 
   // Bump target_count if the client is about to attempt more than the row
   // currently stores. Capped at 2000 to match session/start.
@@ -74,11 +80,18 @@ export async function POST(req: NextRequest) {
       .eq("id", session.id);
   }
 
+  const persistedIds = Array.isArray(session.question_ids)
+    ? (session.question_ids as string[])
+    : [];
+
   return NextResponse.json({
     active: true,
     sessionId: session.id,
     startedAt: session.started_at,
     targetCount: effectiveTargetCount,
-    attemptedIds,
+    questionIds: persistedIds,
+    attempts,
+    // Kept for backwards compatibility with older client builds.
+    attemptedIds: attempts.map((a) => a.questionId),
   });
 }

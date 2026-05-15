@@ -8,7 +8,26 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { topic, count = 20 } = await req.json();
+  const body = await req.json().catch(() => ({}));
+
+  // Mode A: client passes an explicit ordered list of question ids — used to
+  // rehydrate a session after logout/login so the same questions appear in
+  // the same order as when the session was first created.
+  const ids: string[] | null = Array.isArray(body?.ids)
+    ? (body.ids as unknown[]).filter((x): x is string => typeof x === "string")
+    : null;
+  if (ids && ids.length > 0) {
+    const set = new Set(ids);
+    const found = new Map<string, (typeof allQuestions)[number]>();
+    for (const q of allQuestions) {
+      if (set.has(q.id)) found.set(q.id, q);
+    }
+    const ordered = ids.map((id) => found.get(id)).filter((q): q is (typeof allQuestions)[number] => !!q);
+    return NextResponse.json({ questions: ordered });
+  }
+
+  // Mode B: random sample by topic + count — used when starting a fresh session.
+  const { topic, count = 20 } = body;
   // Cap raised from 100 → 2000 so Pro users can request the full pool of a
   // specialty (e.g. OBG now has 470+ entries after the AMEDEX 2026 import).
   const safeCount = Math.min(Math.max(1, Number(count) || 20), 2000);

@@ -35,10 +35,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { questionId, correct, topic, sessionId } = await req.json();
+  const { questionId, correct, topic, sessionId, selected } = await req.json();
   if (!questionId || correct === undefined || !topic) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
+  // Selected option letter (A–E). Optional for backwards-compat with older
+  // clients but newer Cat1Client sends it so we can re-render the picked
+  // answer when the user navigates back via Previous / nav grid after a
+  // logout+login.
+  const selectedLabel: string | null =
+    typeof selected === "string" && /^[A-E]$/.test(selected) ? selected : null;
 
   const rating = correct ? Rating.Good : Rating.Again;
 
@@ -50,6 +56,7 @@ export async function POST(req: NextRequest) {
       question_id: questionId,
       selected_answer: correct ? "correct" : "wrong",
       is_correct: correct,
+      ...(selectedLabel ? { selected_label: selectedLabel } : {}),
       ...(typeof sessionId === "string" ? { session_id: sessionId } : {}),
     }),
     supabase

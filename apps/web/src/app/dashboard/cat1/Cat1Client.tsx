@@ -53,12 +53,13 @@ async function saveAttempt(
   correct: boolean,
   topic: string,
   sessionId: string | null,
+  selected: string,
 ): Promise<SaveAttemptResult> {
   try {
     const res = await fetch("/api/cat1/attempt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionId, correct, topic, sessionId }),
+      body: JSON.stringify({ questionId, correct, topic, sessionId, selected }),
     });
     // 429 from enforceDailyLimit — surface to UI so we can show an upgrade
     // modal instead of silently dropping the answer.
@@ -199,78 +200,123 @@ export default function Cat1Client({
     setMode("reading");
   }
 
-  // Step 2: reading → loading → quiz. For practice modes (topic / quick /
-  // continuous) we probe for an active session and resume it (filters
-  // already-answered question ids out of the new pool, reuses the existing
-  // mcq_session row). For Mock Exam we ALWAYS start a fresh isolated paper —
-  // mock = strict AMC pattern, exact count, no resume, no extension.
+  // Step 2: reading → loading → quiz.
+  // Practice modes resume an existing active session by reloading the SAME
+  // ordered question pool the session was started with (now persisted in
+  // mcq_sessions.question_ids), and pre-populate the answers state from the
+  // attempts table — so Q1, Q2 etc. that the user already attempted remain
+  // visible in the navigator with ✓/✗ status, and the user can navigate back
+  // to review them. Mock Exam always starts a fresh paper.
   const runQuiz = useCallback(async (topic: string | null, count: number, mock: boolean) => {
     setMode("loading");
     try {
-      let reusing = false;
       let sessionIdToUse: string | null = null;
-      let skipIds = new Set<string>();
+      let pool: MCQuestion[] = [];
+      let preAnswers: { id: string; correct: boolean; topic: string; selected: string }[] = [];
+      let firstUnansweredIdx = 0;
       let targetCount = count;
 
+      // Resume probe (skipped in Mock — each mock is a fresh paper).
+      let resumeData:
+        | {
+            active?: boolean;
+            sessionId?: string;
+            targetCount?: number;
+            questionIds?: string[];
+            attempts?: { questionId: string; isCorrect: boolean; selected: string | null }[];
+          }
+        | null = null;
       if (!mock) {
         const resumeRes = await fetch("/api/cat1/session/resume", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ topic, desiredTargetCount: count }),
         });
-        const resumeData = (await resumeRes.json().catch(() => ({}))) as {
-          active?: boolean;
-          sessionId?: string;
-          targetCount?: number;
-          attemptedIds?: string[];
-        };
-        reusing = !!(resumeData.active && resumeData.sessionId);
-        skipIds = new Set<string>(resumeData.attemptedIds ?? []);
-        // Always honour the count the user just clicked. Older active
-        // sessions were created with target_count=20 before Pro got the
-        // full-topic pool option, so without this a Pro user clicking
-        // "Practice all 472" would silently be capped at the legacy 20.
-        targetCount = Math.max(count, resumeData.targetCount ?? 0);
-        if (reusing) sessionIdToUse = resumeData.sessionId!;
+        resumeData = await resumeRes.json().catch(() => null);
       }
 
-      // Always fetch a generous pool from the questions API so the post-skip
-      // filter still leaves enough to fill the requested target.
-      const poolReq = Math.min(2000, Math.max(targetCount, count) + skipIds.size);
-      const qRes = await fetch("/api/cat1/questions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, count: poolReq }),
-      });
-      const data = (await qRes.json().catch(() => ({}))) as { questions?: MCQuestion[] };
-      const remaining = (data.questions ?? []).filter((q) => !skipIds.has(q.id));
+      const persistedIds: string[] =
+        Array.isArray(resumeData?.questionIds) && resumeData!.questionIds!.length > 0
+          ? resumeData!.questionIds!
+          : [];
+      const reusing = !!(resumeData?.active && resumeData?.sessionId && persistedIds.length > 0);
 
-      // Mock mode: always start a fresh row so each Mock attempt is its own
-      // paper. Practice modes: only call /session/start when we're not
-      // resuming or the resumed pool is empty.
-      if (mock || !remaining.length || !reusing) {
+      if (reusing) {
+        // Rehydrate the same paper using the persisted ids.
+        sessionIdToUse = resumeData!.sessionId!;
+        targetCount = Math.max(count, resumeData!.targetCount ?? 0, persistedIds.length);
+        const qRes = await fetch("/api/cat1/questions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: persistedIds }),
+        });
+        const data = (await qRes.json().catch(() => ({}))) as { questions?: MCQuestion[] };
+        pool = data.questions ?? [];
+
+        // Pre-populate answers: same length as pool, slots filled where the
+        // user has an attempt for that question id.
+        const attemptByQ = new Map<
+          string,
+          { isCorrect: boolean; selected: string | null }
+        >();
+        for (const a of resumeData!.attempts ?? []) {
+          attemptByQ.set(a.questionId, { isCorrect: a.isCorrect, selected: a.selected });
+        }
+        const sparse: typeof preAnswers = [];
+        for (let i = 0; i < pool.length; i++) {
+          const q = pool[i];
+          const a = attemptByQ.get(q.id);
+          if (a) {
+            sparse[i] = {
+              id: q.id,
+              correct: a.isCorrect,
+              topic: q.topic,
+              selected: a.selected || (a.isCorrect ? q.correctAnswer : ""),
+            };
+          }
+        }
+        preAnswers = sparse;
+        // Land on the first un-answered question.
+        firstUnansweredIdx = pool.findIndex((_, i) => !sparse[i]);
+        if (firstUnansweredIdx < 0) firstUnansweredIdx = 0;
+      } else {
+        // Fresh session: sample by topic+count, persist the chosen ids.
+        const qRes = await fetch("/api/cat1/questions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic, count }),
+        });
+        const data = (await qRes.json().catch(() => ({}))) as { questions?: MCQuestion[] };
+        pool = data.questions ?? [];
+        targetCount = pool.length;
+
         const sRes = await fetch("/api/cat1/session/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topic, targetCount }),
+          body: JSON.stringify({
+            topic,
+            targetCount,
+            questionIds: pool.map((q) => q.id),
+          }),
         });
         const sData = (await sRes.json().catch(() => ({}))) as { sessionId?: string };
         sessionIdToUse = typeof sData.sessionId === "string" ? sData.sessionId : null;
       }
 
-      setQuestions(remaining.slice(0, targetCount));
+      setQuestions(pool.slice(0, targetCount));
       setSessionId(sessionIdToUse);
       setSelectedTopic(topic);
-      setCurrent(0);
-      setSelected(null);
-      setRevealed(false);
-      setAnswers([]);
+      setCurrent(firstUnansweredIdx);
+      const priorAtCurrent = preAnswers[firstUnansweredIdx];
+      setSelected(priorAtCurrent?.selected ?? null);
+      setRevealed(!!priorAtCurrent);
+      setAnswers(preAnswers);
       setDetailedExplanation(null);
       setConsecutiveWrong(0);
       setMentorContext(null);
-      setResumedAlreadyDone(!mock && reusing && remaining.length ? skipIds.size : 0);
-      // Sticky for the quiz session — hides navigator, Previous, notepad,
-      // mentor message etc. when in strict AMC Mock mode.
+      // resumedAlreadyDone is no longer needed — the navigator now shows the
+      // full session pool with ✓/✗ markers on already-answered slots.
+      setResumedAlreadyDone(0);
       setIsMockSession(mock);
       setMode("quiz");
     } catch {
@@ -330,7 +376,7 @@ export default function Cat1Client({
 
     const result = alreadyAnswered
       ? { ok: true as const }
-      : await saveAttempt(q.id, correct, q.topic, sessionId);
+      : await saveAttempt(q.id, correct, q.topic, sessionId, selected);
     if (result.limitReached) {
       // Free user hit their daily quota. Show the upgrade modal — don't
       // advance to the next question; the user is gated until tomorrow OR

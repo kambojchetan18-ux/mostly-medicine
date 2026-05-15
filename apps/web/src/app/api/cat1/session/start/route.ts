@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 interface StartBody {
   topic?: string | null;
   targetCount?: number;
+  // Optional: client passes the ordered list of question ids it has just
+  // sampled. Persisting them lets us rebuild the same paper after a refresh
+  // / logout instead of re-shuffling on every visit.
+  questionIds?: string[];
 }
 
 export async function POST(req: NextRequest) {
@@ -24,6 +28,9 @@ export async function POST(req: NextRequest) {
   // sessions; UI gates large counts to plan === pro/enterprise.
   const targetCount = Math.max(1, Math.min(2000, Number(body.targetCount) || 20));
   const topic = typeof body.topic === "string" && body.topic.trim() ? body.topic.trim() : null;
+  const questionIds = Array.isArray(body.questionIds)
+    ? body.questionIds.filter((x): x is string => typeof x === "string").slice(0, 2000)
+    : null;
 
   const { data, error } = await supabase
     .from("mcq_sessions")
@@ -32,6 +39,7 @@ export async function POST(req: NextRequest) {
       topic,
       target_count: targetCount,
       status: "active",
+      ...(questionIds ? { question_ids: questionIds } : {}),
     })
     .select("id, started_at")
     .single();
