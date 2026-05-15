@@ -301,9 +301,24 @@ export default function Cat1Client({
             topic,
             targetCount,
             questionIds: pool.map((q) => q.id),
+            mock,
           }),
         });
-        const sData = (await sRes.json().catch(() => ({}))) as { sessionId?: string };
+        const sData = (await sRes.json().catch(() => ({}))) as {
+          sessionId?: string;
+          error?: string;
+          dailyLimit?: number;
+        };
+        // Daily-cap guardrail for Mock Exam (e.g. Pro = 1 paper / UTC day).
+        if (sRes.status === 429 && sData?.error === "mock_daily_limit_reached") {
+          setLimitReached({
+            dailyLimit: sData.dailyLimit ?? 1,
+            used: sData.dailyLimit ?? 1,
+            plan,
+          });
+          setMode("menu");
+          return;
+        }
         sessionIdToUse = typeof sData.sessionId === "string" ? sData.sessionId : null;
       }
 
@@ -953,8 +968,12 @@ export default function Cat1Client({
 
       <div className="space-y-2 mb-4">
         {q.options.map((opt) => {
+          // In Mock Exam we never reveal correctness during the paper —
+          // that's the strict AMC pattern. Only the "selected" highlight
+          // applies. Answers come at the end via the results page.
+          const showReveal = revealed && !isMockSession;
           let style = "bg-white border border-gray-200 text-gray-700 hover:border-brand-400 hover:bg-brand-50";
-          if (revealed) {
+          if (showReveal) {
             if (opt.label === q.correctAnswer) style = "bg-green-50 border-green-500 text-green-800";
             else if (opt.label === selected) style = "bg-red-50 border-red-400 text-red-800";
             else style = "bg-white border border-gray-100 text-gray-300";
@@ -971,17 +990,17 @@ export default function Cat1Client({
             >
               <span className="font-bold">{opt.label}.</span>
               <span className="flex-1">{opt.text}</span>
-              {revealed && isYourPick && (
+              {showReveal && isYourPick && (
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${
                   isCorrectOpt ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
                 }`}>
                   Your Answer
                 </span>
               )}
-              {revealed && isCorrectOpt && (
+              {showReveal && isCorrectOpt && (
                 <span className="text-emerald-600 text-base font-bold">✓</span>
               )}
-              {revealed && isYourPick && !isCorrectOpt && (
+              {showReveal && isYourPick && !isCorrectOpt && (
                 <span className="text-rose-600 text-base font-bold">✗</span>
               )}
             </button>
@@ -989,7 +1008,7 @@ export default function Cat1Client({
         })}
       </div>
 
-      {revealed && (() => {
+      {revealed && !isMockSession && (() => {
         const ref = getReference(q.topic);
         return (
           <div className={`rounded-xl p-4 mb-4 text-sm ${isCorrect ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}>
@@ -1076,7 +1095,17 @@ export default function Cat1Client({
             ← Previous
           </button>
         )}
-        {!revealed ? (
+        {isMockSession ? (
+          // Mock Exam: pick → straight to Next. Never reveal correctness
+          // mid-paper; full review is on the results page at the end.
+          <button
+            onClick={handleNext}
+            disabled={!selected || submitting}
+            className="flex-1 bg-brand-600 text-white font-semibold py-2.5 rounded-xl hover:bg-brand-700 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+          >
+            {current + 1 >= questions.length ? "Submit & See Results →" : "Next →"}
+          </button>
+        ) : !revealed ? (
           <button
             onClick={handleReveal}
             disabled={!selected}

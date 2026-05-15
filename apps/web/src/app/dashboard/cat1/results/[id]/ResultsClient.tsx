@@ -8,12 +8,29 @@ export interface AttemptRow {
   question_id: string;
   is_correct: boolean;
   attempted_at: string;
+  selected_label?: string | null;
 }
 
 export interface LearningPoint {
   questionId: string;
   isCorrect: boolean;
   points: string[];
+}
+
+// Per-question review row — populated server-side from allQuestions so the
+// results page can show the full stem + correct answer + explanation
+// (especially needed for Mock Exam, which suppresses correctness in-flow).
+export interface ReviewQuestion {
+  id: string;
+  topic: string;
+  subtopic: string;
+  difficulty: "easy" | "medium" | "hard";
+  stem: string;
+  options: { label: string; text: string }[];
+  correctAnswer: string;
+  explanation: string;
+  selectedLabel: string | null;
+  isCorrect: boolean | null;
 }
 
 export interface ResultsPayload {
@@ -28,9 +45,11 @@ export interface ResultsPayload {
     scorePct: number;
     correctCount: number;
     percentile: number | null;
+    isMock: boolean;
   };
   attempts: AttemptRow[];
   learningPoints: LearningPoint[];
+  review: ReviewQuestion[];
   user: {
     fullName: string | null;
     email: string;
@@ -477,6 +496,101 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
           </p>
         )}
       </section>
+
+      {/* ── Per-question review (full stem + correct answer + explanation) ─
+          Especially important for Mock Exam: answers are suppressed during
+          the paper and revealed only here at the end. */}
+      {data.review && data.review.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-end justify-between">
+            <h2 className="text-sm font-bold text-gray-900">
+              Full answers &amp; explanations
+              {data.session.isMock && (
+                <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-rose-700">
+                  Mock paper
+                </span>
+              )}
+            </h2>
+            <p className="text-[11px] text-gray-500">{data.review.length} questions</p>
+          </div>
+
+          {data.review.map((q, idx) => {
+            const correct = q.isCorrect === true;
+            const wrong = q.isCorrect === false;
+            return (
+              <details
+                key={`rev-${q.id}-${idx}`}
+                className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
+                open={data.session.isMock}
+              >
+                <summary className="cursor-pointer list-none px-4 py-3 sm:px-5 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 px-2.5 py-1 text-xs font-bold text-white tabular-nums shrink-0">
+                      Q{idx + 1}
+                    </span>
+                    <span className="text-xs font-medium text-gray-700 truncate">
+                      {q.subtopic}
+                    </span>
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                      q.difficulty === "easy" ? "bg-emerald-100 text-emerald-700"
+                      : q.difficulty === "medium" ? "bg-amber-100 text-amber-700"
+                      : "bg-rose-100 text-rose-700"
+                    }`}>
+                      {q.difficulty}
+                    </span>
+                  </div>
+                  {correct ? (
+                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 shrink-0">
+                      ✓ {q.selectedLabel ?? "—"}
+                    </span>
+                  ) : wrong ? (
+                    <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-semibold text-rose-700 shrink-0">
+                      ✗ {q.selectedLabel ?? "—"} (ans: {q.correctAnswer})
+                    </span>
+                  ) : (
+                    <span className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-0.5 text-[11px] font-semibold text-gray-500 shrink-0">
+                      Skipped
+                    </span>
+                  )}
+                </summary>
+                <div className="border-t border-gray-100 px-4 py-3 sm:px-5 sm:py-4 space-y-3">
+                  <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{q.stem}</p>
+                  <div className="space-y-1.5">
+                    {q.options.map((o) => {
+                      const isCorrectOpt = o.label === q.correctAnswer;
+                      const isPicked = q.selectedLabel === o.label;
+                      const cls = isCorrectOpt
+                        ? "border-emerald-400 bg-emerald-50 text-emerald-900"
+                        : isPicked
+                        ? "border-rose-400 bg-rose-50 text-rose-900"
+                        : "border-gray-200 bg-white text-gray-700";
+                      return (
+                        <div
+                          key={o.label}
+                          className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm ${cls}`}
+                        >
+                          <span className="font-bold shrink-0">{o.label}.</span>
+                          <span className="flex-1">{o.text}</span>
+                          {isCorrectOpt && (
+                            <span className="text-emerald-600 font-bold">✓</span>
+                          )}
+                          {isPicked && !isCorrectOpt && (
+                            <span className="text-rose-600 font-bold">✗</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="rounded-xl bg-violet-50/60 px-3 py-2.5 text-xs text-gray-700 leading-relaxed">
+                    <p className="font-semibold text-violet-800 mb-1">Explanation</p>
+                    {q.explanation}
+                  </div>
+                </div>
+              </details>
+            );
+          })}
+        </section>
+      )}
 
       {/* ── Footer CTAs ──────────────────────────────────────────── */}
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">

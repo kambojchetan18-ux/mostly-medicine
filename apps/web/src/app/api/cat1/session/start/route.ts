@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkModulePermission } from "@/lib/permissions";
 
 export const dynamic = "force-dynamic";
 
 interface StartBody {
   topic?: string | null;
   targetCount?: number;
-  // Optional: client passes the ordered list of question ids it has just
-  // sampled. Persisting them lets us rebuild the same paper after a refresh
-  // / logout instead of re-shuffling on every visit.
   questionIds?: string[];
+  // True when the client is starting a Mock Exam paper. The route enforces
+  // module_permissions.mock_exam.daily_limit and writes is_mock=true on
+  // the row so subsequent runs can cap correctly.
+  mock?: boolean;
 }
 
 export async function POST(req: NextRequest) {
@@ -31,6 +33,42 @@ export async function POST(req: NextRequest) {
   const questionIds = Array.isArray(body.questionIds)
     ? body.questionIds.filter((x): x is string => typeof x === "string").slice(0, 2000)
     : null;
+  const isMock = body.mock === true;
+
+  // Mock-only daily cap. Free + Pro default to 1 paper/day (admin-tunable
+  // via /dashboard/admin → module_permissions.mock_exam.daily_limit);
+  // Enterprise = null = unlimited.
+  if (isMock) {
+    const perm = await checkModulePermission(supabase, "mock_exam");
+    if (!perm.allowed) {
+      return NextResponse.json(
+        { error: "mock_exam_disabled", plan: perm.plan },
+        { status: 403 },
+      );
+    }
+    if (perm.dailyLimit != null) {
+      const startOfDay = new Date();
+      startOfDay.setUTCHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from("mcq_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_mock", true)
+        .gte("created_at", startOfDay.toISOString());
+      const used = count ?? 0;
+      if (used >= perm.dailyLimit) {
+        return NextResponse.json(
+          {
+            error: "mock_daily_limit_reached",
+            plan: perm.plan,
+            dailyLimit: perm.dailyLimit,
+            used,
+          },
+          { status: 429 },
+        );
+      }
+    }
+  }
 
   const { data, error } = await supabase
     .from("mcq_sessions")
@@ -39,6 +77,7 @@ export async function POST(req: NextRequest) {
       topic,
       target_count: targetCount,
       status: "active",
+      is_mock: isMock,
       ...(questionIds ? { question_ids: questionIds } : {}),
     })
     .select("id, started_at")

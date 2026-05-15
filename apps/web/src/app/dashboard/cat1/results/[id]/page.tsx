@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { allQuestions } from "@mostly-medicine/content";
 import ResultsClient, {
   type ResultsPayload,
   type AttemptRow,
   type LearningPoint,
+  type ReviewQuestion,
 } from "./ResultsClient";
 
 export const dynamic = "force-dynamic";
@@ -30,13 +32,13 @@ export default async function SessionResultsPage({ params }: PageProps) {
     supabase
       .from("mcq_sessions")
       .select(
-        "id, user_id, topic, target_count, status, started_at, ended_at, duration_seconds, questions_answered, score_pct, correct_count, percentile, learning_points"
+        "id, user_id, topic, target_count, status, started_at, ended_at, duration_seconds, questions_answered, score_pct, correct_count, percentile, learning_points, question_ids, is_mock"
       )
       .eq("id", id)
       .maybeSingle(),
     supabase
       .from("attempts")
-      .select("id, question_id, is_correct, attempted_at")
+      .select("id, question_id, is_correct, attempted_at, selected_label")
       .eq("session_id", id)
       .order("attempted_at", { ascending: true }),
     supabase
@@ -84,6 +86,34 @@ export default async function SessionResultsPage({ params }: PageProps) {
     !!profile?.pro_until &&
     Date.parse(profile.pro_until) > Date.now();
 
+  // Build per-question review block — full stem, options, correct answer,
+  // user's pick, explanation. Especially important for Mock Exam which
+  // never reveals correctness mid-paper. Falls back to attempt order if
+  // the session pre-dates the question_ids column.
+  const sessionIds = Array.isArray(session.question_ids)
+    ? (session.question_ids as string[])
+    : attempts.map((a) => a.question_id).filter((s): s is string => !!s);
+  const idToAttempt = new Map(attempts.map((a) => [a.question_id, a]));
+  const review: ReviewQuestion[] = sessionIds
+    .map((qid) => {
+      const q = allQuestions.find((x) => x.id === qid);
+      const a = idToAttempt.get(qid) ?? null;
+      if (!q) return null;
+      return {
+        id: q.id,
+        topic: q.topic,
+        subtopic: q.subtopic,
+        difficulty: q.difficulty,
+        stem: q.stem,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation,
+        selectedLabel: a?.selected_label ?? null,
+        isCorrect: a?.is_correct ?? null,
+      } satisfies ReviewQuestion;
+    })
+    .filter((x): x is ReviewQuestion => x !== null);
+
   const payload: ResultsPayload = {
     session: {
       id: session.id,
@@ -100,9 +130,11 @@ export default async function SessionResultsPage({ params }: PageProps) {
           : attempts.filter((a) => a.is_correct).length,
       percentile:
         typeof session.percentile === "number" ? session.percentile : null,
+      isMock: !!session.is_mock,
     },
     attempts,
     learningPoints,
+    review,
     user: {
       fullName: profile?.full_name ?? null,
       email: profile?.email ?? user.email ?? "",
