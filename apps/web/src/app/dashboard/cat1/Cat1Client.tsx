@@ -128,6 +128,33 @@ export default function Cat1Client({
   // hard upgrade gate; Pro/Enterprise get the full 150 paper.
   const [pendingMock, setPendingMock] = useState(false);
   const [isMockSession, setIsMockSession] = useState(false);
+  // User preference to collapse the question-navigator sidebar so the question
+  // gets full width. Persisted in localStorage so it survives refresh /
+  // navigation. Default = open. Mock Exam ignores this and hides regardless.
+  const [navOpen, setNavOpen] = useState(true);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const v = window.localStorage.getItem("mm:cat1:nav-open");
+      if (v === "0") setNavOpen(false);
+      else if (v === "1") setNavOpen(true);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  function toggleNav() {
+    setNavOpen((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem("mm:cat1:nav-open", next ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }
   // How many questions in this topic the user already attempted before the
   // resume — used to display absolute progress ("Question 9 of 135") instead
   // of the misleading within-pool count ("Question 1 of 130").
@@ -766,8 +793,16 @@ export default function Cat1Client({
         </div>
       </div>
     )}
-    <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)_260px] gap-4 max-w-7xl mx-auto lg:px-2">
-      {!isMockSession ? (
+    <div
+      className={
+        isMockSession
+          ? "grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_260px] gap-4 max-w-7xl mx-auto lg:px-2"
+          : navOpen
+          ? "grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)_260px] gap-4 max-w-7xl mx-auto lg:px-2"
+          : "grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_260px] gap-4 max-w-7xl mx-auto lg:px-2"
+      }
+    >
+      {!isMockSession && navOpen && (
         <div className="hidden lg:block">
           <QuizNavigator
             total={questions.length}
@@ -777,8 +812,6 @@ export default function Cat1Client({
             onJump={handleJumpTo}
           />
         </div>
-      ) : (
-        <div className="hidden lg:block" />
       )}
     <div className="min-w-0">
       <div className="flex items-center justify-between mb-2">
@@ -796,14 +829,26 @@ export default function Cat1Client({
             </span>
           )}
         </p>
-        <button onClick={reset} className="text-xs text-gray-400 hover:text-gray-600">
-          Exit
-        </button>
+        <div className="flex items-center gap-3">
+          {!isMockSession && (
+            <button
+              type="button"
+              onClick={toggleNav}
+              className="hidden lg:inline-flex items-center gap-1 text-xs text-gray-500 hover:text-brand-700"
+              title={navOpen ? "Hide question navigator" : "Show question navigator"}
+            >
+              {navOpen ? "⇤ Hide nav" : "⇥ Show nav"}
+            </button>
+          )}
+          <button onClick={reset} className="text-xs text-gray-400 hover:text-gray-600">
+            Exit
+          </button>
+        </div>
       </div>
 
       {/* Mobile-only compact navigator strip — hidden in Mock Exam (strict
-          AMC pattern: no question grid, no jumping). */}
-      {!isMockSession && (
+          AMC pattern) AND when the user has collapsed the navigator. */}
+      {!isMockSession && navOpen && (
       <div className="lg:hidden mb-3 -mx-2 px-2 overflow-x-auto">
         <div className="flex gap-1.5 w-max">
           {questions.map((_, idx) => {
