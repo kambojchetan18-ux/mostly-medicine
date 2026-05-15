@@ -26,8 +26,8 @@ interface ModulePermission {
 // (cat1, cat2, library, jobs…) is vestigial and doesn't gate anything,
 // so we deliberately don't expose those toggles here — flipping them
 // would feel like it "did something" but change no real behaviour.
-const MODULES = ["mcq", "roleplay", "acrp_solo", "acrp_live"];
-const PLANS   = ["free", "pro"];
+const MODULES = ["mcq", "mock_exam", "roleplay", "acrp_solo", "acrp_live"];
+const PLANS   = ["free", "pro", "enterprise"];
 
 const MODULE_LABELS: Record<string, string> = {
   mcq: "AMC MCQ (CAT 1)",
