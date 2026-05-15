@@ -1,0 +1,3 @@
+# Block any push that introduces duplicate question ids in the content bank.
+# Update via scripts/check-question-ids.mjs (called below).
+node scripts/check-question-ids.mjs
