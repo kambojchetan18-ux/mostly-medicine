@@ -4,7 +4,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type ModuleKey = "mcq" | "roleplay" | "acrp_solo" | "acrp_live";
+export type ModuleKey = "mcq" | "mock_exam" | "roleplay" | "acrp_solo" | "acrp_live";
 
 export interface PermissionResult {
   allowed: boolean;
@@ -94,6 +94,11 @@ export async function checkModulePermission(
 // enforcement. Each entry: { table, userColumn, timestampColumn }.
 const USAGE_COUNTERS: Record<ModuleKey, { table: string; userColumn: string; timestampColumn: string } | null> = {
   mcq: { table: "attempts", userColumn: "user_id", timestampColumn: "attempted_at" },
+  // mock_exam gating today is purely visibility-based via the admin panel —
+  // the per-paper question count is hard-coded in Cat1Client (Free = 20
+  // sample, Pro/Ent = 150). When we want to count mock papers per UTC day,
+  // populate this with mcq_sessions filtered on a future is_mock column.
+  mock_exam: null,
   acrp_solo: { table: "acrp_sessions", userColumn: "user_id", timestampColumn: "created_at" },
   acrp_live: { table: "acrp_live_sessions", userColumn: "host_user_id", timestampColumn: "created_at" },
   // /api/ai/roleplay inserts a cat2_sessions row on the user's first turn

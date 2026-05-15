@@ -29,5 +29,16 @@ export default async function Cat1Page() {
     return <UpgradeGate module="mcq" currentPlan={perm.plan} />;
   }
 
-  return <Cat1Client plan={perm.plan} initialTopicCounts={TOPIC_COUNTS} />;
+  // Mock Exam visibility is admin-controllable via /dashboard/admin → the
+  // mock_exam row in module_permissions. If the row says enabled=false for
+  // this user's plan, Cat1Client hides the Mock Exam button entirely.
+  const mockPerm = await checkModulePermission(supabase, "mock_exam");
+
+  return (
+    <Cat1Client
+      plan={perm.plan}
+      initialTopicCounts={TOPIC_COUNTS}
+      mockExamEnabled={mockPerm.allowed}
+    />
+  );
 }

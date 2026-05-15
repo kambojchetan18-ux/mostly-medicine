@@ -83,11 +83,15 @@ async function saveAttempt(
 interface Cat1ClientProps {
   plan?: "free" | "pro" | "enterprise";
   initialTopicCounts?: Record<string, number>;
+  // Toggled per plan from /dashboard/admin → module_permissions.mock_exam.
+  // When false, hide the Mock Exam button entirely for this user's plan.
+  mockExamEnabled?: boolean;
 }
 
 export default function Cat1Client({
   plan = "free",
   initialTopicCounts = {},
+  mockExamEnabled = true,
 }: Cat1ClientProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -635,17 +639,19 @@ export default function Cat1Client({
           >
             ⚡ Quick Quiz (20 random)
           </button>
-          <button
-            onClick={() => startQuiz(null, isPro ? 150 : 20, true)}
-            className="border border-gray-300 text-gray-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-gray-50 transition"
-            title={
-              isPro
-                ? "Real AMC pattern — 150 questions, no Previous, no question grid"
-                : "Free preview: 20 questions in AMC pattern; upgrade to Pro for the full 150-question paper"
-            }
-          >
-            🧪 Mock Exam {isPro ? "(150 questions)" : "(20 sample · Pro = 150)"}
-          </button>
+          {mockExamEnabled && (
+            <button
+              onClick={() => startQuiz(null, isPro ? 150 : 20, true)}
+              className="border border-gray-300 text-gray-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-gray-50 transition"
+              title={
+                isPro
+                  ? "Real AMC pattern — 150 questions, no Previous, no question grid"
+                  : "Free preview: 20 questions in AMC pattern; upgrade to Pro for the full 150-question paper"
+              }
+            >
+              🧪 Mock Exam {isPro ? "(150 questions)" : "(20 sample · Pro = 150)"}
+            </button>
+          )}
           {isPro && (
             <button
               onClick={() => startQuiz(null, 100)}
