@@ -172,31 +172,40 @@ export default function Cat1Client({
     setMode("reading");
   }
 
-  // Step 2: reading → loading → quiz. Probes for an active session for this
-  // topic first; if one exists, RESUMES it (filters already-answered question
-  // ids out of the new pool and reuses the existing mcq_session row). Otherwise
-  // creates a fresh mcq_session via /session/start.
-  const runQuiz = useCallback(async (topic: string | null, count: number) => {
+  // Step 2: reading → loading → quiz. For practice modes (topic / quick /
+  // continuous) we probe for an active session and resume it (filters
+  // already-answered question ids out of the new pool, reuses the existing
+  // mcq_session row). For Mock Exam we ALWAYS start a fresh isolated paper —
+  // mock = strict AMC pattern, exact count, no resume, no extension.
+  const runQuiz = useCallback(async (topic: string | null, count: number, mock: boolean) => {
     setMode("loading");
     try {
-      const resumeRes = await fetch("/api/cat1/session/resume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, desiredTargetCount: count }),
-      });
-      const resumeData = (await resumeRes.json().catch(() => ({}))) as {
-        active?: boolean;
-        sessionId?: string;
-        targetCount?: number;
-        attemptedIds?: string[];
-      };
-      const reusing = !!(resumeData.active && resumeData.sessionId);
-      const skipIds = new Set<string>(resumeData.attemptedIds ?? []);
-      // Always honour the count the user just clicked. Older active sessions
-      // were created with target_count=20 before Pro got the full-topic pool
-      // option, so without this a Pro user clicking "Practice all 472" would
-      // silently be capped at the legacy 20.
-      const targetCount = Math.max(count, resumeData.targetCount ?? 0);
+      let reusing = false;
+      let sessionIdToUse: string | null = null;
+      let skipIds = new Set<string>();
+      let targetCount = count;
+
+      if (!mock) {
+        const resumeRes = await fetch("/api/cat1/session/resume", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic, desiredTargetCount: count }),
+        });
+        const resumeData = (await resumeRes.json().catch(() => ({}))) as {
+          active?: boolean;
+          sessionId?: string;
+          targetCount?: number;
+          attemptedIds?: string[];
+        };
+        reusing = !!(resumeData.active && resumeData.sessionId);
+        skipIds = new Set<string>(resumeData.attemptedIds ?? []);
+        // Always honour the count the user just clicked. Older active
+        // sessions were created with target_count=20 before Pro got the
+        // full-topic pool option, so without this a Pro user clicking
+        // "Practice all 472" would silently be capped at the legacy 20.
+        targetCount = Math.max(count, resumeData.targetCount ?? 0);
+        if (reusing) sessionIdToUse = resumeData.sessionId!;
+      }
 
       // Always fetch a generous pool from the questions API so the post-skip
       // filter still leaves enough to fill the requested target.
@@ -209,9 +218,10 @@ export default function Cat1Client({
       const data = (await qRes.json().catch(() => ({}))) as { questions?: MCQuestion[] };
       const remaining = (data.questions ?? []).filter((q) => !skipIds.has(q.id));
 
-      let sessionIdToUse = reusing ? resumeData.sessionId! : null;
-      // If nothing left to resume from, transparently create a fresh session.
-      if (!remaining.length || !reusing) {
+      // Mock mode: always start a fresh row so each Mock attempt is its own
+      // paper. Practice modes: only call /session/start when we're not
+      // resuming or the resumed pool is empty.
+      if (mock || !remaining.length || !reusing) {
         const sRes = await fetch("/api/cat1/session/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -231,10 +241,10 @@ export default function Cat1Client({
       setDetailedExplanation(null);
       setConsecutiveWrong(0);
       setMentorContext(null);
-      setResumedAlreadyDone(reusing && remaining.length ? skipIds.size : 0);
-      // Capture the pending Mock flag so the quiz screen can hide the
-      // navigator + Previous button + skip the deep-link auto-resume etc.
-      setIsMockSession(pendingMock);
+      setResumedAlreadyDone(!mock && reusing && remaining.length ? skipIds.size : 0);
+      // Sticky for the quiz session — hides navigator, Previous, notepad,
+      // mentor message etc. when in strict AMC Mock mode.
+      setIsMockSession(mock);
       setMode("quiz");
     } catch {
       setMode("menu");
@@ -245,12 +255,12 @@ export default function Cat1Client({
   useEffect(() => {
     if (mode !== "reading") return;
     if (readingSecondsLeft <= 0) {
-      runQuiz(pendingTopic, pendingCount);
+      runQuiz(pendingTopic, pendingCount, pendingMock);
       return;
     }
     const t = setTimeout(() => setReadingSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-  }, [mode, readingSecondsLeft, pendingTopic, pendingCount, runQuiz]);
+  }, [mode, readingSecondsLeft, pendingTopic, pendingCount, pendingMock, runQuiz]);
 
   function handleSelect(label: string) {
     if (revealed) return;
@@ -490,7 +500,7 @@ export default function Cat1Client({
             </div>
             <button
               type="button"
-              onClick={() => runQuiz(pendingTopic, pendingCount)}
+              onClick={() => runQuiz(pendingTopic, pendingCount, pendingMock)}
               className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
             >
               Start MCQ Quiz →
@@ -708,7 +718,7 @@ export default function Cat1Client({
 
   return (
     <>
-    {mentorContext && (
+    {mentorContext && !isMockSession && (
       <MentorMessage
         key={`mentor-${mentorKey}`}
         trigger="mcq_two_wrong"
@@ -952,10 +962,12 @@ export default function Cat1Client({
         );
       })()}
 
-      {/* Mobile-only inline notepad — desktop already has it inside QuizMeta. */}
-      <div className="lg:hidden">
-        <InlineNotepad questionId={q.id} />
-      </div>
+      {/* Mobile-only inline notepad — hidden in Mock (strict AMC, no notes). */}
+      {!isMockSession && (
+        <div className="lg:hidden">
+          <InlineNotepad questionId={q.id} />
+        </div>
+      )}
 
       <div className="flex gap-3">
         {/* Previous is hidden in Mock Exam — strict AMC pattern, one-way only. */}
@@ -985,9 +997,13 @@ export default function Cat1Client({
         )}
       </div>
     </div>
-      <div className="hidden lg:block">
-        <QuizMeta questionId={q.id} current={current} />
-      </div>
+      {!isMockSession ? (
+        <div className="hidden lg:block">
+          <QuizMeta questionId={q.id} current={current} />
+        </div>
+      ) : (
+        <div className="hidden lg:block" />
+      )}
     </div>
     </>
   );
