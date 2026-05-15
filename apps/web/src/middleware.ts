@@ -11,6 +11,21 @@ const PUBLIC_API_ROUTES = [
   // Diagnostic — returns env-var presence flags only (never values). Safe to
   // expose so support can confirm Vercel env-var bake without admin login.
   "/api/health",
+  // Vercel Cron sends requests without Supabase session cookies. Cron routes
+  // enforce their own CRON_SECRET Bearer token auth internally.
+  "/api/cron",
+  // Public taste endpoints — no-signup funnel for visitors to try the product.
+  // Each route enforces its own per-IP rate limiting internally.
+  "/api/ask-ai-taste",
+  "/api/try-roleplay",
+  // Email unsubscribe links are clicked from the inbox — user may not be
+  // logged in. The route validates an HMAC token instead.
+  "/api/email/unsubscribe",
+  // PWA install tracking — anonymous installs still count. Auth-bypassed by
+  // design; the route optionally attaches user_id if a session exists.
+  "/api/track/pwa-install",
+  // Test email utility — protected by its own CRON_SECRET bearer check.
+  "/api/test-email",
 ];
 
 export async function middleware(request: NextRequest) {

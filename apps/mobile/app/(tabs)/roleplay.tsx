@@ -14,7 +14,7 @@ import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://www.mostlymedicine.com';
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -497,6 +497,8 @@ export default function RoleplayScreen() {
                 <TouchableOpacity
                   style={[s.exitBtn, isMuted && { borderColor: '#ef4444' }]}
                   onPress={() => { setIsMuted(m => !m); if (isSpeaking) stopSpeaking(); }}
+                  accessibilityLabel={isMuted ? 'Unmute audio' : 'Mute audio'}
+                  accessibilityRole="button"
                 >
                   <Ionicons name={isMuted ? 'volume-mute' : 'volume-medium'} size={16} color={isMuted ? '#ef4444' : '#64748b'} />
                 </TouchableOpacity>
@@ -505,7 +507,7 @@ export default function RoleplayScreen() {
                     <Text style={s.feedbackBtnText}>Feedback</Text>
                   </TouchableOpacity>
                 )}
-                <TouchableOpacity style={s.exitBtn} onPress={endSession}>
+                <TouchableOpacity style={s.exitBtn} onPress={endSession} accessibilityLabel="End session" accessibilityRole="button">
                   <Ionicons name="close" size={16} color="#64748b" />
                 </TouchableOpacity>
               </View>
@@ -564,6 +566,8 @@ export default function RoleplayScreen() {
                 onPress={toggleRecording}
                 disabled={loading}
                 activeOpacity={0.7}
+                accessibilityLabel={isRecording ? 'Stop recording' : 'Start recording'}
+                accessibilityRole="button"
               >
                 <Ionicons
                   name={isRecording ? 'stop' : 'mic'}
@@ -596,6 +600,8 @@ export default function RoleplayScreen() {
               style={[s.sendBtn, !canSend && s.sendBtnDisabled]}
               onPress={() => sendMessage(input)}
               disabled={!canSend}
+              accessibilityLabel="Send message"
+              accessibilityRole="button"
             >
               <Ionicons name="send" size={18} color="#fff" />
             </TouchableOpacity>

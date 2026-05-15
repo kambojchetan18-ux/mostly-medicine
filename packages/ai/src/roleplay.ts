@@ -1,7 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { getScenario } from "./scenarios";
-
-const client = new Anthropic();
+import { runChat } from "./router";
 
 interface Message {
   role: string;
@@ -155,14 +153,13 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
     });
   }
 
-  const response = await client.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1024,
+  const result = await runChat({
+    useCase: "clinical_roleplay",
     system: systemPrompt,
     messages: apiMessages,
+    maxTokens: 1024,
+    cacheSystem: true,
   });
 
-  const block = response.content[0];
-  if (!block || block.type !== "text") throw new Error("Unexpected response type from AI");
-  return block.text;
+  return result.text;
 }
