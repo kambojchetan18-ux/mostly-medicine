@@ -41,20 +41,18 @@ export default function StreakHeatmap() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    fetch("/api/streaks/heatmap")
+    const controller = new AbortController();
+    fetch("/api/streaks/heatmap", { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("bad status"))))
       .then((j: { days: Day[] }) => {
-        if (cancelled) return;
+        if (controller.signal.aborted) return;
         setDays(j.days);
       })
       .catch(() => {
-        if (cancelled) return;
+        if (controller.signal.aborted) return;
         setError(true);
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => controller.abort();
   }, []);
 
   // Skeleton: empty grid while loading, or on error.

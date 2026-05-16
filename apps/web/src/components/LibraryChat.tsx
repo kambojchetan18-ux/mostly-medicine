@@ -22,6 +22,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,6 +37,10 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
     setIsLoading(true);
 
     try {
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       const res = await fetch("/api/library-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -44,6 +49,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
           topicTitle,
           topicContent,
         }),
+        signal: controller.signal,
       });
 
       if (!res.ok || !res.body) throw new Error("Request failed");
@@ -64,7 +70,8 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
           return updated;
         });
       }
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "Sorry, something went wrong. Please try again." },

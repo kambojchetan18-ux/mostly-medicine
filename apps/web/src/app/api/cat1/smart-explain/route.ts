@@ -87,6 +87,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Question not found" }, { status: 404 });
   }
 
+  if (userAnswerIndex < 0 || userAnswerIndex >= question.options.length) {
+    return NextResponse.json({ error: "Invalid answer index" }, { status: 400 });
+  }
+
   const userAnswerOption = question.options[userAnswerIndex];
   const correctOption = question.options.find((o) => o.label === question.correctAnswer);
   if (!correctOption) {
