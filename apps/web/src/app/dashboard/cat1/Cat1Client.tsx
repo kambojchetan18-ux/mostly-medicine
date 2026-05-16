@@ -170,7 +170,8 @@ export default function Cat1Client({
 
   // Fetch topic counts once on menu mount — tiny payload from server
   useEffect(() => {
-    fetch("/api/cat1/questions")
+    const controller = new AbortController();
+    fetch("/api/cat1/questions", { signal: controller.signal })
       .then((r) => r.json())
       .then((d) => {
         if (d.topics) {
@@ -180,6 +181,7 @@ export default function Cat1Client({
         }
       })
       .catch(() => {});
+    return () => controller.abort();
   }, []);
 
   // Auto-start a topic when arriving from /dashboard/progress (or any deep

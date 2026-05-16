@@ -15,6 +15,13 @@ import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const FETCH_TIMEOUT_MS = 15_000;
+
+function fetchWithTimeout(url: string, opts: RequestInit, timeoutMs = FETCH_TIMEOUT_MS): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...opts, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -166,7 +173,7 @@ export default function RoleplayScreen() {
       const form = new FormData();
       // RN FormData accepts { uri, name, type } — cast required for TS
       form.append('audio', { uri, name: 'recording.m4a', type: 'audio/mp4' } as unknown as Blob);
-      const res = await fetch(`${API_URL}/api/stt/transcribe`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/stt/transcribe`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: form,
@@ -300,7 +307,7 @@ export default function RoleplayScreen() {
     setLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${API_URL}/api/ai/roleplay`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
@@ -310,7 +317,7 @@ export default function RoleplayScreen() {
       setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
       speakPatient(data.reply, scenario?.patientProfile ?? '');
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Error';
+      const msg = e instanceof Error ? (e.name === 'AbortError' ? 'Request timed out' : e.message) : 'Error';
       setMessages([...newMsgs, { role: 'assistant', content: `[${msg}]` }]);
     } finally {
       setLoading(false);
@@ -324,11 +331,11 @@ export default function RoleplayScreen() {
     setFetchingFeedback(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${API_URL}/api/ai/roleplay`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages, requestFeedback: true }),
-      });
+      }, 30_000);
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
       setFeedback(data.reply);

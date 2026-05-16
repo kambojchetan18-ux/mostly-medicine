@@ -26,8 +26,10 @@ export default function QuizScreen() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    const pool = topic
-      ? allQuestions.filter((q) => q.topic === topic)
+    const validTopics = new Set(allQuestions.map((q) => q.topic));
+    const safeTopic = topic && validTopics.has(topic) ? topic : null;
+    const pool = safeTopic
+      ? allQuestions.filter((q) => q.topic === safeTopic)
       : allQuestions;
     setQuestions(shuffle(pool).slice(0, QUIZ_SIZE));
   }, [topic]);
