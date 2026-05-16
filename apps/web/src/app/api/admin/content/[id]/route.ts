@@ -14,6 +14,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
   const { id } = await params;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });
+  }
   const updates = await req.json();
 
   const allowed = ["caption", "slides", "hashtags", "status", "post_date", "post_type"];
@@ -34,6 +37,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const auth = await requireAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
   const { id } = await params;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return NextResponse.json({ error: "Invalid ID format" }, { status: 400 });
+  }
 
   const { error } = await auth.supabase!.from("content_posts").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

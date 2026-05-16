@@ -80,6 +80,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
 
+  await svc.from("audit_log").insert({
+    actor_id: user.id,
+    action: "password_set",
+    target_id: userId,
+    target_email: target.user.email ?? null,
+  });
+
   return NextResponse.json({
     ok: true,
     email: target.user.email ?? null,

@@ -33,7 +33,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages, topicTitle, topicContent } = await req.json();
+  let messages: { role: string; content: string }[];
+  let topicTitle: string | undefined;
+  let topicContent: string | undefined;
+  try {
+    const body = await req.json();
+    messages = Array.isArray(body.messages) ? body.messages : [];
+    topicTitle = typeof body.topicTitle === "string" ? body.topicTitle : undefined;
+    topicContent = typeof body.topicContent === "string" ? body.topicContent : undefined;
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  if (messages.length === 0) {
+    return NextResponse.json({ error: "messages required" }, { status: 400 });
+  }
 
   const systemPrompt =
     topicTitle && topicContent

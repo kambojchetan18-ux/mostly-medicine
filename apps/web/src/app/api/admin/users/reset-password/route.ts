@@ -59,5 +59,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  await svc.from("audit_log").insert({
+    actor_id: user.id,
+    action: "password_reset",
+    target_id: userId,
+    target_email: email,
+  });
+
   return NextResponse.json({ ok: true });
 }

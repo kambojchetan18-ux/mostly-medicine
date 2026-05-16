@@ -33,6 +33,7 @@ export default function QuizScreen() {
   }, [topic]);
 
   const q = questions[index];
+  if (!q && phase !== 'done') return null;
   const isCorrect = selected !== null && selected === q?.correctAnswer;
   const totalCorrect = attempts.filter((a) => a.is_correct).length;
 
