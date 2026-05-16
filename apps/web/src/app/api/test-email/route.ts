@@ -19,10 +19,8 @@ export async function GET(req: NextRequest) {
 
   // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
   const url = new URL(req.url);
-  const to =
-    url.searchParams.get("to") ??
-    process.env.ALERT_EMAIL ??
-    "kamboj.chetan18@gmail.com";
+  const rawTo = url.searchParams.get("to") ?? process.env.ALERT_EMAIL ?? "kamboj.chetan18@gmail.com";
+  const to = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawTo) ? rawTo : "kamboj.chetan18@gmail.com";
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const token = newUnsubToken();

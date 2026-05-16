@@ -33,7 +33,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages, topicTitle, topicContent } = await req.json();
+  let body: { messages?: unknown[]; topicTitle?: string; topicContent?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const { messages, topicTitle, topicContent } = body;
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return NextResponse.json({ error: "messages required" }, { status: 400 });
+  }
+  if (messages.length > 50) {
+    return NextResponse.json({ error: "Too many messages" }, { status: 400 });
+  }
 
   const systemPrompt =
     topicTitle && topicContent

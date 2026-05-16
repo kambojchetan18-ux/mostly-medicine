@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 interface TokenRow {
   user_id: string;
@@ -38,6 +39,12 @@ function htmlResponse(inner: string): Response {
 }
 
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rl = await aiRateLimit(`unsub:ip:${ip}`, { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return new Response("Too many requests", { status: 429 });
+  }
+
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
 
