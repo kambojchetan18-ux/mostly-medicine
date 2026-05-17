@@ -344,6 +344,8 @@ export default function Cat2Client() {
     }
   }
 
+  useEffect(() => () => stopTimer(), []);
+
   // Auto-request feedback when timer reaches 0
   const feedbackRequestedRef = useRef(false);
   useEffect(() => {
@@ -440,12 +442,17 @@ export default function Cat2Client() {
     setReadingScenarioId(null);
   }
 
+  useEffect(() => {
+    if (readingScenarioId !== null) {
+      const scenario = scenarios.find((s) => s.id === readingScenarioId);
+      if (!scenario) setReadingScenarioId(null);
+    }
+  }, [readingScenarioId, scenarios]);
+
   // ── Reading-time briefing screen (mirrors AMC Clinical AI RolePlay) ──────
   if (readingScenarioId !== null) {
     const scenario = scenarios.find((s) => s.id === readingScenarioId);
     if (!scenario) {
-      // Defensive: scenario went missing — bail back to selection.
-      setReadingScenarioId(null);
       return null;
     }
     const briefing = scenario.candidateInfo;

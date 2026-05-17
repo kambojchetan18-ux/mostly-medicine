@@ -65,10 +65,15 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
         });
       }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Sorry, something went wrong. Please try again." },
-      ]);
+      setMessages((prev) => {
+        const updated = [...prev];
+        if (updated.length > 0 && updated[updated.length - 1].role === "assistant" && updated[updated.length - 1].content === "") {
+          updated[updated.length - 1] = { role: "assistant", content: "Sorry, something went wrong. Please try again." };
+        } else {
+          updated.push({ role: "assistant", content: "Sorry, something went wrong. Please try again." });
+        }
+        return updated;
+      });
     } finally {
       setIsLoading(false);
     }

@@ -5,6 +5,8 @@ import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import { enforceDailyLimit } from "@/lib/permissions";
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
   let user = null;
   // Hold the supabase client we authenticated with so the daily-limit

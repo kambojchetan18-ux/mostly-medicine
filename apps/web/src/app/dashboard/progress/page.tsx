@@ -186,7 +186,7 @@ export default async function ProgressPage() {
         </div>
         <div className="divide-y divide-gray-50">
           {topics.map((t) => {
-            const accuracy = Math.round((t.total_correct / t.total_attempted) * 100);
+            const accuracy = t.total_attempted > 0 ? Math.round((t.total_correct / t.total_attempted) * 100) : 0;
             return (
               <Link
                 key={t.topic}
