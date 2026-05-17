@@ -79,12 +79,31 @@ export default function QuizScreen() {
     }
   }
 
+  if (questions.length === 0 && phase !== 'done') {
+    return (
+      <View style={s.bg}>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+          <Text style={{ fontSize: 48, marginBottom: 12 }}>🔍</Text>
+          <Text style={{ fontSize: 20, fontWeight: '800', color: '#f1f5f9', marginBottom: 8, textAlign: 'center' }}>
+            No questions found{topic ? ` for "${topic}"` : ''}
+          </Text>
+          <Text style={{ fontSize: 14, color: '#94a3b8', textAlign: 'center', marginBottom: 24 }}>
+            This topic may not have any questions yet. Try a different topic.
+          </Text>
+          <TouchableOpacity style={s.btnPrimary} onPress={() => router.back()}>
+            <Text style={s.btnPrimaryText}>Go Back</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </View>
+    );
+  }
+
   if (!q && phase !== 'done') {
     return <View style={s.bg} />;
   }
 
   if (phase === 'done') {
-    const accuracy = Math.round((totalCorrect / questions.length) * 100);
+    const accuracy = questions.length > 0 ? Math.round((totalCorrect / questions.length) * 100) : 0;
     const accColor = accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444';
     return (
       <View style={s.bg}>

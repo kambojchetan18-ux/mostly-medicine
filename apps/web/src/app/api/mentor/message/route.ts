@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { runChat } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
 
+export const maxDuration = 15;
+
 const MENTOR_SYSTEM_PROMPT = `You are a warm, encouraging AMC exam mentor speaking to an IMG (international medical graduate) preparing for Australian medical registration. Keep the message under 25 words. Tone: empathetic, never patronising, never preachy. Address them as 'doctor'. End with a forward-looking nudge, not a platitude.`;
 
 type Trigger = "mcq_streak_broken" | "mcq_two_wrong" | "roleplay_complete";

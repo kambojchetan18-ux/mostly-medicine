@@ -2,9 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+
+function validateMagicBytes(buffer: Buffer, claimedType: string): boolean {
+  if (claimedType === "application/pdf") {
+    return buffer.length >= 4 && buffer.subarray(0, 4).toString("ascii") === "%PDF";
+  }
+  if (claimedType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+    // DOCX is a ZIP archive — check PK magic bytes
+    return buffer.length >= 2 && buffer[0] === 0x50 && buffer[1] === 0x4b;
+  }
+  if (claimedType === "text/plain") {
+    return true; // No reliable magic bytes for plain text
+  }
+  return false;
+}
 
 async function extractText(buffer: Buffer, mimeType: string): Promise<{ text: string; pageCount: number }> {
   if (mimeType === "text/plain") {
@@ -49,6 +64,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
 
+  const rl = await aiRateLimit(clientKey(req, "notes-upload", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
+  }
+
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
 
@@ -65,6 +88,11 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
+
+  if (!validateMagicBytes(buffer, file.type)) {
+    return NextResponse.json({ error: "File content does not match declared type" }, { status: 400 });
+  }
+
   // Sanitize the filename so the storage key never breaks RLS path matching
   // (auth.uid() = (storage.foldername(name))[1]). Slashes/odd chars are removed.
   const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 120);

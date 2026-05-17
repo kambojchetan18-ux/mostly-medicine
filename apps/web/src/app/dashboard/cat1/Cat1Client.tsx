@@ -397,10 +397,8 @@ export default function Cat1Client({
       ? { ok: true as const }
       : await saveAttempt(q.id, correct, q.topic, sessionId, selected);
     if (result.limitReached) {
-      // Free user hit their daily quota. Show the upgrade modal — don't
-      // advance to the next question; the user is gated until tomorrow OR
-      // they upgrade to Pro.
       setLimitReached(result.limitReached);
+      setSubmitting(false);
       return;
     }
 

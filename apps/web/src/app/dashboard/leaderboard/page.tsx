@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 type LeaderboardRow = {
   user_id: string;
   full_name: string | null;
