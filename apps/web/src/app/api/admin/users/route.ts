@@ -1,5 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+
+// Service-role client used to mutate user_profiles columns that
+// authenticated users no longer have column-level UPDATE on (role, plan,
+// stripe_*, etc.) after migration 040. Only call AFTER an admin check
+// has passed on the user-context client above.
+function serviceClient() {
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
+}
 
 export async function GET() {
   const supabase = await createClient();
@@ -67,7 +80,12 @@ export async function PATCH(req: NextRequest) {
   if (plan !== undefined) updates.plan = plan;
   if (role !== undefined) updates.role = role;
 
-  const { error } = await supabase.from("user_profiles").update(updates).eq("id", userId);
+  // Use the service-role client for the mutation — after migration 040,
+  // `authenticated` users (which includes this admin's session) can no
+  // longer column-update `plan` / `role` even on their own row. Admin
+  // identity has already been verified above.
+  const svc = serviceClient();
+  const { error } = await svc.from("user_profiles").update(updates).eq("id", userId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }
