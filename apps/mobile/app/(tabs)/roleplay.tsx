@@ -166,19 +166,26 @@ export default function RoleplayScreen() {
       const form = new FormData();
       // RN FormData accepts { uri, name, type } — cast required for TS
       form.append('audio', { uri, name: 'recording.m4a', type: 'audio/mp4' } as unknown as Blob);
-      const res = await fetch(`${API_URL}/api/stt/transcribe`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: form,
-      });
-      if (!res.ok) {
-        const detail = await res.text().catch(() => '');
-        throw new Error(`Transcribe ${res.status}${detail ? `: ${detail.slice(0, 80)}` : ''}`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15_000);
+      try {
+        const res = await fetch(`${API_URL}/api/stt/transcribe`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form,
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          const detail = await res.text().catch(() => '');
+          throw new Error(`Transcribe ${res.status}${detail ? `: ${detail.slice(0, 80)}` : ''}`);
+        }
+        const data = (await res.json()) as { text?: string; error?: string };
+        if (data.error) throw new Error(data.error);
+        const text = (data.text ?? '').trim();
+        if (text) setInput((curr) => (curr ? `${curr} ${text}` : text).trim());
+      } finally {
+        clearTimeout(timeout);
       }
-      const data = (await res.json()) as { text?: string; error?: string };
-      if (data.error) throw new Error(data.error);
-      const text = (data.text ?? '').trim();
-      if (text) setInput((curr) => (curr ? `${curr} ${text}` : text).trim());
     } catch (e) {
       setVoiceError(e instanceof Error ? e.message : 'Transcription failed');
     } finally {
@@ -298,12 +305,15 @@ export default function RoleplayScreen() {
     setMessages(newMsgs);
     setInput('');
     setLoading(true);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
     try {
       const token = await getToken();
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
+        signal: controller.signal,
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
@@ -313,6 +323,7 @@ export default function RoleplayScreen() {
       const msg = e instanceof Error ? e.message : 'Error';
       setMessages([...newMsgs, { role: 'assistant', content: `[${msg}]` }]);
     } finally {
+      clearTimeout(timeout);
       setLoading(false);
     }
   }, [loading, messages, scenario, speakPatient]);
@@ -322,12 +333,15 @@ export default function RoleplayScreen() {
     if (recordingRef.current) await abortRecording();
     stopTimer();
     setFetchingFeedback(true);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
     try {
       const token = await getToken();
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages, requestFeedback: true }),
+        signal: controller.signal,
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
@@ -335,6 +349,7 @@ export default function RoleplayScreen() {
     } catch (e) {
       setFeedback(`Could not retrieve feedback: ${e instanceof Error ? e.message : 'Error'}`);
     } finally {
+      clearTimeout(timeout);
       setFetchingFeedback(false);
     }
   }, [loading, messages, scenario]);

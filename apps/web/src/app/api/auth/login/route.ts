@@ -21,11 +21,23 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Per-email rate limit — prevents distributed brute-force across multiple IPs
+  const emailKey = `login-email:${email.toLowerCase()}`;
+  const emailLimit = await checkRateLimit(emailKey);
+  if (!emailLimit.allowed) {
+    const minutesLeft = Math.ceil((emailLimit.retryAfterMs ?? 0) / 60000);
+    return NextResponse.json(
+      { error: `This account is temporarily locked due to too many failed attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     const { locked, attemptsLeft } = await recordFailedAttempt(key);
+    await recordFailedAttempt(emailKey);
     if (locked) {
       return NextResponse.json(
         { error: "Too many failed attempts. Your account is locked for 15 minutes." },
@@ -40,5 +52,6 @@ export async function POST(req: NextRequest) {
   }
 
   await clearAttempts(key);
+  await clearAttempts(emailKey);
   return NextResponse.json({ success: true });
 }

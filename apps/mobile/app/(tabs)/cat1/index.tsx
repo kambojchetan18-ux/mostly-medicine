@@ -4,9 +4,9 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
   ScrollView,
   InteractionManager,
+  useWindowDimensions,
 } from 'react-native';
 import FunLoading from '@/components/FunLoading';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,7 +29,6 @@ import { allQuestions, type MCQuestion } from '@mostly-medicine/content';
 const DAILY_TARGET = 50;
 const REVIEW_LATER_KEY = 'cat1:reviewLater';
 const SWIPE_THRESHOLD = 110; // px
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 type SwipeDir = 'left' | 'right';
 
@@ -120,6 +119,7 @@ type CardProps = {
   swipeEnabled: boolean;
   isTop: boolean;
   stackOffset: number;
+  screenWidth: number;
 };
 
 function McqCard({
@@ -130,6 +130,7 @@ function McqCard({
   swipeEnabled,
   isTop,
   stackOffset,
+  screenWidth,
 }: CardProps) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -152,10 +153,10 @@ function McqCard({
       const goRight = e.translationX > SWIPE_THRESHOLD;
       const goLeft = e.translationX < -SWIPE_THRESHOLD;
       if (goRight) {
-        translateX.value = withTiming(SCREEN_WIDTH * 1.5, { duration: 220 });
+        translateX.value = withTiming(screenWidth * 1.5, { duration: 220 });
         runOnJS(handleSwipe)('right');
       } else if (goLeft) {
-        translateX.value = withTiming(-SCREEN_WIDTH * 1.5, { duration: 220 });
+        translateX.value = withTiming(-screenWidth * 1.5, { duration: 220 });
         runOnJS(handleSwipe)('left');
       } else {
         translateX.value = withSpring(0, { damping: 14 });
@@ -166,7 +167,7 @@ function McqCard({
   const animatedStyle = useAnimatedStyle(() => {
     const rotate = interpolate(
       translateX.value,
-      [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
+      [-screenWidth, 0, screenWidth],
       [-12, 0, 12],
       Extrapolation.CLAMP,
     );
@@ -325,6 +326,7 @@ function McqCard({
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 export default function Cat1DeckScreen() {
+  const { width: screenWidth } = useWindowDimensions();
   const [deck, setDeck] = useState<MCQuestion[]>([]);
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -564,6 +566,7 @@ export default function Cat1DeckScreen() {
                   swipeEnabled={false}
                   isTop={false}
                   stackOffset={2}
+                  screenWidth={screenWidth}
                 />
               )}
               {upcoming && (
@@ -576,6 +579,7 @@ export default function Cat1DeckScreen() {
                   swipeEnabled={false}
                   isTop={false}
                   stackOffset={1}
+                  screenWidth={screenWidth}
                 />
               )}
               <McqCard
@@ -587,6 +591,7 @@ export default function Cat1DeckScreen() {
                 swipeEnabled={selected !== null}
                 isTop
                 stackOffset={0}
+                screenWidth={screenWidth}
               />
             </>
           )}
