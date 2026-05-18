@@ -19,7 +19,10 @@ export async function GET() {
     .order("plan")
     .order("module");
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/module-permissions] list failed", error.message);
+    return NextResponse.json({ error: "Failed to list permissions" }, { status: 500 });
+  }
   return NextResponse.json({ permissions: data });
 }
 
@@ -36,7 +39,10 @@ export async function PATCH(req: NextRequest) {
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }
   );
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/module-permissions] upsert failed", error.message);
+    return NextResponse.json({ error: "Failed to update permissions" }, { status: 500 });
+  }
 
   // Bust any cached dashboard pages so the new permissions are visible to
   // free/pro users on their very next request, not after the natural cache

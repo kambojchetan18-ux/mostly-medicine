@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   const svc = service();
   const { data: target, error: lookupErr } = await svc.auth.admin.getUserById(userId);
   if (lookupErr || !target?.user) {
-    return NextResponse.json({ error: lookupErr?.message ?? "User not found" }, { status: 404 });
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
   // Refuse to overwrite another admin's password — this route is for unblocking
@@ -77,12 +77,16 @@ export async function POST(req: NextRequest) {
   const password = generateTempPassword();
   const { error: updErr } = await svc.auth.admin.updateUserById(userId, { password });
   if (updErr) {
-    return NextResponse.json({ error: updErr.message }, { status: 500 });
+    console.error("[admin/set-password] updateUser failed", updErr.message);
+    return NextResponse.json({ error: "Failed to set password" }, { status: 500 });
   }
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
     password,
   });
+  res.headers.set("Cache-Control", "no-store");
+  res.headers.set("Pragma", "no-cache");
+  return res;
 }

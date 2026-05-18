@@ -44,7 +44,10 @@ export async function PATCH(req: NextRequest) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/tickets] update failed", error.message);
+    return NextResponse.json({ error: "Failed to update ticket" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }

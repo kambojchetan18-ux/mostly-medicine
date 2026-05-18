@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   const svc = service();
   const { data: target, error: lookupErr } = await svc.auth.admin.getUserById(userId);
   if (lookupErr || !target?.user) {
-    return NextResponse.json({ error: lookupErr?.message ?? "User not found" }, { status: 404 });
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
   const email = target.user.email;
   if (!email) return NextResponse.json({ error: "Target user has no email" }, { status: 400 });
@@ -55,7 +55,8 @@ export async function POST(req: NextRequest) {
     // Fallback: resetPasswordForEmail always sends the email via Supabase auth.
     const fallback = await svc.auth.resetPasswordForEmail(email, { redirectTo });
     if (fallback.error) {
-      return NextResponse.json({ error: fallback.error.message }, { status: 500 });
+      console.error("[admin/reset-password] fallback failed", fallback.error.message);
+      return NextResponse.json({ error: "Failed to send reset email" }, { status: 500 });
     }
   }
 

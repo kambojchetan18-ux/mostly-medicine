@@ -161,6 +161,8 @@ export default function RoleplayScreen() {
       const token = await getToken();
       if (!token) {
         setVoiceError('Not signed in — cannot transcribe');
+        transcribingRef.current = false;
+        setIsTranscribing(false);
         return;
       }
       const form = new FormData();
