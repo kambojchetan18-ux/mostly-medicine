@@ -10,11 +10,16 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const key = `${ip}:${email.toLowerCase()}`;
+  const ipEmailKey = `login:${ip}:${email.toLowerCase()}`;
+  const emailOnlyKey = `login:email:${email.toLowerCase()}`;
 
-  const { allowed, retryAfterMs } = await checkRateLimit(key);
-  if (!allowed) {
-    const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
+  const [ipCheck, emailCheck] = await Promise.all([
+    checkRateLimit(ipEmailKey),
+    checkRateLimit(emailOnlyKey),
+  ]);
+  if (!ipCheck.allowed || !emailCheck.allowed) {
+    const retryMs = Math.max(ipCheck.retryAfterMs ?? 0, emailCheck.retryAfterMs ?? 0);
+    const minutesLeft = Math.ceil(retryMs / 60000);
     return NextResponse.json(
       { error: `Too many failed attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
       { status: 429 }
@@ -25,7 +30,10 @@ export async function POST(req: NextRequest) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    const { locked, attemptsLeft } = await recordFailedAttempt(key);
+    const [{ locked, attemptsLeft }] = await Promise.all([
+      recordFailedAttempt(ipEmailKey),
+      recordFailedAttempt(emailOnlyKey),
+    ]);
     if (locked) {
       return NextResponse.json(
         { error: "Too many failed attempts. Your account is locked for 15 minutes." },
@@ -39,6 +47,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await clearAttempts(key);
+  await Promise.all([clearAttempts(ipEmailKey), clearAttempts(emailOnlyKey)]);
   return NextResponse.json({ success: true });
 }
