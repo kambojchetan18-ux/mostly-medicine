@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { checkRateLimit, recordFailedAttempt, clearAttempts } from "@/lib/rate-limit";
+import { checkRateLimit, recordFailedAttempt, clearAttempts, aiRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const key = `${ip}:${email.toLowerCase()}`;
+  const ipEmailKey = `${ip}:${email.toLowerCase()}`;
 
-  const { allowed, retryAfterMs } = await checkRateLimit(key);
+  const { allowed, retryAfterMs } = await checkRateLimit(ipEmailKey);
   if (!allowed) {
     const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
     return NextResponse.json(
@@ -21,11 +21,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const emailKey = `login-email:${email.toLowerCase()}`;
+  const emailRl = await aiRateLimit(emailKey, { max: 15, windowMs: 60 * 60 * 1000 });
+  if (!emailRl.allowed) {
+    const minutesLeft = Math.ceil((emailRl.retryAfterMs ?? 0) / 60000);
+    return NextResponse.json(
+      { error: `Too many login attempts for this account. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    const { locked, attemptsLeft } = await recordFailedAttempt(key);
+    const { locked, attemptsLeft } = await recordFailedAttempt(ipEmailKey);
     if (locked) {
       return NextResponse.json(
         { error: "Too many failed attempts. Your account is locked for 15 minutes." },
@@ -39,6 +49,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await clearAttempts(key);
+  await clearAttempts(ipEmailKey);
+  await clearAttempts(emailKey);
   return NextResponse.json({ success: true });
 }

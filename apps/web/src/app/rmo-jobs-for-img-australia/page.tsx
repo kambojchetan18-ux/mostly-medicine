@@ -451,7 +451,7 @@ export default function Page() {
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
               <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
+              <p className="text-sm text-slate-300 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>

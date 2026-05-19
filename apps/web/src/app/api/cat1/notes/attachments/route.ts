@@ -9,6 +9,27 @@ const MAX_PER_QUESTION = 10;
 const ALLOWED_MIME = /^(image\/(png|jpe?g|webp|gif)|application\/pdf)$/i;
 const SIGNED_URL_TTL_SECONDS = 60 * 60; // 1 hour
 
+function verifyMagicBytes(bytes: Uint8Array, claimedType: string): boolean {
+  if (bytes.length < 4) return false;
+  if (claimedType === "application/pdf") {
+    return bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46;
+  }
+  if (claimedType.startsWith("image/png")) {
+    return bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+  }
+  if (claimedType.startsWith("image/jpeg") || claimedType === "image/jpg") {
+    return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  }
+  if (claimedType.startsWith("image/gif")) {
+    return bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46;
+  }
+  if (claimedType.startsWith("image/webp") && bytes.length >= 12) {
+    return bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46
+      && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50;
+  }
+  return true;
+}
+
 interface AttachmentRow {
   id: string;
   question_id: string;
@@ -86,6 +107,10 @@ export async function POST(req: NextRequest) {
   const filePath = `${user.id}/${questionId}/${crypto.randomUUID()}-${safeName}`;
 
   const arrayBuffer = await file.arrayBuffer();
+  if (!verifyMagicBytes(new Uint8Array(arrayBuffer), file.type)) {
+    return NextResponse.json({ error: "File content does not match its declared type" }, { status: 400 });
+  }
+
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
     .upload(filePath, new Uint8Array(arrayBuffer), {

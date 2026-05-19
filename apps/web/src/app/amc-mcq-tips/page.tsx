@@ -71,11 +71,11 @@ const faqs = [
     a: "The internal Mostly Medicine signal points to 3000+ timed MCQs as the threshold above which first-attempt pass rates rise meaningfully. Below 1500, pass rates drop. The number is less important than the timed condition — passive reading does not substitute.",
   },
   {
-    q: "What is the &lsquo;best answer&rsquo; format and how is it different from a normal MCQ?",
-    a: "Standard MCQs have one correct and several wrong answers. AMC &lsquo;best answer&rsquo; questions have one most appropriate and several defensible but not optimal answers. Several options can be technically correct in the literature; the AMC expects you to pick the one most appropriate to the Australian primary-care context. This is documented in the AMC MCQ Examination Information Booklet.",
+    q: "What is the ‘best answer’ format and how is it different from a normal MCQ?",
+    a: "Standard MCQs have one correct and several wrong answers. AMC ‘best answer’ questions have one most appropriate and several defensible but not optimal answers. Several options can be technically correct in the literature; the AMC expects you to pick the one most appropriate to the Australian primary-care context. This is documented in the AMC MCQ Examination Information Booklet.",
   },
   {
-    q: "Why does the AMC reward &lsquo;reassure and review&rsquo; so often?",
+    q: "Why does the AMC reward ‘reassure and review’ so often?",
     a: "Australian general practice operates with high diagnostic gatekeeping. The system rewards primary-care continuity over high-throughput investigation. AMC examiners — practising Australian doctors — write questions that reflect this. On USMLE, the same stem might reward a CT or a specialist referral; on AMC it usually rewards review at 6 weeks.",
   },
   {
@@ -376,8 +376,8 @@ export default function Page() {
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-white mb-2" dangerouslySetInnerHTML={{ __html: f.q }} />
-              <p className="text-sm text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
+              <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
+              <p className="text-sm text-slate-300 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
