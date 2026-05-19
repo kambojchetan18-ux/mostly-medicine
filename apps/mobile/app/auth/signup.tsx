@@ -79,7 +79,7 @@ export default function SignupScreen() {
               </View>
             ))}
 
-            <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleSignup} disabled={loading}>
+            <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleSignup} disabled={loading} accessibilityLabel="Sign up" accessibilityRole="button">
               {loading ? (
                 <FunLoading
                   pool={[

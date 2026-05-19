@@ -19,6 +19,7 @@ import Anthropic from "@anthropic-ai/sdk";
 export type LlmUseCase =
   | "clinical_scoring"
   | "clinical_explain"
+  | "clinical_roleplay"
   | "general_chat"
   | "mentor_short"
   | "content_draft"
@@ -70,6 +71,7 @@ export function pickModel(useCase: LlmUseCase): ModelChoice {
   switch (useCase) {
     case "clinical_scoring":
     case "clinical_explain":
+    case "clinical_roleplay":
       // High-stakes — stay on Claude.
       return ANTHROPIC_FALLBACK;
     case "general_chat":
@@ -111,6 +113,12 @@ export function pickModel(useCase: LlmUseCase): ModelChoice {
       return ANTHROPIC_FALLBACK;
     }
   }
+}
+
+function isTransientError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  const msg = err.message;
+  return /\b(5\d\d|timeout|ECONNRESET|ENOTFOUND|socket hang up|fetch failed)\b/i.test(msg);
 }
 
 let _anthropic: Anthropic | null = null;
@@ -232,27 +240,37 @@ export async function runChat(input: RunChatInput): Promise<RunChatResult> {
     return { text, model: choice.model, provider: "anthropic" };
   }
 
-  // Path B: chosen provider is Groq or DeepSeek. Try the cheap path first,
-  // fall back to Anthropic on missing key or any error.
+  // Path B: chosen provider is Groq or DeepSeek. Try the cheap path up to
+  // twice with exponential backoff, then fall back to Anthropic.
   const apiKey = process.env[choice.apiKeyEnv];
   if (apiKey && choice.baseURL) {
-    try {
-      const text = await callOpenAICompatible({
-        baseURL: choice.baseURL,
-        apiKey,
-        model: choice.model,
-        system: input.system,
-        messages: input.messages,
-        maxTokens: input.maxTokens,
-        temperature: input.temperature,
-      });
-      return { text, model: choice.model, provider: choice.provider };
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.warn(
-        `[llm-router] ${choice.provider} call failed for use case '${input.useCase}', falling back to Anthropic: ${msg}`
-      );
-      // fall through to Anthropic fallback
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const text = await callOpenAICompatible({
+          baseURL: choice.baseURL,
+          apiKey,
+          model: choice.model,
+          system: input.system,
+          messages: input.messages,
+          maxTokens: input.maxTokens,
+          temperature: input.temperature,
+        });
+        return { text, model: choice.model, provider: choice.provider };
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (attempt === 0 && isTransientError(err)) {
+          const delayMs = 1000 * Math.pow(2, attempt);
+          console.warn(
+            `[llm-router] ${choice.provider} transient error (attempt ${attempt + 1}), retrying in ${delayMs}ms: ${msg}`
+          );
+          await new Promise((r) => setTimeout(r, delayMs));
+          continue;
+        }
+        console.warn(
+          `[llm-router] ${choice.provider} call failed for use case '${input.useCase}', falling back to Anthropic: ${msg}`
+        );
+        break;
+      }
     }
   } else {
     console.warn(
