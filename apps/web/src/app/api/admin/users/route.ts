@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { validateOrigin } from "@/lib/csrf";
 
 // Service-role client used to mutate user_profiles columns that
 // authenticated users no longer have column-level UPDATE on (role, plan,
@@ -36,6 +37,10 @@ const ALLOWED_PLANS = new Set(["free", "pro", "enterprise"]);
 const ALLOWED_ROLES = new Set(["user", "admin"]);
 
 export async function PATCH(req: NextRequest) {
+  if (!validateOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

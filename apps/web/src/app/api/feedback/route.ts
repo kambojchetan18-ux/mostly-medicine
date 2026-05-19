@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { notifyAdminOfTicket } from "@/lib/notify";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,10 @@ interface SubmitBody {
 }
 
 export async function POST(req: NextRequest) {
+  if (!validateOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
