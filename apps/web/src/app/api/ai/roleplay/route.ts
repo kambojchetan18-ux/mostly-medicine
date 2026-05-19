@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClinicalRoleplay } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
-import { createClient as createBrowserClient } from "@supabase/supabase-js";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import { enforceDailyLimit } from "@/lib/permissions";
 
@@ -9,14 +9,14 @@ export async function POST(req: NextRequest) {
   let user = null;
   // Hold the supabase client we authenticated with so the daily-limit
   // helper can read user_profiles + cat2_sessions through the same session.
-  type SupabaseLike = ReturnType<typeof createBrowserClient>;
+  type SupabaseLike = ReturnType<typeof createSupabaseClient>;
   let supabase: SupabaseLike | null = null;
 
   // Check Bearer token (mobile) first, fall back to cookie session (web)
   const authHeader = req.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
     const token = authHeader.slice(7);
-    supabase = createBrowserClient(
+    supabase = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
 
         // Record this scenario start. Service-role insert so RLS can stay
         // strict (users only SELECT their own rows; no client write path).
-        const service = createBrowserClient(
+        const service = createSupabaseClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL!,
           process.env.SUPABASE_SERVICE_ROLE_KEY!
         );

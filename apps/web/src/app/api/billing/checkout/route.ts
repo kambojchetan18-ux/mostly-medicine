@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   // Whitelist `next` to internal /dashboard paths only — guards against
   // open-redirect via Stripe success_url. Anything that doesn't match the
   // whitelist falls back to /dashboard/billing.
-  const safeNext = typeof body.next === "string" && /^\/dashboard\/[a-z0-9/_-]*$/i.test(body.next)
+  const safeNext = typeof body.next === "string" && /^\/dashboard\/[a-z0-9/_-]*$/.test(body.next)
     ? body.next
     : null;
 

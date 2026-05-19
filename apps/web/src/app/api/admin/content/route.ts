@@ -47,8 +47,8 @@ export async function POST(req: NextRequest) {
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { month, regenerate = false } = await req.json();
-  if (!month || !/^\d{4}-\d{2}$/.test(month)) {
-    return NextResponse.json({ error: "Invalid month format. Use YYYY-MM" }, { status: 400 });
+  if (!month || !/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+    return NextResponse.json({ error: "Invalid month format. Use YYYY-MM (01-12)" }, { status: 400 });
   }
 
   const [year, mon] = month.split("-").map(Number);
