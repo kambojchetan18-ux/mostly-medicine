@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
@@ -29,12 +30,23 @@ async function extractText(buffer: Buffer, mimeType: string): Promise<{ text: st
   throw new Error("Unsupported file type");
 }
 
+const NOTE_SUMMARY_SYSTEM = `You are summarising a medical study note uploaded by a student preparing for the AMC exam.
+
+Read the provided text and provide a 2-3 sentence summary that captures:
+- The main topic or subject
+- Key clinical or exam-relevant points
+- The apparent source or type of content (e.g. lecture notes, textbook excerpt, personal notes)
+
+Be concise. This summary will appear on a card in the user's notes library.
+Respond with only the summary, no preamble.`;
+
 async function generateSummary(text: string): Promise<string> {
   if (!process.env.ANTHROPIC_API_KEY) return "";
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
+    system: [{ type: "text", text: NOTE_SUMMARY_SYSTEM, cache_control: { type: "ephemeral" } }],
     messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
   });
   const block = message.content[0];
@@ -47,6 +59,14 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(clientKey(req, "notes-upload", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   const formData = await req.formData();
@@ -67,7 +87,8 @@ export async function POST(req: NextRequest) {
   const buffer = Buffer.from(await file.arrayBuffer());
   // Sanitize the filename so the storage key never breaks RLS path matching
   // (auth.uid() = (storage.foldername(name))[1]). Slashes/odd chars are removed.
-  const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 120);
+  const baseName = file.name.split(/[\\/]/).pop() ?? "file";
+  const safeName = baseName.replace(/[^\w.\-]+/g, "_").slice(0, 120);
   const storagePath = `${user.id}/${Date.now()}_${safeName}`;
 
   // Upload to Supabase Storage (private bucket — only the storage path is stored)
