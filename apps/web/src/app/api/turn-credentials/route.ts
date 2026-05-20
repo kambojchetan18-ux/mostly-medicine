@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { checkModulePermission } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Cloudflare Realtime TURN credential broker.
 //
@@ -30,7 +31,7 @@ interface CloudflareIceServers {
   };
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -45,6 +46,11 @@ export async function GET() {
   const perm = await checkModulePermission(supabase, "acrp_live");
   if (!perm.allowed) {
     return NextResponse.json({ error: "Plan does not include peer roleplay" }, { status: 403 });
+  }
+
+  const rl = await aiRateLimit(clientKey(req, "turn-creds", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } });
   }
 
   const keyId = process.env.CLOUDFLARE_TURN_KEY_ID;
