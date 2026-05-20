@@ -3,6 +3,7 @@ import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import CalculatorTeaser from "@/components/CalculatorTeaser";
 import PillarPageNav from "@/components/PillarPageNav";
+import { features } from "@/config/features";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-pass-rates-by-country`;
@@ -363,7 +364,7 @@ export default function Page() {
           <li>Peer RolePlay for live station rehearsal with another IMG.</li>
         </ul>
         <p>
-          Free tier is honest, Pro is A$19/mo. Try it free at <Link href="/">mostlymedicine.com</Link>. If you&apos;re earlier in the pathway, the <Link href="/amc-vs-usmle-vs-plab">AMC vs USMLE vs PLAB page</Link> and <Link href="/amc-cat2">CAT 2 page</Link> are the natural next reads.
+          {features.paidTiersEnabled ? "Free tier is honest, Pro is A$19/mo." : "Mostly Medicine is in free beta — every feature unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>. If you&apos;re earlier in the pathway, the <Link href="/amc-vs-usmle-vs-plab">AMC vs USMLE vs PLAB page</Link> and <Link href="/amc-cat2">CAT 2 page</Link> are the natural next reads.
         </p>
 
         <h2>FAQ</h2>

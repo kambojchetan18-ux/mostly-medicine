@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { features } from "@/config/features";
 
 interface PermRow {
   module: string;
@@ -54,9 +55,9 @@ export default async function FreeAccessCard() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 leading-relaxed mb-5">
-              Test-drive the platform that's helped IMGs across Australia prep for AMC.
-              Daily caps reset at midnight UTC — upgrade only if you want unlimited
-              access and spaced-repetition for your weak areas.
+              {features.betaMode
+                ? "Mostly Medicine is in free beta. Every signed-in user gets full access — MCQs, AMC Handbook RolePlay, Clinical RolePlay, and the reference library. Help us improve."
+                : "Test-drive the platform that's helped IMGs across Australia prep for AMC. Daily caps reset at midnight UTC — upgrade only if you want unlimited access and spaced-repetition for your weak areas."}
             </p>
 
             <ul className="space-y-2 text-sm">
@@ -98,25 +99,47 @@ export default async function FreeAccessCard() {
             </div>
           </div>
 
-          <div className="md:col-span-2 rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
-              When you're ready
-            </p>
-            <p className="text-xl font-bold text-white mb-1">Pro · A$19/mo</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Unlimited MCQs, unlimited Solo RolePlay, unlimited Handbook RolePlay,
-              spaced repetition, weak-area targeting, priority support.
-            </p>
-            <p className="text-[11px] text-slate-500 mt-3">
-              Upgrade or cancel any time from your dashboard.
-            </p>
-            <Link
-              href="/dashboard/billing"
-              className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-emerald-700/50 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-200 font-semibold text-sm px-4 py-2 transition"
-            >
-              See plans →
-            </Link>
-          </div>
+          {features.paidTiersEnabled ? (
+            <div className="md:col-span-2 rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
+                When you're ready
+              </p>
+              <p className="text-xl font-bold text-white mb-1">Pro · A$19/mo</p>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Unlimited MCQs, unlimited Solo RolePlay, unlimited Handbook RolePlay,
+                spaced repetition, weak-area targeting, priority support.
+              </p>
+              <p className="text-[11px] text-slate-500 mt-3">
+                Upgrade or cancel any time from your dashboard.
+              </p>
+              <Link
+                href="/dashboard/billing"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-emerald-700/50 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-200 font-semibold text-sm px-4 py-2 transition"
+              >
+                See plans →
+              </Link>
+            </div>
+          ) : (
+            <div className="md:col-span-2 rounded-2xl border border-emerald-700/50 bg-gradient-to-br from-emerald-950/50 to-slate-950/60 p-6">
+              <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-widest mb-3">
+                Beta access
+              </p>
+              <p className="text-xl font-bold text-white mb-1">Free during beta</p>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                All features unlocked — MCQs, AMC Handbook AI RolePlay, Clinical
+                RolePlay, examiner-style feedback, the full reference library.
+              </p>
+              <p className="text-[11px] text-slate-500 mt-3">
+                Help us improve — feedback shapes what ships next.
+              </p>
+              <Link
+                href="/auth/signup"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-emerald-700/50 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-200 font-semibold text-sm px-4 py-2 transition"
+              >
+                Get started →
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>

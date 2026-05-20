@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { publishableKeyMode, stripeMode } from "@/lib/stripe";
+import { features } from "@/config/features";
 import BillingClient, { type CurrentSubscription } from "./BillingClient";
 
 export const metadata = { title: "Billing & Plans — Mostly Medicine" };
@@ -15,6 +16,13 @@ interface PageProps {
 }
 
 export default async function BillingPage({ searchParams }: PageProps) {
+  // Beta mode: paid plans are paused. Bounce visitors back to the dashboard
+  // rather than showing the plan grid. Re-enabling paid tiers re-opens this
+  // page automatically — no other code change needed.
+  if (!features.paidTiersEnabled) {
+    redirect("/dashboard");
+  }
+
   const params = await searchParams;
   const supabase = await createClient();
   const {

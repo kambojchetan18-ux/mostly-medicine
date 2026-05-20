@@ -3,6 +3,7 @@
 // Server-side only — call inside Server Components / API routes.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { features } from "@/config/features";
 
 export type ModuleKey = "mcq" | "mock_exam" | "roleplay" | "acrp_solo" | "acrp_live";
 
@@ -26,6 +27,10 @@ export interface PlanLikeProfile {
 
 export function isEffectivelyPro(profile: PlanLikeProfile | null | undefined): boolean {
   if (!profile) return false;
+  // Beta mode: any signed-in user (i.e. anyone we have a profile for) is
+  // treated as Pro. The plan/pro_until fields stay untouched in the DB so
+  // re-enabling paid tiers restores normal gating instantly.
+  if (features.betaMode) return true;
   if (profile.plan === "pro" || profile.plan === "enterprise") return true;
   if (profile.pro_until) {
     const until = Date.parse(profile.pro_until);
@@ -35,8 +40,11 @@ export function isEffectivelyPro(profile: PlanLikeProfile | null | undefined): b
 }
 
 // Resolve the plan we should *gate* on. Free users inside their founder
-// window are gated as `pro` so they get Pro module access.
+// window are gated as `pro` so they get Pro module access. During beta
+// mode the helper unconditionally returns `pro` for any profile so every
+// signed-in user clears Pro-gated module lookups.
 function resolveEffectivePlan(profile: PlanLikeProfile | null | undefined): PermissionResult["plan"] {
+  if (features.betaMode && profile) return "pro";
   const raw = (profile?.plan as PermissionResult["plan"]) ?? "free";
   if (raw !== "free") return raw;
   return isEffectivelyPro(profile) ? "pro" : "free";
@@ -58,6 +66,16 @@ export async function checkModulePermission(
     .select("plan, role, pro_until")
     .eq("id", user.id)
     .maybeSingle();
+
+  // Beta mode: every signed-in user clears Pro-tier gating regardless of
+  // their stored plan or any module_permissions row. Daily limit stays null
+  // (unlimited) so users get full access while we iterate. Admin role is
+  // preserved in the returned plan field so dashboards can still flag them.
+  if (features.betaMode) {
+    const adminPlan: PermissionResult["plan"] =
+      profile?.role === "admin" ? "enterprise" : "pro";
+    return { allowed: true, plan: adminPlan, dailyLimit: null };
+  }
 
   // Admins bypass module gating entirely. The previous code returned
   // `profile.plan ?? "enterprise"` which collapsed to plan="free" for any

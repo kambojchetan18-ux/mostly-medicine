@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, assertStripeConfig } from "@/lib/stripe";
 import { syncSubscriptionToProfile } from "@/lib/billing";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { features } from "@/config/features";
 import type Stripe from "stripe";
 
 // Stripe webhook receiver — keeps user_profiles in sync with subscription
@@ -68,6 +69,13 @@ export async function POST(req: NextRequest) {
 
   if (!claimed || claimed.length === 0) {
     return NextResponse.json({ ok: true, replay: true });
+  }
+
+  // Beta mode: record the event in billing_events for audit (already done by
+  // the upsert above) but do NOT mutate user_profiles. Stripe will still
+  // retry on non-2xx, so return 200 to keep the queue clean.
+  if (!features.paidTiersEnabled) {
+    return NextResponse.json({ ok: true, beta: true });
   }
 
   try {

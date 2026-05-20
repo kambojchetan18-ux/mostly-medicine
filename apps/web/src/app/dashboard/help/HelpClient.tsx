@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { features } from "@/config/features";
 
 export interface HelpTicket {
   id: string;
@@ -13,7 +14,7 @@ export interface HelpTicket {
   created_at: string;
 }
 
-const FAQS = [
+const PAID_TIER_FAQS = [
   {
     q: "How do I cancel my Pro subscription?",
     a: "Go to /dashboard/billing → Open Billing Portal → Cancel plan. You keep Pro access until the end of the current billing period.",
@@ -26,6 +27,20 @@ const FAQS = [
     q: "What's the difference between Pro (A$19/mo) and Enterprise (A$49/mo)?",
     a: "Pro unlocks AMC Handbook AI RolePlay + AMC Clinical AI RolePlay (solo voice) + examiner-style feedback. Enterprise adds AMC Peer RolePlay (live video roleplay with another candidate) and higher daily limits.",
   },
+];
+
+const BETA_FAQS = [
+  {
+    q: "How much does Mostly Medicine cost right now?",
+    a: "Mostly Medicine is in free beta — every signed-in user has access to all features at no cost. We'll let you know well ahead of time if anything changes.",
+  },
+  {
+    q: "What's included in the free beta?",
+    a: "All current features — AMC MCQs, AMC Handbook AI RolePlay, AMC Clinical AI RolePlay (solo voice), AMC Peer RolePlay (live video), examiner-style feedback, the reference library, and the jobs hub.",
+  },
+];
+
+const COMMON_FAQS = [
   {
     q: "My microphone isn't working in roleplay sessions.",
     a: "Check that the green 🎤 chip is showing in the session UI. On iPhone, ensure Safari has microphone permission (Settings → Safari → Microphone). On Android Chrome, tap the lock icon in the URL bar → Permissions → Microphone → Allow.",
@@ -39,6 +54,13 @@ const FAQS = [
     a: "Android app is built and pending Play Store submission. iOS support coming. The full web app works great on mobile browsers in the meantime.",
   },
 ];
+
+// Swap the billing FAQs out for beta-equivalent copy while paid tiers are
+// paused. Flipping features.paidTiersEnabled back to true restores the
+// original Pro/Enterprise FAQs without any code change.
+const FAQS = features.paidTiersEnabled
+  ? [...PAID_TIER_FAQS, ...COMMON_FAQS]
+  : [...BETA_FAQS, ...COMMON_FAQS];
 
 function StatusPill({ status, confidence }: { status: string; confidence: string | null }) {
   if (status === "ai_answered" && confidence === "high")

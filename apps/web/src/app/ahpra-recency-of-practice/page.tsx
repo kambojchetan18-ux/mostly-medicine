@@ -3,6 +3,7 @@ import Link from "next/link";
 import CalculatorTeaser from "@/components/CalculatorTeaser";
 import PillarPageNav from "@/components/PillarPageNav";
 import SiteFooter from "@/components/SiteFooter";
+import { features } from "@/config/features";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/ahpra-recency-of-practice`;
@@ -350,7 +351,11 @@ export default function Page() {
           If you are sitting AMC Part 1 from a home country with a 1&ndash;2 year clinical gap, our Part 1 prep is the cheapest single intervention to fix the rust before Part 2.
         </p>
         <p>
-          Free at <Link href="/">mostlymedicine.com</Link> &mdash; Pro is A$19/mo if you want unlimited MCQs and clinical roleplay.
+          {features.paidTiersEnabled ? (
+            <>Free at <Link href="/">mostlymedicine.com</Link> &mdash; Pro is A$19/mo if you want unlimited MCQs and clinical roleplay.</>
+          ) : (
+            <>Free during beta at <Link href="/">mostlymedicine.com</Link> &mdash; every feature unlocked while we iterate.</>
+          )}
         </p>
 
         <h2>FAQ</h2>

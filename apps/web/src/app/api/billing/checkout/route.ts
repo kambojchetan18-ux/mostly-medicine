@@ -2,8 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
+import { features } from "@/config/features";
 
 export async function POST(req: NextRequest) {
+  // Beta mode: checkout is closed. 404 hides the route from probes; the UI
+  // already hides the button when features.paidTiersEnabled is false.
+  if (!features.paidTiersEnabled) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   try {
     assertStripeConfig();
   } catch (err) {

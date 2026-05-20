@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import BetaBanner from "@/components/BetaBanner";
 import "./globals.css";
 
 // iPhone notch / Android punch-hole safe-areas — viewport-fit=cover lets us
@@ -202,6 +203,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <BetaBanner />
         {children}
         <Analytics />
       </body>

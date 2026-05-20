@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { stripe, assertStripeConfig } from "@/lib/stripe";
+import { features } from "@/config/features";
 
 // Returns a Stripe Customer Portal URL so the user can update payment method,
 // switch plans, or cancel without us building UI for any of that.
 export async function POST(req: NextRequest) {
+  if (!features.paidTiersEnabled) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   try {
     assertStripeConfig();
   } catch (err) {
