@@ -3,7 +3,7 @@
 // Server-side only — call inside Server Components / API routes.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { features } from "@/config/features";
+import { features, BETA_DAILY_LIMITS } from "@/config/features";
 
 export type ModuleKey = "mcq" | "mock_exam" | "roleplay" | "acrp_solo" | "acrp_live";
 
@@ -68,13 +68,33 @@ export async function checkModulePermission(
     .maybeSingle();
 
   // Beta mode: every signed-in user clears Pro-tier gating regardless of
-  // their stored plan or any module_permissions row. Daily limit stays null
-  // (unlimited) so users get full access while we iterate. Admin role is
-  // preserved in the returned plan field so dashboards can still flag them.
+  // their stored plan or any module_permissions row. Per-module daily caps
+  // (BETA_DAILY_LIMITS) keep the Anthropic / Whisper / TURN budget bounded
+  // while the platform is free. Admins bypass caps entirely; Peer RolePlay
+  // (acrp_live) is refused outright unless features.peerRolePlayInBeta is
+  // explicitly enabled, since it's the most expensive per-session feature.
   if (features.betaMode) {
-    const adminPlan: PermissionResult["plan"] =
-      profile?.role === "admin" ? "enterprise" : "pro";
-    return { allowed: true, plan: adminPlan, dailyLimit: null };
+    const isAdmin = profile?.role === "admin";
+    const adminPlan: PermissionResult["plan"] = isAdmin ? "enterprise" : "pro";
+
+    if (isAdmin) {
+      return { allowed: true, plan: adminPlan, dailyLimit: null };
+    }
+
+    if (module === "acrp_live" && !features.peerRolePlayInBeta) {
+      return {
+        allowed: false,
+        plan: adminPlan,
+        dailyLimit: 0,
+        reason: "module_disabled",
+      };
+    }
+
+    return {
+      allowed: true,
+      plan: adminPlan,
+      dailyLimit: BETA_DAILY_LIMITS[module] ?? null,
+    };
   }
 
   // Admins bypass module gating entirely. The previous code returned
