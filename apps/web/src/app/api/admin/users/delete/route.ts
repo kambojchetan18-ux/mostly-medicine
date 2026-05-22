@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { auditLog } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -58,12 +59,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Cannot delete another admin" }, { status: 400 });
   }
 
-  // auth.users delete cascades to user_profiles, attempts, sr_cards, img_profiles,
-  // smart_explanations, etc. via ON DELETE CASCADE FKs in the migrations.
   const { error: delErr } = await svc.auth.admin.deleteUser(userId);
   if (delErr) {
     return NextResponse.json({ error: delErr.message }, { status: 500 });
   }
+
+  await auditLog({
+    adminId: user.id,
+    action: "delete-user",
+    targetType: "user",
+    targetId: userId,
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
 
   return NextResponse.json({ ok: true });
 }

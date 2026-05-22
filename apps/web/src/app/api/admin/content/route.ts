@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { auditLog } from "@/lib/audit";
 
 const anthropic = new Anthropic();
 
@@ -154,5 +155,15 @@ Spread posts evenly, only on weekdays (Mon-Fri) preferred.`
     .select();
 
   if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 });
+
+  await auditLog({
+    adminId: user?.id ?? "unknown",
+    action: "generate-content",
+    targetType: "content_posts",
+    targetId: month,
+    metadata: { regenerate, count: inserted?.length },
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
+
   return NextResponse.json({ posts: inserted, count: inserted?.length });
 }

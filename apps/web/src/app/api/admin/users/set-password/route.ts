@@ -3,6 +3,7 @@ import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { auditLog } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -85,6 +86,15 @@ export async function POST(req: NextRequest) {
   if (updErr) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
+
+  await auditLog({
+    adminId: user.id,
+    action: "set-password",
+    targetType: "user",
+    targetId: userId,
+    metadata: { targetEmail: target.user.email },
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
 
   const res = NextResponse.json({
     ok: true,
