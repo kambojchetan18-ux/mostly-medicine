@@ -1,5 +1,6 @@
 export { seedQuestions } from "./questions";
 export type { MCQuestion } from "./questions";
+export * from "./rmo-pools";
 
 import { seedQuestions } from "./questions";
 import { cardiovascularQuestions } from "./questions-cardiovascular";

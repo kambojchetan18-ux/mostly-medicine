@@ -6,11 +6,12 @@ type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 const TABS = [
   { name: 'index', label: 'Home', icon: 'home-outline' as IoniconsName, activeIcon: 'home' as IoniconsName },
   { name: 'cat1', label: 'AMC MCQ', icon: 'school-outline' as IoniconsName, activeIcon: 'school' as IoniconsName },
+  { name: 'roleplay', label: 'RolePlay', icon: 'chatbubbles-outline' as IoniconsName, activeIcon: 'chatbubbles' as IoniconsName },
   { name: 'progress', label: 'Progress', icon: 'bar-chart-outline' as IoniconsName, activeIcon: 'bar-chart' as IoniconsName },
   { name: 'jobs', label: 'Jobs', icon: 'briefcase-outline' as IoniconsName, activeIcon: 'briefcase' as IoniconsName },
 ];
 
-const HIDDEN = ['cat2', 'library', 'roleplay'];
+const HIDDEN = ['cat2', 'library'];
 
 export default function TabLayout() {
   return (
