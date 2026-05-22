@@ -378,7 +378,7 @@ export default function RoleplayScreen() {
       <View style={s.bg}>
         <SafeAreaView style={{ flex: 1 }}>
           <View style={s.header}>
-            <TouchableOpacity onPress={() => router.back()} style={s.back}>
+            <TouchableOpacity onPress={() => router.back()} style={s.back} accessibilityLabel="Go back" accessibilityRole="button">
               <Ionicons name="arrow-back" size={22} color="#94a3b8" />
             </TouchableOpacity>
             <View>
@@ -393,7 +393,7 @@ export default function RoleplayScreen() {
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 10 }}>
             {scenarios.map((sc) => (
-              <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenario(sc)} activeOpacity={0.7}>
+              <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenario(sc)} activeOpacity={0.7} accessibilityLabel={`Start scenario: ${sc.title}`} accessibilityRole="button">
                 <View style={s.scenarioTop}>
                   <Text style={s.scenarioEmoji}>{getEmoji(sc.patientProfile)}</Text>
                   <View style={{ flex: 1 }}>
@@ -444,7 +444,7 @@ export default function RoleplayScreen() {
       <View style={s.bg}>
         <SafeAreaView style={{ flex: 1 }}>
           <View style={s.header}>
-            <TouchableOpacity onPress={endSession} style={s.back}>
+            <TouchableOpacity onPress={endSession} style={s.back} accessibilityLabel="Back to scenarios" accessibilityRole="button">
               <Ionicons name="arrow-back" size={22} color="#94a3b8" />
             </TouchableOpacity>
             <Text style={s.title}>Examiner Feedback</Text>
@@ -455,10 +455,10 @@ export default function RoleplayScreen() {
               <Text style={s.feedbackText}>{feedback}</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 16 }}>
-              <TouchableOpacity style={s.btnSecondary} onPress={endSession}>
+              <TouchableOpacity style={s.btnSecondary} onPress={endSession} accessibilityLabel="View all scenarios" accessibilityRole="button">
                 <Text style={s.btnSecondaryText}>All Scenarios</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={s.btnPrimary} onPress={() => startScenario(scenario)}>
+              <TouchableOpacity style={s.btnPrimary} onPress={() => startScenario(scenario)} accessibilityLabel="Retry this scenario" accessibilityRole="button">
                 <Text style={s.btnPrimaryText}>Retry</Text>
               </TouchableOpacity>
             </View>
@@ -497,15 +497,17 @@ export default function RoleplayScreen() {
                 <TouchableOpacity
                   style={[s.exitBtn, isMuted && { borderColor: '#ef4444' }]}
                   onPress={() => { setIsMuted(m => !m); if (isSpeaking) stopSpeaking(); }}
+                  accessibilityLabel={isMuted ? 'Unmute patient voice' : 'Mute patient voice'}
+                  accessibilityRole="button"
                 >
                   <Ionicons name={isMuted ? 'volume-mute' : 'volume-medium'} size={16} color={isMuted ? '#ef4444' : '#64748b'} />
                 </TouchableOpacity>
                 {messages.length > 1 && (
-                  <TouchableOpacity style={s.feedbackBtn} onPress={() => { feedbackRequestedRef.current = true; getFeedback(); }} disabled={loading}>
+                  <TouchableOpacity style={s.feedbackBtn} onPress={() => { feedbackRequestedRef.current = true; getFeedback(); }} disabled={loading} accessibilityLabel="Get examiner feedback" accessibilityRole="button">
                     <Text style={s.feedbackBtnText}>Feedback</Text>
                   </TouchableOpacity>
                 )}
-                <TouchableOpacity style={s.exitBtn} onPress={endSession}>
+                <TouchableOpacity style={s.exitBtn} onPress={endSession} accessibilityLabel="End session" accessibilityRole="button">
                   <Ionicons name="close" size={16} color="#64748b" />
                 </TouchableOpacity>
               </View>
@@ -549,7 +551,7 @@ export default function RoleplayScreen() {
           {voiceError && (
             <View style={s.voiceErrorBanner}>
               <Text style={s.voiceErrorText}>⚠️ {voiceError}</Text>
-              <TouchableOpacity onPress={() => setVoiceError(null)}>
+              <TouchableOpacity onPress={() => setVoiceError(null)} accessibilityLabel="Dismiss error" accessibilityRole="button">
                 <Ionicons name="close" size={14} color="#fca5a5" />
               </TouchableOpacity>
             </View>
@@ -564,6 +566,8 @@ export default function RoleplayScreen() {
                 onPress={toggleRecording}
                 disabled={loading}
                 activeOpacity={0.7}
+                accessibilityLabel={isRecording ? 'Stop recording' : 'Start recording'}
+                accessibilityRole="button"
               >
                 <Ionicons
                   name={isRecording ? 'stop' : 'mic'}
@@ -578,6 +582,7 @@ export default function RoleplayScreen() {
               style={s.input}
               value={input}
               onChangeText={setInput}
+              accessibilityLabel="Message to patient"
               placeholder={
                 isRecording ? 'Recording… tap mic to stop'
                   : isTranscribing ? 'Transcribing…'
@@ -596,6 +601,8 @@ export default function RoleplayScreen() {
               style={[s.sendBtn, !canSend && s.sendBtnDisabled]}
               onPress={() => sendMessage(input)}
               disabled={!canSend}
+              accessibilityLabel="Send message"
+              accessibilityRole="button"
             >
               <Ionicons name="send" size={18} color="#fff" />
             </TouchableOpacity>

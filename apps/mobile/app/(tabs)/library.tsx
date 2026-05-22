@@ -51,7 +51,7 @@ export default function LibraryScreen() {
     <View style={s.bg}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={s.header}>
-          <TouchableOpacity onPress={() => router.back()} style={s.back}>
+          <TouchableOpacity onPress={() => router.back()} style={s.back} accessibilityLabel="Go back" accessibilityRole="button">
             <Ionicons name="arrow-back" size={22} color="#94a3b8" />
           </TouchableOpacity>
           <View>
@@ -65,7 +65,7 @@ export default function LibraryScreen() {
             <View key={section.heading} style={{ marginBottom: 24 }}>
               <Text style={s.sectionTitle}>{section.heading}</Text>
               {section.items.map((item) => (
-                <TouchableOpacity key={item.title} style={s.card} onPress={() => Linking.openURL(item.url)} activeOpacity={0.7}>
+                <TouchableOpacity key={item.title} style={s.card} onPress={() => Linking.openURL(item.url)} activeOpacity={0.7} accessibilityLabel={`Open ${item.title}`} accessibilityRole="link">
                   <View style={[s.iconBox, { backgroundColor: item.color + '22' }]}>
                     <Ionicons name={item.icon} size={22} color={item.color} />
                   </View>

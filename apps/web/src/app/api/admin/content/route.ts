@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const anthropic = new Anthropic();
 
@@ -45,6 +46,12 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
+  const { data: { user } } = await (await createClient()).auth.getUser();
+  const rl = await aiRateLimit(clientKey(req, "admin:content-gen", user?.id ?? "anon"), { max: 5, windowMs: 3600_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
   const { month, regenerate = false } = await req.json();
   if (!month || !/^\d{4}-\d{2}$/.test(month)) {

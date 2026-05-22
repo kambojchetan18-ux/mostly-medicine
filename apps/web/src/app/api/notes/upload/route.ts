@@ -6,6 +6,17 @@ import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
 
+const MAGIC_BYTES: Record<string, number[][]> = {
+  "application/pdf": [[0x25, 0x50, 0x44, 0x46]], // %PDF
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [[0x50, 0x4b, 0x03, 0x04]], // PK (ZIP)
+};
+
+function validateMagicBytes(bytes: Buffer, mimeType: string): boolean {
+  const sigs = MAGIC_BYTES[mimeType];
+  if (!sigs) return true;
+  return sigs.some((sig) => sig.every((b, i) => bytes[i] === b));
+}
+
 async function extractText(buffer: Buffer, mimeType: string): Promise<{ text: string; pageCount: number }> {
   if (mimeType === "text/plain") {
     return { text: buffer.toString("utf-8"), pageCount: 1 };
@@ -66,6 +77,9 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
+  if (!validateMagicBytes(buffer, file.type)) {
+    return NextResponse.json({ error: "File content does not match declared type" }, { status: 400 });
+  }
   // Sanitize the filename so the storage key never breaks RLS path matching
   // (auth.uid() = (storage.foldername(name))[1]). Slashes/odd chars are removed.
   const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 120);
