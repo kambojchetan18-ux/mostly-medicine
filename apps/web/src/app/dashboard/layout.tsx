@@ -15,6 +15,13 @@ import { features } from "@/config/features";
 // 200 unauthenticated), so this is the authoritative check. Defense in depth.
 export const dynamic = "force-dynamic";
 
+// Peer RolePlay surfaces only when its dedicated flag is on, OR when paid
+// tiers are live (in which case Enterprise plan gating handles access). In
+// beta the link is dropped entirely so users don't hit a "paused" notice
+// from the sidebar.
+const peerRolePlayVisible =
+  features.peerRolePlayInBeta || features.paidTiersEnabled;
+
 const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-brand-300"  },
   { href: "/dashboard/ask-ai",    label: "Ask AI",    icon: "✨", hover: "hover:text-emerald-300" },
@@ -24,7 +31,9 @@ const navItems = [
   { href: "/dashboard/cat2",      label: "AMC Handbook AI RolePlay", icon: "🩺", hover: "hover:text-pink-300"   },
   { href: "/dashboard/ai-roleplay", label: "AMC Clinical AI RolePlay", icon: "🎙️", hover: "hover:text-fuchsia-300" },
   { href: "/osce-guide",          label: "OSCE Prep Guide", icon: "📋", hover: "hover:text-violet-300" },
-  { href: "/dashboard/ai-roleplay/live", label: "AMC Peer RolePlay", icon: "🎥", hover: "hover:text-pink-300" },
+  ...(peerRolePlayVisible
+    ? [{ href: "/dashboard/ai-roleplay/live", label: "AMC Peer RolePlay", icon: "🎥", hover: "hover:text-pink-300" }]
+    : []),
   { href: "/dashboard/library",   label: "Library",   icon: "📚", hover: "hover:text-amber-300"  },
   { href: "/dashboard/reference", label: "Reference", icon: "📖", hover: "hover:text-emerald-300"},
 ];
