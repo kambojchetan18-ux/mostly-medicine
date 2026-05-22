@@ -4,6 +4,8 @@ import HeroMiniCalc from "@/components/HeroMiniCalc";
 import TrustBadges from "@/components/TrustBadges";
 import FreeAccessCard from "@/components/FreeAccessCard";
 import SiteFooter from "@/components/SiteFooter";
+// Aliased — the local `features` array below already owns that name.
+import { features as flags } from "@/config/features";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -363,35 +365,52 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {features.map((f) => (
-            <Link
-              key={f.href}
-              href={f.href}
-              className={`
-                group relative overflow-hidden rounded-3xl p-7 border backdrop-blur-sm
-                bg-gradient-to-br ${f.gradient} ${f.border}
-                transition-all duration-300 hover:scale-[1.02] ${f.glow} ${f.span}
-              `}
-            >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
-              <div className="relative z-10">
-                <div className="text-5xl mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
-                  {f.emoji}
-                </div>
-                <div className="mb-3">
-                  <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full border tracking-widest uppercase ${f.tagColor}`}>
-                    {f.tag}
+          {features.map((f) => {
+            // Peer RolePlay is paused while we're in free beta (most expensive
+            // per-session feature). Show a "Coming back soon" overlay so users
+            // see the feature exists without expecting access today.
+            const isPaused =
+              f.href === "/dashboard/ai-roleplay/live" &&
+              flags.betaMode &&
+              !flags.peerRolePlayInBeta;
+            return (
+              <Link
+                key={f.href}
+                href={f.href}
+                className={`
+                  group relative overflow-hidden rounded-3xl p-7 border backdrop-blur-sm
+                  bg-gradient-to-br ${f.gradient} ${f.border}
+                  transition-all duration-300 hover:scale-[1.02] ${f.glow} ${f.span}
+                `}
+              >
+                {isPaused && (
+                  <span
+                    className="absolute top-3 right-3 z-20 rounded-full bg-amber-500/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-slate-950 shadow"
+                    title="Paused while Mostly Medicine is in free beta"
+                  >
+                    Coming back soon
                   </span>
+                )}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="text-5xl mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                    {f.emoji}
+                  </div>
+                  <div className="mb-3">
+                    <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full border tracking-widest uppercase ${f.tagColor}`}>
+                      {f.tag}
+                    </span>
+                  </div>
+                  <h3 className={`font-display font-bold text-white mb-2 ${f.size}`}>{f.title}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
+                  <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-slate-600 group-hover:text-slate-300 transition-colors">
+                    {isPaused ? "Preview" : "Explore"}
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
                 </div>
-                <h3 className={`font-display font-bold text-white mb-2 ${f.size}`}>{f.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
-                <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-slate-600 group-hover:text-slate-300 transition-colors">
-                  Explore
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
