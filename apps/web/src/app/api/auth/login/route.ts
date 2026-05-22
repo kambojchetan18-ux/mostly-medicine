@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { checkRateLimit, recordFailedAttempt, clearAttempts } from "@/lib/rate-limit";
+import { checkRateLimit, recordFailedAttempt, clearAttempts, aiRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -17,6 +17,14 @@ export async function POST(req: NextRequest) {
     const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
     return NextResponse.json(
       { error: `Too many failed attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
+  const emailRl = await aiRateLimit(`login:email:${email.toLowerCase()}`, { max: 15, windowMs: 3600_000 });
+  if (!emailRl.allowed) {
+    return NextResponse.json(
+      { error: "Too many login attempts for this email. Try again later." },
       { status: 429 }
     );
   }
