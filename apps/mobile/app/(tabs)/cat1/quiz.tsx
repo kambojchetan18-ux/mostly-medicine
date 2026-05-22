@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 export default function QuizScreen() {
@@ -68,13 +73,21 @@ export default function QuizScreen() {
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      await supabase.from('attempts').insert(
+      if (!user) {
+        Alert.alert('Not signed in', 'Your results could not be saved. Please log in and try again.');
+        return;
+      }
+      const { error } = await supabase.from('attempts').insert(
         records.map((r) => ({ ...r, user_id: user.id }))
       );
+      if (error) {
+        console.error('Failed to save attempts:', error.message);
+        Alert.alert('Save failed', 'Your quiz results could not be saved. Check your connection.');
+      }
+    } catch (err) {
+      console.error('Failed to save attempts:', err);
+      Alert.alert('Save failed', 'Your quiz results could not be saved. Check your connection.');
     } finally {
-      // Always clear "Saving…" — was previously stuck on for unauthed users
-      // and on insert errors.
       setSaving(false);
     }
   }

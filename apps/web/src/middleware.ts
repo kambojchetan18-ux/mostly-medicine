@@ -6,11 +6,16 @@ const PUBLIC_API_ROUTES = [
   "/api/auth/signup",
   "/api/auth/callback",
   "/api/search",
-  // Stripe webhook is signed (verified via STRIPE_WEBHOOK_SECRET); no user session.
   "/api/billing/webhook",
-  // Diagnostic — returns env-var presence flags only (never values). Safe to
-  // expose so support can confirm Vercel env-var bake without admin login.
   "/api/health",
+  "/api/ask-ai-taste",
+  "/api/try-roleplay",
+  "/api/cron/",
+  "/api/email/unsubscribe",
+  "/api/track/pwa-install",
+  "/api/test-email",
+  "/api/health-keepalive",
+  "/api/feedback",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -103,6 +108,11 @@ export async function middleware(request: NextRequest) {
     url.search = "";
     return NextResponse.redirect(url);
   }
+
+  supabaseResponse.headers.set("X-Content-Type-Options", "nosniff");
+  supabaseResponse.headers.set("X-Frame-Options", "DENY");
+  supabaseResponse.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  supabaseResponse.headers.set("Permissions-Policy", "camera=(), microphone=(self), geolocation=()");
 
   return supabaseResponse;
 }

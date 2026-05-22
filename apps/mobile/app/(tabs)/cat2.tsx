@@ -8,7 +8,7 @@ export default function CAT2Screen() {
     <View style={s.bg}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={s.header}>
-          <TouchableOpacity onPress={() => router.back()} style={s.back}>
+          <TouchableOpacity onPress={() => router.back()} style={s.back} accessibilityLabel="Go back" accessibilityRole="button">
             <Ionicons name="arrow-back" size={22} color="#94a3b8" />
           </TouchableOpacity>
           <View>
@@ -22,6 +22,8 @@ export default function CAT2Screen() {
             style={s.card}
             onPress={() => router.push('/(tabs)/roleplay')}
             activeOpacity={0.7}
+            accessibilityLabel="AMC Clinical AI RolePlay"
+            accessibilityRole="button"
           >
             <View style={[s.iconWrap, { backgroundColor: '#8b5cf622' }]}>
               <Ionicons name="chatbubbles" size={26} color="#8b5cf6" />

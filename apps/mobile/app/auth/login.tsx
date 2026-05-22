@@ -49,6 +49,7 @@ export default function LoginScreen() {
                 autoCorrect={false}
                 placeholder="doctor@email.com"
                 placeholderTextColor="#64748b"
+                accessibilityLabel="Email address"
               />
             </View>
 
@@ -61,6 +62,7 @@ export default function LoginScreen() {
                 secureTextEntry
                 placeholder="••••••••"
                 placeholderTextColor="#64748b"
+                accessibilityLabel="Password"
               />
             </View>
 
@@ -68,6 +70,8 @@ export default function LoginScreen() {
               style={[styles.btn, loading && styles.btnDisabled]}
               onPress={handleLogin}
               disabled={loading}
+              accessibilityLabel="Log in"
+              accessibilityRole="button"
             >
               {loading
                 ? <FunLoading

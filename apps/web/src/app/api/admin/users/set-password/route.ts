@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { auditLog } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +50,11 @@ export async function POST(req: NextRequest) {
     .single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const rl = await aiRateLimit(clientKey(req, "admin:set-password", user.id), { max: 5, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   let body: { userId?: string };
   try {
     body = await req.json();
@@ -80,9 +87,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
 
-  return NextResponse.json({
+  await auditLog({
+    adminId: user.id,
+    action: "set-password",
+    targetType: "user",
+    targetId: userId,
+    metadata: { targetEmail: target.user.email },
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
+
+  const res = NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
     password,
   });
+  res.headers.set("Cache-Control", "no-store");
+  return res;
 }

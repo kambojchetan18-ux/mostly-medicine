@@ -11,16 +11,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Query too long" }, { status: 400 });
   }
 
+  const sanitizedQuery = query.replace(/[&|!<>():*\\]/g, " ").replace(/\s+/g, " ").trim();
+  if (!sanitizedQuery || sanitizedQuery.length < 2) {
+    return NextResponse.json({ results: [] });
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data, error } = await supabase.rpc("search_content", {
-    search_query: query,
+    search_query: sanitizedQuery,
     searching_user_id: user?.id ?? null,
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[search] rpc error:", error.message);
+    return NextResponse.json({ error: "Search failed" }, { status: 500 });
   }
 
   return NextResponse.json({ results: data ?? [] });

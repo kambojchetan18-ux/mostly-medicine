@@ -9,6 +9,20 @@ const MAX_PER_QUESTION = 10;
 const ALLOWED_MIME = /^(image\/(png|jpe?g|webp|gif)|application\/pdf)$/i;
 const SIGNED_URL_TTL_SECONDS = 60 * 60; // 1 hour
 
+const MAGIC_BYTES: Record<string, number[][]> = {
+  "application/pdf": [[0x25, 0x50, 0x44, 0x46]], // %PDF
+  "image/png": [[0x89, 0x50, 0x4e, 0x47]],
+  "image/jpeg": [[0xff, 0xd8, 0xff]],
+  "image/webp": [[0x52, 0x49, 0x46, 0x46]], // RIFF
+  "image/gif": [[0x47, 0x49, 0x46, 0x38]], // GIF8
+};
+
+function validateMagicBytes(bytes: Uint8Array, mimeType: string): boolean {
+  const sigs = MAGIC_BYTES[mimeType];
+  if (!sigs) return true;
+  return sigs.some((sig) => sig.every((b, i) => bytes[i] === b));
+}
+
 interface AttachmentRow {
   id: string;
   question_id: string;
@@ -86,6 +100,11 @@ export async function POST(req: NextRequest) {
   const filePath = `${user.id}/${questionId}/${crypto.randomUUID()}-${safeName}`;
 
   const arrayBuffer = await file.arrayBuffer();
+  const fileBytes = new Uint8Array(arrayBuffer);
+  if (!validateMagicBytes(fileBytes, file.type)) {
+    return NextResponse.json({ error: "File content does not match declared type" }, { status: 400 });
+  }
+
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
     .upload(filePath, new Uint8Array(arrayBuffer), {

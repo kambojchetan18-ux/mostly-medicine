@@ -86,7 +86,7 @@ export default function HomeScreen() {
               <Text style={styles.greeting}>Good day, {userName} 👋</Text>
               <Text style={styles.subGreeting}>AMC Prep 2026</Text>
             </View>
-            <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+            <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn} accessibilityLabel="Log out" accessibilityRole="button">
               <Ionicons name="log-out-outline" size={20} color="#64748b" />
             </TouchableOpacity>
           </View>
@@ -104,7 +104,7 @@ export default function HomeScreen() {
           )}
 
           {/* Quick start */}
-          <TouchableOpacity style={styles.quickStart} onPress={() => router.push('/(tabs)/cat1')}>
+          <TouchableOpacity style={styles.quickStart} onPress={() => router.push('/(tabs)/cat1')} accessibilityLabel="Start quick quiz" accessibilityRole="button">
             <View style={{ flex: 1 }}>
               <Text style={styles.quickTitle}>⚡ Quick Quiz</Text>
               <Text style={styles.quickSub}>20 random AMC MCQ questions</Text>
@@ -121,6 +121,8 @@ export default function HomeScreen() {
                 style={styles.moduleCard}
                 onPress={() => router.push(`/(tabs)${m.route}`)}
                 activeOpacity={0.7}
+                accessibilityLabel={m.label}
+                accessibilityRole="button"
               >
                 <View style={[styles.moduleIcon, { backgroundColor: m.color + '22' }]}>
                   <Ionicons name={m.icon} size={24} color={m.color} />

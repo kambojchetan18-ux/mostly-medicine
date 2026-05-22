@@ -60,9 +60,9 @@ export default function SignupScreen() {
             <Text style={styles.subtitle}>Join thousands of IMGs preparing for AMC</Text>
 
             {[
-              { label: 'Full Name', value: name, set: setName, placeholder: 'Dr. Your Name', type: 'default' as const },
-              { label: 'Email', value: email, set: setEmail, placeholder: 'doctor@email.com', type: 'email-address' as const },
-              { label: 'Password', value: password, set: setPassword, placeholder: '••••••••', type: 'default' as const, secure: true },
+              { label: 'Full Name', value: name, set: setName, placeholder: 'Dr. Your Name', type: 'default' as const, a11y: 'Full name' },
+              { label: 'Email', value: email, set: setEmail, placeholder: 'doctor@email.com', type: 'email-address' as const, a11y: 'Email address' },
+              { label: 'Password', value: password, set: setPassword, placeholder: '••••••••', type: 'default' as const, secure: true, a11y: 'Password' },
             ].map((f) => (
               <View key={f.label} style={styles.field}>
                 <Text style={styles.label}>{f.label}</Text>
@@ -75,11 +75,12 @@ export default function SignupScreen() {
                   secureTextEntry={f.secure}
                   placeholder={f.placeholder}
                   placeholderTextColor="#64748b"
+                  accessibilityLabel={f.a11y}
                 />
               </View>
             ))}
 
-            <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleSignup} disabled={loading}>
+            <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleSignup} disabled={loading} accessibilityLabel="Sign up" accessibilityRole="button">
               {loading ? (
                 <FunLoading
                   pool={[

@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
+import { auditLog } from "@/lib/audit";
 
 const anthropic = new Anthropic();
 
@@ -45,6 +47,12 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
+  const { data: { user } } = await (await createClient()).auth.getUser();
+  const rl = await aiRateLimit(clientKey(req, "admin:content-gen", user?.id ?? "anon"), { max: 5, windowMs: 3600_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
   const { month, regenerate = false } = await req.json();
   if (!month || !/^\d{4}-\d{2}$/.test(month)) {
@@ -147,5 +155,15 @@ Spread posts evenly, only on weekdays (Mon-Fri) preferred.`
     .select();
 
   if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 });
+
+  await auditLog({
+    adminId: user?.id ?? "unknown",
+    action: "generate-content",
+    targetType: "content_posts",
+    targetId: month,
+    metadata: { regenerate, count: inserted?.length },
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
+
   return NextResponse.json({ posts: inserted, count: inserted?.length });
 }
