@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
 import { features } from "@/config/features";
+import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
   // Beta mode: checkout is closed. 404 hides the route from probes; the UI
@@ -77,6 +78,11 @@ export async function POST(req: NextRequest) {
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   try {
+    const idempotencyKey = crypto
+      .createHash("sha256")
+      .update(`${user.id}:${body.priceId}:${Math.floor(Date.now() / 300_000)}`)
+      .digest("hex")
+      .slice(0, 48);
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
@@ -92,7 +98,7 @@ export async function POST(req: NextRequest) {
         ? `${origin}${safeNext}?upgrade_canceled=1`
         : `${origin}/dashboard/billing?canceled=1`,
       subscription_data: { metadata: { user_id: user.id } },
-    });
+    }, { idempotencyKey });
     return NextResponse.json({ url: session.url });
   } catch (err) {
     // Surface a clean error instead of letting Next.js return an empty 500
