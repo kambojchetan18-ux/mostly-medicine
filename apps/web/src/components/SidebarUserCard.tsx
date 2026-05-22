@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { features } from "@/config/features";
 
 export interface UserCardData {
   name: string;
@@ -81,8 +82,22 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
         ? "pro"
         : user.plan;
 
-  const planBadge = effectivePlan === "pro" ? "⭐ Pro" : effectivePlan === "enterprise" ? "🏢 Enterprise" : "Free";
-  const planColor = effectivePlan === "pro" ? "text-amber-400" : effectivePlan === "enterprise" ? "text-violet-400" : "text-slate-500";
+  // Beta mode swaps the per-tier badge for a single neutral "Beta" pill so
+  // the sidebar never advertises a paid tier to a user who can't buy one.
+  const planBadge = features.betaMode
+    ? "🚀 Beta"
+    : effectivePlan === "pro"
+      ? "⭐ Pro"
+      : effectivePlan === "enterprise"
+        ? "🏢 Enterprise"
+        : "Free";
+  const planColor = features.betaMode
+    ? "text-emerald-300"
+    : effectivePlan === "pro"
+      ? "text-amber-400"
+      : effectivePlan === "enterprise"
+        ? "text-violet-400"
+        : "text-slate-500";
 
   // Pin locale to en-AU. Without an explicit locale, Safari and iOS use the
   // user's OS locale (could be ar/he/ja) so the rendered date varies between
@@ -111,8 +126,9 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
         {streakLabel}
       </div>
 
-      {/* Founder badge — first 100 launch-day signups get Pro free for 30 days */}
-      {founderActive && user.founder_rank != null && (
+      {/* Founder badge — first 100 launch-day signups get Pro free for 30 days.
+          Hidden during beta because no one is on a paid plan anyway. */}
+      {features.paidTiersEnabled && founderActive && user.founder_rank != null && (
         <Link
           href="/dashboard/billing"
           className="block px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/15 to-pink-500/15 border border-amber-400/30 hover:from-amber-500/25 hover:to-pink-500/25 transition"

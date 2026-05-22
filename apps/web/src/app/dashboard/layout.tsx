@@ -7,6 +7,7 @@ import SearchTrigger from "@/components/SearchTrigger";
 import SidebarUserCard, { type UserCardData } from "@/components/SidebarUserCard";
 import MobileTopBar from "@/components/MobileTopBar";
 import InstallPwaBanner from "@/components/InstallPwaBanner";
+import { features } from "@/config/features";
 
 // Layouts are async server components — perfect place for a hard auth gate
 // that protects every /dashboard/* route regardless of middleware behaviour.
@@ -35,7 +36,11 @@ const jobNavItems = [
   { href: "/dashboard/jobs/action-plan", label: "Action Plan", icon: "✅", hover: "hover:text-green-300"  },
   { href: "/dashboard/jobs/tracker",     label: "App Tracker", icon: "📋", hover: "hover:text-orange-300" },
   { href: "/dashboard/profile",          label: "My Profile",  icon: "👤", hover: "hover:text-rose-300"   },
-  { href: "/dashboard/billing",          label: "Billing",     icon: "💳", hover: "hover:text-yellow-300" },
+  // Billing tab is paid-tier only. During beta the page redirects to /dashboard,
+  // so the nav entry is hidden to avoid a dead click.
+  ...(features.paidTiersEnabled
+    ? [{ href: "/dashboard/billing", label: "Billing", icon: "💳", hover: "hover:text-yellow-300" }]
+    : []),
   { href: "/dashboard/help",             label: "Help",        icon: "💬", hover: "hover:text-cyan-300"   },
 ];
 

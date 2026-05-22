@@ -3,6 +3,7 @@ import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import CalculatorTeaser from "@/components/CalculatorTeaser";
 import PillarPageNav from "@/components/PillarPageNav";
+import { features } from "@/config/features";
 
 const SITE_URL = "https://mostlymedicine.com";
 const PAGE_URL = `${SITE_URL}/amc-from-philippines`;
@@ -341,7 +342,7 @@ export default function Page() {
 
         <h2>How Mostly Medicine helps Filipino candidates specifically</h2>
         <p>
-          Built for IMGs by a team that walked the documentation and exam gauntlet: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal. Pricing in AUD, free tier honest, Pro is A$19/mo (roughly PHP 700). Philippines-specific drilling: USMLE-to-AMC bridge content covering PBS first lines, Australian-context ethics, and Australian primary-care consultation framing.
+          Built for IMGs by a team that walked the documentation and exam gauntlet: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal. {features.paidTiersEnabled ? "Pricing in AUD, free tier honest, Pro is A$19/mo (roughly PHP 700)." : "Free during beta — all features unlocked for signed-in candidates worldwide."} Philippines-specific drilling: USMLE-to-AMC bridge content covering PBS first lines, Australian-context ethics, and Australian primary-care consultation framing.
         </p>
 
         <CitationHook n={4}>

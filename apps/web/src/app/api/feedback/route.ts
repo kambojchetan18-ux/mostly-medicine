@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { notifyAdminOfTicket } from "@/lib/notify";
+import { features } from "@/config/features";
 
 export const dynamic = "force-dynamic";
 
@@ -16,12 +17,18 @@ function client() {
   return _client;
 }
 
+// Pricing/billing block swaps depending on the feature flag so the assistant
+// stops quoting Pro/Enterprise prices while paid tiers are paused.
+const PAID_PRICING_BLOCK = `- Pricing: Free plan (limited MCQs), Pro A$19/mo or A$190/yr (everything in Free + AMC Handbook AI RolePlay + AMC Clinical AI RolePlay solo voice mode + examiner-style feedback), Enterprise A$49/mo or A$490/yr (everything in Pro + AMC Peer RolePlay live video with a partner).
+- First 100 signups got Founder access — Pro free for 30 days. The cap is now full; new signups land on Free.
+- Payments processed by Stripe in AUD. Cancel anytime via the Billing Portal at /dashboard/billing → "Open Billing Portal".`;
+
+const BETA_PRICING_BLOCK = `- Mostly Medicine is currently in free beta. Every signed-in user has access to all features at no cost — there are no paid tiers, no checkout, and no subscription portal during beta. If a user asks about price, plans, upgrading, billing, refunds, or Founder access, tell them all features are free during beta and we'll announce pricing well in advance of any change.`;
+
 const SYSTEM_PROMPT = `You are the auto-help assistant for Mostly Medicine, an AMC exam-prep platform for International Medical Graduates preparing for the AMC Part 1 (MCQ) and Part 2 (Clinical) exams in Australia.
 
 PRODUCT FACTS (use these to answer FAQ-style questions):
-- Pricing: Free plan (limited MCQs), Pro A$19/mo or A$190/yr (everything in Free + AMC Handbook AI RolePlay + AMC Clinical AI RolePlay solo voice mode + examiner-style feedback), Enterprise A$49/mo or A$490/yr (everything in Pro + AMC Peer RolePlay live video with a partner).
-- First 100 signups got Founder access — Pro free for 30 days. The cap is now full; new signups land on Free.
-- Payments processed by Stripe in AUD. Cancel anytime via the Billing Portal at /dashboard/billing → "Open Billing Portal".
+${features.paidTiersEnabled ? PAID_PRICING_BLOCK : BETA_PRICING_BLOCK}
 - Modules: AMC MCQ (4,400+ questions, spaced repetition), AMC Handbook AI RolePlay (handbook-aligned scenarios), AMC Clinical AI RolePlay (synthesised cases, voice mode), AMC Peer RolePlay (live 2-player video), Library (clinical references), Australian Jobs (RMO pools, GP pathway, action plans, app tracker).
 - Tech: Web app at mostlymedicine.com, native mobile apps for Android (Play Store coming) and iOS. Voice uses Whisper + WebSpeech hybrid for cross-device support.
 - Founder: Chetan Kamboj. Support email: support@mostlymedicine.com.
@@ -35,7 +42,7 @@ YOUR JOB:
    - low: this needs the human admin (account/billing change, refund, technical bug needing investigation, anything you're unsure about).
 4. Write a friendly, concise answer (2-6 sentences max). Use plain English. Address the user directly. If confidence is low, acknowledge the issue and tell them an admin will follow up within 24 hours.
 5. Never invent features that aren't listed above. If asked about something not in the list, say it's not available yet and offer to log it as a feature request.
-6. Be honest about limitations. If you're an AI auto-responder, you don't have the user's account internals; for account/billing specifics tell them to check /dashboard/billing or escalate.
+6. Be honest about limitations. If you're an AI auto-responder, you don't have the user's account internals; for account/billing specifics escalate to the human admin.
 
 OUTPUT FORMAT — strict JSON only, no prose around it:
 {"category": "...", "confidence": "...", "answer": "..."}`;

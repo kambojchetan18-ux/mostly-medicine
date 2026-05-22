@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { features } from "@/config/features";
 
 type LeaderboardRow = {
   user_id: string;
@@ -170,7 +171,9 @@ export default async function LeaderboardPage() {
       )}
 
       <p className="text-center text-xs text-gray-400 mt-5">
-        Free-tier users appear anonymously. Upgrade to show your name on the leaderboard.
+        {features.paidTiersEnabled
+          ? "Free-tier users appear anonymously. Upgrade to show your name on the leaderboard."
+          : "Mostly Medicine is in free beta — all signed-in users appear by name."}
       </p>
     </div>
   );

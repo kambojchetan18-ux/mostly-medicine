@@ -7,6 +7,7 @@ import type { SessionFeedback } from "@/lib/ai-roleplay/types";
 import FunLoading from "@/components/FunLoading";
 import RoleplayDiagnosticRadar from "@/components/RoleplayDiagnosticRadar";
 import { createClient } from "@/lib/supabase/client";
+import { features } from "@/config/features";
 
 interface TranscriptItem {
   id: string;
@@ -249,7 +250,7 @@ export default function ResultsClient({
                           Spaced-repetition cards for <strong>{lowestAxis}</strong> ({lowestScore}%) will surface in your next session.
                         </p>
                       </div>
-                    ) : planTier === "free" ? (
+                    ) : planTier === "free" && features.paidTiersEnabled ? (
                       <div className="rounded-xl border border-amber-200 bg-white p-4 shadow-sm">
                         <h3 className="text-sm font-semibold text-gray-900">
                           Unlock spaced repetition
@@ -388,8 +389,9 @@ export default function ResultsClient({
               /api/ai-roleplay/generate (i.e. user clicked "Retry similar"
               or "New random" but already used today's quota). Without this
               the buttons silently fail because the existing error block
-              upstream only renders before feedback loads. */}
-          {limitInfo && (
+              upstream only renders before feedback loads. Hidden during beta
+              because the limit branch is unreachable. */}
+          {limitInfo && features.paidTiersEnabled && (
             <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>

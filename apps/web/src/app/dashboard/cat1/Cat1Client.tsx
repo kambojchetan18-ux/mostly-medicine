@@ -9,6 +9,7 @@ import MentorMessage from "@/components/MentorMessage";
 import QuizNavigator from "./QuizNavigator";
 import QuizMeta from "./QuizMeta";
 import InlineNotepad from "./InlineNotepad";
+import { features } from "@/config/features";
 
 // Static topic list — avoids importing the 5 MB allQuestions bundle on the client.
 // Question counts are fetched from the server API on menu load.
@@ -420,8 +421,9 @@ export default function Cat1Client({
           if (res.ok) {
             // Free user finishing a Mock-Exam preview → hard upgrade gate
             // before they ever see the rich results page. Pro/Enterprise
-            // get the normal results flow.
-            if (isMockSession && !isPro) {
+            // get the normal results flow. During beta the upgrade detour
+            // is bypassed entirely — every user sees results directly.
+            if (isMockSession && !isPro && features.paidTiersEnabled) {
               router.push(`/dashboard/billing?from=mock&session=${sessionId}`);
             } else {
               router.push(`/dashboard/cat1/results/${sessionId}`);
@@ -821,7 +823,7 @@ export default function Cat1Client({
         floating
       />
     )}
-    {limitReached && !isPro && (
+    {limitReached && !isPro && features.paidTiersEnabled && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="max-w-md w-full rounded-3xl bg-white shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-br from-brand-600 via-violet-600 to-pink-500 px-6 pt-7 pb-5 text-white">

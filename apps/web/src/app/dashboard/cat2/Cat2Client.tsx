@@ -11,6 +11,7 @@ import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import { cleanForDisplay } from "@/lib/clean-message";
 import FunLoading from "@/components/FunLoading";
+import { features } from "@/config/features";
 
 // ── Timer config ──────────────────────────────────────────────────────────────
 
@@ -813,8 +814,9 @@ export default function Cat2Client() {
 
       {/* Daily-limit banner — replaces the input row when the user hits the
           free Handbook RolePlay quota. The Upgrade CTA carries ?next= so
-          Stripe success_url can return them straight to /dashboard/cat2. */}
-      {limitInfo && (
+          Stripe success_url can return them straight to /dashboard/cat2.
+          Hidden during beta — every user is effectively Pro. */}
+      {limitInfo && features.paidTiersEnabled && (
         <div className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

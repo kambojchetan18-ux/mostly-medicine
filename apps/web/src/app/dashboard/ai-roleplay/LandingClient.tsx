@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import FunLoading from "@/components/FunLoading";
+import { features } from "@/config/features";
 
 interface LimitInfo {
   plan: "free" | "pro" | "enterprise";
@@ -171,8 +172,9 @@ export default function LandingClient({
         {error && <p className="mt-3 text-sm text-rose-100">⚠️ {error}</p>}
       </section>
 
-      {/* Daily-limit upgrade banner — shown when /generate or /play returned a 429 */}
-      {limitInfo && (
+      {/* Daily-limit upgrade banner — shown when /generate or /play returned a
+          429. Hidden during beta because no free/paid split exists. */}
+      {limitInfo && features.paidTiersEnabled && (
         <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { features } from "@/config/features";
 
 /**
  * SiteFooter — global brand footer rendered on the homepage and every public
@@ -24,7 +25,11 @@ const quickLinks: QuickLink[] = [
   { href: "/osce-guide",                label: "OSCE Prep Guide"         },
   { href: "/blog",                      label: "Blog"                    },
   { href: "/ask-ai",                    label: "Ask AI (Free)"           },
-  { href: "/dashboard/billing",         label: "Pricing & Plans"         },
+  // Pricing & Plans only surfaces when paid tiers are live. During beta the
+  // /dashboard/billing route bounces to /dashboard, so the link is dropped.
+  ...(features.paidTiersEnabled
+    ? [{ href: "/dashboard/billing", label: "Pricing & Plans" }]
+    : []),
   { href: "/contact",                   label: "Contact Us"              },
   { href: "/privacy",                   label: "Privacy Policy"          },
   { href: "/terms",                     label: "Terms & Conditions"      },
