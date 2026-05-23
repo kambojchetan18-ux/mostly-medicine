@@ -29,8 +29,19 @@ export async function PATCH(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!(await assertAdmin(supabase, user.id))) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { plan, module, enabled, daily_limit } = await req.json();
+  let body: { plan?: string; module?: string; enabled?: boolean; daily_limit?: number | null };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { plan, module, enabled, daily_limit } = body;
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
+
+  const ALLOWED_PLANS = new Set(["free", "pro", "enterprise"]);
+  const ALLOWED_MODULES = new Set(["mcq", "mock_exam", "roleplay", "acrp_solo", "acrp_live"]);
+  if (!ALLOWED_PLANS.has(plan)) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+  if (!ALLOWED_MODULES.has(module)) return NextResponse.json({ error: "Invalid module" }, { status: 400 });
 
   const { error } = await supabase.from("module_permissions").upsert(
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },

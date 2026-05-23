@@ -46,7 +46,13 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  const { month, regenerate = false } = await req.json();
+  let body: { month?: string; regenerate?: boolean };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { month, regenerate = false } = body;
   if (!month || !/^\d{4}-\d{2}$/.test(month)) {
     return NextResponse.json({ error: "Invalid month format. Use YYYY-MM" }, { status: 400 });
   }

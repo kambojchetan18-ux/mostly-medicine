@@ -55,13 +55,26 @@ export async function POST(req: NextRequest) {
   // makes "first writer wins" a single round-trip; the loser sees no row
   // back and short-circuits.
   const sb = service();
+  const safePayload = {
+    id: event.id,
+    type: event.type,
+    created: event.created,
+    livemode: event.livemode,
+    data: {
+      object: (() => {
+        const obj = event.data.object as Record<string, unknown>;
+        const { card, source, payment_method_details, ...rest } = obj;
+        return rest;
+      })(),
+    },
+  };
   const { data: claimed } = await sb
     .from("billing_events")
     .upsert(
       {
         id: event.id,
         type: event.type,
-        payload: event as unknown as Record<string, unknown>,
+        payload: safePayload as unknown as Record<string, unknown>,
       },
       { onConflict: "id", ignoreDuplicates: true }
     )
