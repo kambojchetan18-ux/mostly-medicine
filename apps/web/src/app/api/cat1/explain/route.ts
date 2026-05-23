@@ -65,7 +65,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
   }
 
-  const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = await req.json();
+  let body: { stem?: string; options?: { label: string; text: string }[]; correctAnswer?: string; selectedAnswer?: string; topic?: string; subtopic?: string; explanation?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { stem, options, correctAnswer, selectedAnswer, topic, subtopic, explanation } = body;
+  if (!stem || !options || !correctAnswer) {
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
 
   const optionLines = (options as { label: string; text: string }[])
     .map((o) => `${o.label}. ${o.text}`)

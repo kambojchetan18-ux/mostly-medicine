@@ -43,7 +43,13 @@ export async function PATCH(req: NextRequest) {
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { userId, plan, role } = await req.json();
+  let body: { userId?: string; plan?: string; role?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { userId, plan, role } = body;
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
   // Whitelist values — refusing arbitrary strings prevents an admin (or a

@@ -58,11 +58,11 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const portalOrigin = ALLOWED_ORIGINS.has(req.headers.get("origin") ?? "") ? req.headers.get("origin")! : "https://www.mostlymedicine.com";
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
-        return_url: `${origin}/dashboard/billing`,
+        return_url: `${portalOrigin}/dashboard/billing`,
       });
       return NextResponse.json({ url: portal.url, alreadySubscribed: true });
     } catch (err) {
@@ -75,7 +75,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const ALLOWED_ORIGINS = new Set([
+    "https://www.mostlymedicine.com",
+    "https://mostlymedicine.com",
+    "http://localhost:3000",
+  ]);
+  const rawOrigin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = ALLOWED_ORIGINS.has(rawOrigin) ? rawOrigin : "https://www.mostlymedicine.com";
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",

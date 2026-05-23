@@ -44,7 +44,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { scenarioId, messages, requestFeedback } = await req.json();
+    let rpBody: { scenarioId?: string | number; messages?: unknown[]; requestFeedback?: boolean };
+    try {
+      rpBody = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+    const { scenarioId, messages, requestFeedback } = rpBody;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(

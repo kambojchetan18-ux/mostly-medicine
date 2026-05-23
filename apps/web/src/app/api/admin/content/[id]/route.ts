@@ -14,7 +14,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const auth = await requireAdmin();
   if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
   const { id } = await params;
-  const updates = await req.json();
+  let updates: Record<string, unknown>;
+  try {
+    updates = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
   const allowed = ["caption", "slides", "hashtags", "status", "post_date", "post_type"];
   const filtered = Object.fromEntries(Object.entries(updates).filter(([k]) => allowed.includes(k)));
