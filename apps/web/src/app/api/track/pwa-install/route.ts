@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient as createCookieClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Track a PWA install event or a standalone-mode heartbeat.
 // Auth-bypassed — anonymous installs still count. We attach user_id when
@@ -31,6 +32,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   if (!sessionId || !eventType || !["installed", "heartbeat"].includes(eventType)) {
     return NextResponse.json({ ok: false, error: "bad_payload" }, { status: 400 });
+  }
+
+  const rl = await aiRateLimit(clientKey(req, "pwa-install"), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
 
   // Capture user_id when the request carries an authed cookie session.

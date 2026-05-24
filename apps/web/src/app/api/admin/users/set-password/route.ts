@@ -80,9 +80,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
 
-  return NextResponse.json({
+  const resp = NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
     password,
   });
+  resp.headers.set("Cache-Control", "no-store");
+  return resp;
 }

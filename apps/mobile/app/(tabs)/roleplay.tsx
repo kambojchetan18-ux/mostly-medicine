@@ -10,8 +10,8 @@ import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
-import { scenarios } from '@mostly-medicine/ai';
-import type { Scenario } from '@mostly-medicine/ai';
+import { scenariosMeta as scenarios } from '@mostly-medicine/ai';
+import type { ScenarioMeta as Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
