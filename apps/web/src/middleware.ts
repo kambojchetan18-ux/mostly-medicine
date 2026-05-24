@@ -7,7 +7,6 @@ const PUBLIC_API_ROUTES = [
   "/api/auth/callback",
   "/api/search",
   "/api/billing/webhook",
-  "/api/health",
   "/api/health-keepalive",
   "/api/try-roleplay",
   "/api/ask-ai-taste",
