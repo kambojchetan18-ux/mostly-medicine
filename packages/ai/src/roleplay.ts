@@ -157,8 +157,14 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
 
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 1024,
-    system: systemPrompt,
+    max_tokens: requestFeedback ? 4096 : 1024,
+    system: [
+      {
+        type: "text" as const,
+        text: systemPrompt,
+        cache_control: { type: "ephemeral" as const },
+      },
+    ],
     messages: apiMessages,
   });
 

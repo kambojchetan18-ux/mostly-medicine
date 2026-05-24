@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -22,7 +22,10 @@ type FunLoadingProps = {
 };
 
 export default function FunLoading({ pool, style }: FunLoadingProps) {
-  const messages = pool && pool.length > 0 ? pool : DEFAULT_POOL;
+  const messages = useMemo(
+    () => pool && pool.length > 0 ? pool : DEFAULT_POOL,
+    [pool]
+  );
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {

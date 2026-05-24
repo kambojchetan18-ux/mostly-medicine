@@ -35,12 +35,14 @@ const nextConfig = {
     ];
   },
   async headers() {
-    // Baseline security headers applied to every response. A strict CSP is
-    // intentionally NOT shipped right before launch — Tailwind's hashing,
-    // Next.js inline runtime, and Stripe Elements all need careful nonce
-    // wiring that's risky to land overnight. The headers below are zero-risk
-    // and still close real attack surface (clickjacking, MIME sniffing,
-    // referrer leakage, downgrade, sensitive browser APIs).
+    // Baseline security headers applied to every response. CSP is now in
+    // report-only mode — violations are logged to the console but nothing is
+    // blocked. Once we confirm no false positives we can promote
+    // Content-Security-Policy-Report-Only → Content-Security-Policy and wire
+    // up nonces for Tailwind's hashing, Next.js inline runtime, and Stripe
+    // Elements. The remaining headers below are zero-risk and still close
+    // real attack surface (clickjacking, MIME sniffing, referrer leakage,
+    // downgrade, sensitive browser APIs).
     return [
       {
         source: "/:path*",
@@ -71,6 +73,18 @@ const nextConfig = {
           // Defense-in-depth XSS hint for legacy Safari. Modern browsers
           // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
+          // Report-only CSP — logs violations to the browser console without
+          // blocking anything. Covers scripts (Stripe, GA, Vercel Analytics),
+          // styles (inline Tailwind), images (Supabase storage, Stripe),
+          // connect (Supabase realtime, Stripe API, Groq STT, Cloudflare
+          // TURN, Vercel Insights), frames (Stripe Elements), and media
+          // (voice recordings). Promote to Content-Security-Policy once
+          // there are zero console warnings in production.
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.google-analytics.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.stripe.com; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.groq.com https://*.vercel-insights.com https://*.google-analytics.com https://rtc.live.cloudflare.com; frame-src https://js.stripe.com https://hooks.stripe.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'",
+          },
         ],
       },
     ];
