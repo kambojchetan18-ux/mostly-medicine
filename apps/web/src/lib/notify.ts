@@ -98,7 +98,7 @@ async function sendEmail({
         to,
         subject: `[Ticket] ${subject}`,
         html,
-        reply_to: userEmail,
+        reply_to: userEmail.replace(/[\r\n\x00-\x1f]/g, ""),
       }),
     });
   } catch (err) {

@@ -255,6 +255,12 @@ export default function Cat2Client() {
   }, [stopRecording]);
 
   useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (micMuted && recState === "recording") {
       void stopRecording();
     }

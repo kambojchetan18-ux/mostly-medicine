@@ -4,6 +4,18 @@ import { stripe, priceCatalog, assertStripeConfig } from "@/lib/stripe";
 import { getOrCreateStripeCustomer } from "@/lib/billing";
 import { features } from "@/config/features";
 
+const ALLOWED_ORIGINS = new Set([
+  "https://www.mostlymedicine.com",
+  "https://mostlymedicine.com",
+]);
+
+function safeOrigin(req: NextRequest): string {
+  const raw = req.headers.get("origin");
+  if (raw && ALLOWED_ORIGINS.has(raw)) return raw;
+  const fallback = new URL(req.url).origin;
+  return ALLOWED_ORIGINS.has(fallback) ? fallback : "https://www.mostlymedicine.com";
+}
+
 export async function POST(req: NextRequest) {
   // Beta mode: checkout is closed. 404 hides the route from probes; the UI
   // already hides the button when features.paidTiersEnabled is false.
@@ -58,7 +70,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = safeOrigin(req);
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -75,7 +87,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
