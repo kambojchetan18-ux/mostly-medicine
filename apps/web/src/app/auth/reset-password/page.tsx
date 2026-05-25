@@ -44,8 +44,8 @@ function ResetPasswordInner() {
     // PKCE flow: auth/callback may have already exchanged the code and
     // redirected us with a live session. Check synchronously so the form
     // is enabled even if no auth event fires.
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setReady(true);
     });
 
     return () => sub.subscription.unsubscribe();

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,14 @@ export async function POST(req: NextRequest) {
     .eq("id", user.id)
     .single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rl = await aiRateLimit(clientKey(req, "admin:reset-password", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests", retryAfterMs: rl.retryAfterMs },
+      { status: 429 }
+    );
+  }
 
   let body: { userId?: string };
   try {

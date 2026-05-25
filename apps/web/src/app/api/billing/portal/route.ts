@@ -3,6 +3,18 @@ import { createClient } from "@/lib/supabase/server";
 import { stripe, assertStripeConfig } from "@/lib/stripe";
 import { features } from "@/config/features";
 
+const ALLOWED_ORIGINS = new Set([
+  "https://www.mostlymedicine.com",
+  "https://mostlymedicine.com",
+]);
+
+function safeOrigin(req: NextRequest): string {
+  const raw = req.headers.get("origin");
+  if (raw && ALLOWED_ORIGINS.has(raw)) return raw;
+  const fallback = new URL(req.url).origin;
+  return ALLOWED_ORIGINS.has(fallback) ? fallback : "https://www.mostlymedicine.com";
+}
+
 // Returns a Stripe Customer Portal URL so the user can update payment method,
 // switch plans, or cancel without us building UI for any of that.
 export async function POST(req: NextRequest) {
@@ -32,7 +44,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No subscription on file" }, { status: 404 });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = safeOrigin(req);
   try {
     const session = await stripe().billingPortal.sessions.create({
       customer: profile.stripe_customer_id,

@@ -1,16 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const PUBLIC_API_ROUTES = [
+const PUBLIC_API_ROUTES = new Set([
   "/api/auth/login",
   "/api/auth/signup",
   "/api/auth/callback",
-  "/api/search",
-  // Stripe webhook is signed (verified via STRIPE_WEBHOOK_SECRET); no user session.
   "/api/billing/webhook",
-  // Diagnostic — returns env-var presence flags only (never values). Safe to
-  // expose so support can confirm Vercel env-var bake without admin login.
-  "/api/health",
+  "/api/health-keepalive",
+  "/api/try-roleplay",
+  "/api/ask-ai-taste",
+  "/api/track/pwa-install",
+  "/api/search",
+]);
+
+const PUBLIC_API_PREFIXES = [
+  "/api/cron/",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -68,7 +72,7 @@ export async function middleware(request: NextRequest) {
 
   // Not logged in → 401 for protected API routes
   if (!user && pathname.startsWith("/api/")) {
-    const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+    const isPublic = PUBLIC_API_ROUTES.has(pathname) || PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p));
     if (!isPublic) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -82,7 +86,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     if (pathname.startsWith("/api/")) {
-      const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+      const isPublic = PUBLIC_API_ROUTES.has(pathname) || PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p));
       if (!isPublic) {
         return NextResponse.json({ error: "Email not confirmed" }, { status: 403 });
       }

@@ -72,8 +72,8 @@ export default function QuizNavigator({
   resumedAlreadyDone,
   onJump,
 }: QuizNavigatorProps) {
-  const answered = answers.length;
-  const correct = answers.filter((a) => a.correct).length;
+  const answered = answers.filter(Boolean).length;
+  const correct = answers.filter((a) => a?.correct).length;
   const pct = answered ? Math.round((correct / answered) * 100) : 0;
   const absoluteCurrent = current + 1 + resumedAlreadyDone;
   const absoluteTotal = total + resumedAlreadyDone;

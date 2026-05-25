@@ -74,8 +74,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ reply: result.text.trim(), remaining: Math.max(0, 3 - userTurns) });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[ask-ai-taste]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[ask-ai-taste]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "AI error" }, { status: 500 });
   }
 }
