@@ -8,6 +8,7 @@ import { allQuestions, type MCQuestion } from '@mostly-medicine/content';
 
 type Phase = 'quiz' | 'result' | 'done';
 type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer: string };
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 const QUIZ_SIZE = 20;
 
@@ -22,12 +23,14 @@ export default function QuizScreen() {
   const [selected, setSelected] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>('quiz');
   const [attempts, setAttempts] = useState<AttemptRecord[]>([]);
-  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    const pool = topic
-      ? allQuestions.filter((q) => q.topic === topic)
+    const validTopics = new Set(allQuestions.map((q) => q.topic));
+    const safeTopic = topic && validTopics.has(topic) ? topic : undefined;
+    const pool = safeTopic
+      ? allQuestions.filter((q) => q.topic === safeTopic)
       : allQuestions;
     setQuestions(shuffle(pool).slice(0, QUIZ_SIZE));
   }, [topic]);
@@ -65,17 +68,16 @@ export default function QuizScreen() {
   }
 
   async function saveAttempts(records: AttemptRecord[]) {
-    setSaving(true);
+    setSaveStatus('saving');
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      await supabase.from('attempts').insert(
+      if (!user) { setSaveStatus('idle'); return; }
+      const { error } = await supabase.from('attempts').insert(
         records.map((r) => ({ ...r, user_id: user.id }))
       );
-    } finally {
-      // Always clear "Saving…" — was previously stuck on for unauthed users
-      // and on insert errors.
-      setSaving(false);
+      setSaveStatus(error ? 'error' : 'saved');
+    } catch {
+      setSaveStatus('error');
     }
   }
 
@@ -108,7 +110,9 @@ export default function QuizScreen() {
               <Text style={s.btnPrimaryText}>Try Again</Text>
             </TouchableOpacity>
           </View>
-          {saving && <Text style={{ color: '#64748b', marginTop: 16, fontSize: 12 }}>Saving results...</Text>}
+          {saveStatus === 'saving' && <Text style={{ color: '#64748b', marginTop: 16, fontSize: 12 }}>Saving results...</Text>}
+          {saveStatus === 'saved' && <Text style={{ color: '#10b981', marginTop: 16, fontSize: 12 }}>Results saved</Text>}
+          {saveStatus === 'error' && <Text style={{ color: '#ef4444', marginTop: 16, fontSize: 12 }}>Failed to save — check your connection</Text>}
         </SafeAreaView>
       </View>
     );

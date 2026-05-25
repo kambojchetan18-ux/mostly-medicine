@@ -12,10 +12,10 @@ export async function POST(req: NextRequest) {
       .from("img_profiles")
       .upsert({ ...profile, id: user.id, updated_at: new Date().toISOString() });
 
-    if (error) throw new Error(error.message);
+    if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[cv/save] failed", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
   }
 }

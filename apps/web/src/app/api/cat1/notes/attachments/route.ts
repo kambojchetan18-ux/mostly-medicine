@@ -9,6 +9,21 @@ const MAX_PER_QUESTION = 10;
 const ALLOWED_MIME = /^(image\/(png|jpe?g|webp|gif)|application\/pdf)$/i;
 const SIGNED_URL_TTL_SECONDS = 60 * 60; // 1 hour
 
+const MAGIC_SIGS: [RegExp, number[][]][] = [
+  [/^application\/pdf$/i,      [[0x25, 0x50, 0x44, 0x46]]],              // %PDF
+  [/^image\/png$/i,            [[0x89, 0x50, 0x4E, 0x47]]],              // .PNG
+  [/^image\/jpe?g$/i,          [[0xFF, 0xD8, 0xFF]]],                    // JFIF/EXIF
+  [/^image\/gif$/i,            [[0x47, 0x49, 0x46, 0x38]]],              // GIF8
+  [/^image\/webp$/i,           [[0x52, 0x49, 0x46, 0x46]]],              // RIFF
+];
+
+function verifyMagic(buf: Uint8Array, mime: string): boolean {
+  for (const [re, sigs] of MAGIC_SIGS) {
+    if (re.test(mime)) return sigs.some((s) => s.every((b, i) => buf[i] === b));
+  }
+  return true;
+}
+
 interface AttachmentRow {
   id: string;
   question_id: string;
@@ -48,7 +63,10 @@ export async function GET(req: NextRequest) {
     .eq("user_id", user.id)
     .eq("question_id", questionId)
     .order("created_at", { ascending: true });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[attachments] list failed", error.message);
+    return NextResponse.json({ error: "Failed to list attachments" }, { status: 500 });
+  }
 
   const withUrls = await withSignedUrls(supabase, (data ?? []) as AttachmentRow[]);
   return NextResponse.json({ attachments: withUrls });
@@ -86,6 +104,9 @@ export async function POST(req: NextRequest) {
   const filePath = `${user.id}/${questionId}/${crypto.randomUUID()}-${safeName}`;
 
   const arrayBuffer = await file.arrayBuffer();
+  if (!verifyMagic(new Uint8Array(arrayBuffer), file.type)) {
+    return NextResponse.json({ error: "File content does not match declared type" }, { status: 415 });
+  }
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
     .upload(filePath, new Uint8Array(arrayBuffer), {
@@ -93,7 +114,10 @@ export async function POST(req: NextRequest) {
       cacheControl: "3600",
       upsert: false,
     });
-  if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 });
+  if (upErr) {
+    console.error("[attachments] upload failed", upErr.message);
+    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+  }
 
   const { data: row, error: insErr } = await supabase
     .from("mcq_note_attachments")
@@ -110,7 +134,8 @@ export async function POST(req: NextRequest) {
   if (insErr) {
     // Roll back the storage object so we don't leak orphan files.
     await supabase.storage.from(BUCKET).remove([filePath]).catch(() => {});
-    return NextResponse.json({ error: insErr.message }, { status: 500 });
+    console.error("[attachments] insert failed", insErr.message);
+    return NextResponse.json({ error: "Failed to save attachment record" }, { status: 500 });
   }
 
   const [withUrl] = await withSignedUrls(supabase, [row as AttachmentRow]);

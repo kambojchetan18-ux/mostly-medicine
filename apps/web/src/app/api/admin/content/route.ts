@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const anthropic = new Anthropic();
 
@@ -38,7 +39,10 @@ export async function GET(req: NextRequest) {
     .lte("post_date", `${month}-${lastDay}`)
     .order("post_date", { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/content] list failed", error.message);
+    return NextResponse.json({ error: "Failed to list posts" }, { status: 500 });
+  }
   return NextResponse.json({ posts: data });
 }
 
@@ -64,6 +68,18 @@ export async function POST(req: NextRequest) {
     if (existing && existing.length > 0) {
       return NextResponse.json({ error: "Posts already exist. Pass regenerate: true to overwrite." }, { status: 409 });
     }
+  }
+
+  // Rate limit Claude calls: max 5 per 10 minutes per admin
+  const supabase = await createClient();
+  const { data: { user: adminUser } } = await supabase.auth.getUser();
+  const rlKey = clientKey(req, "admin-content", adminUser?.id);
+  const rl = await aiRateLimit(rlKey, { max: 5, windowMs: 10 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: `Rate limit exceeded (${rl.count}/${rl.max}). Try again in ${Math.ceil((rl.retryAfterMs ?? 0) / 60000)} minutes.` },
+      { status: 429 },
+    );
   }
 
   const monthName = new Date(`${month}-01`).toLocaleString("en-AU", { month: "long", year: "numeric" });
@@ -146,6 +162,9 @@ Spread posts evenly, only on weekdays (Mon-Fri) preferred.`
     .insert(toInsert)
     .select();
 
-  if (insertError) return NextResponse.json({ error: insertError.message }, { status: 500 });
+  if (insertError) {
+    console.error("[admin/content] insert failed", insertError.message);
+    return NextResponse.json({ error: "Failed to save generated posts" }, { status: 500 });
+  }
   return NextResponse.json({ posts: inserted, count: inserted?.length });
 }

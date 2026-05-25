@@ -26,7 +26,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/content] update failed", error.message);
+    return NextResponse.json({ error: "Failed to update post" }, { status: 500 });
+  }
   return NextResponse.json({ post: data });
 }
 
@@ -36,6 +39,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params;
 
   const { error } = await auth.supabase!.from("content_posts").delete().eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/content] delete failed", error.message);
+    return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
+  }
   return NextResponse.json({ success: true });
 }

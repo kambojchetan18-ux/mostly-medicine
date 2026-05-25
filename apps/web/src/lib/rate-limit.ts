@@ -11,8 +11,6 @@ function serviceClient() {
   );
 }
 
-// Best-effort client IP extractor for AI endpoint rate limiting. Vercel
-// always sets x-forwarded-for; first hop is the originating client.
 export function clientKey(req: NextRequest, prefix: string, userId?: string | null): string {
   if (userId) return `${prefix}:u:${userId}`;
   const fwd = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "0.0.0.0";
@@ -22,8 +20,6 @@ export function clientKey(req: NextRequest, prefix: string, userId?: string | nu
 
 export async function checkRateLimit(key: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
   const supabase = serviceClient();
-  const now = new Date();
-
   const { data } = await supabase
     .from("rate_limit_attempts")
     .select("count, first_attempt_at, locked_until")
@@ -37,7 +33,6 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     if (Date.now() < lockedUntil) {
       return { allowed: false, retryAfterMs: lockedUntil - Date.now() };
     }
-    // Lockout expired — clean up
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
   }
@@ -46,6 +41,10 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: WINDOW_MS - (Date.now() - new Date(data.first_attempt_at).getTime()) };
   }
 
   return { allowed: true };
@@ -87,14 +86,9 @@ export async function clearAttempts(key: string): Promise<void> {
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
 }
 
-// Per-IP / per-user "calls in a rolling window" limiter for AI endpoints.
-// Cheap and good enough to block runaway scripts hitting Anthropic on our
-// dime. Reuses the rate_limit_attempts table — `count` is the call count,
-// `first_attempt_at` is the window start. When `count` exceeds `max` inside
-// `windowMs`, we deny until the window rolls over.
-//
-// Defaults: 30 calls / 60s. Tuned so a chatty student typing fast still
-// works but a `for i in {1..1000}` loop is stopped.
+// Atomic rate limiter using Postgres RPC — eliminates TOCTOU race.
+// Falls back to JS-side logic if the RPC doesn't exist yet (migration 044
+// not applied). Defaults: 30 calls / 60s.
 export async function aiRateLimit(
   key: string,
   opts: { max?: number; windowMs?: number } = {}
@@ -102,17 +96,34 @@ export async function aiRateLimit(
   const max = opts.max ?? 30;
   const windowMs = opts.windowMs ?? 60 * 1000;
   const supabase = serviceClient();
-  const now = Date.now();
 
-  const { data } = await supabase
+  const { data, error } = await supabase.rpc("check_and_record_rate_limit", {
+    p_key: key,
+    p_max: max,
+    p_window_ms: windowMs,
+  });
+
+  if (!error && data) {
+    const result = data as { allowed: boolean; count: number; max: number; retryAfterMs?: number };
+    return {
+      allowed: result.allowed,
+      retryAfterMs: result.retryAfterMs ? Math.round(result.retryAfterMs) : undefined,
+      count: result.count,
+      max: result.max,
+    };
+  }
+
+  // Fallback: JS-side logic (pre-migration-044 or RPC error)
+  const now = Date.now();
+  const { data: row } = await supabase
     .from("rate_limit_attempts")
     .select("count, first_attempt_at")
     .eq("key", key)
     .single();
 
-  const windowStart = data?.first_attempt_at ? new Date(data.first_attempt_at).getTime() : now;
+  const windowStart = row?.first_attempt_at ? new Date(row.first_attempt_at).getTime() : now;
   const windowExpired = now - windowStart > windowMs;
-  const currentCount = !data || windowExpired ? 0 : data.count ?? 0;
+  const currentCount = !row || windowExpired ? 0 : row.count ?? 0;
 
   if (currentCount >= max) {
     const retryAfterMs = Math.max(0, windowStart + windowMs - now);
@@ -120,7 +131,7 @@ export async function aiRateLimit(
   }
 
   const newCount = currentCount + 1;
-  const firstAttempt = windowExpired ? new Date(now).toISOString() : data?.first_attempt_at ?? new Date(now).toISOString();
+  const firstAttempt = windowExpired ? new Date(now).toISOString() : row?.first_attempt_at ?? new Date(now).toISOString();
   await supabase.from("rate_limit_attempts").upsert({
     key,
     count: newCount,

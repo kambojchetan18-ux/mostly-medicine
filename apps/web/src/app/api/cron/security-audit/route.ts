@@ -24,12 +24,10 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 // Family / staff accounts that legitimately bypass billing.
-const PRIV_WHITELIST = new Set<string>([
-  "nikhil.kamboj83@gmail.com",
-  "amankamboj10@gmail.com",
-  "kamboj.chetan18@gmail.com",
-  "chetan.kamboj844@gmail.com",
-]);
+// Loaded from PRIV_WHITELIST_EMAILS env var (comma-separated) with fallback.
+const PRIV_WHITELIST = new Set<string>(
+  (process.env.PRIV_WHITELIST_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)
+);
 
 function service() {
   return createServiceClient(
@@ -290,6 +288,7 @@ export async function GET(req: NextRequest) {
         .update({ finished_at: new Date().toISOString(), error: msg })
         .eq("id", runId);
     }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[security-audit] cron failed", msg);
+    return NextResponse.json({ error: "Audit run failed" }, { status: 500 });
   }
 }

@@ -28,7 +28,10 @@ export async function GET() {
     .select("id, email, full_name, avatar_url, plan, role, created_at")
     .order("created_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/users] list failed", error.message);
+    return NextResponse.json({ error: "Failed to list users" }, { status: 500 });
+  }
   return NextResponse.json({ users: data });
 }
 
@@ -86,6 +89,9 @@ export async function PATCH(req: NextRequest) {
   // identity has already been verified above.
   const svc = serviceClient();
   const { error } = await svc.from("user_profiles").update(updates).eq("id", userId);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[admin/users] update failed", error.message);
+    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
+  }
   return NextResponse.json({ success: true });
 }
