@@ -32,6 +32,39 @@ export async function PATCH(req: NextRequest) {
   const { plan, module, enabled, daily_limit } = await req.json();
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
 
+  const VALID_PLANS = ["free", "pro", "enterprise"] as const;
+  const VALID_MODULES = ["mcq", "mock_exam", "roleplay", "acrp_solo", "acrp_live"] as const;
+
+  if (!VALID_PLANS.includes(plan)) {
+    return NextResponse.json(
+      { error: `Invalid plan: must be one of ${VALID_PLANS.join(", ")}` },
+      { status: 400 },
+    );
+  }
+
+  if (!VALID_MODULES.includes(module)) {
+    return NextResponse.json(
+      { error: `Invalid module: must be one of ${VALID_MODULES.join(", ")}` },
+      { status: 400 },
+    );
+  }
+
+  if (typeof enabled !== "boolean") {
+    return NextResponse.json(
+      { error: "enabled must be a boolean" },
+      { status: 400 },
+    );
+  }
+
+  if (daily_limit !== null && daily_limit !== undefined) {
+    if (!Number.isInteger(daily_limit) || daily_limit < 1 || daily_limit > 10000) {
+      return NextResponse.json(
+        { error: "daily_limit must be null or a positive integer (max 10000)" },
+        { status: 400 },
+      );
+    }
+  }
+
   const { error } = await supabase.from("module_permissions").upsert(
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }
