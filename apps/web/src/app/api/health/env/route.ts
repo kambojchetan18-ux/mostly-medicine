@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server";
 
-// Temporary diagnostic endpoint — returns ONLY whether specific env vars
-// are set on the runtime. Never returns values. Safe to expose publicly:
-// the names are not secrets, only the values are. Remove this route once
-// the Cloudflare TURN + Groq env-var debugging is finished.
-
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
