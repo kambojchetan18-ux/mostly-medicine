@@ -1,30 +1,17 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
-/**
- * GET /api/streaks/heatmap
- *
- * Returns the authed user's MCQ attempt counts per UTC day for the last
- * 84 days (12 weeks × 7 days). Powers the GitHub-style streak heatmap on
- * the dashboard — visualising the streak is the dopamine-loop retention
- * mechanic from the growth blueprint (slide 8).
- *
- * Response shape: { days: [{ date: 'YYYY-MM-DD', count: number }, ...] }
- *
- * The grid always returns 84 entries (oldest → newest) so the client can
- * render a stable 7×12 grid even when a new user has zero attempts.
- */
-export async function GET() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  );
+export async function GET(req: NextRequest) {
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "streaks-heatmap", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } });
+  }
 
   // 84-day window. Index 0 = oldest day, index 83 = today (UTC).
   const DAYS = 84;

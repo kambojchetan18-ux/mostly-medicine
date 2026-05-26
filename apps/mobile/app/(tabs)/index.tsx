@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 
 type Stat = { label: string; value: string | number; color: string };
@@ -30,46 +30,51 @@ export default function HomeScreen() {
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (cancelled) return;
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      const name = user.user_metadata?.full_name?.split(' ')[0] ?? 'Doctor';
-      setUserName(name);
+  const navigation = useNavigation();
+  const hasMounted = useRef(false);
 
-      const [attemptsRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
-        supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
-          .eq('user_id', user.id).lte('due', new Date().toISOString()),
-      ]);
-      if (cancelled) return;
-
-      const attempts = attemptsRes.data ?? [];
-      const total = attempts.length;
-      const correct = attempts.filter((a) => a.is_correct).length;
-      const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-      setStats([
-        { label: 'Questions Done', value: total, color: '#7c3aed' },
-        { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
-        { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
-        { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
-      ]);
+  const load = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       setLoading(false);
+      return;
     }
-    // Defer until first frame is on-screen so the home tab paints quickly.
-    const handle = InteractionManager.runAfterInteractions(() => load());
-    return () => {
-      cancelled = true;
-      handle.cancel?.();
-    };
+    const name = user.user_metadata?.full_name?.split(' ')[0] ?? 'Doctor';
+    setUserName(name);
+
+    const [attemptsRes, streakRes, dueRes] = await Promise.all([
+      supabase.from('attempts').select('is_correct').eq('user_id', user.id),
+      supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
+      supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
+        .eq('user_id', user.id).lte('due', new Date().toISOString()),
+    ]);
+
+    const attempts = attemptsRes.data ?? [];
+    const total = attempts.length;
+    const correct = attempts.filter((a) => a.is_correct).length;
+    const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+    setStats([
+      { label: 'Questions Done', value: total, color: '#7c3aed' },
+      { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
+      { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
+      { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
+    ]);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const handle = InteractionManager.runAfterInteractions(() => load());
+    return () => { handle.cancel?.(); };
+  }, [load]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (hasMounted.current) load();
+      hasMounted.current = true;
+    });
+    return unsubscribe;
+  }, [navigation, load]);
 
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut();
