@@ -4,6 +4,7 @@ import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id: sessionId } = await ctx.params;
@@ -16,6 +17,14 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
+  }
+
+  const rl = await aiRateLimit(clientKey(_req, "acrp-feedback", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
+    );
   }
 
   // ─── Load session (must belong to this user) ─────────────────────────

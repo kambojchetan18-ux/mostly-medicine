@@ -1,31 +1,31 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
-export async function GET() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  );
+export async function GET(req: NextRequest) {
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const [topicsRes, streakRes, dueRes, totalRes] = await Promise.all([
+  const rl = await aiRateLimit(clientKey(req, "cat1-progress", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } });
+  }
+
+  const [topicsRes, streakRes, dueRes, totalRes, correctRes] = await Promise.all([
     supabase.from("topic_progress").select("*").eq("user_id", user.id).order("total_attempted", { ascending: false }),
     supabase.from("study_streaks").select("*").eq("user_id", user.id).single(),
-    supabase.from("sr_cards").select("question_id").eq("user_id", user.id).lte("due", new Date().toISOString()),
-    supabase.from("attempts").select("is_correct").eq("user_id", user.id),
+    supabase.from("sr_cards").select("question_id", { count: "exact", head: true }).eq("user_id", user.id).lte("due", new Date().toISOString()),
+    supabase.from("attempts").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("attempts").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("is_correct", true),
   ]);
 
   const topics = topicsRes.data ?? [];
   const streak = streakRes.data;
-  const dueCount = dueRes.data?.length ?? 0;
-  const allAttempts = totalRes.data ?? [];
-  const totalAttempted = allAttempts.length;
-  const totalCorrect = allAttempts.filter((a) => a.is_correct).length;
+  const dueCount = dueRes.count ?? 0;
+  const totalAttempted = totalRes.count ?? 0;
+  const totalCorrect = correctRes.count ?? 0;
 
   // Weak topics: < 60% accuracy, min 5 attempts
   const weakTopics = topics

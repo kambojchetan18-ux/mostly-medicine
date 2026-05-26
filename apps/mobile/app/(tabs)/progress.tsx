@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { allQuestions } from '@mostly-medicine/content';
 
@@ -44,56 +45,59 @@ export default function ProgressScreen() {
   const [due, setDue] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (cancelled) return;
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+  const navigation = useNavigation();
+  const hasMounted = useRef(false);
 
-      const [attRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
-        supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
-          .eq('user_id', user.id).lte('due', new Date().toISOString()),
-      ]);
-      if (cancelled) return;
-
-      const attempts = attRes.data ?? [];
-      setTotalAttempts(attempts.length);
-      setTotalCorrect(attempts.filter((a) => a.is_correct).length);
-      setStreak(streakRes.data?.current_streak ?? 0);
-      setDue(dueRes.count ?? 0);
-
-      const topicMap: Record<string, { done: number; correct: number }> = {};
-      for (const a of attempts) {
-        const topic = QUESTION_TOPIC_MAP.get(a.question_id);
-        if (!topic) continue;
-        if (!topicMap[topic]) topicMap[topic] = { done: 0, correct: 0 };
-        topicMap[topic].done++;
-        if (a.is_correct) topicMap[topic].correct++;
-      }
-
-      if (cancelled) return;
-      setRows(TOPICS.map((t) => ({
-        topic: t,
-        total: TOPIC_TOTALS[t] ?? 0,
-        done: topicMap[t]?.done ?? 0,
-        correct: topicMap[t]?.correct ?? 0,
-      })));
+  const load = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       setLoading(false);
+      return;
     }
-    // Defer the supabase fetch until after the first frame paints — avoids
-    // blocking tab transition.
-    const handle = InteractionManager.runAfterInteractions(() => load());
-    return () => {
-      cancelled = true;
-      handle.cancel?.();
-    };
+
+    const [attRes, streakRes, dueRes] = await Promise.all([
+      supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
+      supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
+      supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
+        .eq('user_id', user.id).lte('due', new Date().toISOString()),
+    ]);
+
+    const attempts = attRes.data ?? [];
+    setTotalAttempts(attempts.length);
+    setTotalCorrect(attempts.filter((a) => a.is_correct).length);
+    setStreak(streakRes.data?.current_streak ?? 0);
+    setDue(dueRes.count ?? 0);
+
+    const topicMap: Record<string, { done: number; correct: number }> = {};
+    for (const a of attempts) {
+      const topic = QUESTION_TOPIC_MAP.get(a.question_id);
+      if (!topic) continue;
+      if (!topicMap[topic]) topicMap[topic] = { done: 0, correct: 0 };
+      topicMap[topic].done++;
+      if (a.is_correct) topicMap[topic].correct++;
+    }
+
+    setRows(TOPICS.map((t) => ({
+      topic: t,
+      total: TOPIC_TOTALS[t] ?? 0,
+      done: topicMap[t]?.done ?? 0,
+      correct: topicMap[t]?.correct ?? 0,
+    })));
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const handle = InteractionManager.runAfterInteractions(() => load());
+    return () => { handle.cancel?.(); };
+  }, [load]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (hasMounted.current) load();
+      hasMounted.current = true;
+    });
+    return unsubscribe;
+  }, [navigation, load]);
 
   const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
   const { completed, inProgress, notStarted } = useMemo(() => {

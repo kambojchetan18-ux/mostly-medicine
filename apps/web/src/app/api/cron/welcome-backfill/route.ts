@@ -24,13 +24,10 @@ interface ProfileRow {
 }
 
 export async function GET(req: NextRequest) {
-  // Auth gate
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = req.headers.get("authorization");
+  if (!secret || auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(req.url);
@@ -71,7 +68,6 @@ export async function GET(req: NextRequest) {
       ok: true,
       dryRun: true,
       pending: recipients.length,
-      previewEmails: recipients.slice(0, 10).map((r) => r.email),
     });
   }
 
