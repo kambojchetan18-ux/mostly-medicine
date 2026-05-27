@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 
 type Stat = { label: string; value: string | number; color: string };
@@ -30,8 +30,9 @@ export default function HomeScreen() {
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     let cancelled = false;
+    setLoading(true);
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (cancelled) return;
@@ -69,7 +70,7 @@ export default function HomeScreen() {
       cancelled = true;
       handle.cancel?.();
     };
-  }, []);
+  }, []));
 
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut();

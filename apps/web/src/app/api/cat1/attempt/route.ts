@@ -1,20 +1,14 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { createClient } from "@/lib/supabase/server";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
 export async function POST(req: NextRequest) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  );
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -90,10 +84,7 @@ export async function POST(req: NextRequest) {
   const result = f.next(card as Parameters<typeof f.next>[0], new Date(), rating);
   const next = result.card;
 
-  // Three independent reads in parallel — sr_card upsert, topic_progress
-  // current row, and study_streaks current row. The previous code awaited
-  // each sequentially, which added ~3 round-trips to the response.
-  const [, tpRes, streakRes] = await Promise.all([
+  const [, tpRes] = await Promise.all([
     supabase.from("sr_cards").upsert({
       user_id: user.id,
       question_id: questionId,
@@ -114,23 +105,10 @@ export async function POST(req: NextRequest) {
       .eq("user_id", user.id)
       .eq("topic", topic)
       .single(),
-    supabase
-      .from("study_streaks")
-      .select("*")
-      .eq("user_id", user.id)
-      .single(),
   ]);
   const tp = tpRes.data;
-  const streak = streakRes.data;
 
-  // Now compute the writes that depend on the read snapshots above and
-  // fire them in parallel as well.
-  const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-
-  // Supabase query builders are thenable but not actual Promises, so we
-  // type them as PromiseLike for Promise.all.
-  const writes: PromiseLike<unknown>[] = [
+  await Promise.all([
     supabase.from("topic_progress").upsert({
       user_id: user.id,
       topic,
@@ -139,34 +117,9 @@ export async function POST(req: NextRequest) {
       last_attempted_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id,topic" }),
-    // user_profiles streak counter — idempotent per UTC day (RPC).
     bumpStreak(supabase, user.id),
-    // XP award — RPC, idempotent within 60s for same (user, source).
     awardXp(supabase, user.id, correct ? "mcq_correct" : "mcq_incorrect", XP_POINTS[correct ? "mcq_correct" : "mcq_incorrect"]),
-  ];
-
-  if (!streak) {
-    writes.push(
-      supabase.from("study_streaks").insert({
-        user_id: user.id,
-        current_streak: 1,
-        longest_streak: 1,
-        last_study_date: today,
-      })
-    );
-  } else if (streak.last_study_date !== today) {
-    const newStreak = streak.last_study_date === yesterday ? streak.current_streak + 1 : 1;
-    writes.push(
-      supabase.from("study_streaks").update({
-        current_streak: newStreak,
-        longest_streak: Math.max(newStreak, streak.longest_streak),
-        last_study_date: today,
-        updated_at: new Date().toISOString(),
-      }).eq("user_id", user.id)
-    );
-  }
-
-  await Promise.all(writes);
+  ]);
 
   return NextResponse.json({ ok: true, due: next.due });
 }

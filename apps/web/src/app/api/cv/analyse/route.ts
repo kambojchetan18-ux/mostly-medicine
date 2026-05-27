@@ -3,7 +3,11 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
-const client = new Anthropic();
+let _client: Anthropic | null = null;
+function client() {
+  if (!_client) _client = new Anthropic();
+  return _client;
+}
 
 const SYSTEM = `You are an expert at parsing International Medical Graduate (IMG) CVs for Australian medical registration purposes.
 
@@ -85,7 +89,7 @@ export async function POST(req: NextRequest) {
       const bytes = await file.arrayBuffer();
       const base64 = Buffer.from(bytes).toString("base64");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      response = await (client.messages.create as any)({
+      response = await (client().messages.create as any)({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
         system: systemBlocks,
@@ -104,7 +108,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "No CV content provided" }, { status: 400 });
       }
       const text: string = cvText;
-      response = await client.messages.create({
+      response = await client().messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
         system: systemBlocks,
