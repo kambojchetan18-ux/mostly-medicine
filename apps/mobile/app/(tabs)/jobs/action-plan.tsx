@@ -18,12 +18,12 @@ type Step = {
 
 type Profile = {
   doctor_type: string | null;
-  amc_part1_status: string | null;
-  amc_part2_status: string | null;
+  amc_cat1: string | null;
+  amc_cat2: string | null;
   ahpra_status: string | null;
   english_test: string | null;
   visa_type: string | null;
-  location_preference: string | null;
+  location_preference: string[] | null;
 };
 
 function buildPlan(profile: Profile): Step[] {
@@ -42,22 +42,22 @@ function buildPlan(profile: Profile): Step[] {
     steps.push({ step: steps.length + 1, title: 'Sit English Language Test', urgency: 'high', timeEstimate: '2–4 weeks to prepare', description: 'AHPRA requires OET (Medicine) with Grade B in all components, or IELTS Academic with 7.0 in each band. OET is preferred for medical graduates.', link: 'https://www.occupationalenglishtest.org', linkText: 'OET Website' });
   }
 
-  if (profile.amc_part1_status !== 'passed') {
+  if (profile.amc_cat1 !== 'passed') {
     steps.push({ step: steps.length + 1, title: 'Pass AMC Part 1 (AMC MCQ)', urgency: 'high', timeEstimate: '3–6 months preparation', description: 'Computer Adaptive Test — 150 MCQ questions on clinical medicine. Recommended: 3–6 months study with question banks. Use Mostly Medicine AMC MCQ to practise daily.', link: 'https://www.amc.org.au/assessment/amc-computer-adaptive-test/', linkText: 'AMC MCQ Info' });
   }
 
-  if (profile.amc_part1_status === 'passed' && profile.amc_part2_status !== 'passed') {
+  if (profile.amc_cat1 === 'passed' && profile.amc_cat2 !== 'passed') {
     steps.push({ step: steps.length + 1, title: 'Pass AMC Part 2 (Clinical)', urgency: 'high', timeEstimate: '3–4 months preparation', description: 'OSCE-style clinical exam — 16 stations. Tests history-taking, examination, clinical reasoning, and communication. Prepare with clinical skills workshops.', link: 'https://www.amc.org.au/assessment/amc-clinical-examination/', linkText: 'AMC Clinical Exam' });
   }
 
   if (profile.ahpra_status !== 'registered') {
-    steps.push({ step: steps.length + 1, title: 'Apply for AHPRA Registration', urgency: profile.amc_part2_status === 'passed' ? 'high' : 'medium', timeEstimate: '4–8 weeks processing', description: 'Apply online with AMC certificate, identity documents, police check (Australian + home country), and 3 referee reports from supervisors.', link: 'https://www.ahpra.gov.au/Registration/New-Registrants.aspx', linkText: 'AHPRA Registration' });
+    steps.push({ step: steps.length + 1, title: 'Apply for AHPRA Registration', urgency: profile.amc_cat2 === 'passed' ? 'high' : 'medium', timeEstimate: '4–8 weeks processing', description: 'Apply online with AMC certificate, identity documents, police check (Australian + home country), and 3 referee reports from supervisors.', link: 'https://www.ahpra.gov.au/Registration/New-Registrants.aspx', linkText: 'AHPRA Registration' });
   }
 
   if (profile.doctor_type === 'specialist') {
     steps.push({ step: steps.length + 1, title: 'Apply for OTS Assessment', urgency: 'medium', timeEstimate: '3–12 months', description: 'Contact the relevant specialist college for Overseas Trained Specialist (OTS) assessment. Timeframe varies by college (RACP, RACS, RANZCOG, etc.).', link: 'https://www.health.gov.au/topics/doctors-and-specialists/overseas-trained-specialists', linkText: 'OTS Information' });
   } else {
-    steps.push({ step: steps.length + 1, title: 'Apply to RMO Pools', urgency: 'medium', timeEstimate: 'Pools open Jan–April', description: `Apply to ${profile.location_preference ?? 'your preferred state'} health service RMO pool. Have your CV, referee contacts, and AHPRA registration ready.` });
+    steps.push({ step: steps.length + 1, title: 'Apply to RMO Pools', urgency: 'medium', timeEstimate: 'Pools open Jan–April', description: `Apply to ${profile.location_preference?.join(', ') || 'your preferred state'} health service RMO pool. Have your CV, referee contacts, and AHPRA registration ready.` });
     steps.push({ step: steps.length + 1, title: profile.doctor_type === 'gp' ? 'GP College Application' : 'Gain PGY Experience', urgency: 'low', timeEstimate: '1–3 years', description: profile.doctor_type === 'gp' ? 'Apply to RACGP or ACRRM GP training program after completing PGY1–2 years. Consider DPA positions for obligation requirements.' : 'Complete PGY1 (intern) and PGY2 years. Build Australian clinical experience across rotations to strengthen future applications.' });
   }
 
@@ -81,7 +81,7 @@ export default function ActionPlanScreen() {
         setLoading(false);
         return;
       }
-      const { data } = await supabase.from('img_profiles').select('*').eq('user_id', user.id).maybeSingle();
+      const { data } = await supabase.from('img_profiles').select('*').eq('id', user.id).maybeSingle();
       if (cancelled) return;
       if (!data) { setNoProfile(true); } else { setProfile(data); }
       setLoading(false);

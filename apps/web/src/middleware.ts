@@ -33,8 +33,8 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim(),
+    (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim(),
     {
       cookies: {
         getAll() {
@@ -68,7 +68,9 @@ export async function middleware(request: NextRequest) {
 
   // Not logged in → 401 for protected API routes
   if (!user && pathname.startsWith("/api/")) {
-    const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+    const isPublic = PUBLIC_API_ROUTES.some(
+      (route) => pathname === route || pathname.startsWith(route + "/")
+    );
     if (!isPublic) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -82,7 +84,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     if (pathname.startsWith("/api/")) {
-      const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+      const isPublic = PUBLIC_API_ROUTES.some(
+      (route) => pathname === route || pathname.startsWith(route + "/")
+    );
       if (!isPublic) {
         return NextResponse.json({ error: "Email not confirmed" }, { status: 403 });
       }

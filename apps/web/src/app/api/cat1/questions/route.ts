@@ -35,7 +35,12 @@ export async function POST(req: NextRequest) {
   const filtered = topic
     ? allQuestions.filter((q) => q.topic === topic)
     : allQuestions;
-  const pool = [...filtered].sort(() => Math.random() - 0.5).slice(0, safeCount);
+  const shuffled = [...filtered];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const pool = shuffled.slice(0, safeCount);
 
   return NextResponse.json({ questions: pool });
 }
