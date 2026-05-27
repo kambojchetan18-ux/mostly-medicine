@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { allQuestions } from '@mostly-medicine/content';
 
@@ -44,8 +45,9 @@ export default function ProgressScreen() {
   const [due, setDue] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     let cancelled = false;
+    setLoading(true);
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (cancelled) return;
@@ -93,7 +95,7 @@ export default function ProgressScreen() {
       cancelled = true;
       handle.cancel?.();
     };
-  }, []);
+  }, []));
 
   const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
   const { completed, inProgress, notStarted } = useMemo(() => {

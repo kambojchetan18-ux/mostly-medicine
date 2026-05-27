@@ -91,18 +91,27 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
   durationSeconds = Math.max(0, Math.min(durationSeconds, wallClockSec));
 
   // Percentile vs all completed sessions across all users (service role bypass
-  // RLS so we can read everyone's score_pct). Cheap aggregate query.
+  // RLS so we can read everyone's score_pct). Uses two COUNT queries instead
+  // of fetching every row into memory — stays O(1) in JS regardless of table size.
   const svc = service();
-  const { data: peerRows } = await svc
-    .from("mcq_sessions")
-    .select("score_pct")
-    .eq("status", "completed")
-    .not("score_pct", "is", null);
-  const peerScores = (peerRows ?? []).map((r) => r.score_pct as number).filter((n) => Number.isFinite(n));
+  const [totalRes, belowRes] = await Promise.all([
+    svc
+      .from("mcq_sessions")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "completed")
+      .not("score_pct", "is", null),
+    svc
+      .from("mcq_sessions")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "completed")
+      .not("score_pct", "is", null)
+      .lt("score_pct", scorePct),
+  ]);
+  const totalCount = totalRes.count ?? 0;
+  const belowCount = belowRes.count ?? 0;
   let percentile = 50;
-  if (peerScores.length >= 5) {
-    const beat = peerScores.filter((s) => s < scorePct).length;
-    percentile = Math.round((beat / peerScores.length) * 100);
+  if (totalCount >= 5) {
+    percentile = Math.round((belowCount / totalCount) * 100);
   }
 
   // Mark the session completed FIRST so the user is never blocked by a slow
