@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { checkModulePermission } from "@/lib/permissions";
@@ -35,10 +36,12 @@ export default async function Cat1Page() {
   const mockPerm = await checkModulePermission(supabase, "mock_exam");
 
   return (
-    <Cat1Client
-      plan={perm.plan}
-      initialTopicCounts={TOPIC_COUNTS}
-      mockExamEnabled={mockPerm.allowed}
-    />
+    <Suspense fallback={<div className="animate-pulse p-8">Loading...</div>}>
+      <Cat1Client
+        plan={perm.plan}
+        initialTopicCounts={TOPIC_COUNTS}
+        mockExamEnabled={mockPerm.allowed}
+      />
+    </Suspense>
   );
 }

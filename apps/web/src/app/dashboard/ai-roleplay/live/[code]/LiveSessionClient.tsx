@@ -10,44 +10,14 @@ import FunLoading from "@/components/FunLoading";
 
 const READING_SECONDS = 120;
 const ROLEPLAY_SECONDS = 8 * 60;
-// ICE server priority (cheapest path first, fallback last):
-//   1. Google STUN — free, ~80% of users connect P2P with this alone.
-//   2. Self-hosted coturn (if NEXT_PUBLIC_TURN_* env vars are set) — private,
-//      reliable, low-latency relay for the ~20% of users on symmetric NAT
-//      (mobile data ↔ home Wi-Fi) or corporate firewalls. See
-//      /COTURN_SETUP.md for deployment guide.
-//   3. Open Relay (Metered.ca) — free public TURN, used ONLY when no
-//      self-hosted TURN is configured. It's a graceful fallback so the app
-//      still works during DevOps work, but it's rate-limited and noisy.
-// Setting NEXT_PUBLIC_TURN_URL="" in Vercel rolls back to STUN-only +
-// Open Relay — handy as an emergency kill-switch if our coturn box dies.
-const TURN_URL = process.env.NEXT_PUBLIC_TURN_URL;
-const TURN_USERNAME = process.env.NEXT_PUBLIC_TURN_USERNAME;
-const TURN_CREDENTIAL = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
-const HAS_PRIVATE_TURN = Boolean(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL);
-
-const RTC_CONFIG: RTCConfiguration = {
+// ICE server config — STUN only as the baseline. Per-session TURN
+// credentials are fetched from /api/turn-credentials at roleplay start
+// (Cloudflare Realtime TURN). If the fetch fails or the env vars aren't
+// configured, we fall back to STUN-only which still works for ~80% of
+// users on non-symmetric NAT.
+const STUN_ONLY_CONFIG: RTCConfiguration = {
   iceServers: [
     { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
-    ...(HAS_PRIVATE_TURN
-      ? [
-          {
-            urls: [TURN_URL as string],
-            username: TURN_USERNAME as string,
-            credential: TURN_CREDENTIAL as string,
-          },
-        ]
-      : [
-          {
-            urls: [
-              "turn:openrelay.metered.ca:80",
-              "turn:openrelay.metered.ca:443",
-              "turn:openrelay.metered.ca:443?transport=tcp",
-            ],
-            username: "openrelayproject",
-            credential: "openrelayproject",
-          },
-        ]),
   ],
   iceTransportPolicy: "all",
 };
@@ -129,8 +99,8 @@ export default function LiveSessionClient({
   const [sttError, setSttError] = useState<string | null>(null);
   // Which TURN provider actually got wired into the RTCPeerConnection. Lets
   // the diagnostic pill say "Cloudflare TURN" / "self-hosted" / "fallback".
-  const [turnProvider, setTurnProvider] = useState<"cloudflare" | "self-hosted" | "fallback">(
-    HAS_PRIVATE_TURN ? "self-hosted" : "fallback"
+  const [turnProvider, setTurnProvider] = useState<"cloudflare" | "stun-only" | "fallback">(
+    "stun-only"
   );
   // Surface the EXACT reason the broker fell back, so misconfigured env
   // vars / upstream errors show up next to the pill instead of being silent.
@@ -408,9 +378,8 @@ export default function LiveSessionClient({
         // Try to fetch fresh per-session TURN credentials from Cloudflare
         // first. If the env vars are set on the server, this returns a
         // short-lived (24h) credential pair that's far more reliable than
-        // the public Open Relay. If not configured / errors, fall back to
-        // the static RTC_CONFIG (self-hosted coturn or Open Relay).
-        let rtcConfig: RTCConfiguration = RTC_CONFIG;
+        // STUN-only. If not configured / errors, fall back to STUN-only.
+        let rtcConfig: RTCConfiguration = STUN_ONLY_CONFIG;
         try {
           const res = await fetch("/api/turn-credentials", { cache: "no-store" });
           if (res.ok) {
@@ -1099,19 +1068,15 @@ export default function LiveSessionClient({
             className={`ml-auto rounded-full px-2 py-0.5 ${
               turnProvider === "cloudflare"
                 ? "bg-emerald-50 text-emerald-700"
-                : turnProvider === "self-hosted"
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "bg-amber-50 text-amber-700"
+                : "bg-amber-50 text-amber-700"
             }`}
             title={turnError ?? "Which TURN relay is wired into the peer connection."}
           >
             {turnProvider === "cloudflare"
               ? "Cloudflare TURN"
-              : turnProvider === "self-hosted"
-                ? "self-hosted TURN"
-                : "fallback TURN"}
+              : "STUN only"}
           </span>
-          {turnError && turnProvider === "fallback" && (
+          {turnError && turnProvider !== "cloudflare" && (
             <span className="basis-full text-[10px] text-amber-700" title={turnError}>
               ↳ {turnError.slice(0, 120)}
             </span>
