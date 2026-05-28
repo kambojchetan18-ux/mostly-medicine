@@ -64,7 +64,9 @@ export async function POST(req: NextRequest) {
         customer: customerId,
         return_url: `${origin}/dashboard/billing`,
       });
-      return NextResponse.json({ url: portal.url, alreadySubscribed: true });
+      return NextResponse.json({ url: portal.url, alreadySubscribed: true }, {
+        headers: { "Cache-Control": "no-store, private" },
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Portal session failed";
       console.error("[billing/checkout] portal-redirect", msg);
@@ -93,7 +95,9 @@ export async function POST(req: NextRequest) {
         : `${origin}/dashboard/billing?canceled=1`,
       subscription_data: { metadata: { user_id: user.id } },
     });
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: session.url }, {
+      headers: { "Cache-Control": "no-store, private" },
+    });
   } catch (err) {
     // Surface a clean error instead of letting Next.js return an empty 500
     // that crashes the client's res.json() with "Unexpected end of JSON

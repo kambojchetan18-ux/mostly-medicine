@@ -3,7 +3,10 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 interface TokenRow {
   user_id: string;
+  created_at: string;
 }
+
+const TOKEN_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const SHELL_HEAD = `
 <!DOCTYPE html>
@@ -63,13 +66,23 @@ export async function GET(req: NextRequest) {
 
     const { data: tokenRaw } = await service
       .from("email_unsub_tokens")
-      .select("user_id")
+      .select("user_id, created_at")
       .eq("token", token)
       .maybeSingle();
 
     const tokenRow = tokenRaw as unknown as TokenRow | null;
 
     if (!tokenRow?.user_id) {
+      return htmlResponse(expiredHtml);
+    }
+
+    // Reject tokens older than 30 days
+    if (
+      tokenRow.created_at &&
+      Date.now() - new Date(tokenRow.created_at).getTime() > TOKEN_MAX_AGE_MS
+    ) {
+      // Clean up the expired token
+      await service.from("email_unsub_tokens").delete().eq("token", token);
       return htmlResponse(expiredHtml);
     }
 

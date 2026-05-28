@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { checkModulePermission } from "@/lib/permissions";
 import LandingClient, { type BlueprintRow, type RecentAttempt } from "./LandingClient";
@@ -58,10 +59,12 @@ export default async function AiRoleplayPage() {
   }
 
   return (
-    <LandingClient
-      blueprints={(blueprints ?? []) as BlueprintRow[]}
-      recent={recent}
-      isAuthenticated={Boolean(user)}
-    />
+    <Suspense fallback={<div className="animate-pulse p-8">Loading...</div>}>
+      <LandingClient
+        blueprints={(blueprints ?? []) as BlueprintRow[]}
+        recent={recent}
+        isAuthenticated={Boolean(user)}
+      />
+    </Suspense>
   );
 }

@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
       customer: profile.stripe_customer_id,
       return_url: `${origin}/dashboard/billing`,
     });
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: session.url }, {
+      headers: { "Cache-Control": "no-store, private" },
+    });
   } catch (err) {
     // Most common live-mode failure: Stripe Customer Portal hasn't been
     // configured at https://dashboard.stripe.com/settings/billing/portal.

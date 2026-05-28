@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { publishableKeyMode, stripeMode } from "@/lib/stripe";
@@ -89,12 +90,14 @@ export default async function BillingPage({ searchParams }: PageProps) {
   const mode: "test" | "live" | null = publishableKeyMode() ?? stripeMode();
 
   return (
-    <BillingClient
-      subscription={sub}
-      prices={prices}
-      mode={mode}
-      flash={params.success ? "success" : params.canceled ? "canceled" : null}
-      mockResult={mockResult}
-    />
+    <Suspense fallback={<div className="animate-pulse p-8">Loading...</div>}>
+      <BillingClient
+        subscription={sub}
+        prices={prices}
+        mode={mode}
+        flash={params.success ? "success" : params.canceled ? "canceled" : null}
+        mockResult={mockResult}
+      />
+    </Suspense>
   );
 }

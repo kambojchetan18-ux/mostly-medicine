@@ -71,6 +71,22 @@ const nextConfig = {
           // Defense-in-depth XSS hint for legacy Safari. Modern browsers
           // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
+          // Report-Only CSP — logs violations without blocking anything.
+          // Lets us audit before switching to enforcing mode.
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://api.anthropic.com https://*.google.com https://*.cloudflare.com",
+              "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join("; "),
+          },
         ],
       },
     ];
