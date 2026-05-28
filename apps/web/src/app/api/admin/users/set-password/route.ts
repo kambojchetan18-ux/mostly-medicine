@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,15 @@ export async function POST(req: NextRequest) {
     .eq("id", user.id)
     .single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  // Rate limit: 5 password sets per hour per admin.
+  const rl = await aiRateLimit(clientKey(req, "admin-set-password", user.id), { max: 5, windowMs: 60 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 3600_000) / 1000)) } }
+    );
+  }
 
   let body: { userId?: string };
   try {
