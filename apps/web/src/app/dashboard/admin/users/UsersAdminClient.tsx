@@ -80,7 +80,9 @@ export default function UsersAdminClient({ initialUsers, currentUserId }: Props)
       });
       const json = await res.json();
       if (!res.ok || json.error) throw new Error(json.error || `HTTP ${res.status}`);
-      setTempCred({ email: json.email ?? u.email, password: json.password });
+      // Password is no longer returned in the response for security.
+      // Show confirmation with email only.
+      setTempCred({ email: json.email ?? u.email, password: "(set server-side — not returned)" });
       setCopied(false);
       setRowStatus(u.id, { kind: "success", message: "Temp password set" });
     } catch (err) {

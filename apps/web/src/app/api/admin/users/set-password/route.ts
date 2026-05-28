@@ -90,9 +90,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
 
+  // Password was set via admin.updateUserById above — do NOT return it in the
+  // response body to avoid leaking credentials in logs / browser history.
   return NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
-    password,
+  }, {
+    headers: { "Cache-Control": "no-store, private" },
   });
 }

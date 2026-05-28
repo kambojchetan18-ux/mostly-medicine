@@ -17,10 +17,10 @@ import FunLoading from '@/components/FunLoading';
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
 
 const DIFF_COLOR: Record<string, string> = {
-  Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
+  easy: '#10b981', medium: '#f59e0b', hard: '#ef4444',
 };
 const DIFF_BG: Record<string, string> = {
-  Easy: '#064e3b', Medium: '#713f12', Hard: '#7f1d1d',
+  easy: '#064e3b', medium: '#713f12', hard: '#7f1d1d',
 };
 
 type Message = { role: 'user' | 'assistant'; content: string };
