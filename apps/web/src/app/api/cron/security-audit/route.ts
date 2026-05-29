@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { timingSafeEqual } from "crypto";
 
 // Daily security audit cron. Runs four detection queries, inserts unseen
 // findings into public.security_alerts (deduped by fingerprint), and fans
@@ -23,13 +24,11 @@ import crypto from "crypto";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-// Family / staff accounts that legitimately bypass billing.
-const PRIV_WHITELIST = new Set<string>([
-  "nikhil.kamboj83@gmail.com",
-  "amankamboj10@gmail.com",
-  "kamboj.chetan18@gmail.com",
-  "chetan.kamboj844@gmail.com",
-]);
+// Family / staff accounts that legitimately bypass billing. Loaded from env
+// so personal emails are not committed to source control.
+const PRIV_WHITELIST = new Set<string>(
+  (process.env.SECURITY_AUDIT_WHITELIST ?? "").split(",").map((e) => e.toLowerCase().trim()).filter(Boolean)
+);
 
 function service() {
   return createServiceClient(
@@ -208,9 +207,14 @@ async function notify(newAlerts: Finding[]): Promise<void> {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get("authorization");
   const secret = process.env.CRON_SECRET;
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!secret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
+  }
+  const provided = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/, "");
+  const a = Buffer.from(provided);
+  const b = Buffer.from(secret);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

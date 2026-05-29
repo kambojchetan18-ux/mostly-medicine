@@ -23,7 +23,8 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
+import dotenv from "dotenv";
 
 const args = process.argv.slice(2);
 const flag = (n: string) => args.includes(`--${n}`);
@@ -43,22 +44,7 @@ const LIMIT = parseInt(arg("limit", "999")!, 10);
 const REDO = flag("redo");
 const MODEL = arg("model", "claude-haiku-4-5-20251001")!;
 
-// Load envs
-function loadEnv() {
-  if (process.env.ANTHROPIC_API_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) return;
-  try {
-    const envText = fs.readFileSync("apps/web/.env.local", "utf-8");
-    for (const line of envText.split(/\r?\n/)) {
-      const m = line.match(/^([A-Z0-9_]+)=(.+)$/);
-      if (m) {
-        const k = m[1];
-        const v = m[2].replace(/^"|"$/g, "").trim();
-        if (!process.env[k]) process.env[k] = v;
-      }
-    }
-  } catch {}
-}
-loadEnv();
+dotenv.config({ path: "apps/web/.env.local" });
 
 const KEY = process.env.ANTHROPIC_API_KEY;
 const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -134,12 +120,14 @@ interface Topic {
   difficulty: "Easy" | "Medium" | "Hard";
 }
 
-function sh(cmd: string): string {
-  return execSync(cmd, { encoding: "utf-8" }).trim();
+function run(cmd: string, args: string[]): string {
+  const r = spawnSync(cmd, args, { encoding: "utf-8" });
+  if (r.status !== 0) throw new Error(`${cmd} failed: ${r.stderr || r.error?.message}`);
+  return r.stdout.trim();
 }
 
 function pageCount(pdfPath: string): number {
-  const out = sh(`pdfinfo "${pdfPath}"`);
+  const out = run("pdfinfo", [pdfPath]);
   const m = out.match(/Pages:\s+(\d+)/);
   return m ? parseInt(m[1], 10) : 0;
 }

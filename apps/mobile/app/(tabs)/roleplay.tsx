@@ -13,6 +13,7 @@ import { supabase } from '@/lib/supabase';
 import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
+import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
 
@@ -166,10 +167,11 @@ export default function RoleplayScreen() {
       const form = new FormData();
       // RN FormData accepts { uri, name, type } — cast required for TS
       form.append('audio', { uri, name: 'recording.m4a', type: 'audio/mp4' } as unknown as Blob);
-      const res = await fetch(`${API_URL}/api/stt/transcribe`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/stt/transcribe`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: form,
+        timeoutMs: 15_000,
       });
       if (!res.ok) {
         const detail = await res.text().catch(() => '');
@@ -300,10 +302,11 @@ export default function RoleplayScreen() {
     setLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${API_URL}/api/ai/roleplay`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
+        timeoutMs: 60_000,
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
@@ -324,10 +327,11 @@ export default function RoleplayScreen() {
     setFetchingFeedback(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${API_URL}/api/ai/roleplay`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages, requestFeedback: true }),
+        timeoutMs: 60_000,
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');

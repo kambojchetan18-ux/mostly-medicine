@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: tokenErr.message }, { status: 500 });
     }
 
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.mostlymedicine.com";
     const unsubscribeUrl = `${origin}/api/email/unsubscribe?token=${token}`;
 
     const { subject, bodyHtml, preheader } = buildWelcomeEmail(firstName);

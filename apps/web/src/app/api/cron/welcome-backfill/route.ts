@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.mostlymedicine.com";
   let sent = 0;
   let failed = 0;
   const errors: { email: string | null; error: string }[] = [];
