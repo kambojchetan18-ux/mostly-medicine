@@ -25,7 +25,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
+import dotenv from "dotenv";
 
 const args = process.argv.slice(2);
 const flag = (n: string) => args.includes(`--${n}`);
@@ -43,14 +44,7 @@ const MODEL = arg("model", "claude-haiku-4-5-20251001")!;
 const MAX_CHUNKS = parseInt(arg("max-chunks", "999")!, 10);
 const REDO = flag("redo");
 
-// Load ANTHROPIC_API_KEY from apps/web/.env.local if not already in env.
-if (!process.env.ANTHROPIC_API_KEY) {
-  try {
-    const envText = fs.readFileSync("apps/web/.env.local", "utf-8");
-    const m = envText.match(/^ANTHROPIC_API_KEY=(.+)$/m);
-    if (m) process.env.ANTHROPIC_API_KEY = m[1].replace(/^"|"$/g, "").trim();
-  } catch {}
-}
+dotenv.config({ path: "apps/web/.env.local" });
 const KEY = process.env.ANTHROPIC_API_KEY;
 if (!KEY) {
   console.error("Missing ANTHROPIC_API_KEY");
@@ -154,12 +148,14 @@ interface ExtractedMcq {
   sourcePages?: string;
 }
 
-function sh(cmd: string): string {
-  return execSync(cmd, { encoding: "utf-8" }).trim();
+function run(cmd: string, args: string[]): string {
+  const r = spawnSync(cmd, args, { encoding: "utf-8" });
+  if (r.status !== 0) throw new Error(`${cmd} failed: ${r.stderr || r.error?.message}`);
+  return r.stdout.trim();
 }
 
 function pageCount(pdfPath: string): number {
-  const out = sh(`pdfinfo "${pdfPath}"`);
+  const out = run("pdfinfo", [pdfPath]);
   const m = out.match(/Pages:\s+(\d+)/);
   if (!m) throw new Error(`Could not read page count of ${pdfPath}`);
   return parseInt(m[1], 10);
@@ -169,13 +165,13 @@ function buildChunk(pdfPath: string, firstPage: number, lastPage: number, outPat
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "mcq-chunk-"));
   try {
     const pattern = path.join(tmp, "p-%d.pdf");
-    sh(`pdfseparate -f ${firstPage} -l ${lastPage} "${pdfPath}" "${pattern}"`);
+    run("pdfseparate", ["-f", String(firstPage), "-l", String(lastPage), pdfPath, pattern]);
     const pages: string[] = [];
     for (let p = firstPage; p <= lastPage; p++) {
       const f = path.join(tmp, `p-${p}.pdf`);
       if (fs.existsSync(f)) pages.push(f);
     }
-    sh(`pdfunite ${pages.map((p) => `"${p}"`).join(" ")} "${outPath}"`);
+    run("pdfunite", [...pages, outPath]);
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
