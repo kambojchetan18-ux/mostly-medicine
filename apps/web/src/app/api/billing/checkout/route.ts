@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.mostlymedicine.com";
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const checkoutOrigin = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.mostlymedicine.com";
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
@@ -86,11 +86,11 @@ export async function POST(req: NextRequest) {
       // provided. Falls back to the billing page so the success flash still
       // renders. Stripe runs success_url after the subscription is active.
       success_url: safeNext
-        ? `${origin}${safeNext}?upgraded=1`
-        : `${origin}/dashboard/billing?success=1`,
+        ? `${checkoutOrigin}${safeNext}?upgraded=1`
+        : `${checkoutOrigin}/dashboard/billing?success=1`,
       cancel_url: safeNext
-        ? `${origin}${safeNext}?upgrade_canceled=1`
-        : `${origin}/dashboard/billing?canceled=1`,
+        ? `${checkoutOrigin}${safeNext}?upgrade_canceled=1`
+        : `${checkoutOrigin}/dashboard/billing?canceled=1`,
       subscription_data: { metadata: { user_id: user.id } },
     });
     return NextResponse.json({ url: session.url });
