@@ -4,6 +4,8 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
 import { allQuestions } from "@mostly-medicine/content";
 
+const questionMap = new Map(allQuestions.map((q) => [q.id, q]));
+
 export const dynamic = "force-dynamic";
 
 const MODEL = "claude-haiku-4-5-20251001";
@@ -93,16 +95,17 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
   // Percentile vs all completed sessions across all users (service role bypass
   // RLS so we can read everyone's score_pct). Cheap aggregate query.
   const svc = service();
-  const { data: peerRows } = await svc
-    .from("mcq_sessions")
-    .select("score_pct")
-    .eq("status", "completed")
-    .not("score_pct", "is", null);
-  const peerScores = (peerRows ?? []).map((r) => r.score_pct as number).filter((n) => Number.isFinite(n));
+  const [totalRes, beatRes] = await Promise.all([
+    svc.from("mcq_sessions").select("id", { count: "exact", head: true })
+      .eq("status", "completed").not("score_pct", "is", null),
+    svc.from("mcq_sessions").select("id", { count: "exact", head: true })
+      .eq("status", "completed").not("score_pct", "is", null).lt("score_pct", scorePct),
+  ]);
+  const totalPeers = totalRes.count ?? 0;
+  const beatCount = beatRes.count ?? 0;
   let percentile = 50;
-  if (peerScores.length >= 5) {
-    const beat = peerScores.filter((s) => s < scorePct).length;
-    percentile = Math.round((beat / peerScores.length) * 100);
+  if (totalPeers >= 5) {
+    percentile = Math.round((beatCount / totalPeers) * 100);
   }
 
   // Mark the session completed FIRST so the user is never blocked by a slow
@@ -154,7 +157,7 @@ async function generateLearningPoints(
   const items = attempts
     .filter((a) => a.question_id)
     .map((a) => {
-      const q = allQuestions.find((x) => x.id === a.question_id);
+      const q = questionMap.get(a.question_id as string);
       return {
         id: a.question_id as string,
         isCorrect: !!a.is_correct,

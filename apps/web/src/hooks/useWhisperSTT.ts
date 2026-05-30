@@ -685,6 +685,8 @@ export function useWhisperSTT(
       recorderRef.current = null;
       streamRef.current = null;
       ownsStreamRef.current = false;
+      audioCtxRef.current?.close().catch(() => {});
+      audioCtxRef.current = null;
     };
   }, []);
 

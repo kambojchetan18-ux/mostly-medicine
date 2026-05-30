@@ -57,14 +57,7 @@ export async function GET() {
       .filter((k) => k.startsWith("CLOUDFLARE_"))
       .sort();
     return NextResponse.json(
-      {
-        error: "TURN not configured",
-        missing: {
-          CLOUDFLARE_TURN_KEY_ID: !keyId,
-          CLOUDFLARE_TURN_API_TOKEN: !apiToken,
-        },
-        cloudflareKeysSeen: seen,
-      },
+      { error: "TURN not configured" },
       { status: 503 }
     );
   }

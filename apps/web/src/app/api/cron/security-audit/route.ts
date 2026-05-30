@@ -97,31 +97,44 @@ async function detectPlanDrift(sb: ReturnType<typeof service>): Promise<Finding[
 }
 
 async function detectBulkAttempts(sb: ReturnType<typeof service>): Promise<Finding[]> {
-  // Postgres-side: any user with > 500 attempts in any 60-min rolling
-  // window in the last 24h. Implemented via a single RPC-less query.
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { data } = await sb
+  // First, find users with high total counts in the last 24h (cheap pre-filter)
+  const { data: heavyUsers } = await sb
     .from("attempts")
-    .select("user_id, attempted_at")
+    .select("user_id")
     .gte("attempted_at", since)
     .limit(50000);
-  const buckets = new Map<string, number[]>(); // user_id -> ms timestamps
-  for (const row of (data ?? []) as Array<{ user_id: string; attempted_at: string }>) {
-    const arr = buckets.get(row.user_id) ?? [];
-    arr.push(new Date(row.attempted_at).getTime());
-    buckets.set(row.user_id, arr);
+
+  // Count per user
+  const userCounts = new Map<string, number>();
+  for (const row of (heavyUsers ?? []) as Array<{ user_id: string }>) {
+    userCounts.set(row.user_id, (userCounts.get(row.user_id) ?? 0) + 1);
   }
+
+  // Only fetch detailed timestamps for users with >500 total attempts (much fewer rows)
+  const suspects = [...userCounts.entries()].filter(([, count]) => count > 500);
   const offenders: Array<{ user_id: string; max_per_hour: number; total: number }> = [];
-  for (const [uid, times] of buckets) {
-    times.sort((a, b) => a - b);
+
+  for (const [uid, total] of suspects) {
+    const { data: times } = await sb
+      .from("attempts")
+      .select("attempted_at")
+      .eq("user_id", uid)
+      .gte("attempted_at", since)
+      .order("attempted_at", { ascending: true })
+      .limit(10000);
+
+    const timestamps = (times ?? []).map((r) => new Date((r as { attempted_at: string }).attempted_at).getTime());
+    timestamps.sort((a, b) => a - b);
     let max = 0;
     let i = 0;
-    for (let j = 0; j < times.length; j++) {
-      while (i < j && times[j] - times[i] > 60 * 60 * 1000) i++;
+    for (let j = 0; j < timestamps.length; j++) {
+      while (i < j && timestamps[j] - timestamps[i] > 60 * 60 * 1000) i++;
       max = Math.max(max, j - i + 1);
     }
-    if (max > 500) offenders.push({ user_id: uid, max_per_hour: max, total: times.length });
+    if (max > 500) offenders.push({ user_id: uid, max_per_hour: max, total });
   }
+
   return offenders.map((o) => ({
     kind: "bulk_attempts",
     severity: "high" as const,

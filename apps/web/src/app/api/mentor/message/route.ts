@@ -24,9 +24,26 @@ const VALID_TRIGGERS: Trigger[] = [
 ];
 
 // In-memory rate limit: 1 mentor message per user per 5 minutes.
-// Resets on cold start by design — acceptable for an anti-churn nudge.
+// LRU-style cleanup prevents unbounded growth on long-lived instances.
 const RATE_WINDOW_MS = 5 * 60 * 1000;
+const MAX_RATE_ENTRIES = 10_000;
 const lastMessageAt = new Map<string, number>();
+
+function pruneRateMap() {
+  if (lastMessageAt.size <= MAX_RATE_ENTRIES) return;
+  const now = Date.now();
+  for (const [k, v] of lastMessageAt) {
+    if (now - v > RATE_WINDOW_MS) lastMessageAt.delete(k);
+  }
+  if (lastMessageAt.size > MAX_RATE_ENTRIES) {
+    const excess = lastMessageAt.size - MAX_RATE_ENTRIES;
+    const iter = lastMessageAt.keys();
+    for (let i = 0; i < excess; i++) {
+      const key = iter.next().value;
+      if (key) lastMessageAt.delete(key);
+    }
+  }
+}
 
 function buildUserPrompt(trigger: Trigger, context: MentorContext): string {
   switch (trigger) {
@@ -82,9 +99,8 @@ export async function POST(req: NextRequest) {
         : undefined,
   };
 
-  // 1 message per user per 5 min. We key on user id; cold start resets it
-  // — acceptable for an anti-churn nudge that should never spam.
   const now = Date.now();
+  pruneRateMap();
   const last = lastMessageAt.get(user.id) ?? 0;
   if (now - last < RATE_WINDOW_MS) {
     return NextResponse.json(
