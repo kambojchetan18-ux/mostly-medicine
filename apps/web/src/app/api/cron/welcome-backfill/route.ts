@@ -24,13 +24,11 @@ interface ProfileRow {
 }
 
 export async function GET(req: NextRequest) {
-  // Auth gate
+  // Auth gate — require CRON_SECRET to prevent unauthenticated mass emails
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = req.headers.get("authorization");
+  if (!secret || auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(req.url);

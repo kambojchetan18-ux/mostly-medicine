@@ -345,6 +345,16 @@ export default function Cat2Client() {
     }
   }
 
+  // Clean up scenario timer on unmount to prevent stale interval firing
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+
   // Auto-request feedback when timer reaches 0
   const feedbackRequestedRef = useRef(false);
   useEffect(() => {
