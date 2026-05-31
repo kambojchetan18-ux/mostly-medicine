@@ -97,39 +97,28 @@ async function detectPlanDrift(sb: ReturnType<typeof service>): Promise<Finding[
 }
 
 async function detectBulkAttempts(sb: ReturnType<typeof service>): Promise<Finding[]> {
-  // Postgres-side: any user with > 500 attempts in any 60-min rolling
-  // window in the last 24h. Implemented via a single RPC-less query.
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const { data } = await sb
     .from("attempts")
-    .select("user_id, attempted_at")
+    .select("user_id")
     .gte("attempted_at", since)
     .limit(50000);
-  const buckets = new Map<string, number[]>(); // user_id -> ms timestamps
-  for (const row of (data ?? []) as Array<{ user_id: string; attempted_at: string }>) {
-    const arr = buckets.get(row.user_id) ?? [];
-    arr.push(new Date(row.attempted_at).getTime());
-    buckets.set(row.user_id, arr);
+
+  const userCounts = new Map<string, number>();
+  for (const row of (data ?? []) as Array<{ user_id: string }>) {
+    userCounts.set(row.user_id, (userCounts.get(row.user_id) ?? 0) + 1);
   }
-  const offenders: Array<{ user_id: string; max_per_hour: number; total: number }> = [];
-  for (const [uid, times] of buckets) {
-    times.sort((a, b) => a - b);
-    let max = 0;
-    let i = 0;
-    for (let j = 0; j < times.length; j++) {
-      while (i < j && times[j] - times[i] > 60 * 60 * 1000) i++;
-      max = Math.max(max, j - i + 1);
-    }
-    if (max > 500) offenders.push({ user_id: uid, max_per_hour: max, total: times.length });
-  }
-  return offenders.map((o) => ({
+
+  const suspects = [...userCounts.entries()].filter(([, count]) => count > 500);
+
+  return suspects.map(([uid, total]) => ({
     kind: "bulk_attempts",
     severity: "high" as const,
     subjectType: "user" as const,
-    subjectId: o.user_id,
-    fingerprint: fingerprint(["bulk_attempts", o.user_id, Math.floor(Date.now() / (24 * 60 * 60 * 1000))]),
-    summary: `User ${o.user_id} did ${o.max_per_hour} MCQ attempts in a 60-min window (24h total ${o.total})`,
-    payload: o as unknown as Record<string, unknown>,
+    subjectId: uid,
+    fingerprint: fingerprint(["bulk_attempts", uid, Math.floor(Date.now() / (24 * 60 * 60 * 1000))]),
+    summary: `User ${uid} did ${total} MCQ attempts in the last 24h (threshold: 500)`,
+    payload: { user_id: uid, total } as unknown as Record<string, unknown>,
   }));
 }
 

@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/require-admin";
 
 async function postToLinkedIn(caption: string, hashtags: string[]) {
   const token = process.env.LINKEDIN_ACCESS_TOKEN;
@@ -69,12 +69,9 @@ async function postToInstagram(caption: string, hashtags: string[]) {
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireAdmin();
+  if (auth.error) return auth.error;
+  const supabase = auth.supabase;
 
   const { id } = await params;
   const { data: post, error: fetchErr } = await supabase
@@ -106,6 +103,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     return NextResponse.json({ success: true });
   } catch (e) {
-    return NextResponse.json({ error: e instanceof Error ? e.message : "Publish failed" }, { status: 500 });
+    console.error("[publish] platform error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Publishing failed — check server logs" }, { status: 500 });
   }
 }
