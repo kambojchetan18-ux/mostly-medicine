@@ -117,9 +117,17 @@ export async function POST(req: NextRequest) {
 
     // Strip any accidental markdown fences
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
-    const extracted = JSON.parse(jsonStr);
+    const parsed = JSON.parse(jsonStr);
+    const SAFE_KEYS = new Set([
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference",
+      "doctor_type", "specialist_qualification",
+    ]);
+    const extracted = Object.fromEntries(
+      Object.entries(parsed).filter(([k]) => SAFE_KEYS.has(k)),
+    );
 
-    // Upsert into Supabase
     const { error: dbError } = await supabase
       .from("img_profiles")
       .upsert({

@@ -3,6 +3,7 @@ import { runChat } from "@mostly-medicine/ai";
 import {
   LIBRARY_CHAT_SYSTEM_PROMPT,
   LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC,
+  formatTopicContextMessage,
 } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
@@ -35,10 +36,25 @@ export async function POST(req: NextRequest) {
 
   const { messages, topicTitle, topicContent } = await req.json();
 
-  const systemPrompt =
-    topicTitle && topicContent
-      ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC(topicTitle, topicContent)
-      : LIBRARY_CHAT_SYSTEM_PROMPT;
+  const hasTopic = !!(topicTitle && topicContent);
+  const systemPrompt = hasTopic
+    ? LIBRARY_CHAT_SYSTEM_PROMPT_WITH_TOPIC
+    : LIBRARY_CHAT_SYSTEM_PROMPT;
+
+  // Build the message list. When a topic/note context is present, prepend it
+  // as a user message so user-supplied content never lives in the system
+  // prompt (prevents prompt-injection via crafted notes/topic text).
+  const chatMessages = (messages as { role: string; content: string }[]).map((m) => ({
+    role: m.role as "user" | "assistant",
+    content: m.content,
+  }));
+
+  if (hasTopic && chatMessages.length > 0 && chatMessages[0].role === "user") {
+    chatMessages[0] = {
+      ...chatMessages[0],
+      content: `${formatTopicContextMessage(topicTitle, topicContent)}\n\n${chatMessages[0].content}`,
+    };
+  }
 
   // Streaming choice: the original Anthropic implementation streamed token
   // deltas. Now that this route can route through DeepSeek (no SSE parser
@@ -52,10 +68,7 @@ export async function POST(req: NextRequest) {
         const result = await runChat({
           useCase: "general_chat",
           system: systemPrompt,
-          messages: (messages as { role: string; content: string }[]).map((m) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          })),
+          messages: chatMessages,
           maxTokens: 1024,
           cacheSystem: true,
         });

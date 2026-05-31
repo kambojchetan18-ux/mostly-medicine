@@ -1,11 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/require-admin";
 
-// Service-role client used to mutate user_profiles columns that
-// authenticated users no longer have column-level UPDATE on (role, plan,
-// stripe_*, etc.) after migration 040. Only call AFTER an admin check
-// has passed on the user-context client above.
 function serviceClient() {
   return createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,13 +11,9 @@ function serviceClient() {
 }
 
 export async function GET() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  // Check admin
-  const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireAdmin();
+  if (auth.error) return auth.error;
+  const supabase = auth.supabase;
 
   const { data, error } = await supabase
     .from("user_profiles")
@@ -36,12 +28,9 @@ const ALLOWED_PLANS = new Set(["free", "pro", "enterprise"]);
 const ALLOWED_ROLES = new Set(["user", "admin"]);
 
 export async function PATCH(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireAdmin();
+  if (auth.error) return auth.error;
+  const { user, supabase } = auth;
 
   const { userId, plan, role } = await req.json();
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });

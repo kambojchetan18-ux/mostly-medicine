@@ -1,14 +1,14 @@
-import { NextResponse } from "next/server";
-
-// Temporary diagnostic endpoint — returns ONLY whether specific env vars
-// are set on the runtime. Never returns values. Safe to expose publicly:
-// the names are not secrets, only the values are. Remove this route once
-// the Cloudflare TURN + Groq env-var debugging is finished.
+import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const secret = process.env.CRON_SECRET;
+  const auth = req.headers.get("authorization");
+  if (!secret || auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const want = [
     "CLOUDFLARE_TURN_KEY_ID",
     "CLOUDFLARE_TURN_API_TOKEN",

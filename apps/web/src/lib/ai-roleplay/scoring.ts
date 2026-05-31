@@ -132,5 +132,52 @@ Score adherence FAIRLY — the peer is a candidate too, not a professional simul
   if (!toolUse || toolUse.type !== "tool_use") {
     throw new Error("Scoring: no tool_use block in Claude response");
   }
-  return toolUse.input as SessionFeedback;
+  return validateSessionFeedback(toolUse.input);
+}
+
+function isStringArray(v: unknown): v is string[] {
+  return Array.isArray(v) && v.every((x) => typeof x === "string");
+}
+
+function validateSessionFeedback(raw: unknown): SessionFeedback {
+  if (!raw || typeof raw !== "object") {
+    throw new Error("Scoring: tool_use input is not an object");
+  }
+  const o = raw as Record<string, unknown>;
+
+  const globalScore = Number(o.globalScore);
+  const communicationScore = Number(o.communicationScore);
+  const reasoningScore = Number(o.reasoningScore);
+  if ([globalScore, communicationScore, reasoningScore].some(Number.isNaN)) {
+    throw new Error("Scoring: score fields must be numbers");
+  }
+
+  if (!isStringArray(o.strengths)) throw new Error("Scoring: strengths must be string[]");
+  if (!isStringArray(o.missedQuestions)) throw new Error("Scoring: missedQuestions must be string[]");
+  if (!isStringArray(o.missedRedFlags)) throw new Error("Scoring: missedRedFlags must be string[]");
+  if (typeof o.differentialReview !== "string") throw new Error("Scoring: differentialReview must be string");
+  if (typeof o.retrySuggestion !== "string") throw new Error("Scoring: retrySuggestion must be string");
+
+  if (!Array.isArray(o.suggestedPhrasing)) throw new Error("Scoring: suggestedPhrasing must be array");
+  const suggestedPhrasing = (o.suggestedPhrasing as unknown[]).map((item) => {
+    const p = item as Record<string, unknown>;
+    return {
+      original: String(p.original ?? ""),
+      better: String(p.better ?? ""),
+      reason: String(p.reason ?? ""),
+    };
+  });
+
+  return {
+    globalScore,
+    communicationScore,
+    reasoningScore,
+    strengths: o.strengths,
+    missedQuestions: o.missedQuestions,
+    missedRedFlags: o.missedRedFlags,
+    suggestedPhrasing,
+    differentialReview: o.differentialReview,
+    retrySuggestion: o.retrySuggestion,
+    ...(o.patientFeedback != null ? { patientFeedback: o.patientFeedback as SessionFeedback["patientFeedback"] } : {}),
+  };
 }
