@@ -35,9 +35,9 @@ const SOURCE_MAP: Record<Tab, string> = {
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  Easy: "bg-green-100 text-green-700",
-  Medium: "bg-yellow-100 text-yellow-700",
-  Hard: "bg-red-100 text-red-700",
+  easy: "bg-green-100 text-green-700",
+  medium: "bg-yellow-100 text-yellow-700",
+  hard: "bg-red-100 text-red-700",
 };
 
 const SOURCE_COLORS: Record<string, string> = {

@@ -46,8 +46,8 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
           </span>
           {topic.difficulty && (
             <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-              topic.difficulty === "Easy" ? "bg-green-100 text-green-700" :
-              topic.difficulty === "Medium" ? "bg-yellow-100 text-yellow-700" :
+              topic.difficulty === "easy" ? "bg-green-100 text-green-700" :
+              topic.difficulty === "medium" ? "bg-yellow-100 text-yellow-700" :
               "bg-red-100 text-red-700"
             }`}>
               {topic.difficulty}

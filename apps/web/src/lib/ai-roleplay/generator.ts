@@ -63,7 +63,43 @@ Generate one fresh original case from this blueprint. Pick ONE hidden diagnosis 
   if (!toolUse || toolUse.type !== "tool_use") {
     throw new Error("Generator: no tool_use block in Claude response");
   }
-  return toolUse.input as CaseVariant;
+  return validateCaseVariant(toolUse.input);
+}
+
+function validateCaseVariant(raw: unknown): CaseVariant {
+  if (!raw || typeof raw !== "object") {
+    throw new Error("Generator: tool_use input is not an object");
+  }
+  const o = raw as Record<string, unknown>;
+
+  if (typeof o.seed !== "string") throw new Error("Generator: seed must be string");
+  if (typeof o.hiddenDiagnosis !== "string") throw new Error("Generator: hiddenDiagnosis must be string");
+  if (typeof o.candidateTask !== "string") throw new Error("Generator: candidateTask must be string");
+  if (typeof o.setting !== "string") throw new Error("Generator: setting must be string");
+  if (typeof o.emotionalTone !== "string") throw new Error("Generator: emotionalTone must be string");
+
+  const d = o.difficulty;
+  if (d !== "easy" && d !== "medium" && d !== "hard") {
+    throw new Error(`Generator: difficulty must be easy|medium|hard, got ${String(d)}`);
+  }
+
+  if (!o.stationStem || typeof o.stationStem !== "object") throw new Error("Generator: stationStem must be object");
+  if (!o.patientProfile || typeof o.patientProfile !== "object") throw new Error("Generator: patientProfile must be object");
+  if (!Array.isArray(o.cluePool)) throw new Error("Generator: cluePool must be array");
+  if (!Array.isArray(o.redFlags)) throw new Error("Generator: redFlags must be array");
+
+  return {
+    seed: o.seed,
+    difficulty: d,
+    stationStem: o.stationStem as CaseVariant["stationStem"],
+    patientProfile: o.patientProfile as CaseVariant["patientProfile"],
+    hiddenDiagnosis: o.hiddenDiagnosis,
+    cluePool: o.cluePool as CaseVariant["cluePool"],
+    redFlags: o.redFlags as string[],
+    candidateTask: o.candidateTask,
+    setting: o.setting,
+    emotionalTone: o.emotionalTone,
+  };
 }
 
 // Short, URL-safe random seed
