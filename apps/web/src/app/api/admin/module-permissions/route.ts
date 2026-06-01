@@ -1,19 +1,12 @@
-import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-
-async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
-  const { data } = await supabase.from("user_profiles").select("role").eq("id", userId).single();
-  return data?.role === "admin";
-}
+import { requireAdmin } from "@/lib/admin";
 
 export async function GET() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!(await assertAdmin(supabase, user.id))) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireAdmin();
+  if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  const { data, error } = await supabase
+  const { data, error } = await auth.supabase!
     .from("module_permissions")
     .select("*")
     .order("plan")
@@ -24,15 +17,13 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!(await assertAdmin(supabase, user.id))) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireAdmin();
+  if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { plan, module, enabled, daily_limit } = await req.json();
   if (!plan || !module) return NextResponse.json({ error: "plan and module required" }, { status: 400 });
 
-  const { error } = await supabase.from("module_permissions").upsert(
+  const { error } = await auth.supabase!.from("module_permissions").upsert(
     { plan, module, enabled, daily_limit, updated_at: new Date().toISOString() },
     { onConflict: "plan,module" }
   );
