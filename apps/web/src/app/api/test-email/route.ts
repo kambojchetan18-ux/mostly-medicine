@@ -4,17 +4,14 @@ import { buildWelcomeEmail } from "@/lib/email-templates";
 
 // Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
 // (Chetan's inbox). Used to verify Resend + brandedShell render correctly
-// before the DeepSeek balance is topped up. Auth: optional CRON_SECRET
-// bearer; open if unset.
+// before the DeepSeek balance is topped up. Auth: CRON_SECRET bearer required.
 export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = req.headers.get("authorization");
+  if (!secret || auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.

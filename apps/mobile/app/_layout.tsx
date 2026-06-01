@@ -3,8 +3,20 @@ import { Stack } from 'expo-router';
 import { useRouter, useSegments } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import type { Session } from '@supabase/supabase-js';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f172a', padding: 24 }}>
+      <Text style={{ color: '#ef4444', fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>Something went wrong</Text>
+      <Text style={{ color: '#94a3b8', textAlign: 'center', marginBottom: 16 }}>{error.message}</Text>
+      <TouchableOpacity onPress={retry} style={{ backgroundColor: '#7c3aed', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}>
+        <Text style={{ color: 'white', fontWeight: '600' }}>Try Again</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -16,9 +28,12 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
+      setLoading(false);
     });
     return () => subscription.unsubscribe();
   }, []);

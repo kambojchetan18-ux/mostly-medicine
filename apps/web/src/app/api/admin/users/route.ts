@@ -1,11 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin";
 
-// Service-role client used to mutate user_profiles columns that
-// authenticated users no longer have column-level UPDATE on (role, plan,
-// stripe_*, etc.) after migration 040. Only call AFTER an admin check
-// has passed on the user-context client above.
 function serviceClient() {
   return createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,15 +11,10 @@ function serviceClient() {
 }
 
 export async function GET() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const auth = await requireAdmin();
+  if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  // Check admin
-  const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
-  const { data, error } = await supabase
+  const { data, error } = await auth.supabase!
     .from("user_profiles")
     .select("id, email, full_name, avatar_url, plan, role, created_at")
     .order("created_at", { ascending: false });
@@ -36,12 +27,8 @@ const ALLOWED_PLANS = new Set(["free", "pro", "enterprise"]);
 const ALLOWED_ROLES = new Set(["user", "admin"]);
 
 export async function PATCH(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const auth = await requireAdmin();
+  if (auth.error) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { userId, plan, role } = await req.json();
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
@@ -63,10 +50,10 @@ export async function PATCH(req: NextRequest) {
   //     battles between admins should require a fresh login + explicit DB
   //     edit, not a single PATCH. Mirrors set-password's guard.
   if (role !== undefined) {
-    if (userId === user.id) {
+    if (userId === auth.user!.id) {
       return NextResponse.json({ error: "Cannot change your own role" }, { status: 403 });
     }
-    const { data: target } = await supabase
+    const { data: target } = await auth.supabase!
       .from("user_profiles")
       .select("role")
       .eq("id", userId)
