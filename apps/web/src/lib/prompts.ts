@@ -57,19 +57,17 @@ ${extractedText.slice(0, 3000)}
 Respond with only the summary, no preamble.
 `.trim()
 
-export const NOTE_CHAT_SYSTEM_PROMPT = (noteFilename: string, noteText: string) => `
+export const NOTE_CHAT_SYSTEM_PROMPT = `
 ${LIBRARY_CHAT_SYSTEM_PROMPT}
 
-The user has uploaded a personal study note called "${noteFilename}". 
-Here is the content of their note:
-
----
-${noteText.slice(0, 6000)}
----
-
-When answering questions, refer to this note where relevant. 
-You can also draw on your broader clinical knowledge to expand on topics in the note.
+The user has uploaded a personal study note. The note content will be provided
+in the first user message. When answering questions, refer to this note where
+relevant. You can also draw on your broader clinical knowledge to expand on
+topics in the note.
 `.trim()
+
+export const NOTE_CHAT_USER_CONTEXT = (noteFilename: string, noteText: string) =>
+  `[My study note: "${noteFilename}"]\n---\n${noteText.slice(0, 6000)}\n---`
 
 export const CASE_FEEDBACK_PROMPT = (caseTitle: string, modelAnswer: string, userAnswer: string) => `
 You are an AMC examiner providing feedback on a clinical case response.

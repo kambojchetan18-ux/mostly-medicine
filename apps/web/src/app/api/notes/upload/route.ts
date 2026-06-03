@@ -35,6 +35,11 @@ async function generateSummary(text: string): Promise<string> {
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
+    system: [{
+      type: "text" as const,
+      text: "You summarise medical study notes for AMC exam students. Be concise.",
+      cache_control: { type: "ephemeral" as const },
+    }],
     messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
   });
   const block = message.content[0];

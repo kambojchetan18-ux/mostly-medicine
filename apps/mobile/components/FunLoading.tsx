@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -24,15 +24,20 @@ type FunLoadingProps = {
 export default function FunLoading({ pool, style }: FunLoadingProps) {
   const messages = pool && pool.length > 0 ? pool : DEFAULT_POOL;
   const [idx, setIdx] = useState(0);
+  const prevKey = useRef(messages.join('|'));
 
   useEffect(() => {
-    setIdx(0);
+    const key = messages.join('|');
+    if (key !== prevKey.current) {
+      prevKey.current = key;
+      setIdx(0);
+    }
     if (messages.length <= 1) return;
     const id = setInterval(() => {
       setIdx((i) => (i + 1) % messages.length);
     }, ROTATE_MS);
     return () => clearInterval(id);
-  }, [messages]);
+  }, [messages.length]);
 
   return (
     <View style={[styles.row, style]}>
