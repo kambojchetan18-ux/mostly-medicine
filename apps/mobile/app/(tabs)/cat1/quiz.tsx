@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 export default function QuizScreen() {
@@ -80,11 +85,24 @@ export default function QuizScreen() {
   }
 
   if (!q && phase !== 'done') {
-    return <View style={s.bg} />;
+    return (
+      <View style={s.bg}>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+          <Text style={{ fontSize: 48, marginBottom: 16 }}>📭</Text>
+          <Text style={{ color: '#f1f5f9', fontSize: 18, fontWeight: '700', marginBottom: 8 }}>No questions available</Text>
+          <Text style={{ color: '#64748b', fontSize: 14, textAlign: 'center', marginBottom: 24 }}>
+            {topic ? `No questions found for "${topic}".` : 'No questions loaded yet.'}
+          </Text>
+          <TouchableOpacity style={s.btnSecondary} onPress={() => router.back()}>
+            <Text style={s.btnSecondaryText}>Go Back</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </View>
+    );
   }
 
   if (phase === 'done') {
-    const accuracy = Math.round((totalCorrect / questions.length) * 100);
+    const accuracy = questions.length > 0 ? Math.round((totalCorrect / questions.length) * 100) : 0;
     const accColor = accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444';
     return (
       <View style={s.bg}>
