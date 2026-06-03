@@ -7,8 +7,17 @@
 // Importing the full scenarios.ts (~720 kB minified) into a `"use client"`
 // page balloons the page chunk past 700 kB and craters First Load JS for
 // the AMC Handbook RolePlay route. Keep this file metadata-only.
-export { scenariosMeta } from "./scenarios-meta";
+import { scenariosMeta as _rawMeta } from "./scenarios-meta";
 export type { ScenarioMeta } from "./scenarios-meta";
+
+const UNKNOWN = "<UNKNOWN>";
+export const scenariosMeta = _rawMeta.filter(
+  (s) =>
+    s.openingStatement !== UNKNOWN &&
+    s.patientProfile !== UNKNOWN &&
+    s.chiefComplaint !== UNKNOWN &&
+    s.candidateInfo !== UNKNOWN,
+);
 
 // Re-export the heavy `Scenario` type so existing imports compile, but
 // drop the `scenarios` runtime export from this entry point. Anything

@@ -35,41 +35,43 @@ const nextConfig = {
     ];
   },
   async headers() {
-    // Baseline security headers applied to every response. A strict CSP is
-    // intentionally NOT shipped right before launch — Tailwind's hashing,
-    // Next.js inline runtime, and Stripe Elements all need careful nonce
-    // wiring that's risky to land overnight. The headers below are zero-risk
-    // and still close real attack surface (clickjacking, MIME sniffing,
-    // referrer leakage, downgrade, sensitive browser APIs).
+    // Content Security Policy — restricts which origins can serve scripts,
+    // styles, connections, and frames. unsafe-inline + unsafe-eval are
+    // required for Next.js runtime and Tailwind; a nonce-based policy can
+    // replace them once middleware nonce wiring is set up. Even with those
+    // directives, the CSP still blocks scripts/connections from untrusted
+    // origins, which defeats most reflected-XSS and data-exfil attacks.
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self'",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com",
+      "frame-src https://js.stripe.com https://hooks.stripe.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+    ].join("; ");
+
     return [
       {
         source: "/:path*",
         headers: [
-          // Block iframe embedding from any other origin → defeats
-          // clickjacking attacks against /dashboard/billing + /auth/* forms.
+          { key: "Content-Security-Policy", value: csp },
           { key: "X-Frame-Options", value: "DENY" },
-          // Stop browsers guessing MIME types — old XSS vector.
           { key: "X-Content-Type-Options", value: "nosniff" },
-          // Don't leak the full URL (?next=... / ?token=...) to outbound
-          // links. Origin-only on cross-origin nav.
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Force HTTPS for 2 years incl. subdomains. Vercel already
-          // 301s→https; HSTS hardens against downgrade attacks.
           {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
           },
-          // Lock sensitive browser APIs to same-origin only. Microphone is
-          // allowed (Cat2 + ACRP record audio); camera also self-only for
-          // Peer Live RolePlay (WebRTC). Disable everything else (FLoC,
-          // payment APIs we don't ship yet, USB, etc).
           {
             key: "Permissions-Policy",
             value:
               "camera=(self), microphone=(self), geolocation=(), payment=(self), usb=(), interest-cohort=()",
           },
-          // Defense-in-depth XSS hint for legacy Safari. Modern browsers
-          // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
         ],
       },
