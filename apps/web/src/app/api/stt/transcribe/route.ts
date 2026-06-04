@@ -107,19 +107,13 @@ export async function POST(req: NextRequest) {
   groqForm.append("response_format", "json");
   groqForm.append("temperature", "0");
   groqForm.append("language", "en");
-  // VERY LIGHT vocabulary nudge — just hints the domain so Whisper picks
-  // medical English over generic. We deliberately do NOT include 'Doctor:'
-  // / 'Patient:' style dialogue in the prompt: a structured prompt biases
-  // the decoder to CONTINUE the template on unclear/silent audio, which is
-  // exactly how we ended up with hallucinations like 'Patient's voice is
-  // not the same. Doctor, doctor doctor always. I'm sorry about this,
-  // Margaret.' — the model is just continuing the doctor-patient pattern
-  // it was given. A single short clinical sentence is enough domain
-  // signal without giving the decoder a template to loop on.
-  groqForm.append(
-    "prompt",
-    "An Australian medical consultation in plain clinical English."
-  );
+  // NOTE: we deliberately do NOT send a `prompt`. Even a single-sentence
+  // domain hint ("An Australian medical consultation in plain clinical
+  // English.") gets echoed back verbatim on quiet/ambiguous chunks — the
+  // decoder treats the prompt as a "first sentence" to continue and emits
+  // it as the transcription when the audio is too quiet to override. Users
+  // saw the prompt appear in the live transcript. `language=en` +
+  // `temperature=0` already constrain output enough.
   // Pick the filename extension from the actual blob mime-type. Chrome /
   // Android produce audio/webm; iOS Safari produces audio/mp4 (it doesn't
   // support WebM in MediaRecorder). Groq's Whisper accepts both, but the

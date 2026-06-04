@@ -41,6 +41,11 @@ const RATE_LIMIT_BACKOFF_MAX_MS = 32000;
 // audio (a YouTube-ASR training-data artefact). Drop a chunk when EVERY
 // sentence inside it matches a known hallucination — that catches both
 // "Hello?" alone and "Thank you. Thank you. Thank you." spam.
+//
+// The "australian medical consultation" entry is defence-in-depth: we
+// removed that string as the Groq `prompt` field in /api/stt/transcribe
+// (it was being echoed back on quiet chunks), but if any future prompt
+// regression reintroduces a similar phrase the filter still catches it.
 const WHISPER_HALLUCINATIONS = new Set([
   "thank you", "thanks", "thanks for watching", "thanks for listening",
   "thank you so much", "thank you very much", "thanks again",
@@ -51,6 +56,12 @@ const WHISPER_HALLUCINATIONS = new Set([
   "so", "well", "um", "uh", "mm-hmm", "mm hmm", "uh-huh", "uh huh",
   "subscribe", "like and subscribe", "please subscribe",
   ".", "...", "?", "!", "♪", "♪♪", "(music)", "(silence)",
+  // Legacy STT prompt-echo phrases (Whisper mis-hears "An" → "Aneen" /
+  // "Anneen" / "An in" etc.)
+  "an australian medical consultation in plain clinical english",
+  "aneen australian medical consultation in plain clinical english",
+  "anneen australian medical consultation in plain clinical english",
+  "an in australian medical consultation in plain clinical english",
 ]);
 
 // Detect Whisper's repetition-loop hallucinations on long continuous audio
