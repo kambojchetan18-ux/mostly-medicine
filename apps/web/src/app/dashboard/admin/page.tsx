@@ -257,8 +257,16 @@ export default function AdminPage() {
           {PLANS.map(plan => (
             <div key={plan} className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
               <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/60 flex items-center gap-2">
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${plan === "pro" ? "bg-amber-100 text-amber-700" : "bg-gray-200 text-gray-600"}`}>
-                  {plan === "pro" ? "⭐ Pro" : "Free"} Plan
+                <span
+                  className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                    plan === "pro"
+                      ? "bg-amber-100 text-amber-700"
+                      : plan === "enterprise"
+                        ? "bg-violet-100 text-violet-700"
+                        : "bg-gray-200 text-gray-600"
+                  }`}
+                >
+                  {plan === "pro" ? "⭐ Pro" : plan === "enterprise" ? "🏢 Enterprise" : "Free"} Plan
                 </span>
                 <span className="text-xs text-gray-400">Configure what this plan can access</span>
               </div>
