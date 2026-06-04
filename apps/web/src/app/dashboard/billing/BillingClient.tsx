@@ -38,7 +38,8 @@ interface Props {
 
 const FEATURES = {
   free: [
-    "AMC MCQs (limited daily)",
+    "5 AMC MCQs per day",
+    "1 AI Solo RolePlay station per day",
     "Spaced repetition recalls (limited)",
     "Reference library (read-only)",
   ],
