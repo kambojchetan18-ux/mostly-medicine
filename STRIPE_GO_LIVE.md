@@ -87,42 +87,23 @@ The codebase reads these as 4 env vars (`STRIPE_PRICE_*`). Changing prices later
 Stripe price IDs + update the env vars + redeploy. The old price IDs can stay attached to
 existing subscribers (Stripe never auto-migrates).
 
-### 2.1 Tactical levers (planned alongside the price bump)
+### 2.1 Tactical levers — status (decided 2026-06-04)
 
-These three additions extend the pricing strategy; each needs separate implementation work
-and is **not** part of the env-var flip.
+Originally three levers were on the table; final scope after review:
 
-1. **Free tier with daily caps** (top-of-funnel)
-   - 5 MCQs + 1 AI Solo RolePlay station per day for unauthenticated and free-tier users.
-   - Mirrors OSCELab / rehearseMD funnel pattern.
-   - Implementation: extend `BETA_DAILY_LIMITS` semantics from `apps/web/src/config/features.ts`
-     to apply to `plan = 'free'` once `betaMode = false`, plus update landing-page CTA copy
-     to surface the free-trial offer.
+| Lever | Status | Notes |
+|---|---|---|
+| **1. Free-tier conversion caps** (5 MCQ + 1 RolePlay/day) | **✅ Shipped** | Migration `042_free_tier_conversion_caps.sql` + `BillingClient.tsx` copy. Activates automatically when `NEXT_PUBLIC_PAID_TIERS_ENABLED=true`. While `betaMode=true`, `BETA_DAILY_LIMITS` in `features.ts` still wins. |
+| **2. AMC Pass Pack A$390 one-time** | **❌ Skipped** | Adds webhook one-time-payment branching complexity. Validate the subscription funnel first; revisit only if cost-anxious IMG segment shows demand. |
+| **3. Founder yearly A$199 (second cohort)** | **❌ Skipped** | Founder cohort 1 already burned the urgency narrative (98/100, all 30-day windows ended 2026-05-31). A second discounted cohort would dilute brand. Launch at standard A$29/mo + A$290/yr. |
 
-2. **AMC Pass Pack — A$390 one-time, pass-or-extend guarantee**
-   - One-time payment buys access until user passes AMC (verified via uploaded result or
-     self-attestation with optional spot-check).
-   - Mirrors OSCELab's pass-or-extend differentiator. Converts cost-anxious IMGs who balk
-     at subscription anxiety.
-   - Implementation: new Stripe one-time price `STRIPE_PRICE_AMC_PASS_PACK`, new
-     `user_profiles.pass_pack_active` boolean + `pass_pack_purchased_at` timestamp, new
-     migration, treat as "permanent Pro" in `isEffectivelyPro()`.
+So the launch sequence is now simply:
+1. Stripe dashboard + Vercel env-var setup (sections 1 + 3 of this doc)
+2. Smoke test (section 4)
+3. Backfill (section 5)
 
-3. **Founder discount A$199/yr Pro** (first 100 buyers, 60-day window)
-   - Urgency play during the post-PR relaunch. Window: **2026-06-04 → 2026-08-03**.
-   - Reuses the existing `founder_rank` infrastructure but introduces a separate
-     `founder_price_cohort` tier so the original 30-day-free founders (rank 1–100, all
-     expired 2026-05-31) and the new discounted-yearly founders don't collide.
-   - Implementation: new Stripe price `STRIPE_PRICE_PRO_YEARLY_FOUNDER`, new column
-     `user_profiles.founder_price_locked_until`, new admin counter to enforce the 100 cap
-     across this second cohort.
-
-These three are **deliberately deferred** until after the basic A$29/A$49 flip is live and
-stable. Don't bundle them with the env-var flip — ship in this order:
-1. Env flip (this doc)
-2. Free tier daily-cap logic
-3. Founder discount yearly price
-4. Pass Pack one-time price
+No deferred follow-up code work. Free-tier cap behaviour is already in `main` and ready to
+activate the moment paid tiers flip on.
 
 ### 2.2 Gurminder (current paying customer) — re-subscribe email
 
@@ -130,13 +111,14 @@ stable. Don't bundle them with the env-var flip — ship in this order:
 2026-06-14. After the env flip, his test sub will be invisible to live-mode Stripe and the
 daily resync cron will downgrade him to free.
 
-Plan: **send a re-subscribe email before 2026-06-13** with two paths:
-- Path A: re-subscribe at A$29/mo (post-launch standard)
-- Path B: lock in the founder-yearly A$199/yr (if lever #3 is shipped by then)
+Plan: **send a re-subscribe email before 2026-06-13** offering re-subscription at the
+launch-standard A$29/mo (or A$290/yr). Founder-discount option was considered and dropped
+along with lever 3 — see the table above.
 
-Draft to send via Resend (template in `apps/web/src/lib/emails/`). Personalise with his
-first name, beta cohort thank-you, and a one-click checkout link. Do NOT auto-grant comp
-Pro — the email + discount offer is the agreed approach, not silent extension.
+Email mechanics:
+- Send via Resend; template lives under `apps/web/src/lib/emails/`.
+- Personalise with first name + beta thank-you + one-click checkout link.
+- Do NOT auto-grant comp Pro — the email is the agreed approach, not silent extension.
 
 ---
 
