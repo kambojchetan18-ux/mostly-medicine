@@ -73,7 +73,7 @@ const SCENARIO_SCHEMA = {
           title: { type: "string" },
           category: { type: "string", enum: ["C", "D", "M", "D/M", "LEO"] },
           subcategory: { type: "string" },
-          difficulty: { type: "string", enum: ["Easy", "Medium", "Hard"] },
+          difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
           patientProfile: { type: "string" },
           chiefComplaint: { type: "string" },
           candidateInfo: { type: "string" },
@@ -130,7 +130,7 @@ Field guide:
 - title: the full handbook title
 - category: top-level letter — C (Communication), D (Diagnosis), M (Management), D/M (combined), LEO (Legal/Ethical)
 - subcategory: full subcategory line as printed in the handbook (e.g. "2-A The Diagnostic Process — History-taking and Problem-Solving")
-- difficulty: your reasonable judgment from the case complexity ("Easy", "Medium", "Hard")
+- difficulty: your reasonable judgment from the case complexity ("easy", "medium", "hard")
 - patientProfile: brief identity line shown to candidate
 - chiefComplaint: short label for the case (the patient's own words, ≤6 words)
 - candidateInfo: the full candidate-info paragraph from "Candidate's Tasks" section

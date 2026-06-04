@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     email: target.user.email ?? null,
-    password,
+    tempPasswordSet: true,
+    hint: "Password was set. Communicate it via a secure side-channel (e.g. WhatsApp). It will not be shown again.",
   });
 }

@@ -55,30 +55,21 @@ Be concise. This summary will appear on a card in the user's notes library.
 Respond with only the summary, no preamble.
 `.trim()
 
-export const NOTE_CHAT_SYSTEM_PROMPT = (noteFilename: string, noteText: string) => `
+export const NOTE_CHAT_SYSTEM_PROMPT = `
 ${LIBRARY_CHAT_SYSTEM_PROMPT}
 
-The user has uploaded a personal study note called "${noteFilename}". 
-Here is the content of their note:
-
----
-${noteText.slice(0, 6000)}
----
-
-When answering questions, refer to this note where relevant. 
-You can also draw on your broader clinical knowledge to expand on topics in the note.
+The user has uploaded a personal study note. The note filename and content will
+be provided in a <user_note> block in the user message. When answering questions,
+refer to that note where relevant. You can also draw on your broader clinical
+knowledge to expand on topics in the note.
 `.trim()
 
-export const CASE_FEEDBACK_PROMPT = (caseTitle: string, modelAnswer: string, userAnswer: string) => `
+export function formatNoteContext(noteFilename: string, noteText: string): string {
+  return `<user_note filename="${noteFilename}">\n${noteText.slice(0, 6000)}\n</user_note>`;
+}
+
+export const CASE_FEEDBACK_SYSTEM = `
 You are an AMC examiner providing feedback on a clinical case response.
-
-Case: ${caseTitle}
-
-Model answer:
-${modelAnswer}
-
-Student's answer:
-${userAnswer}
 
 Provide brief, constructive feedback (3-5 sentences):
 1. What the student got right ✅
@@ -88,3 +79,7 @@ Provide brief, constructive feedback (3-5 sentences):
 Be encouraging but honest. Focus on AMC exam relevance.
 Respond in plain text, no markdown headers.
 `.trim()
+
+export function formatCaseFeedback(caseTitle: string, modelAnswer: string, userAnswer: string): string {
+  return `<case title="${caseTitle}">\n<model_answer>\n${modelAnswer}\n</model_answer>\n<student_answer>\n${userAnswer}\n</student_answer>\n</case>`;
+}
