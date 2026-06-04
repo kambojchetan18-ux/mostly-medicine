@@ -89,9 +89,9 @@ export async function clearAttempts(key: string): Promise<void> {
 
 // Per-IP / per-user "calls in a rolling window" limiter for AI endpoints.
 // Cheap and good enough to block runaway scripts hitting Anthropic on our
-// dime. Reuses the rate_limit_attempts table — `count` is the call count,
-// `first_attempt_at` is the window start. When `count` exceeds `max` inside
-// `windowMs`, we deny until the window rolls over.
+// dime. Uses the `atomic_rate_check` RPC which does a single INSERT … ON
+// CONFLICT UPDATE, so concurrent requests on the same key are serialised by
+// the row lock — no TOCTOU race.
 //
 // Defaults: 30 calls / 60s. Tuned so a chatty student typing fast still
 // works but a `for i in {1..1000}` loop is stopped.
@@ -102,32 +102,27 @@ export async function aiRateLimit(
   const max = opts.max ?? 30;
   const windowMs = opts.windowMs ?? 60 * 1000;
   const supabase = serviceClient();
-  const now = Date.now();
 
-  const { data } = await supabase
-    .from("rate_limit_attempts")
-    .select("count, first_attempt_at")
-    .eq("key", key)
-    .single();
-
-  const windowStart = data?.first_attempt_at ? new Date(data.first_attempt_at).getTime() : now;
-  const windowExpired = now - windowStart > windowMs;
-  const currentCount = !data || windowExpired ? 0 : data.count ?? 0;
-
-  if (currentCount >= max) {
-    const retryAfterMs = Math.max(0, windowStart + windowMs - now);
-    return { allowed: false, retryAfterMs, count: currentCount, max };
-  }
-
-  const newCount = currentCount + 1;
-  const firstAttempt = windowExpired ? new Date(now).toISOString() : data?.first_attempt_at ?? new Date(now).toISOString();
-  await supabase.from("rate_limit_attempts").upsert({
-    key,
-    count: newCount,
-    first_attempt_at: firstAttempt,
-    locked_until: null,
-    updated_at: new Date(now).toISOString(),
+  const { data, error } = await supabase.rpc("atomic_rate_check", {
+    p_key: key,
+    p_max: max,
+    p_window_ms: windowMs,
   });
 
-  return { allowed: true, count: newCount, max };
+  // If the RPC fails (e.g. function not yet deployed), fail open so the app
+  // doesn't hard-break — but log for visibility.
+  if (error || !data) {
+    console.error("[aiRateLimit] atomic_rate_check RPC failed, failing open:", error);
+    return { allowed: true, count: 0, max };
+  }
+
+  // The RPC returns a single-row table; supabase-js gives us an array.
+  const row = Array.isArray(data) ? data[0] : data;
+
+  return {
+    allowed: row.allowed,
+    retryAfterMs: row.allowed ? undefined : Number(row.retry_after_ms),
+    count: row.current_count,
+    max,
+  };
 }
