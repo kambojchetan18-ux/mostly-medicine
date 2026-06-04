@@ -5,7 +5,7 @@ export const metadata = {
   description: "How Mostly Medicine collects, uses, and protects your data.",
 };
 
-const LAST_UPDATED = "29 April 2026";
+const LAST_UPDATED = "5 June 2026";
 
 export default function PrivacyPage() {
   return (
@@ -99,8 +99,9 @@ export default function PrivacyPage() {
           </p>
 
           <p className="mt-8 text-xs text-gray-500">
-            Mostly Medicine is operated by Chetan Kamboj and Dr Amandeep Kamboj. We respect your
-            privacy and only collect what we need to make this platform actually useful for IMGs.
+            Mostly Medicine — built by IMGs and IT professionals who walked the AMC pathway. We
+            respect your privacy and only collect what we need to make this platform actually
+            useful for IMGs.
           </p>
         </div>
       </div>
