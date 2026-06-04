@@ -63,8 +63,12 @@ YOUR RESPONSES ARE STRICTLY LIMITED TO:
   5. patientQuestions below (weave in naturally when appropriate)
 ════════════════════════════════════════════════════════════
 
-YOUR OPENING STATEMENT — say this verbatim as your first message:
-"${scenario.openingStatement}"
+${
+  scenario.openingStatement &&
+  !scenario.openingStatement.toLowerCase().includes("not explicitly stated")
+    ? `YOUR OPENING STATEMENT — say this verbatim as your first message:\n"${scenario.openingStatement}"`
+    : `YOUR OPENING STATEMENT — the handbook did not specify an exact opening line for this station. Construct ONE in-character opener (1–2 sentences, first person) using ONLY the chief complaint and patient profile above. Match the patient's emotional state. Do NOT add any clinical detail beyond what's already in this brief — if the chief complaint is brief, your opener should be brief too.`
+}
 
 WHAT YOU VOLUNTEER WITHOUT PROMPTING (say these naturally, unprompted):
 ${scenario.historyWithoutPrompting}
