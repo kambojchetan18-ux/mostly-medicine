@@ -8,6 +8,8 @@ import VoiceControls from "@/components/VoiceControls";
 import FunLoading from "@/components/FunLoading";
 import MentorMessage from "@/components/MentorMessage";
 import { cleanForDisplay } from "@/lib/clean-message";
+import PatientAvatar from "@/components/PatientAvatar";
+import { buildPatientPersona } from "@/lib/patientPersona";
 
 const ROLEPLAY_SECONDS = 8 * 60;
 
@@ -42,6 +44,18 @@ export default function PlayClient({
   initialMessages,
 }: Props) {
   const router = useRouter();
+  // Deterministic patient persona — seed off sessionId so the same case
+  // session renders the same avatar on every revisit / refresh.
+  const patientPersona = useMemo(
+    () =>
+      buildPatientPersona(
+        sessionId,
+        // Synthetic profile so the parser picks up sex; age unknown here.
+        `${patientName} (${patientGender}).`,
+        patientName
+      ),
+    [sessionId, patientName, patientGender]
+  );
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -280,9 +294,10 @@ export default function PlayClient({
           session button drop below the patient identity instead of
           overflowing the line. */}
       <div className="sticky top-0 z-10 -mx-3 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-gray-200 bg-white/85 px-3 py-2 backdrop-blur sm:-mx-0 sm:rounded-xl sm:border sm:px-4">
+        <PatientAvatar persona={patientPersona} size={48} className="shrink-0" />
         <div className="flex flex-col min-w-0">
           <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Patient</span>
-          <span className="text-sm font-semibold text-gray-900 truncate">{patientName}</span>
+          <span className="text-sm font-semibold text-gray-900 truncate">{patientPersona.name}</span>
         </div>
         <span className="hidden text-xs text-gray-400 sm:inline">·</span>
         <div className="hidden flex-col sm:flex">
@@ -354,7 +369,10 @@ export default function PlayClient({
           </p>
         ) : (
           messages.map((m) => (
-            <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div key={m.id} className={`flex items-end gap-2 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              {m.role === "assistant" && (
+                <PatientAvatar persona={patientPersona} size={32} background={false} className="shrink-0" />
+              )}
               <div
                 className={`max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                   m.role === "user"
@@ -369,12 +387,15 @@ export default function PlayClient({
         )}
         {sending && (
           <div className="flex flex-col items-start gap-1">
-            <div className="rounded-2xl rounded-bl-sm border border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
-              <span className="inline-flex gap-1">
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
-              </span>
+            <div className="flex items-end gap-2">
+              <PatientAvatar persona={patientPersona} size={32} background={false} className="shrink-0" />
+              <div className="rounded-2xl rounded-bl-sm border border-gray-200 bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
+                <span className="inline-flex gap-1">
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400" />
+                </span>
+              </div>
             </div>
             <FunLoading
               pool={[

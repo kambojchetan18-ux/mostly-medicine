@@ -12,6 +12,8 @@ import VoiceControls from "@/components/VoiceControls";
 import { cleanForDisplay } from "@/lib/clean-message";
 import FunLoading from "@/components/FunLoading";
 import { features } from "@/config/features";
+import PatientAvatar from "@/components/PatientAvatar";
+import { buildPatientPersona } from "@/lib/patientPersona";
 
 // ── Timer config ──────────────────────────────────────────────────────────────
 
@@ -161,6 +163,12 @@ export default function Cat2Client() {
   const { gender, age } = activeScenarioData
     ? parsePatientProfile(activeScenarioData.patientProfile)
     : { gender: "unknown" as const, age: null };
+  // Deterministic patient persona for the active scenario — avatar + name
+  // are derived from scenario.id so the same scenario always renders the
+  // same Margaret Johnson, every time.
+  const activePersona = activeScenarioData
+    ? buildPatientPersona(activeScenarioData.id, activeScenarioData.patientProfile)
+    : null;
 
   // sendMessage must be defined before useWhisperSTT so the stopRecording
   // wrapper below can flush the buffered transcript to it on mic-stop.
@@ -575,23 +583,31 @@ export default function Cat2Client() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {scenarios.map((s) => {
-            const { gender: g, age: a } = parsePatientProfile(s.patientProfile);
+            const persona = buildPatientPersona(s.id, s.patientProfile);
             return (
               <button
                 key={s.id}
                 onClick={() => enterReading(s.id)}
                 className="bg-white border border-gray-200 rounded-2xl p-5 text-left hover:shadow-md hover:border-brand-400 transition group"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="text-4xl">{getPatientEmoji(g, a)}</div>
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${difficultyColor[s.difficulty]}`}>
-                    {s.difficulty}
-                  </span>
+                <div className="flex items-start gap-3 mb-3">
+                  <PatientAvatar persona={persona} size={56} className="shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{persona.name}</p>
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 ${difficultyColor[s.difficulty]}`}>
+                        {s.difficulty}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                      {persona.demographic ?? `${s.category} · Condition ${s.mcatNumber}`}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">{s.title}</h3>
-                <p className="text-sm text-gray-500 mb-2">{s.category} · Condition {s.mcatNumber}</p>
+                <h3 className="font-semibold text-gray-800 text-sm mb-1 leading-snug">{s.title}</h3>
+                <p className="text-xs text-gray-500 mb-2">{s.category} · Condition {s.mcatNumber}</p>
                 <p className="text-xs text-gray-400 italic leading-relaxed line-clamp-2">
-                  "{s.openingStatement}"
+                  &ldquo;{s.openingStatement}&rdquo;
                 </p>
                 <p className="text-[10px] text-gray-300 mt-2 truncate">📋 {s.source}</p>
               </button>
@@ -662,14 +678,26 @@ export default function Cat2Client() {
       <div className="flex flex-wrap items-center justify-between gap-y-2 mb-4 bg-white border border-gray-200 rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className="text-3xl sm:text-4xl">{emoji}</div>
+            {activePersona ? (
+              <PatientAvatar persona={activePersona} size={56} />
+            ) : (
+              <div className="text-3xl sm:text-4xl">{emoji}</div>
+            )}
             {speaking && (
               <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-500 rounded-full animate-ping" />
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <h2 className="text-sm font-bold text-gray-900 break-words">{activeScenarioData?.title}</h2>
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 break-words">
+                {activePersona?.name ?? "Patient"}
+              </h2>
+              {activePersona?.demographic && (
+                <span className="text-xs text-gray-500">{activePersona.demographic}</span>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+              <span className="text-xs text-gray-600 break-words font-medium truncate">{activeScenarioData?.title}</span>
               <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${difficultyColor[activeScenarioData?.difficulty ?? "Medium"]}`}>
                 {activeScenarioData?.difficulty}
               </span>
@@ -677,7 +705,6 @@ export default function Cat2Client() {
                 {timerMode}
               </span>
             </div>
-            <p className="text-xs text-gray-500 break-words">{activeScenarioData?.category} · {activeScenarioData?.patientProfile}</p>
             {speaking && (
               <div className="flex items-center gap-2 mt-1">
                 <WaveformBars active={speaking} color="bg-brand-400" />
@@ -746,7 +773,13 @@ export default function Cat2Client() {
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             {m.role === "assistant" && (
-              <div className="text-2xl mr-2 self-end mb-1">{emoji}</div>
+              <div className="mr-2 self-end mb-1 shrink-0">
+                {activePersona ? (
+                  <PatientAvatar persona={activePersona} size={32} background={false} />
+                ) : (
+                  <div className="text-2xl">{emoji}</div>
+                )}
+              </div>
             )}
             <div
               className={`max-w-[85%] sm:max-w-[78%] rounded-2xl px-4 py-2.5 text-sm break-words [overflow-wrap:anywhere] ${
@@ -756,7 +789,9 @@ export default function Cat2Client() {
               }`}
             >
               {m.role === "assistant" && (
-                <p className="text-xs font-semibold text-gray-400 mb-1">Patient</p>
+                <p className="text-xs font-semibold text-gray-400 mb-1">
+                  {activePersona?.firstName ?? "Patient"}
+                </p>
               )}
               {m.role === "assistant" ? cleanForDisplay(m.content) : m.content}
             </div>
@@ -764,7 +799,13 @@ export default function Cat2Client() {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="text-2xl mr-2 self-end mb-1">{emoji}</div>
+            <div className="mr-2 self-end mb-1 shrink-0">
+              {activePersona ? (
+                <PatientAvatar persona={activePersona} size={32} background={false} />
+              ) : (
+                <div className="text-2xl">{emoji}</div>
+              )}
+            </div>
             <div className="bg-gray-100 rounded-2xl px-4 py-3 flex items-center gap-2">
               <div className="flex items-center gap-1">
                 {[0, 1, 2].map(i => (
