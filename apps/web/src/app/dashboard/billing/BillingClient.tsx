@@ -314,7 +314,7 @@ export default function BillingClient({ subscription, prices, mode, flash, mockR
           <span className="absolute -top-3 left-6 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold text-white">MOST POPULAR</span>
           <h2 className="text-lg font-bold text-gray-900">⭐ Pro</h2>
           <p className="mt-1 text-3xl font-bold text-gray-900">
-            A${cadence === "monthly" ? "19" : "190"}
+            A${cadence === "monthly" ? "29" : "290"}
             <span className="text-sm font-normal text-gray-500">/{cadence === "monthly" ? "mo" : "yr"}</span>
           </p>
           <p className="text-xs text-gray-500">Clinical practice unlocked</p>
