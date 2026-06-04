@@ -39,20 +39,18 @@ Prioritise answering questions related to this topic first, but you can answer
 other clinical questions if asked.
 `.trim()
 
-export const NOTE_SUMMARY_PROMPT = (extractedText: string) => `
+// Static system instructions — kept separate from the variable note text so the
+// system block can be cached (cache_control) across every upload. The extracted
+// text is passed as the user message in the route.
+export const NOTE_SUMMARY_SYSTEM = `
 You are summarising a medical study note uploaded by a student preparing for the AMC exam.
 
-Read the following text and provide a 2-3 sentence summary that captures:
+Read the text the user provides and reply with a 2-3 sentence summary that captures:
 - The main topic or subject
 - Key clinical or exam-relevant points
 - The apparent source or type of content (e.g. lecture notes, textbook excerpt, personal notes)
 
 Be concise. This summary will appear on a card in the user's notes library.
-
-Text to summarise:
----
-${extractedText.slice(0, 3000)}
----
 
 Respond with only the summary, no preamble.
 `.trim()

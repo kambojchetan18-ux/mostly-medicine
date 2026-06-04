@@ -4,6 +4,26 @@
 -- restricted WHICH row (auth.uid() = id) — not which columns. Lock it down
 -- via column-level GRANTs.
 
+-- 0) is_user_admin(): admin-check helper used by the policy below (and in 041).
+--    It was originally created out-of-band directly on the remote DB and never
+--    lived in a migration, so a fresh `supabase db reset` failed here with
+--    "function is_user_admin() does not exist". Defining it at the top of its
+--    first user closes that drift. SECURITY DEFINER so it bypasses RLS and does
+--    NOT recurse when called from inside a user_profiles policy. Mirrors the
+--    exact definition already live on the remote project.
+create or replace function public.is_user_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce(
+    (select role = 'admin' from public.user_profiles where id = auth.uid()),
+    false
+  );
+$$;
+
 -- 1) Revoke the broad table-level UPDATE from anon + authenticated.
 revoke update on public.user_profiles from anon;
 revoke update on public.user_profiles from authenticated;

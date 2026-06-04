@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { NOTE_SUMMARY_PROMPT } from "@/lib/prompts";
+import { NOTE_SUMMARY_SYSTEM } from "@/lib/prompts";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
@@ -35,7 +35,10 @@ async function generateSummary(text: string): Promise<string> {
   const message = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 256,
-    messages: [{ role: "user", content: NOTE_SUMMARY_PROMPT(text) }],
+    system: [
+      { type: "text", text: NOTE_SUMMARY_SYSTEM, cache_control: { type: "ephemeral" } },
+    ] as unknown as Anthropic.TextBlockParam[],
+    messages: [{ role: "user", content: `Text to summarise:\n---\n${text.slice(0, 3000)}\n---` }],
   });
   const block = message.content[0];
   return block.type === "text" ? block.text : "";

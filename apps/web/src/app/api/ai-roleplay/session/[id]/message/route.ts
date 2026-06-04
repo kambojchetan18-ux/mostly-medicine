@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { streamRoleplayReply } from "@/lib/ai-roleplay/roleplay";
 import { checkModulePermission } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import type { CaseVariant } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 
@@ -31,6 +32,16 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     return Response.json(
       { error: "Your plan does not include AMC Clinical AI RolePlay." },
       { status: 403 }
+    );
+  }
+
+  // Defense-in-depth: per-user rolling-window throttle so a single user can't
+  // open many tabs and burn the Anthropic budget faster than a human converses.
+  const rl = await aiRateLimit(clientKey(req, "acrp-message", user.id), { max: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return Response.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } }
     );
   }
 
