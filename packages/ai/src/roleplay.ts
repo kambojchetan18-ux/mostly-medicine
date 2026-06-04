@@ -1,10 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getScenario } from "./scenarios";
 
-const client = new Anthropic();
+let _client: Anthropic | null = null;
+function client(): Anthropic {
+  if (!_client) _client = new Anthropic();
+  return _client;
+}
 
 interface Message {
-  role: string;
+  role: "user" | "assistant" | "system";
   content: string;
 }
 
@@ -159,10 +163,10 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
     });
   }
 
-  const response = await client.messages.create({
+  const response = await client().messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
-    system: systemPrompt,
+    system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }] as unknown as Anthropic.TextBlockParam[],
     messages: apiMessages,
   });
 
