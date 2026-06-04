@@ -4,21 +4,47 @@ Follow these steps in order to flip Mostly Medicine from Stripe **test** to **li
 The codebase fails fast on mismatched keys — see `assertStripeConfig()` in
 `apps/web/src/lib/stripe.ts`.
 
+> **Status as of 2026-06-04**
+> - Founder promo: **98/100 slots used, all 30-day windows expired (latest expiry 2026-05-31)**.
+>   That means no existing user will feel cheated by the paid flip — the promo has effectively
+>   completed its run. Verified via `is_user_effectively_pro()` against `user_profiles`.
+> - Active paying subscribers: **1** (test-mode), period_end 2026-06-14. Two other "enterprise"
+>   rows are manual grants with no Stripe IDs (family / internal).
+> - Founders Chetan + Amandeep received **Australian PR on 2026-06-01** — payouts can now be
+>   routed to Amandeep's AU bank account without visa restrictions.
+
 ---
 
 ## 1. Stripe Dashboard (live mode)
 
 1. Toggle the dashboard from **Test mode** to **Live mode** (top-right switch).
-2. Recreate the products under **Products → Add product**:
+2. Recreate (or **unarchive** — Chetan unarchived the existing catalog on 2026-06-04) the
+   products under **Products → Add product**:
    - **Pro**
-     - Monthly recurring price (e.g. AUD 19.00)
-     - Yearly recurring price (e.g. AUD 190.00)
+     - Monthly recurring price (AUD — see "Pricing" section below)
+     - Yearly recurring price
    - **Enterprise**
-     - Monthly recurring price (e.g. AUD 49.00)
-     - Yearly recurring price (e.g. AUD 490.00)
+     - Monthly recurring price
+     - Yearly recurring price
 3. Open each price and copy its **price id** (`price_...`). You need four ids total.
-4. Go to **Developers → Webhooks → Add endpoint**.
-   - URL: `https://mostlymedicine.com/api/billing/webhook`
+
+   > **Shortcut:** `scripts/stripe-setup.ts` will create/find the products + prices + webhook
+   > and print the env block ready to paste. Run with the locked AUD launch prices:
+   > ```bash
+   > STRIPE_SECRET_KEY=sk_live_... \
+   >   npx ts-node --project scripts/tsconfig.json --transpile-only \
+   >   scripts/stripe-setup.ts \
+   >   --currency aud \
+   >   --pro-monthly 29 --pro-yearly 290 \
+   >   --enterprise-monthly 49 --enterprise-yearly 490 \
+   >   --webhook-url https://www.mostlymedicine.com/api/billing/webhook
+   > ```
+   > Note: existing test-mode products were already unarchived on 2026-06-04. The script will
+   > **find-or-create** — it'll reuse anything that already matches (same name + amount +
+   > interval + currency) and only create what's missing.
+
+4. Go to **Developers → Webhooks → Add endpoint** (the setup script does this automatically).
+   - URL: `https://www.mostlymedicine.com/api/billing/webhook`
    - Events to send:
      - `checkout.session.completed`
      - `customer.subscription.created`
@@ -27,9 +53,94 @@ The codebase fails fast on mismatched keys — see `assertStripeConfig()` in
      - `invoice.payment_failed`
    - Save, then click **Reveal signing secret** and copy `whsec_...`.
 
+5. **Payouts → Amandeep's AU bank account** (PR confirmed 2026-06-01):
+   - Stripe Dashboard → **Settings → Payouts → Bank accounts and scheduling**.
+   - Add Amandeep's Australian bank account (BSB + account number). Stripe accepts AU bank
+     details directly for AUD payouts; no Wise/intermediate hop needed now that AU PR is in
+     place.
+   - Set the **business representative** to Amandeep on **Settings → Business**
+     if she should be the legal owner of payouts. Otherwise leave Chetan as representative
+     and just add her bank as the destination account.
+   - Choose payout schedule: **weekly** is a sensible default (daily creates noise, monthly
+     hides churn signals).
+   - Verify Tax → AU GST registration status. If MRR crosses A$75k/yr you must register; for
+     launch it's fine to leave unregistered until that threshold approaches.
+
 ---
 
-## 2. Vercel Environment Variables (Production)
+## 2. Pricing (locked 2026-06-04)
+
+Decision context: competitor research (June 2026) showed Mostly Medicine was significantly
+underpriced for the AI-voice OSCE category. Direct AU comp **OSCELab** charges A$199/yr for
+text-heavy AI OSCE; **rehearseMD Elite** (voice + examiner) A$383/yr; **AMBOSS** clinician
+~A$397/yr. Old A$19/mo Pro put us in plain-text Qbank zone (Pulsenotes territory) despite
+the AI voice + examiner moat.
+
+**Locked launch tier:**
+
+| Plan | Monthly | Yearly | Notes |
+|---|---|---|---|
+| **Pro** | A$29 | A$290 | Unlimited MCQs + AMC Handbook AI RolePlay + Solo Clinical AI. Yearly = ~17% off vs 12× monthly. **Bumped from A$19** — first raise since beta. |
+| **Enterprise** | A$49 | A$490 | Everything in Pro + Peer Live Video RolePlay + priority support. **Unchanged** — keeps the Pro→Enterprise upgrade gap accessible for live-video users. |
+
+The codebase reads these as 4 env vars (`STRIPE_PRICE_*`). Changing prices later = create new
+Stripe price IDs + update the env vars + redeploy. The old price IDs can stay attached to
+existing subscribers (Stripe never auto-migrates).
+
+### 2.1 Tactical levers (planned alongside the price bump)
+
+These three additions extend the pricing strategy; each needs separate implementation work
+and is **not** part of the env-var flip.
+
+1. **Free tier with daily caps** (top-of-funnel)
+   - 5 MCQs + 1 AI Solo RolePlay station per day for unauthenticated and free-tier users.
+   - Mirrors OSCELab / rehearseMD funnel pattern.
+   - Implementation: extend `BETA_DAILY_LIMITS` semantics from `apps/web/src/config/features.ts`
+     to apply to `plan = 'free'` once `betaMode = false`, plus update landing-page CTA copy
+     to surface the free-trial offer.
+
+2. **AMC Pass Pack — A$390 one-time, pass-or-extend guarantee**
+   - One-time payment buys access until user passes AMC (verified via uploaded result or
+     self-attestation with optional spot-check).
+   - Mirrors OSCELab's pass-or-extend differentiator. Converts cost-anxious IMGs who balk
+     at subscription anxiety.
+   - Implementation: new Stripe one-time price `STRIPE_PRICE_AMC_PASS_PACK`, new
+     `user_profiles.pass_pack_active` boolean + `pass_pack_purchased_at` timestamp, new
+     migration, treat as "permanent Pro" in `isEffectivelyPro()`.
+
+3. **Founder discount A$199/yr Pro** (first 100 buyers, 60-day window)
+   - Urgency play during the post-PR relaunch. Window: **2026-06-04 → 2026-08-03**.
+   - Reuses the existing `founder_rank` infrastructure but introduces a separate
+     `founder_price_cohort` tier so the original 30-day-free founders (rank 1–100, all
+     expired 2026-05-31) and the new discounted-yearly founders don't collide.
+   - Implementation: new Stripe price `STRIPE_PRICE_PRO_YEARLY_FOUNDER`, new column
+     `user_profiles.founder_price_locked_until`, new admin counter to enforce the 100 cap
+     across this second cohort.
+
+These three are **deliberately deferred** until after the basic A$29/A$49 flip is live and
+stable. Don't bundle them with the env-var flip — ship in this order:
+1. Env flip (this doc)
+2. Free tier daily-cap logic
+3. Founder discount yearly price
+4. Pass Pack one-time price
+
+### 2.2 Gurminder (current paying customer) — re-subscribe email
+
+`dr.gurmindersingh.inbox@gmail.com` has an active test-mode subscription that ends
+2026-06-14. After the env flip, his test sub will be invisible to live-mode Stripe and the
+daily resync cron will downgrade him to free.
+
+Plan: **send a re-subscribe email before 2026-06-13** with two paths:
+- Path A: re-subscribe at A$29/mo (post-launch standard)
+- Path B: lock in the founder-yearly A$199/yr (if lever #3 is shipped by then)
+
+Draft to send via Resend (template in `apps/web/src/lib/emails/`). Personalise with his
+first name, beta cohort thank-you, and a one-click checkout link. Do NOT auto-grant comp
+Pro — the email + discount offer is the agreed approach, not silent extension.
+
+---
+
+## 3. Vercel Environment Variables (Production)
 
 Go to **Vercel → Project → Settings → Environment Variables → Production**.
 Update or add the following. All must be set on the **Production** environment.
@@ -44,17 +155,19 @@ Update or add the following. All must be set on the **Production** environment.
 | `STRIPE_PRICE_ENTERPRISE_MONTHLY` | live price id for Enterprise monthly |
 | `STRIPE_PRICE_ENTERPRISE_YEARLY` | live price id for Enterprise yearly |
 | `CRON_SECRET` | any random 32+ char string (for the daily resync cron) |
+| `NEXT_PUBLIC_PAID_TIERS_ENABLED` | `true` ← **the billing UI kill-switch** |
+| `NEXT_PUBLIC_BETA_MODE` | `false` ← **stops treating every user as Pro** |
 
 After saving, redeploy production so the new env vars take effect.
 
 ---
 
-## 3. Smoke Test with a Real Card
+## 4. Smoke Test with a Real Card
 
 Use a real card with a small price (drop the Pro monthly price to AUD 0.50 for
 the test if you want, then bump it back).
 
-1. Sign in to `https://mostlymedicine.com` as a real user.
+1. Sign in to `https://www.mostlymedicine.com` as a real user.
 2. Go to `/dashboard/billing`.
 3. Confirm the **TEST mode banner is gone** (it only appears when `pk_test_...` is configured).
 4. Click **Upgrade to Pro**. Pay with a real card.
@@ -70,24 +183,44 @@ the test if you want, then bump it back).
 
 ---
 
-## 4. Backfill Existing Users
+## 5. Backfill Existing Users
 
-Some users may have test-mode subscriptions that won't carry over. Run the
-resync cron once manually after the env switch:
+Two options — pick whichever is convenient:
+
+**Option A — cron endpoint (production):**
 
 ```bash
 curl -H "Authorization: Bearer $CRON_SECRET" \
-  https://mostlymedicine.com/api/cron/billing-resync
+  https://www.mostlymedicine.com/api/cron/billing-resync
 ```
 
-Then spot-check a few rows in `user_profiles` to confirm `plan` matches what
-Stripe says.
+**Option B — local script (more verbose, easier to debug):**
+
+```bash
+STRIPE_SECRET_KEY=sk_live_... \
+  NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
+  STRIPE_PRICE_PRO_MONTHLY=price_... STRIPE_PRICE_PRO_YEARLY=price_... \
+  STRIPE_PRICE_ENTERPRISE_MONTHLY=price_... STRIPE_PRICE_ENTERPRISE_YEARLY=price_... \
+  npx ts-node --project scripts/tsconfig.json --transpile-only \
+  scripts/stripe-resync-subscription.ts
+```
+
+Then spot-check a few rows in `user_profiles` to confirm `plan` matches what Stripe says.
+
+**Special case — existing test-mode subscriber (`dr.gurmindersingh.inbox@gmail.com`):**
+- Test-mode subscription won't carry over to live. Either keep them on a comp Pro via
+  `pro_until = now() + interval '1 year'` (admin SQL), or message them to re-subscribe via
+  the new live checkout. Period ends 2026-06-14 — decide before then.
 
 ---
 
-## 5. Rollback
+## 6. Rollback
 
 If anything looks wrong, in Vercel revert each env var to the previous test
-value and redeploy. The codebase will switch back to test mode automatically —
-no code change required. The TEST-mode banner will reappear on the billing
-page as confirmation.
+value (and set `NEXT_PUBLIC_PAID_TIERS_ENABLED=false`, `NEXT_PUBLIC_BETA_MODE=true`) and
+redeploy. The codebase will switch back to beta automatically — no code change required.
+The TEST-mode banner will reappear on the billing page as confirmation.
+
+Webhook events that fire during a rollback are still recorded into `billing_events` for
+idempotency, but `user_profiles` mutations are skipped while `betaMode = true`. So flipping
+back and forth is safe.
