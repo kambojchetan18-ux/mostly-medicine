@@ -104,7 +104,7 @@ export default async function FreeAccessCard() {
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
                 When you're ready
               </p>
-              <p className="text-xl font-bold text-white mb-1">Pro · A$19/mo</p>
+              <p className="text-xl font-bold text-white mb-1">Pro · A$29/mo</p>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Unlimited MCQs, unlimited Solo RolePlay, unlimited Handbook RolePlay,
                 spaced repetition, weak-area targeting, priority support.

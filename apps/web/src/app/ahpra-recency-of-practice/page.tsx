@@ -352,7 +352,7 @@ export default function Page() {
         </p>
         <p>
           {features.paidTiersEnabled ? (
-            <>Free at <Link href="/">mostlymedicine.com</Link> &mdash; Pro is A$19/mo if you want unlimited MCQs and clinical roleplay.</>
+            <>Free at <Link href="/">mostlymedicine.com</Link> &mdash; Pro is A$29/mo if you want unlimited MCQs and clinical roleplay.</>
           ) : (
             <>Free during beta at <Link href="/">mostlymedicine.com</Link> &mdash; every feature unlocked while we iterate.</>
           )}

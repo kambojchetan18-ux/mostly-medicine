@@ -364,7 +364,7 @@ export default function Page() {
           <li>Peer RolePlay for live station rehearsal with another IMG.</li>
         </ul>
         <p>
-          {features.paidTiersEnabled ? "Free tier is honest, Pro is A$19/mo." : "Mostly Medicine is in free beta — every feature unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>. If you&apos;re earlier in the pathway, the <Link href="/amc-vs-usmle-vs-plab">AMC vs USMLE vs PLAB page</Link> and <Link href="/amc-cat2">CAT 2 page</Link> are the natural next reads.
+          {features.paidTiersEnabled ? "Free tier is honest, Pro is A$29/mo." : "Mostly Medicine is in free beta — every feature unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>. If you&apos;re earlier in the pathway, the <Link href="/amc-vs-usmle-vs-plab">AMC vs USMLE vs PLAB page</Link> and <Link href="/amc-cat2">CAT 2 page</Link> are the natural next reads.
         </p>
 
         <h2>FAQ</h2>

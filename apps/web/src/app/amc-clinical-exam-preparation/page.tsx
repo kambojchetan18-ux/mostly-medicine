@@ -410,7 +410,7 @@ export default function Page() {
         <p>
           If you are currently in the 12-week window before sitting AMC Part 2, the <Link href="/osce-guide">OSCE Guide</Link> is the right starting point, and our <Link href="/calgary-cambridge-consultation">Calgary&ndash;Cambridge</Link>, <Link href="/spikes-protocol">SPIKES</Link> and <Link href="/socrates-pain-history">SOCRATES</Link> micro-guides are the right daily refreshers.
         </p>
-        <p>{features.paidTiersEnabled ? "Free tier is honest, Pro is A$19/mo." : "Mostly Medicine is in free beta — all features unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>.</p>
+        <p>{features.paidTiersEnabled ? "Free tier is honest, Pro is A$29/mo." : "Mostly Medicine is in free beta — all features unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>.</p>
 
         <h2>FAQ</h2>
         <div className="not-prose space-y-5 my-6">

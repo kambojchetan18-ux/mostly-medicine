@@ -173,7 +173,7 @@ export default function AskAiPage() {
           </h2>
           <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-xl mx-auto">
             {features.paidTiersEnabled
-              ? "Free plan: unlimited Ask AI inside the library, 20 MCQs/day, 1 Solo Clinical AI RolePlay/day, 1 AMC Handbook AI RolePlay/day. No credit card. Pro is A$19/mo only when you want unlimited."
+              ? "Free plan: unlimited Ask AI inside the library, 20 MCQs/day, 1 Solo Clinical AI RolePlay/day, 1 AMC Handbook AI RolePlay/day. No credit card. Pro is A$29/mo only when you want unlimited."
               : "Mostly Medicine is in free beta — sign up for unlimited Ask AI, MCQs, Clinical AI RolePlay, AMC Handbook AI RolePlay, and the full reference library. No card needed."}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">

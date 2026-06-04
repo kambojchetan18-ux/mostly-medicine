@@ -341,7 +341,7 @@ export default function Page() {
 
         <h2>How Mostly Medicine helps Pakistani candidates specifically</h2>
         <p>
-          Built for South-Asian IMGs by a team that walked the same documentation gauntlet: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal. {features.paidTiersEnabled ? "Pricing in AUD, free tier honest, Pro is A$19/mo (roughly PKR 3,800)." : "Free during beta — all features unlocked for signed-in candidates worldwide."} Pakistan-specific drilling: PBS first lines, Australian-context ethics and population-health items - the three areas Pakistani-trained candidates routinely under-score on.
+          Built for South-Asian IMGs by a team that walked the same documentation gauntlet: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal. {features.paidTiersEnabled ? "Pricing in AUD, free tier honest, Pro is A$29/mo (roughly PKR 5,800)." : "Free during beta — all features unlocked for signed-in candidates worldwide."} Pakistan-specific drilling: PBS first lines, Australian-context ethics and population-health items - the three areas Pakistani-trained candidates routinely under-score on.
         </p>
 
         <CitationHook n={4}>

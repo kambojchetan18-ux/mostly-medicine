@@ -831,7 +831,7 @@ export default function Cat2Client() {
               href="/dashboard/billing?next=/dashboard/cat2"
               className="inline-flex items-center justify-center rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm px-4 py-2 shadow shrink-0"
             >
-              Upgrade to Pro — A$19/mo →
+              Upgrade to Pro — A$29/mo →
             </Link>
           </div>
         </div>

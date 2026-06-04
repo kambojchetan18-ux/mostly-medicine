@@ -397,7 +397,7 @@ export default function Page() {
 
         <h2>Where Mostly Medicine fits</h2>
         <p>
-          If your decision points to Australia, the next concrete step is structured AMC prep. Mostly Medicine gives IMGs a 4,400+ MCQ bank tagged by Australian context (PBS, eTG, immunisation handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live practice with another IMG. {features.paidTiersEnabled ? "Free tier is honest, Pro is A$19/mo." : "Mostly Medicine is in free beta — all features unlocked."} Start at <Link href="/">mostlymedicine.com</Link>. For a three-way comparison see <Link href="/amc-vs-usmle-vs-plab">AMC vs USMLE vs PLAB</Link>.
+          If your decision points to Australia, the next concrete step is structured AMC prep. Mostly Medicine gives IMGs a 4,400+ MCQ bank tagged by Australian context (PBS, eTG, immunisation handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live practice with another IMG. {features.paidTiersEnabled ? "Free tier is honest, Pro is A$29/mo." : "Mostly Medicine is in free beta — all features unlocked."} Start at <Link href="/">mostlymedicine.com</Link>. For a three-way comparison see <Link href="/amc-vs-usmle-vs-plab">AMC vs USMLE vs PLAB</Link>.
         </p>
 
         <h2>FAQ</h2>

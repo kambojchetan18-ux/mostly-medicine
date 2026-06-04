@@ -838,7 +838,7 @@ export default function Cat1Client({
           <div className="p-6 space-y-4">
             <div className="flex items-baseline justify-between">
               <p className="text-sm font-semibold text-gray-800">⭐ Pro</p>
-              <p className="text-2xl font-bold text-gray-900 tabular-nums">A$19<span className="text-sm font-normal text-gray-500">/mo</span></p>
+              <p className="text-2xl font-bold text-gray-900 tabular-nums">A$29<span className="text-sm font-normal text-gray-500">/mo</span></p>
             </div>
             <ul className="space-y-1.5 text-sm text-gray-700">
               <li className="flex gap-2"><span className="text-amber-500">✓</span><span>Unlimited AMC MCQs</span></li>

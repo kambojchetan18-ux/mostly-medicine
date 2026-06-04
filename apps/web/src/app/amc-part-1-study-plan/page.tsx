@@ -524,7 +524,7 @@ export default function Page() {
         </ul>
         <p><strong>Question bank:</strong></p>
         <ul>
-          <li><Link href="/">Mostly Medicine MCQ bank</Link> &mdash; 4,400+ questions mapped to AMC topic areas, with performance tracking, wrong-answer log, and difficulty progression. {features.paidTiersEnabled ? "Start free, Pro is A$19/month." : "Free during beta — all features unlocked."} Built specifically for IMGs on the AMC pathway, with explanations tied to Australian guidelines rather than US or UK sources.</li>
+          <li><Link href="/">Mostly Medicine MCQ bank</Link> &mdash; 4,400+ questions mapped to AMC topic areas, with performance tracking, wrong-answer log, and difficulty progression. {features.paidTiersEnabled ? "Start free, Pro is A$29/month." : "Free during beta — all features unlocked."} Built specifically for IMGs on the AMC pathway, with explanations tied to Australian guidelines rather than US or UK sources.</li>
           <li>AMC Handbook of MCQs &mdash; book format, no adaptive tracking, but high validity for question style.</li>
         </ul>
         <p><strong>Australian clinical guidelines:</strong></p>
@@ -543,7 +543,7 @@ export default function Page() {
         <div className="not-prose my-10 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-6">
           <p className="text-sm font-semibold text-white mb-2">Start your AMC Part 1 prep today</p>
           <p className="text-sm text-slate-300 leading-relaxed mb-4">
-            Mostly Medicine&apos;s MCQ bank is free to try &mdash; 4,400+ questions mapped to AMC topic areas, wrong-answer log built in, performance tracked by system and difficulty. {features.paidTiersEnabled ? "Pro is A$19/month with no lock-in." : "Free during beta — every feature unlocked while we iterate."}
+            Mostly Medicine&apos;s MCQ bank is free to try &mdash; 4,400+ questions mapped to AMC topic areas, wrong-answer log built in, performance tracked by system and difficulty. {features.paidTiersEnabled ? "Pro is A$29/month with no lock-in." : "Free during beta — every feature unlocked while we iterate."}
           </p>
           <Link
             href="/auth/signup"

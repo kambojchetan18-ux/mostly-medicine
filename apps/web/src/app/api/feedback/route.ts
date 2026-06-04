@@ -19,7 +19,7 @@ function client() {
 
 // Pricing/billing block swaps depending on the feature flag so the assistant
 // stops quoting Pro/Enterprise prices while paid tiers are paused.
-const PAID_PRICING_BLOCK = `- Pricing: Free plan (limited MCQs), Pro A$19/mo or A$190/yr (everything in Free + AMC Handbook AI RolePlay + AMC Clinical AI RolePlay solo voice mode + examiner-style feedback), Enterprise A$49/mo or A$490/yr (everything in Pro + AMC Peer RolePlay live video with a partner).
+const PAID_PRICING_BLOCK = `- Pricing: Free plan (limited MCQs), Pro A$29/mo or A$290/yr (everything in Free + AMC Handbook AI RolePlay + AMC Clinical AI RolePlay solo voice mode + examiner-style feedback), Enterprise A$49/mo or A$490/yr (everything in Pro + AMC Peer RolePlay live video with a partner).
 - First 100 signups got Founder access — Pro free for 30 days. The cap is now full; new signups land on Free.
 - Payments processed by Stripe in AUD. Cancel anytime via the Billing Portal at /dashboard/billing → "Open Billing Portal".`;
 

@@ -24,7 +24,7 @@ const PAID_TIER_FAQS = [
     a: "First 100 signups got Founder access — full Pro features free for 30 days. Once that period ends you'll drop to Free unless you subscribe to Pro.",
   },
   {
-    q: "What's the difference between Pro (A$19/mo) and Enterprise (A$49/mo)?",
+    q: "What's the difference between Pro (A$29/mo) and Enterprise (A$49/mo)?",
     a: "Pro unlocks AMC Handbook AI RolePlay + AMC Clinical AI RolePlay (solo voice) + examiner-style feedback. Enterprise adds AMC Peer RolePlay (live video roleplay with another candidate) and higher daily limits.",
   },
 ];

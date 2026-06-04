@@ -462,7 +462,7 @@ export default function Page() {
 
         <h2>Where Mostly Medicine fits</h2>
         <p>
-          We don&apos;t sell English-test prep &mdash; IELTS and OET both have excellent free official materials and we don&apos;t think there&apos;s a Mostly Medicine wedge here. What Mostly Medicine <em>does</em> solve sits one step downstream: once your English is cleared, the AMC exam is the next bottleneck, and that is where most IMGs lose 6&ndash;12 months. {features.paidTiersEnabled ? "Free tier is honest, Pro is A$19/mo." : "Mostly Medicine is in free beta — every feature unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>.
+          We don&apos;t sell English-test prep &mdash; IELTS and OET both have excellent free official materials and we don&apos;t think there&apos;s a Mostly Medicine wedge here. What Mostly Medicine <em>does</em> solve sits one step downstream: once your English is cleared, the AMC exam is the next bottleneck, and that is where most IMGs lose 6&ndash;12 months. {features.paidTiersEnabled ? "Free tier is honest, Pro is A$29/mo." : "Mostly Medicine is in free beta — every feature unlocked."} Try it free at <Link href="/">mostlymedicine.com</Link>.
         </p>
         <p>
           If you&apos;re earlier in the pathway and still mapping the full AMC route, see our <Link href="/img-australia-pathway">IMG Australia Pathway page</Link>, the <Link href="/amc">AMC pillar</Link>, and our deep-dive on <Link href="/amc-vs-plab">AMC vs PLAB</Link>.

@@ -193,7 +193,7 @@ export default function LandingClient({
               href="/dashboard/billing"
               className="inline-flex items-center justify-center rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-700"
             >
-              Upgrade to Pro — A$19/mo →
+              Upgrade to Pro — A$29/mo →
             </Link>
           </div>
         </section>
