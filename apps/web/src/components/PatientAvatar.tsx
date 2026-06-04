@@ -1,9 +1,12 @@
 "use client";
 import { createAvatar } from "@dicebear/core";
-// In Dicebear v9 each style package exports its style as `create`; the
-// `@dicebear/collection` umbrella re-exports them under friendlier names
-// like `avataaars`. We import `create` directly to skip the umbrella dep.
-import { create as avataaars } from "@dicebear/avataaars";
+// In Dicebear v9 a "style" is the whole namespace { create, meta, schema },
+// not just the `create` function. Importing `{ create as avataaars }` gave
+// us a bare function that `createAvatar` then crashed on at runtime with
+// "l.create is not a function" — it expects style.create(options) and we
+// were passing the unwrapped create. Use a namespace import so the whole
+// module object is forwarded.
+import * as avataaars from "@dicebear/avataaars";
 import { useMemo } from "react";
 import type { PatientPersona } from "@/lib/patientPersona";
 
