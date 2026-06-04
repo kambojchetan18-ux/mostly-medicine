@@ -66,7 +66,7 @@ const newEntries = toAdd
   .sort((a, b) => numericId(a.mcatNumber) - numericId(b.mcatNumber))
   .map((s) => {
     const cat = ["C", "D", "M", "D/M", "LEO"].includes(s.category) ? s.category : "D";
-    const diff = ["Easy", "Medium", "Hard"].includes(s.difficulty) ? s.difficulty : "Medium";
+    const diff = ["easy", "medium", "hard"].includes(s.difficulty) ? s.difficulty : "medium";
     return `  // ── CONDITION ${s.mcatNumber} ────────────────────────────────────────────────────
   {
     id: ${numericId(s.mcatNumber)},

@@ -87,7 +87,7 @@ For each PDF, produce:
     - red_flags: array of clinical red flags the candidate must elicit (may be empty)
     - reference: short citation back to the source ("AMEDEX 2025 OBS slide deck", "Clinical study notes", etc.)
 - amc_exam_type: array containing one or both of "CAT 1", "CAT 2" — based on whether the content is more MCQ-relevant (CAT 1) or clinical roleplay-relevant (CAT 2)
-- difficulty: "Easy", "Medium", or "Hard" — title-case
+- difficulty: "easy", "medium", or "hard" — lowercase
 
 Rules:
 - Stay faithful to the source. Light condensation OK; never invent clinical facts.
@@ -113,7 +113,7 @@ const TOPIC_SCHEMA = {
       additionalProperties: false,
     },
     amc_exam_type: { type: "array", items: { type: "string", enum: ["CAT 1", "CAT 2"] }, minItems: 1 },
-    difficulty: { type: "string", enum: ["Easy", "Medium", "Hard"] },
+    difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
   },
   required: ["title", "system", "summary", "content", "amc_exam_type", "difficulty"],
   additionalProperties: false,
@@ -131,7 +131,7 @@ interface Topic {
     reference: string;
   };
   amc_exam_type: ("CAT 1" | "CAT 2")[];
-  difficulty: "Easy" | "Medium" | "Hard";
+  difficulty: "easy" | "medium" | "hard";
 }
 
 function pageCount(pdfPath: string): number {
