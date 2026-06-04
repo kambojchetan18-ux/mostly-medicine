@@ -163,6 +163,9 @@ importers:
       '@dicebear/core':
         specifier: 9.2.2
         version: 9.2.2
+      '@dicebear/personas':
+        specifier: 9.2.2
+        version: 9.2.2(@dicebear/core@9.2.2)
       '@mostly-medicine/ai':
         specifier: workspace:*
         version: link:../../packages/ai
@@ -1043,6 +1046,12 @@ packages:
   '@dicebear/core@9.2.2':
     resolution: {integrity: sha512-ROhgHG249dPtcXgBHcqPEsDeAPRPRD/9d+tZCjLYyueO+cXDlIA8dUlxpwIVcOuZFvCyW6RJtqo8BhNAi16pIQ==}
     engines: {node: '>=18.0.0'}
+
+  '@dicebear/personas@9.2.2':
+    resolution: {integrity: sha512-705+ObNLC0w1fcgE/Utav+8bqO+Esu53TXegpX5j7trGEoIMf2bThqJGHuhknZ3+T2az3Wr89cGyOGlI0KLzLA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@dicebear/core': ^9.0.0
 
   '@egjs/hammerjs@2.0.17':
     resolution: {integrity: sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==}
@@ -6227,6 +6236,10 @@ snapshots:
   '@dicebear/core@9.2.2':
     dependencies:
       '@types/json-schema': 7.0.15
+
+  '@dicebear/personas@9.2.2(@dicebear/core@9.2.2)':
+    dependencies:
+      '@dicebear/core': 9.2.2
 
   '@egjs/hammerjs@2.0.17':
     dependencies:

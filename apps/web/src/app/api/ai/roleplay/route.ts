@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { scenarioId, messages, requestFeedback } = await req.json();
+    const { scenarioId, messages, requestFeedback, patientName } = await req.json();
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback });
+    const reply = await createClinicalRoleplay({ scenarioId, messages, requestFeedback, patientName });
     return NextResponse.json({ reply });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

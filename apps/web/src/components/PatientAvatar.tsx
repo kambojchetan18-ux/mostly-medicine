@@ -1,12 +1,15 @@
 "use client";
 import { createAvatar } from "@dicebear/core";
-// In Dicebear v9 a "style" is the whole namespace { create, meta, schema },
-// not just the `create` function. Importing `{ create as avataaars }` gave
-// us a bare function that `createAvatar` then crashed on at runtime with
-// "l.create is not a function" — it expects style.create(options) and we
-// were passing the unwrapped create. Use a namespace import so the whole
-// module object is forwarded.
-import * as avataaars from "@dicebear/avataaars";
+// Dicebear v9 style packages export { create, meta, schema } as the whole
+// namespace — pass the namespace object, not the `create` function alone.
+//
+// Why `personas` instead of `avataaars`: avataaars renders an exaggerated
+// cartoon vibe that users on a high-stakes AMC clinical exam UI read as
+// "childish / fun toy", not "patient". The personas style is a modern
+// illustrated adult portrait (rounded but realistic proportions, no
+// oversized eyes, neutral clothing) which reads as a professional medical
+// illustration rather than a cartoon.
+import * as personas from "@dicebear/personas";
 import { useMemo } from "react";
 import type { PatientPersona } from "@/lib/patientPersona";
 
@@ -42,31 +45,20 @@ interface Props {
 //     25-year-old. This is a soft visual cue, not a strict mapping.
 export default function PatientAvatar({ persona, size = 96, className, background = true }: Props) {
   const dataUri = useMemo(() => {
-    // Style-specific options (hairColor / accessoriesProbability /
-    // facialHairProbability) live on the avataaars style's own schema,
-    // not on @dicebear/core's generic Options interface. Cast through
-    // `Parameters` since the core typing doesn't surface style overrides.
-    const greyHair = persona.age != null && persona.age >= 60;
+    // The personas style has its own option schema (hair, body, nose,
+    // mouth, eyes). We only need seed-based variation here — the seed
+    // alone produces a stable, demographically diverse pool of adult
+    // portraits. Keep the options minimal so we don't fight Dicebear's
+    // typing per release.
     const styleOpts: Record<string, unknown> = {
       seed: persona.avatarSeed,
       size,
-      hairColor: greyHair
-        ? ["gray", "silverGray", "auburn", "black"]
-        : persona.age != null && persona.age < 25
-          ? ["black", "brown", "brownDark"]
-          : undefined,
-      accessoriesProbability: persona.age != null && persona.age >= 55 ? 60 : 15,
-      facialHairProbability:
-        persona.sex === "male" && persona.age != null && persona.age >= 30 ? 40 : 5,
     };
-    // Dicebear v9's core type expects `Style<{}>` but each collection style
-    // narrows the option shape to its own schema. The runtime is happy with
-    // a plain object — cast through unknown to satisfy the compiler.
     return createAvatar(
-      avataaars as unknown as Parameters<typeof createAvatar>[0],
+      personas as unknown as Parameters<typeof createAvatar>[0],
       styleOpts as Parameters<typeof createAvatar>[1]
     ).toDataUri();
-  }, [persona.avatarSeed, persona.sex, persona.age, size]);
+  }, [persona.avatarSeed, size]);
 
   return (
     <div

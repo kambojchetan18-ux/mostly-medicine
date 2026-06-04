@@ -187,7 +187,15 @@ export default function Cat2Client() {
       const res = await fetch("/api/ai/roleplay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenarioId: activeScenario, messages: newMessages }),
+        body: JSON.stringify({
+          scenarioId: activeScenario,
+          messages: newMessages,
+          // Pass the UI's generated persona name so the patient AI says the
+          // same name in chat that the header shows — no more Wei Nguyen
+          // in the title bar while the AI introduces itself as David
+          // Morrison.
+          patientName: activePersona?.name,
+        }),
       });
       const data = await res.json();
       // Daily-limit gate: instead of injecting an in-character message

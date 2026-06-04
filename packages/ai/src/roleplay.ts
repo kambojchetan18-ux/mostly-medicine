@@ -12,12 +12,22 @@ interface RoleplayInput {
   scenarioId: number;
   messages: Message[];
   requestFeedback?: boolean;
+  /**
+   * Client-supplied patient persona name (e.g., "Margaret Johnson"). The
+   * UI generates this deterministically from the scenario id so the
+   * header label, the avatar, and the patient's self-introduction stay
+   * consistent. AMC Handbook scenarios don't carry canonical names, so
+   * without this the AI would improvise a different name on every
+   * "What's your name?" turn and contradict the header.
+   */
+  patientName?: string;
 }
 
 export async function createClinicalRoleplay({
   scenarioId,
   messages,
   requestFeedback = false,
+  patientName,
 }: RoleplayInput): Promise<string> {
   const scenario = getScenario(scenarioId);
   if (!scenario) throw new Error(`Scenario ${scenarioId} not found`);
@@ -27,6 +37,7 @@ export async function createClinicalRoleplay({
 STATION: ${scenario.mcatNumber} — ${scenario.title}
 SOURCE: AMC Handbook of Clinical Assessment — Condition ${scenario.mcatNumber}
 CATEGORY: ${scenario.category} (${scenario.subcategory})
+${patientName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${patientName}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
 
 PATIENT PROFILE:
 - ${scenario.patientProfile}

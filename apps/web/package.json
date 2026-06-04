@@ -17,6 +17,7 @@
     "@anthropic-ai/sdk": "^0.32.0",
     "@dicebear/avataaars": "^9.2.2",
     "@dicebear/core": "9.2.2",
+    "@dicebear/personas": "9.2.2",
     "@mostly-medicine/ai": "workspace:*",
     "@mostly-medicine/content": "workspace:*",
     "@mostly-medicine/ui": "workspace:*",
