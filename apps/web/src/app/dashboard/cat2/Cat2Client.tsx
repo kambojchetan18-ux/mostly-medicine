@@ -88,9 +88,9 @@ function isExaminerFeedback(text: string, messageCount: number) {
 }
 
 const difficultyColor: Record<string, string> = {
-  Easy: "bg-green-100 text-green-700",
-  Medium: "bg-yellow-100 text-yellow-700",
-  Hard: "bg-red-100 text-red-700",
+  easy: "bg-green-100 text-green-700",
+  medium: "bg-yellow-100 text-yellow-700",
+  hard: "bg-red-100 text-red-700",
 };
 
 // ── Waveform bars component ───────────────────────────────────────────────────
@@ -712,7 +712,7 @@ export default function Cat2Client() {
             </div>
             <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
               <span className="text-xs text-gray-600 break-words font-medium truncate">{activeScenarioData?.title}</span>
-              <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${difficultyColor[activeScenarioData?.difficulty ?? "Medium"]}`}>
+              <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${difficultyColor[activeScenarioData?.difficulty ?? "medium"]}`}>
                 {activeScenarioData?.difficulty}
               </span>
               <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
