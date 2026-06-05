@@ -3,7 +3,11 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
-const client = new Anthropic();
+let _client: Anthropic | null = null;
+function client() {
+  if (!_client) _client = new Anthropic();
+  return _client;
+}
 
 const SYSTEM = `You are an expert at parsing International Medical Graduate (IMG) CVs for Australian medical registration purposes.
 
@@ -85,7 +89,7 @@ export async function POST(req: NextRequest) {
       const bytes = await file.arrayBuffer();
       const base64 = Buffer.from(bytes).toString("base64");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      response = await (client.messages.create as any)({
+      response = await (client().messages.create as any)({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
         system: systemBlocks,
@@ -104,7 +108,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "No CV content provided" }, { status: 400 });
       }
       const text: string = cvText;
-      response = await client.messages.create({
+      response = await client().messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
         system: systemBlocks,
@@ -119,12 +123,22 @@ export async function POST(req: NextRequest) {
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
     const extracted = JSON.parse(jsonStr);
 
-    // Upsert into Supabase
+    const ALLOWED_FIELDS = [
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification",
+    ] as const;
+    const safeProfile: Record<string, unknown> = {};
+    for (const key of ALLOWED_FIELDS) {
+      if (key in extracted) safeProfile[key] = extracted[key];
+    }
+
     const { error: dbError } = await supabase
       .from("img_profiles")
       .upsert({
         id: user.id,
-        ...extracted,
+        ...safeProfile,
         cv_text: cvText ? cvText.slice(0, 20000) : null,
         updated_at: new Date().toISOString(),
       });

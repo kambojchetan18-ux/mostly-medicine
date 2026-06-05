@@ -8,7 +8,7 @@ export interface ScenarioMeta {
   title: string;
   category: "C" | "D" | "M" | "D/M" | "LEO";
   subcategory: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+  difficulty: "easy" | "medium" | "hard";
   source: string;
   patientProfile: string;
   chiefComplaint: string;

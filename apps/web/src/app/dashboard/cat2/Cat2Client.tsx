@@ -361,6 +361,12 @@ export default function Cat2Client() {
     }
   }
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
   // Auto-request feedback when timer reaches 0
   const feedbackRequestedRef = useRef(false);
   useEffect(() => {
