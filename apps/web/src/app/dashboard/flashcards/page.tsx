@@ -21,6 +21,40 @@ export default function FlashcardsHubPage() {
         </p>
       </header>
 
+      {/* AI generation + Anki import — surfaced first so users see the
+          "make your own" path before scrolling to packaged decks. */}
+      <section className="mb-6 grid gap-3 sm:grid-cols-2">
+        <Link
+          href="/dashboard/flashcards/generate"
+          className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-4 transition hover:border-emerald-300/50 hover:bg-emerald-500/15"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xl">✨</span>
+            <h3 className="text-base font-bold text-white">Generate from notes</h3>
+          </div>
+          <p className="mt-1.5 text-xs text-white/70">
+            Paste a lecture, RACGP guideline, or your revision notes → AU-cited cloze cards in
+            seconds. Powered by Claude Sonnet 4.6.
+          </p>
+        </Link>
+        <Link
+          href="/dashboard/flashcards/import"
+          className="rounded-2xl border border-sky-400/30 bg-sky-500/10 p-4 transition hover:border-sky-300/50 hover:bg-sky-500/15"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xl">📦</span>
+            <h3 className="text-base font-bold text-white">Import from Anki (.apkg)</h3>
+          </div>
+          <p className="mt-1.5 text-xs text-white/70">
+            Drag-drop your existing AnKing / Lyonsy / personal Anki deck. Notes + media land in
+            your library with FSRS-5 scheduling.
+          </p>
+        </Link>
+      </section>
+
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white/50">
+        Packaged decks
+      </h2>
       <section className="space-y-4">
         {decks.map((d) => (
           <Link
