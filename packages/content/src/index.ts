@@ -1,6 +1,10 @@
 export { seedQuestions } from "./questions";
 export type { MCQuestion } from "./questions";
 export * from "./rmo-pools";
+export * from "./flashcards";
+export { cardiologyFlashcards } from "./flashcards-cardiology";
+export { respiratoryFlashcards } from "./flashcards-respiratory";
+export { gastroFlashcards } from "./flashcards-gastro";
 
 import { seedQuestions } from "./questions";
 import { cardiovascularQuestions } from "./questions-cardiovascular";

@@ -1,5 +1,9 @@
 import Link from "next/link";
-import {cardiologyFlashcards} from "@mostly-medicine/content";
+import {
+  cardiologyFlashcards,
+  respiratoryFlashcards,
+  gastroFlashcards,
+} from "@mostly-medicine/content";
 
 const decks = [
   {
@@ -8,6 +12,20 @@ const decks = [
     description: "AF · HF · ACS · HTN · valvular · AMC mark-sheet aligned",
     count: cardiologyFlashcards.length,
     citation: "Murtagh · NHFA · RACGP · AMC handbook",
+  },
+  {
+    slug: "respiratory",
+    name: "Respiratory",
+    description: "Asthma · COPD · CAP · PE · pneumothorax · TB screening for IMGs",
+    count: respiratoryFlashcards.length,
+    citation: "Murtagh · NACA · eTG · COPD-X · Lung Foundation AU",
+  },
+  {
+    slug: "gastroenterology",
+    name: "Gastroenterology",
+    description: "GORD · H. pylori · IBD · coeliac · HBV/HCV · GI bleed · NBCSP",
+    count: gastroFlashcards.length,
+    citation: "Murtagh · eTG · GESA · ASHM · NHMRC · AMC handbook",
   },
 ];
 
