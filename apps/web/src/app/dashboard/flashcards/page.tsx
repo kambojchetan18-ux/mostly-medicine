@@ -35,8 +35,24 @@ export default function FlashcardsHubPage() {
       <header className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Flashcards</h1>
         <p className="mt-2 text-sm text-gray-600">
-          AMC-blueprint cloze cards. AU-guideline cited. Free.
+          AMC-blueprint cloze cards. AU-guideline cited. Reviewing packaged decks is free for
+          everyone; AI generation and Anki import have daily caps on Free —{" "}
+          <Link href="/dashboard/billing" className="font-semibold text-emerald-700 hover:underline">
+            Pro is unlimited
+          </Link>
+          .
         </p>
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+          <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700 ring-1 ring-emerald-200">
+            ✨ Generate: 3 / day Free · ∞ Pro
+          </span>
+          <span className="rounded-full bg-sky-50 px-2.5 py-1 text-sky-700 ring-1 ring-sky-200">
+            📦 Anki import: 1 / day Free · ∞ Pro
+          </span>
+          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-gray-600 ring-1 ring-gray-200">
+            🃏 Review: unlimited everyone
+          </span>
+        </div>
       </header>
 
       {/* AI generation + Anki import — surfaced first so users see the
