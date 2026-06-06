@@ -90,12 +90,12 @@ export function ImportClient() {
           "rounded-2xl border-2 border-dashed p-10 text-center transition",
           dragOver
             ? "border-brand-500 bg-brand-500/5"
-            : "border-white/15 bg-white/[0.03] hover:border-white/30",
+            : "border-white/15 bg-white hover:border-white/30",
           busy ? "opacity-75" : "",
         ].join(" ")}
       >
-        <p className="text-base font-semibold text-white">Drop a .apkg here</p>
-        <p className="mt-1 text-xs text-white/60">or</p>
+        <p className="text-base font-semibold text-gray-900">Drop a .apkg here</p>
+        <p className="mt-1 text-xs text-gray-600">or</p>
         <button
           type="button"
           disabled={busy}
@@ -111,13 +111,13 @@ export function ImportClient() {
           className="hidden"
           onChange={(e) => onFile(e.target.files?.[0])}
         />
-        <p className="mt-4 text-[11px] uppercase tracking-wider text-white/40">
+        <p className="mt-4 text-[11px] uppercase tracking-wider text-gray-500">
           Max 50 MB · Max 10,000 notes per file
         </p>
       </div>
 
       {busy && (
-        <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/80">
+        <div className="mt-5 rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-700">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 animate-pulse rounded-full bg-brand-500" />
             {status}
@@ -126,14 +126,14 @@ export function ImportClient() {
       )}
 
       {phase === "done" && result && (
-        <div className="mt-5 space-y-3 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] p-5 text-sm text-white">
+        <div className="mt-5 space-y-3 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] p-5 text-sm text-gray-900">
           <p className="text-base font-semibold">
             Imported {result.imported.toLocaleString()}{" "}
             {result.imported === 1 ? "card" : "cards"}
             {result.deck_name ? ` from ${result.deck_name}` : ""}.
           </p>
           {result.errors.length > 0 && (
-            <details className="text-xs text-white/70">
+            <details className="text-xs text-gray-600">
               <summary className="cursor-pointer">
                 {result.errors.length} non-fatal warning{result.errors.length === 1 ? "" : "s"}
               </summary>
@@ -154,7 +154,7 @@ export function ImportClient() {
             </button>
             <Link
               href="/dashboard/flashcards"
-              className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
+              className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-gray-900 hover:bg-white/10"
             >
               Back to flashcards
             </Link>
@@ -163,13 +163,13 @@ export function ImportClient() {
       )}
 
       {phase === "error" && (
-        <div className="mt-5 rounded-xl border border-red-500/30 bg-red-500/[0.06] p-4 text-sm text-white">
+        <div className="mt-5 rounded-xl border border-red-500/30 bg-red-500/[0.06] p-4 text-sm text-gray-900">
           <p className="font-semibold">Couldn&rsquo;t import.</p>
-          <p className="mt-1 text-white/80">{error}</p>
+          <p className="mt-1 text-gray-700">{error}</p>
           <button
             type="button"
             onClick={reset}
-            className="mt-3 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
+            className="mt-3 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-gray-900 hover:bg-white/10"
           >
             Try again
           </button>

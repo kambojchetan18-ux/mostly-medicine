@@ -33,8 +33,8 @@ export default function FlashcardsHubPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-white">Flashcards</h1>
-        <p className="mt-2 text-sm text-white/70">
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Flashcards</h1>
+        <p className="mt-2 text-sm text-gray-600">
           AMC-blueprint cloze cards. AU-guideline cited. Free.
         </p>
       </header>
@@ -44,33 +44,33 @@ export default function FlashcardsHubPage() {
       <section className="mb-6 grid gap-3 sm:grid-cols-2">
         <Link
           href="/dashboard/flashcards/generate"
-          className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-4 transition hover:border-emerald-300/50 hover:bg-emerald-500/15"
+          className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 transition hover:border-emerald-400 hover:bg-emerald-100"
         >
           <div className="flex items-center gap-2">
             <span className="text-xl">✨</span>
-            <h3 className="text-base font-bold text-white">Generate from notes</h3>
+            <h3 className="text-base font-bold text-gray-900">Generate from notes</h3>
           </div>
-          <p className="mt-1.5 text-xs text-white/70">
+          <p className="mt-1.5 text-xs text-gray-600">
             Paste a lecture, RACGP guideline, or your revision notes → AU-cited cloze cards in
             seconds. Powered by Claude Sonnet 4.6.
           </p>
         </Link>
         <Link
           href="/dashboard/flashcards/import"
-          className="rounded-2xl border border-sky-400/30 bg-sky-500/10 p-4 transition hover:border-sky-300/50 hover:bg-sky-500/15"
+          className="rounded-2xl border border-sky-200 bg-sky-50 p-4 transition hover:border-sky-400 hover:bg-sky-100"
         >
           <div className="flex items-center gap-2">
             <span className="text-xl">📦</span>
-            <h3 className="text-base font-bold text-white">Import from Anki (.apkg)</h3>
+            <h3 className="text-base font-bold text-gray-900">Import existing deck (.apkg)</h3>
           </div>
-          <p className="mt-1.5 text-xs text-white/70">
+          <p className="mt-1.5 text-xs text-gray-600">
             Drag-drop your existing AnKing / Lyonsy / personal Anki deck. Notes + media land in
             your library with FSRS-5 scheduling.
           </p>
         </Link>
       </section>
 
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white/50">
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
         Packaged decks
       </h2>
       <section className="space-y-4">
@@ -78,21 +78,21 @@ export default function FlashcardsHubPage() {
           <Link
             key={d.slug}
             href={`/dashboard/flashcards/${d.slug}`}
-            className="block rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:border-brand-500/40 hover:bg-white/[0.06]"
+            className="block rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-brand-500/40 hover:bg-gray-50"
           >
             <div className="flex items-baseline justify-between">
-              <h2 className="text-xl font-bold text-white">{d.name}</h2>
-              <span className="text-xs uppercase tracking-wider text-white/50">
+              <h2 className="text-xl font-bold text-gray-900">{d.name}</h2>
+              <span className="text-xs uppercase tracking-wider text-gray-500">
                 {d.count} cards
               </span>
             </div>
-            <p className="mt-1 text-sm text-white/70">{d.description}</p>
-            <p className="mt-3 text-xs text-white/40">Sourced: {d.citation}</p>
+            <p className="mt-1 text-sm text-gray-600">{d.description}</p>
+            <p className="mt-3 text-xs text-gray-500">Sourced: {d.citation}</p>
           </Link>
         ))}
       </section>
 
-      <p className="mt-10 text-xs text-white/40">
+      <p className="mt-10 text-xs text-gray-500">
         More decks (respiratory, GI, neuro, endo, OBGYN, paeds, pharm, ethics) coming as we
         validate the format with you. Comment on the launch reel if you want a specialty
         bumped up.

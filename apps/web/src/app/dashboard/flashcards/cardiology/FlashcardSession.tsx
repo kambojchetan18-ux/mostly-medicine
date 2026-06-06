@@ -19,10 +19,10 @@ const RATING_LABELS: Record<Rating, string> = {
 };
 
 const RATING_COLORS: Record<Rating, string> = {
-  again: "bg-rose-500/15 text-rose-200 hover:bg-rose-500/25 border-rose-400/30",
-  hard: "bg-amber-500/15 text-amber-200 hover:bg-amber-500/25 border-amber-400/30",
-  good: "bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/25 border-emerald-400/30",
-  easy: "bg-sky-500/15 text-sky-200 hover:bg-sky-500/25 border-sky-400/30",
+  again: "bg-rose-50 text-rose-700 hover:bg-rose-100 border-rose-300",
+  hard: "bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-300",
+  good: "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-300",
+  easy: "bg-sky-50 text-sky-700 hover:bg-sky-100 border-sky-300",
 };
 
 const renderCloze = (front: string, revealed: boolean) => {
@@ -40,7 +40,7 @@ const renderCloze = (front: string, revealed: boolean) => {
       parts.push(
         <span
           key={`c-${key++}`}
-          className="rounded bg-emerald-400/20 px-1.5 py-0.5 font-semibold text-emerald-200"
+          className="rounded bg-emerald-100 px-1.5 py-0.5 font-semibold text-emerald-800"
         >
           {text}
         </span>
@@ -49,7 +49,7 @@ const renderCloze = (front: string, revealed: boolean) => {
       parts.push(
         <span
           key={`c-${key++}`}
-          className="rounded bg-white/5 px-3 py-0.5 text-transparent shadow-inner"
+          className="rounded bg-gray-100 px-3 py-0.5 text-transparent shadow-inner"
           style={{
             background:
               "repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 6px, transparent 6px 12px)",
@@ -130,7 +130,7 @@ export function FlashcardSession({cards, deckName}: Props) {
 
   if (!card) {
     return (
-      <div className="mx-auto max-w-2xl px-6 py-20 text-center text-white/70">
+      <div className="mx-auto max-w-2xl px-6 py-20 text-center text-gray-600">
         No cards in this deck yet.
       </div>
     );
@@ -141,16 +141,16 @@ export function FlashcardSession({cards, deckName}: Props) {
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
       <header className="mb-6 flex items-center justify-between text-sm">
-        <Link href="/dashboard/flashcards" className="text-white/60 hover:text-white">
+        <Link href="/dashboard/flashcards" className="text-gray-600 hover:text-gray-900">
           ← All decks
         </Link>
-        <span className="text-white/50">
+        <span className="text-gray-500">
           {deckName} · {index + 1}/{cards.length}
         </span>
       </header>
 
       {/* progress bar */}
-      <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
         <div
           className="h-full bg-emerald-400 transition-all"
           style={{width: `${progress}%`}}
@@ -169,15 +169,15 @@ export function FlashcardSession({cards, deckName}: Props) {
           }}
         />
       ) : (
-        <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-7 shadow-2xl">
-          <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-wider text-white/40">
+        <article className="rounded-3xl border border-gray-200 bg-white p-7 shadow-2xl">
+          <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-wider text-gray-500">
             <span>{card.subtopic}</span>
             {card.mark_sheet_domain && (
-              <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px]">
+              <span className="rounded-full border border-gray-200 px-2 py-0.5 text-[10px]">
                 {card.mark_sheet_domain}
               </span>
             )}
-            <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px]">
+            <span className="rounded-full border border-gray-200 px-2 py-0.5 text-[10px]">
               {card.amc_part === "part_2_clinical"
                 ? "AMC Part 2"
                 : card.amc_part === "part_1"
@@ -185,16 +185,16 @@ export function FlashcardSession({cards, deckName}: Props) {
                   : "AMC Part 1 + 2"}
             </span>
           </div>
-          <p className="text-lg leading-relaxed text-white">
+          <p className="text-lg leading-relaxed text-gray-900">
             {renderCloze(card.front_md, revealed)}
           </p>
 
           {revealed && (
             <>
-              <hr className="my-5 border-white/10" />
-              <p className="text-base leading-relaxed text-white/80">{card.back_md}</p>
+              <hr className="my-5 border-gray-200" />
+              <p className="text-base leading-relaxed text-gray-700">{card.back_md}</p>
               {card.citation && (
-                <p className="mt-3 text-xs text-white/40">📖 {card.citation}</p>
+                <p className="mt-3 text-xs text-gray-500">📖 {card.citation}</p>
               )}
             </>
           )}
@@ -202,7 +202,7 @@ export function FlashcardSession({cards, deckName}: Props) {
           {!revealed ? (
             <button
               onClick={() => setRevealed(true)}
-              className="mt-6 w-full rounded-xl bg-white px-5 py-3 text-base font-bold text-slate-900 transition hover:bg-white/90"
+              className="mt-6 w-full rounded-xl bg-slate-900 px-5 py-3 text-base font-bold text-white transition hover:bg-slate-800"
             >
               Show answer · Space
             </button>
@@ -222,7 +222,7 @@ export function FlashcardSession({cards, deckName}: Props) {
         </article>
       )}
 
-      <p className="mt-6 text-center text-xs text-white/30">
+      <p className="mt-6 text-center text-xs text-gray-400">
         v1 will save your reviews and bring cards back with FSRS. For now this is a quick
         review carousel.
       </p>
@@ -242,24 +242,24 @@ function SessionSummary({
   onRestart: () => void;
 }) {
   return (
-    <div className="rounded-3xl border border-emerald-400/30 bg-emerald-400/[0.06] p-7 text-center shadow-2xl">
-      <h2 className="text-2xl font-extrabold text-white">Deck complete</h2>
-      <p className="mt-1 text-sm text-white/70">
+    <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-7 text-center shadow-2xl">
+      <h2 className="text-2xl font-extrabold text-gray-900">Deck complete</h2>
+      <p className="mt-1 text-sm text-gray-600">
         {total} {deckName.toLowerCase()} cards reviewed.
       </p>
       <div className="mt-6 grid grid-cols-4 gap-3 text-sm">
         {(["again", "hard", "good", "easy"] as Rating[]).map((r) => (
-          <div key={r} className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
-            <div className="text-xs uppercase tracking-wider text-white/50">
+          <div key={r} className="rounded-xl border border-gray-200 bg-white p-3">
+            <div className="text-xs uppercase tracking-wider text-gray-500">
               {RATING_LABELS[r]}
             </div>
-            <div className="mt-1 text-2xl font-bold text-white">{counts[r]}</div>
+            <div className="mt-1 text-2xl font-bold text-gray-900">{counts[r]}</div>
           </div>
         ))}
       </div>
       <button
         onClick={onRestart}
-        className="mt-8 rounded-xl bg-white px-6 py-3 text-base font-bold text-slate-900 transition hover:bg-white/90"
+        className="mt-8 rounded-xl bg-slate-900 px-6 py-3 text-base font-bold text-white transition hover:bg-slate-800"
       >
         Restart deck
       </button>

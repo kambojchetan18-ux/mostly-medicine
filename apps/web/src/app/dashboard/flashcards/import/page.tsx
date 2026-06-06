@@ -47,14 +47,14 @@ export default async function FlashcardsImportPage() {
       <header className="mb-8">
         <Link
           href="/dashboard/flashcards"
-          className="text-xs uppercase tracking-wider text-white/50 hover:text-white"
+          className="text-xs uppercase tracking-wider text-gray-500 hover:text-gray-900"
         >
           &larr; Flashcards
         </Link>
-        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white">
-          Import from Anki
+        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900">
+          Import existing deck
         </h1>
-        <p className="mt-2 text-sm text-white/70">
+        <p className="mt-2 text-sm text-gray-600">
           Drag and drop a .apkg file. We&rsquo;ll bring across your front, back, cloze,
           tags and any embedded media. Max 50 MB / 10,000 notes per file.
         </p>
@@ -64,17 +64,17 @@ export default async function FlashcardsImportPage() {
 
       {decks.length > 0 && (
         <section className="mt-12">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white/60">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-600">
             Recently imported
           </h2>
           <ul className="space-y-2">
             {decks.map((d) => (
               <li
                 key={d.name + d.imported_at}
-                className="flex items-baseline justify-between rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3"
+                className="flex items-baseline justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
               >
-                <span className="text-sm text-white">{d.name}</span>
-                <span className="text-xs uppercase tracking-wider text-white/50">
+                <span className="text-sm text-gray-900">{d.name}</span>
+                <span className="text-xs uppercase tracking-wider text-gray-500">
                   {d.count} {d.count === 1 ? "card" : "cards"}
                 </span>
               </li>

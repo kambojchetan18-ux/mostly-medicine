@@ -28,7 +28,7 @@ const RENDER_CLOZE = (text: string) => {
     return (
       <span
         key={i}
-        className="rounded bg-emerald-400/20 px-1.5 py-0.5 font-semibold text-emerald-200"
+        className="rounded bg-emerald-100 px-1.5 py-0.5 font-semibold text-emerald-800"
       >
         {m[1]}
       </span>
@@ -111,14 +111,14 @@ export default function GenerateClient() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-6 flex items-center justify-between text-sm">
-        <Link href="/dashboard/flashcards" className="text-white/60 hover:text-white">
+        <Link href="/dashboard/flashcards" className="text-gray-600 hover:text-gray-900">
           ← All decks
         </Link>
-        <span className="text-white/40">AI generation · Sonnet 4.6</span>
+        <span className="text-gray-500">AI generation · Sonnet 4.6</span>
       </header>
 
-      <h1 className="text-3xl font-extrabold tracking-tight text-white">Generate flashcards from notes</h1>
-      <p className="mt-2 text-sm text-white/70">
+      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Generate flashcards from notes</h1>
+      <p className="mt-2 text-sm text-gray-600">
         Paste a lecture summary, an AMC Handbook chapter, an RACGP guideline excerpt, or your own
         revision notes. Claude turns it into AU-cited cloze flashcards aligned with the AMC
         mark-sheet. You decide which ones to keep before they land in your library.
@@ -126,7 +126,7 @@ export default function GenerateClient() {
 
       <section className="mt-7 space-y-3">
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-white/50">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
             Deck name (optional)
           </label>
           <input
@@ -135,12 +135,12 @@ export default function GenerateClient() {
             onChange={(e) => setDeckName(e.target.value)}
             placeholder="e.g. Acute heart failure"
             maxLength={120}
-            className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
+            className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-white/50">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
             Your notes
           </label>
           <textarea
@@ -149,13 +149,13 @@ export default function GenerateClient() {
             placeholder={"Paste anything: a lecture transcript, RACGP guideline section, AMC handbook condition, hand-written revision notes…\n\nLonger and more structured = better cards. Aim for ≥ 200 chars."}
             rows={14}
             maxLength={12_000}
-            className="mt-1.5 w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm leading-relaxed text-white placeholder-white/30 outline-none focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
+            className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm leading-relaxed text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
           />
           <div className="mt-1 flex items-center justify-between text-xs">
-            <span className={tooShort ? "text-amber-300" : "text-white/40"}>
+            <span className={tooShort ? "text-amber-300" : "text-gray-500"}>
               {charCount}/12,000 characters{tooShort ? " — need at least 40 to generate" : ""}
             </span>
-            <span className="text-white/30">No medical advice · AU-cited only</span>
+            <span className="text-gray-400">No medical advice · AU-cited only</span>
           </div>
         </div>
 
@@ -163,14 +163,14 @@ export default function GenerateClient() {
           type="button"
           onClick={handleGenerate}
           disabled={generating || charCount < 40}
-          className="w-full rounded-xl bg-emerald-500 px-5 py-3 text-base font-bold text-slate-900 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
+          className="w-full rounded-xl bg-emerald-500 px-5 py-3 text-base font-bold text-slate-900 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
         >
           {generating ? "Generating cards…" : "Generate flashcards"}
         </button>
       </section>
 
       {error && (
-        <div className="mt-5 rounded-xl border border-rose-400/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+        <div className="mt-5 rounded-xl border border-rose-200 bg-rose-500/10 p-3 text-sm text-rose-200">
           {error}
         </div>
       )}
@@ -178,9 +178,9 @@ export default function GenerateClient() {
       {drafts.length > 0 && (
         <section className="mt-10">
           <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-gray-900">
               {resolvedDeckName}{" "}
-              <span className="text-sm font-normal text-white/50">
+              <span className="text-sm font-normal text-gray-500">
                 · {keptCount} of {drafts.length} kept
               </span>
             </h2>
@@ -188,7 +188,7 @@ export default function GenerateClient() {
               type="button"
               onClick={handleSave}
               disabled={saving || keptCount === 0}
-              className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-slate-900 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/30"
+              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
             >
               {saving ? "Saving…" : `Save ${keptCount} to library`}
             </button>
@@ -202,19 +202,19 @@ export default function GenerateClient() {
                   key={c.tempId}
                   className={`rounded-2xl border p-5 transition ${
                     isKept
-                      ? "border-white/10 bg-white/[0.03]"
-                      : "border-white/5 bg-white/[0.01] opacity-50"
+                      ? "border-gray-200 bg-white"
+                      : "border-gray-100 bg-gray-50 opacity-50"
                   }`}
                 >
-                  <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-white/40">
+                  <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-gray-500">
                     {c.subtopic && <span>{c.subtopic}</span>}
                     {c.mark_sheet_domain && (
-                      <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px]">
+                      <span className="rounded-full border border-gray-200 px-2 py-0.5 text-[10px]">
                         {c.mark_sheet_domain}
                       </span>
                     )}
                     {c.amc_part && (
-                      <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px]">
+                      <span className="rounded-full border border-gray-200 px-2 py-0.5 text-[10px]">
                         {c.amc_part === "part_2_clinical"
                           ? "AMC Part 2"
                           : c.amc_part === "part_1"
@@ -223,13 +223,13 @@ export default function GenerateClient() {
                       </span>
                     )}
                   </div>
-                  <p className="text-base leading-relaxed text-white">{RENDER_CLOZE(c.front_md)}</p>
+                  <p className="text-base leading-relaxed text-gray-900">{RENDER_CLOZE(c.front_md)}</p>
                   {c.back_md && (
                     <>
-                      <hr className="my-3 border-white/10" />
-                      <p className="text-sm leading-relaxed text-white/70">{c.back_md}</p>
+                      <hr className="my-3 border-gray-200" />
+                      <p className="text-sm leading-relaxed text-gray-600">{c.back_md}</p>
                       {c.citation && (
-                        <p className="mt-2 text-xs text-white/40">📖 {c.citation}</p>
+                        <p className="mt-2 text-xs text-gray-500">📖 {c.citation}</p>
                       )}
                     </>
                   )}
@@ -239,8 +239,8 @@ export default function GenerateClient() {
                       onClick={() => setKeep((p) => ({ ...p, [c.tempId]: !isKept }))}
                       className={`rounded-lg border px-3 py-1.5 font-semibold transition ${
                         isKept
-                          ? "border-rose-400/30 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20"
-                          : "border-emerald-400/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
+                          ? "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-500/20"
+                          : "border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-500/20"
                       }`}
                     >
                       {isKept ? "Drop" : "Keep"}
@@ -253,7 +253,7 @@ export default function GenerateClient() {
         </section>
       )}
 
-      <p className="mt-10 text-center text-xs text-white/30">
+      <p className="mt-10 text-center text-xs text-gray-400">
         AI cards are drafts. Always check against the original source — Mostly Medicine is a
         study tool, not a clinical reference.
       </p>
