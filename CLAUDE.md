@@ -63,6 +63,20 @@ SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 # constructing the RTCPeerConnection. If env missing the route returns 503
 # and the client falls back to STUN + Open Relay (free public TURN).
 
+# Patient voice — cloud TTS (ElevenLabs)
+#   ELEVENLABS_API_KEY                    # sk_... (from elevenlabs.io)
+#   ELEVENLABS_VOICE_FEMALE               # optional voice ID override
+#   ELEVENLABS_VOICE_MALE                 # optional voice ID override
+#
+# /api/tts streams ElevenLabs Flash v2.5 MP3 audio for the AI patient's reply.
+# Replaces the robotic browser Web Speech Synthesis (web) and expo-speech
+# (mobile) voices. Both clients try /api/tts first and fall back to the native
+# voice if it returns 503 (key missing — kill-switch) / 403 (plan) or if
+# playback is blocked. Mobile decodes the MP3 to a base64 data: URI and plays
+# it via expo-av Audio.Sound — no native rebuild needed (OTA-safe), unlike the
+# recording path. Defaults are British premade voices (closest to en-AU);
+# override with any voice ID from your ElevenLabs library.
+
 # Peer RolePlay — server-side STT (Groq Whisper)
 #   GROQ_API_KEY                          # gsk_... (from console.groq.com/keys)
 #

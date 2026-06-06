@@ -39,6 +39,53 @@ function fmt(s: number) {
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 }
 
+// Dependency-free base64 of a binary buffer, so we can hand ElevenLabs MP3
+// audio to expo-av as a data: URI without pulling in expo-file-system (which
+// would force a native rebuild). Standard base64 alphabet + padding.
+const B64_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+function arrayBufferToBase64(buf: ArrayBuffer): string {
+  const bytes = new Uint8Array(buf);
+  let out = '';
+  for (let i = 0; i < bytes.length; i += 3) {
+    const b0 = bytes[i];
+    const b1 = i + 1 < bytes.length ? bytes[i + 1] : 0;
+    const b2 = i + 2 < bytes.length ? bytes[i + 2] : 0;
+    out += B64_ALPHABET[b0 >> 2];
+    out += B64_ALPHABET[((b0 & 3) << 4) | (b1 >> 4)];
+    out += i + 1 < bytes.length ? B64_ALPHABET[((b1 & 15) << 2) | (b2 >> 6)] : '=';
+    out += i + 2 < bytes.length ? B64_ALPHABET[b2 & 63] : '=';
+  }
+  return out;
+}
+
+// Cloud TTS fetch via XMLHttpRequest — RN's fetch().arrayBuffer() corrupts
+// binary on Hermes, but XHR with responseType 'arraybuffer' returns clean
+// bytes. Resolves { status, base64 } so the caller can both play the audio and
+// detect the 503/403 kill-switch/plan responses.
+function fetchTtsAudio(
+  url: string,
+  token: string,
+  body: { text: string; gender: 'male' | 'female' },
+): Promise<{ status: number; base64: string | null }> {
+  return new Promise((resolve) => {
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url);
+      xhr.responseType = 'arraybuffer';
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.onload = () => {
+        const ok = xhr.status >= 200 && xhr.status < 300 && xhr.response;
+        resolve({ status: xhr.status, base64: ok ? arrayBufferToBase64(xhr.response) : null });
+      };
+      xhr.onerror = () => resolve({ status: 0, base64: null });
+      xhr.send(JSON.stringify(body));
+    } catch {
+      resolve({ status: 0, base64: null });
+    }
+  });
+}
+
 const MILESTONES = [
   { time: 60, label: 'Establish rapport — open question' },
   { time: 240, label: 'Focused history taking' },
@@ -88,6 +135,10 @@ export default function RoleplayScreen() {
   const recordingRef = useRef<Audio.Recording | null>(null);
   const transcribingRef = useRef(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  // Cloud TTS (ElevenLabs via /api/tts) playback handle + sticky disable flag.
+  // When the route returns 503/403 we stop trying and use expo-speech instead.
+  const ttsSoundRef = useRef<Audio.Sound | null>(null);
+  const cloudTtsDisabledRef = useRef(false);
 
   // ── Cleanup any in-flight recording / timer / TTS on unmount ────────────────
   useEffect(() => {
@@ -103,6 +154,9 @@ export default function RoleplayScreen() {
       }
       // Stop the patient TTS so it doesn't keep speaking after we unmount.
       Speech.stop();
+      const ttsSound = ttsSoundRef.current;
+      ttsSoundRef.current = null;
+      if (ttsSound) ttsSound.unloadAsync().catch(() => {});
       // Stop & null the pulse loop in case the screen unmounts while recording.
       pulseLoop.current?.stop();
       pulseLoop.current = null;
@@ -110,10 +164,17 @@ export default function RoleplayScreen() {
   }, []);
 
   // ── TTS ──────────────────────────────────────────────────────────────────────
-  const speakPatient = useCallback((text: string, profile: string) => {
-    if (isMuted) return;
-    Speech.stop();
-    const isFemale = /female|woman/i.test(profile);
+  // Unload any in-flight cloud-TTS sound. Returns nothing; safe to call twice.
+  const unloadTtsSound = useCallback(async () => {
+    const sound = ttsSoundRef.current;
+    ttsSoundRef.current = null;
+    if (sound) {
+      try { await sound.unloadAsync(); } catch { /* ignore */ }
+    }
+  }, []);
+
+  // Fallback to the on-device expo-speech voice (the previous behaviour).
+  const speakNative = useCallback((text: string, isFemale: boolean) => {
     Speech.speak(text, {
       language: 'en-AU',
       rate: 0.88,
@@ -123,10 +184,72 @@ export default function RoleplayScreen() {
       onStopped: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false),
     });
-  }, [isMuted]);
+  }, []);
+
+  const speakPatient = useCallback((text: string, profile: string) => {
+    if (isMuted) return;
+    const isFemale = /female|woman/i.test(profile);
+    // Stop whatever is currently speaking (native + any cloud sound).
+    Speech.stop();
+    unloadTtsSound();
+
+    if (cloudTtsDisabledRef.current) {
+      speakNative(text, isFemale);
+      return;
+    }
+
+    (async () => {
+      try {
+        const token = await getToken();
+        if (!token) { speakNative(text, isFemale); return; }
+        const { status, base64 } = await fetchTtsAudio(
+          `${API_URL}/api/tts`,
+          token,
+          { text, gender: isFemale ? 'female' : 'male' },
+        );
+        // 503 = not configured / kill-switch, 403 = plan gate. Sticky: stop
+        // paying the round-trip and use the device voice from here on.
+        if (status === 503 || status === 403) {
+          cloudTtsDisabledRef.current = true;
+          speakNative(text, isFemale);
+          return;
+        }
+        if (!base64) { speakNative(text, isFemale); return; }
+
+        // Make sure playback isn't routed to the (silent) iOS recording path.
+        try {
+          await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
+            staysActiveInBackground: false,
+          });
+        } catch { /* ignore */ }
+
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: `data:audio/mpeg;base64,${base64}` },
+          { shouldPlay: true },
+        );
+        // A newer turn may have started while we awaited — if so, drop this one.
+        if (isMuted) { sound.unloadAsync().catch(() => {}); return; }
+        ttsSoundRef.current = sound;
+        setIsSpeaking(true);
+        sound.setOnPlaybackStatusUpdate((st) => {
+          if (!st.isLoaded) return;
+          if (st.didJustFinish) {
+            setIsSpeaking(false);
+            sound.unloadAsync().catch(() => {});
+            if (ttsSoundRef.current === sound) ttsSoundRef.current = null;
+          }
+        });
+      } catch {
+        speakNative(text, isFemale);
+      }
+    })();
+  }, [isMuted, speakNative, unloadTtsSound]);
 
   function stopSpeaking() {
     Speech.stop();
+    unloadTtsSound();
     setIsSpeaking(false);
   }
 
