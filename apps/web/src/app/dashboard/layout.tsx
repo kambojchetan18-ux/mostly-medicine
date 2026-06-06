@@ -26,6 +26,7 @@ const navItems = [
   { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-brand-300"  },
   { href: "/dashboard/ask-ai",    label: "Ask AI",    icon: "✨", hover: "hover:text-emerald-300" },
   { href: "/dashboard/cat1",      label: "AMC MCQ", icon: "🧠", hover: "hover:text-indigo-300" },
+  { href: "/dashboard/flashcards", label: "Flashcards", icon: "🗂️", hover: "hover:text-rose-300" },
   { href: "/dashboard/progress",  label: "My Progress", icon: "📊", hover: "hover:text-blue-300"  },
   { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆", hover: "hover:text-amber-300" },
   { href: "/dashboard/cat2",      label: "AMC Handbook AI RolePlay", icon: "🩺", hover: "hover:text-pink-300"   },
