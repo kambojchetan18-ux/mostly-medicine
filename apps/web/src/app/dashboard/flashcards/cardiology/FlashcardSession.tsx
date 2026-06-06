@@ -46,16 +46,21 @@ const renderCloze = (front: string, revealed: boolean) => {
         </span>
       );
     } else {
+      // Unrevealed cloze. The original dark-theme palette used white
+      // hatching which became invisible after we moved the card surface
+      // to white — now uses a slate fill, dark hatch pattern, and a
+      // ring so the blank reads as a concrete "fill this in" affordance
+      // rather than an empty box.
       parts.push(
         <span
           key={`c-${key++}`}
-          className="rounded bg-gray-100 px-3 py-0.5 text-transparent shadow-inner"
+          className="mx-0.5 inline-block min-w-[4ch] rounded px-3 py-0.5 align-middle font-mono text-sm font-semibold text-slate-500 ring-1 ring-slate-300"
           style={{
             background:
-              "repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 6px, transparent 6px 12px)",
+              "repeating-linear-gradient(135deg, rgba(15,23,42,0.12) 0 6px, rgba(15,23,42,0.04) 6px 12px)",
           }}
         >
-          […]
+          [&hellip;]
         </span>
       );
     }

@@ -100,7 +100,7 @@ export function ImportClient() {
           type="button"
           disabled={busy}
           onClick={() => inputRef.current?.click()}
-          className="mt-3 rounded-full bg-white px-5 py-2 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-50"
+          className="mt-3 rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
         >
           Choose file
         </button>
@@ -148,7 +148,7 @@ export function ImportClient() {
             <button
               type="button"
               onClick={reset}
-              className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-black hover:bg-white/90"
+              className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800"
             >
               Import another .apkg
             </button>
