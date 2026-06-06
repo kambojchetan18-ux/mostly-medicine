@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { features } from "@/config/features";
 
 /**
  * SiteFooter — global brand footer rendered on the homepage and every public
@@ -25,11 +24,9 @@ const quickLinks: QuickLink[] = [
   { href: "/osce-guide",                label: "OSCE Prep Guide"         },
   { href: "/blog",                      label: "Blog"                    },
   { href: "/ask-ai",                    label: "Ask AI (Free)"           },
-  // Pricing & Plans only surfaces when paid tiers are live. During beta the
-  // /dashboard/billing route bounces to /dashboard, so the link is dropped.
-  ...(features.paidTiersEnabled
-    ? [{ href: "/dashboard/billing", label: "Pricing & Plans" }]
-    : []),
+  // Public pricing page — always linked (no auth, no flag gate). Checkout
+  // itself stays on /dashboard/billing, which keeps its own beta gating.
+  { href: "/pricing",                   label: "Pricing & Plans"         },
   { href: "/contact",                   label: "Contact Us"              },
   { href: "/privacy",                   label: "Privacy Policy"          },
   { href: "/terms",                     label: "Terms & Conditions"      },

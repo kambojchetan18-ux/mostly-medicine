@@ -173,7 +173,13 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
-    system: systemPrompt,
+    // The system prompt is identical across every turn of a session (same
+    // scenario + patientName), so cache it — turns 2..n read from cache instead
+    // of re-billing the full ~1k-token brief. cache_control isn't in the SDK
+    // 0.32.x types but is supported at runtime; cast per the project workaround.
+    system: [
+      { type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } },
+    ] as unknown as Anthropic.TextBlockParam[],
     messages: apiMessages,
   });
 

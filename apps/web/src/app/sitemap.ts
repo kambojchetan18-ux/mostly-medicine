@@ -12,6 +12,9 @@ const entries: Entry[] = [
   // Home
   { path: "/", changeFrequency: "weekly", priority: 1.0 },
 
+  // Pricing (public, high commercial + GEO intent)
+  { path: "/pricing", changeFrequency: "monthly", priority: 0.9 },
+
   // Tier 1 — pillar pages (highest GEO value)
   { path: "/amc",                   changeFrequency: "monthly", priority: 0.95 },
   { path: "/amc-cat1",              changeFrequency: "monthly", priority: 0.9  },
