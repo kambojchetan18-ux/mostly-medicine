@@ -82,7 +82,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Max ${MAX_PER_QUESTION} attachments per question` }, { status: 400 });
   }
 
-  const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, "_").slice(-80);
+  const safeName = file.name
+    .replace(/\.\./g, "")
+    .replace(/^\./, "")
+    .replace(/[^A-Za-z0-9._-]/g, "_")
+    .slice(-80);
   const filePath = `${user.id}/${questionId}/${crypto.randomUUID()}-${safeName}`;
 
   const arrayBuffer = await file.arrayBuffer();

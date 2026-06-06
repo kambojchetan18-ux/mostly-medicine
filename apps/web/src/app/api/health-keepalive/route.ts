@@ -31,6 +31,13 @@ type KeepaliveErr = {
 export async function GET(req: NextRequest): Promise<NextResponse<KeepaliveOk | KeepaliveErr>> {
   try {
     const secret = process.env.CRON_SECRET;
+    if (!secret && process.env.NODE_ENV === "production") {
+      console.error("[health-keepalive] CRON_SECRET not set in production");
+      return NextResponse.json<KeepaliveErr>(
+        { ok: false, error: "Not configured" },
+        { status: 500 }
+      );
+    }
     if (secret) {
       const auth = req.headers.get("authorization");
       if (auth !== `Bearer ${secret}`) {

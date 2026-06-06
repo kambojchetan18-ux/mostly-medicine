@@ -13,10 +13,14 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const segments = useSegments();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+      })
+      .catch(() => {
+        setSession(null);
+      })
+      .finally(() => setLoading(false));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
     });
@@ -28,7 +32,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     const inAuth = segments[0] === 'auth';
     if (!session && !inAuth) router.replace('/auth/login');
     if (session && inAuth) router.replace('/(tabs)');
-  }, [session, loading, segments]);
+  }, [session, loading, segments, router]);
 
   if (loading) {
     return (

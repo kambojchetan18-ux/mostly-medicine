@@ -262,6 +262,13 @@ export async function GET(
 ): Promise<NextResponse<BrainTeaserOk | BrainTeaserErr>> {
   try {
     const secret = process.env.CRON_SECRET;
+    if (!secret && process.env.NODE_ENV === "production") {
+      console.error("[brain-teaser] CRON_SECRET not set in production");
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: "Not configured" },
+        { status: 500 }
+      );
+    }
     if (secret) {
       const auth = req.headers.get("authorization");
       if (auth !== `Bearer ${secret}`) {
