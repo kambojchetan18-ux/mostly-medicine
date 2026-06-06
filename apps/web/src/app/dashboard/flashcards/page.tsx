@@ -70,8 +70,8 @@ export default function FlashcardsHubPage() {
           <span className="rounded-full bg-sky-50 px-2.5 py-1 text-sky-700 ring-1 ring-sky-200">
             📦 Anki import: 1 / day Free · ∞ Pro
           </span>
-          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-gray-600 ring-1 ring-gray-200">
-            🃏 Review: unlimited everyone
+          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-rose-700 ring-1 ring-rose-200">
+            🃏 Review: 5 / day Free · ∞ Pro
           </span>
         </div>
       </header>

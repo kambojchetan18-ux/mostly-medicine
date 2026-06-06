@@ -74,6 +74,11 @@ export function FlashcardSession({cards, deckName}: Props) {
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [ratingsByIndex, setRatingsByIndex] = useState<Record<number, Rating>>({});
+  // When the review API returns 429 daily_limit_reached, freeze the
+  // session UI and surface an upgrade prompt. The rating the user just
+  // pressed gets rolled back so the progress count reflects what was
+  // actually persisted.
+  const [limitInfo, setLimitInfo] = useState<{ dailyLimit: number; used: number; upgrade: string } | null>(null);
 
   const card = cards[index];
   const isLast = index === cards.length - 1;
@@ -86,22 +91,47 @@ export function FlashcardSession({cards, deckName}: Props) {
     return c;
   }, [ratingsByIndex]);
 
-  const handleRate = (rating: Rating) => {
+  const handleRate = async (rating: Rating) => {
+    if (limitInfo) return; // hard-block once the cap is hit
+    // Optimistically advance — we'll roll back on a 429.
     setRatingsByIndex((prev) => ({...prev, [index]: rating}));
-    // Fire-and-forget persistence. The UI flow doesn't wait on the
-    // network — a slow Supabase write must never block the next card.
-    // Failures are silent for now; we'll surface them when the queue
-    // UI is wired (Phase 2 of the FSRS rollout).
-    if (card?.id) {
-      void fetch("/api/flashcards/review", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({cardId: card.id, rating}),
-      }).catch(() => {});
-    }
+    const advancedFromIndex = index;
     if (!isLast) {
       setIndex(index + 1);
       setRevealed(false);
+    }
+    if (!card?.id) return;
+    try {
+      const res = await fetch("/api/flashcards/review", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({cardId: card.id, rating}),
+      });
+      if (res.status === 429) {
+        const data = await res.json().catch(() => ({} as Record<string, unknown>));
+        if (data.error === "daily_limit_reached") {
+          // Roll back the optimistic rate + advance so the user sees the
+          // card they were on (not the next one) when the gate appears.
+          setRatingsByIndex((prev) => {
+            const next = {...prev};
+            delete next[advancedFromIndex];
+            return next;
+          });
+          setIndex(advancedFromIndex);
+          setRevealed(true);
+          setLimitInfo({
+            dailyLimit: Number((data.dailyLimit as number | undefined) ?? 5),
+            used: Number((data.used as number | undefined) ?? 5),
+            upgrade:
+              typeof data.upgrade === "string"
+                ? data.upgrade
+                : "Upgrade to Pro for unlimited flashcard reviews.",
+          });
+        }
+      }
+    } catch {
+      // Network errors stay silent — the optimistic advance already
+      // happened and the FSRS state will catch up on the next attempt.
     }
   };
 
@@ -161,6 +191,27 @@ export function FlashcardSession({cards, deckName}: Props) {
           style={{width: `${progress}%`}}
         />
       </div>
+
+      {limitInfo && (
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <div className="flex items-center gap-2 text-amber-900">
+            <span className="text-lg">⏳</span>
+            <h3 className="text-base font-bold">Daily review limit reached</h3>
+          </div>
+          <p className="mt-1.5 text-sm text-amber-900/80">
+            You&rsquo;ve reviewed <strong>{limitInfo.used}</strong> of your{" "}
+            <strong>{limitInfo.dailyLimit} free flashcards</strong> today. The counter resets at
+            midnight UTC.
+          </p>
+          <p className="mt-2 text-sm text-amber-900/70">{limitInfo.upgrade}</p>
+          <Link
+            href="/dashboard/billing"
+            className="mt-3 inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
+          >
+            Upgrade to Pro →
+          </Link>
+        </div>
+      )}
 
       {sessionComplete ? (
         <SessionSummary

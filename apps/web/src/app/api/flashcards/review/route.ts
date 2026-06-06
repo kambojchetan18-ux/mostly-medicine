@@ -41,6 +41,45 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
   }
 
+  // Plan gate — Free = 5 distinct flashcards rated per UTC day across
+  // ALL decks (packaged + AI-generated + Anki-imported). Pro / Enterprise
+  // / admin bypass the cap. Re-rating a card already counted today is
+  // always allowed so users can refine their grade without burning quota.
+  const FREE_DAILY_REVIEW_CAP = 5;
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("plan, role")
+    .eq("id", user.id)
+    .maybeSingle();
+  const isUnlimited =
+    profile?.role === "admin" ||
+    profile?.plan === "pro" ||
+    profile?.plan === "enterprise";
+  if (!isUnlimited) {
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const { data: reviewedToday } = await supabase
+      .from("flashcard_reviews")
+      .select("card_id")
+      .eq("user_id", user.id)
+      .gte("last_review", startOfDay.toISOString());
+    const reviewedTodayIds = new Set((reviewedToday ?? []).map((r) => r.card_id));
+    // Block only when this is a NEW card AND the cap has been hit.
+    // Re-rating an already-counted card stays free.
+    if (!reviewedTodayIds.has(cardId) && reviewedTodayIds.size >= FREE_DAILY_REVIEW_CAP) {
+      return NextResponse.json(
+        {
+          error: "daily_limit_reached",
+          plan: "free",
+          dailyLimit: FREE_DAILY_REVIEW_CAP,
+          used: reviewedTodayIds.size,
+          upgrade: "Free plan: 5 flashcard reviews per day. Upgrade to Pro for unlimited reviews + AI generation + Anki import.",
+        },
+        { status: 429 }
+      );
+    }
+  }
+
   // ts-fsrs's Grade type excludes Rating.Manual; our 4 rating keys all
   // map to real grades but the compiler can't infer that from the map,
   // so cast through the call's own parameter type.
