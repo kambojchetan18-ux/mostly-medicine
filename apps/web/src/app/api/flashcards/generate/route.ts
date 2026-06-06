@@ -84,6 +84,44 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Plan gate: Free = 3 AI generations per UTC day. Pro / Enterprise /
+  // admin = unlimited. Counts rows in user_flashcards with source =
+  // 'ai_notes' inserted by this user since UTC midnight — Each /save
+  // call inserts the kept drafts, so this maps 1:1 to "successful
+  // generations the user actually persisted today".
+  const FREE_DAILY_GEN_CAP = 3;
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("plan, role")
+    .eq("id", user.id)
+    .maybeSingle();
+  const isUnlimited =
+    profile?.role === "admin" ||
+    profile?.plan === "pro" ||
+    profile?.plan === "enterprise";
+  if (!isUnlimited) {
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const { count: usedToday } = await supabase
+      .from("user_flashcards")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("source", "ai_notes")
+      .gte("created_at", startOfDay.toISOString());
+    if ((usedToday ?? 0) >= FREE_DAILY_GEN_CAP) {
+      return NextResponse.json(
+        {
+          error: "daily_limit_reached",
+          plan: "free",
+          dailyLimit: FREE_DAILY_GEN_CAP,
+          used: usedToday ?? 0,
+          upgrade: "Free plan: 3 AI generations per day. Upgrade to Pro for unlimited generations + Anki import + new specialty decks.",
+        },
+        { status: 429 }
+      );
+    }
+  }
+
   const body = await req.json().catch(() => null);
   const notes: unknown = body?.notes;
   const explicitDeckName: unknown = body?.deckName;

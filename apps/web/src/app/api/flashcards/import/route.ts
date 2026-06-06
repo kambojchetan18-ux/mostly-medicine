@@ -105,6 +105,44 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Plan gate: Free = 1 Anki import per UTC day. Pro / Enterprise /
+  // admin = unlimited. Free users typically only have ONE legacy
+  // collection to migrate — Pro users iterate on shared decks (AnKing
+  // updates, Lyonsy refresh) and need multiple imports.
+  const FREE_DAILY_IMPORT_CAP = 1;
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("plan, role")
+    .eq("id", user.id)
+    .maybeSingle();
+  const isUnlimited =
+    profile?.role === "admin" ||
+    profile?.plan === "pro" ||
+    profile?.plan === "enterprise";
+  if (!isUnlimited) {
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const { data: importsToday } = await supabase
+      .from("user_flashcards")
+      .select("source_deck_name", { count: "exact" })
+      .eq("user_id", user.id)
+      .eq("source", "anki_apkg")
+      .gte("created_at", startOfDay.toISOString());
+    const distinctDecks = new Set((importsToday ?? []).map((r) => r.source_deck_name)).size;
+    if (distinctDecks >= FREE_DAILY_IMPORT_CAP) {
+      return NextResponse.json(
+        {
+          error: "daily_limit_reached",
+          plan: "free",
+          dailyLimit: FREE_DAILY_IMPORT_CAP,
+          used: distinctDecks,
+          upgrade: "Free plan: 1 Anki import per day. Upgrade to Pro for unlimited imports + AI generation + new specialty decks.",
+        },
+        { status: 429 }
+      );
+    }
+  }
+
   // Pull the bytes out of either multipart or JSON {url}.
   let bytes: Buffer;
   let deckName: string | null = null;

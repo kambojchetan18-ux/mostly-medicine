@@ -43,6 +43,7 @@ export default function GenerateClient() {
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [limitInfo, setLimitInfo] = useState<{ dailyLimit: number; used: number; upgrade: string } | null>(null);
   const [drafts, setDrafts] = useState<DraftCard[]>([]);
   const [resolvedDeckName, setResolvedDeckName] = useState<string>("");
   // tempId → keep/drop. Default keep (true).
@@ -54,6 +55,7 @@ export default function GenerateClient() {
 
   async function handleGenerate() {
     setError(null);
+    setLimitInfo(null);
     setGenerating(true);
     setDrafts([]);
     try {
@@ -62,7 +64,20 @@ export default function GenerateClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ notes, deckName: deckName || undefined }),
       });
-      const data = (await res.json()) as Partial<GenerateResponse> & { error?: string };
+      const data = (await res.json()) as Partial<GenerateResponse> & {
+        error?: string;
+        dailyLimit?: number;
+        used?: number;
+        upgrade?: string;
+      };
+      if (res.status === 429 && data.error === "daily_limit_reached") {
+        setLimitInfo({
+          dailyLimit: Number(data.dailyLimit ?? 3),
+          used: Number(data.used ?? 0),
+          upgrade: data.upgrade ?? "Upgrade to Pro for unlimited AI generations.",
+        });
+        return;
+      }
       if (!res.ok) {
         setError(data.error ?? `Generation failed (${res.status})`);
         return;
@@ -170,8 +185,29 @@ export default function GenerateClient() {
       </section>
 
       {error && (
-        <div className="mt-5 rounded-xl border border-rose-200 bg-rose-500/10 p-3 text-sm text-rose-200">
+        <div className="mt-5 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
           {error}
+        </div>
+      )}
+
+      {limitInfo && (
+        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <div className="flex items-center gap-2 text-amber-900">
+            <span className="text-lg">⏳</span>
+            <h3 className="text-base font-bold">Daily limit reached</h3>
+          </div>
+          <p className="mt-1.5 text-sm text-amber-900/80">
+            You&rsquo;ve used <strong>{limitInfo.used}</strong> of your{" "}
+            <strong>{limitInfo.dailyLimit} free AI generations</strong> today. The counter resets at
+            midnight UTC.
+          </p>
+          <p className="mt-2 text-sm text-amber-900/70">{limitInfo.upgrade}</p>
+          <Link
+            href="/dashboard/billing"
+            className="mt-3 inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
+          >
+            Upgrade to Pro →
+          </Link>
         </div>
       )}
 
