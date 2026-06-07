@@ -3,10 +3,24 @@ import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, recordFailedAttempt } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const { email, password, name } = await req.json();
+  let body: { email?: string; password?: string; name?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+  const { email, password, name } = body;
 
   if (!email || !password || !name) {
     return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+  }
+
+  if (typeof email !== "string" || typeof password !== "string" || typeof name !== "string") {
+    return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+  }
+
+  if (email.length > 320 || password.length > 256 || name.length > 200) {
+    return NextResponse.json({ error: "Input too long" }, { status: 400 });
   }
 
   // Rate limit by IP — max 5 signup attempts per 15 min
@@ -30,7 +44,11 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     await recordFailedAttempt(key);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.error("[auth/signup]", error.message);
+    return NextResponse.json(
+      { error: "Unable to create account. Please check your details and try again." },
+      { status: 400 }
+    );
   }
 
   return NextResponse.json({ success: true });
