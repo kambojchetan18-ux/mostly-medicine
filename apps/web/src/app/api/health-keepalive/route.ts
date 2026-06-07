@@ -65,7 +65,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<KeepaliveOk | 
     if (error) {
       console.error("[health-keepalive] supabase read failed:", error.message);
       return NextResponse.json<KeepaliveErr>(
-        { ok: false, error: error.message },
+        { ok: false, error: "Database health check failed" },
         { status: 500 }
       );
     }
@@ -76,10 +76,9 @@ export async function GET(req: NextRequest): Promise<NextResponse<KeepaliveOk | 
       supabase: "alive",
     });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "unknown error";
-    console.error("[health-keepalive] unhandled error:", msg);
+    console.error("[health-keepalive] unhandled error:", err instanceof Error ? err.message : err);
     return NextResponse.json<KeepaliveErr>(
-      { ok: false, error: msg },
+      { ok: false, error: "Internal server error" },
       { status: 500 }
     );
   }

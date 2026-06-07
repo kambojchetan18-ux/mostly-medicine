@@ -37,7 +37,7 @@ export async function createClinicalRoleplay({
 STATION: ${scenario.mcatNumber} — ${scenario.title}
 SOURCE: AMC Handbook of Clinical Assessment — Condition ${scenario.mcatNumber}
 CATEGORY: ${scenario.category} (${scenario.subcategory})
-${patientName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${patientName}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
+${patientName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${patientName.replace(/[^\p{L}\p{M}\s'.,-]/gu, "").slice(0, 80)}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
 
 PATIENT PROFILE:
 - ${scenario.patientProfile}
@@ -173,7 +173,13 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
-    system: systemPrompt,
+    system: [
+      {
+        type: "text",
+        text: systemPrompt,
+        cache_control: { type: "ephemeral" },
+      },
+    ] as unknown as Anthropic.TextBlockParam[],
     messages: apiMessages,
   });
 

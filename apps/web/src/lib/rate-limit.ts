@@ -53,29 +53,20 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
 
 export async function recordFailedAttempt(key: string): Promise<{ locked: boolean; attemptsLeft: number }> {
   const supabase = serviceClient();
-  const now = new Date().toISOString();
+  const lockedUntil = new Date(Date.now() + WINDOW_MS).toISOString();
 
-  const { data } = await supabase
-    .from("rate_limit_attempts")
-    .select("count, first_attempt_at")
-    .eq("key", key)
-    .single();
-
-  const currentCount = data?.count ?? 0;
-  const firstAttempt = data?.first_attempt_at ?? now;
-  const newCount = currentCount + 1;
-  const lockedUntil = newCount >= MAX_ATTEMPTS
-    ? new Date(Date.now() + WINDOW_MS).toISOString()
-    : null;
-
-  await supabase.from("rate_limit_attempts").upsert({
-    key,
-    count: newCount,
-    first_attempt_at: firstAttempt,
-    locked_until: lockedUntil,
-    updated_at: now,
+  const { data, error } = await supabase.rpc("increment_rate_limit", {
+    p_key: key,
+    p_max: MAX_ATTEMPTS,
+    p_locked_until: lockedUntil,
   });
 
+  if (error) {
+    console.error("[rate-limit] increment_rate_limit RPC failed:", error.message);
+    return { locked: false, attemptsLeft: MAX_ATTEMPTS };
+  }
+
+  const newCount = (data as Array<{ new_count: number }>)?.[0]?.new_count ?? 1;
   return {
     locked: newCount >= MAX_ATTEMPTS,
     attemptsLeft: Math.max(0, MAX_ATTEMPTS - newCount),

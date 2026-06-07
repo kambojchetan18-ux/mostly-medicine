@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
       if (!cvText?.trim()) {
         return NextResponse.json({ error: "No CV content provided" }, { status: 400 });
       }
-      const text: string = cvText;
+      const text: string = cvText.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
       response = await client.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,

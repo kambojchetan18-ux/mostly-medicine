@@ -95,7 +95,7 @@ export default function RoleplayScreen() {
       const rec = recordingRef.current;
       recordingRef.current = null;
       if (rec) {
-        rec.stopAndUnloadAsync().catch(() => {});
+        rec.stopAndUnloadAsync().catch((e) => console.warn('[roleplay] cleanup recording:', e));
       }
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -204,7 +204,7 @@ export default function RoleplayScreen() {
             playsInSilentModeIOS: true,
             staysActiveInBackground: false,
           });
-        } catch { /* ignore */ }
+        } catch (e) { console.warn('[roleplay] audio mode reset:', e); }
         if (uri) await uploadAudio(uri);
       } catch (e) {
         setVoiceError(e instanceof Error ? e.message : 'Could not stop recording');
@@ -247,7 +247,7 @@ export default function RoleplayScreen() {
     recordingRef.current = null;
     setIsRecording(false);
     if (rec) {
-      try { await rec.stopAndUnloadAsync(); } catch { /* ignore */ }
+      try { await rec.stopAndUnloadAsync(); } catch (e) { console.warn('[roleplay] stop recording:', e); }
     }
   }
 
@@ -522,7 +522,7 @@ export default function RoleplayScreen() {
           {/* Messages */}
           <ScrollView ref={scrollRef} style={{ flex: 1 }} contentContainerStyle={{ padding: 14, gap: 10 }} showsVerticalScrollIndicator={false}>
             {messages.map((m, i) => (
-              <View key={i} style={[s.msgRow, m.role === 'user' ? s.msgRowUser : s.msgRowAI]}>
+              <View key={`${m.role}-${i}`} style={[s.msgRow, m.role === 'user' ? s.msgRowUser : s.msgRowAI]}>
                 {m.role === 'assistant' && <Text style={s.msgEmoji}>{emoji}</Text>}
                 <View style={[s.bubble, m.role === 'user' ? s.bubbleUser : s.bubbleAI]}>
                   {m.role === 'assistant' && <Text style={s.bubbleLabel}>Patient</Text>}

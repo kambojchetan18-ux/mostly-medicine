@@ -49,11 +49,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 
-  // Idempotency — atomically claim this event id. Two concurrent webhook
-  // deliveries (Stripe retries) used to both pass a separate select check
-  // and run the handler twice. Switching to an upsert with ignoreDuplicates
-  // makes "first writer wins" a single round-trip; the loser sees no row
-  // back and short-circuits.
+  // Idempotency — atomically claim this event id. First writer wins via
+  // upsert + ignoreDuplicates. If the row already exists AND has been
+  // processed (processed_at IS NOT NULL), skip. If it exists but was NOT
+  // processed (previous handler crashed), re-process it.
   const sb = service();
   const { data: claimed } = await sb
     .from("billing_events")
@@ -68,7 +67,14 @@ export async function POST(req: NextRequest) {
     .select("id");
 
   if (!claimed || claimed.length === 0) {
-    return NextResponse.json({ ok: true, replay: true });
+    const { data: existing } = await sb
+      .from("billing_events")
+      .select("processed_at")
+      .eq("id", event.id)
+      .single();
+    if (existing?.processed_at) {
+      return NextResponse.json({ ok: true, replay: true });
+    }
   }
 
   // Beta mode: record the event in billing_events for audit (already done by
@@ -161,6 +167,11 @@ export async function POST(req: NextRequest) {
     // Return 500 so Stripe retries.
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }
+
+  await sb
+    .from("billing_events")
+    .update({ processed_at: new Date().toISOString() })
+    .eq("id", event.id);
 
   return NextResponse.json({ ok: true });
 }
