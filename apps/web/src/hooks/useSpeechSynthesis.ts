@@ -6,6 +6,12 @@ type Gender = "male" | "female" | "unknown";
 const SETTINGS_KEY = "mm:tts-settings";
 const DEFAULT_VOLUME = 1.0;
 
+// A 0-sample silent WAV. Played (muted) inside the first user gesture to
+// "bless" the shared <audio> element so later async .play() calls — which fire
+// from stream handlers, outside any gesture — are allowed on mobile browsers.
+const SILENT_WAV =
+  "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+
 interface TtsSettings {
   muted: boolean;
   volume: number; // 0-1
@@ -33,6 +39,35 @@ function saveSettings(s: TtsSettings) {
   } catch {
     /* ignore */
   }
+}
+
+// Strip markdown + stage directions + smart punctuation so neither the cloud
+// voice nor the native engine reads "asterisk" / "open quote" out loud.
+function stripForSpeech(text: string): string {
+  return text
+    // Normalise Unicode smart quotes / dashes. Some Chromium voices read curly
+    // apostrophes ('I'm') as the literal word "apostrophe"; straight ASCII (')
+    // is read silently as a contraction, which is the natural reading.
+    .replace(/[‘’‚‛]/g, "'")
+    .replace(/[“”„‟]/g, '"')
+    .replace(/[–—]/g, "-")
+    .replace(/[…]/g, "...")
+    // Strip any stray HTML / SSML-ish tags (Claude occasionally emits <break>
+    // or <emphasis> if it thinks the channel supports it).
+    .replace(/<[^>]+>/g, "")
+    .replace(/\*\*([^*\n]+)\*\*/g, "$1")
+    .replace(/__([^_\n]+)__/g, "$1")
+    .replace(/\*[^*\n]+\*/g, "")
+    .replace(/_[^_\n]+_/g, "")
+    .replace(/\([^)\n]+\)/g, "")
+    .replace(/\[[^\]\n]+\]/g, "")
+    .replace(/[`#>~]+/g, "")
+    // Strip quote marks that some Chromium voices announce literally ("double
+    // quote", "open quote"). Straight apostrophes survive — they're needed for
+    // natural contraction pronunciation.
+    .replace(/["«»]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 // Hardcoded en-AU voice name → gender lookup. Names below are the literal
@@ -96,6 +131,16 @@ export function useSpeechSynthesis() {
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
 
+  // ── Cloud TTS (ElevenLabs via /api/tts) — the preferred path ───────────────
+  // A single reused <audio> element plays the streamed MP3. Web Speech is the
+  // fallback when the cloud route is unavailable (503 kill-switch / plan gate)
+  // or a play() is blocked by the autoplay policy.
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const cloudDisabledRef = useRef(false); // sticky once we learn cloud is off
+  const usingCloudRef = useRef(false); // is the current playback cloud audio?
+  const fetchAbortRef = useRef<AbortController | null>(null);
+  const objectUrlRef = useRef<string | null>(null);
+
   // Lock the chosen voice per gender within a session so it doesn't randomly
   // swap between turns. Voices reload async in some browsers and sort
   // ordering can shift, which is what was causing voice drift.
@@ -118,25 +163,75 @@ export function useSpeechSynthesis() {
   const currentGenderRef = useRef<Gender>("unknown");
   const volumeRestartTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    setSupported(true);
-    setSettings(loadSettings());
-    // Seed the cached voices synchronously, then refresh on `voiceschanged`.
-    voicesRef.current = window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => {
-      voicesRef.current = window.speechSynthesis.getVoices();
+  function revokeObjectUrl() {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
+  }
+
+  // Lazily create + wire the shared <audio> element.
+  const ensureAudioEl = useCallback((): HTMLAudioElement | null => {
+    if (typeof window === "undefined" || typeof Audio === "undefined") return null;
+    if (audioRef.current) return audioRef.current;
+    const el = new Audio();
+    el.preload = "auto";
+    el.onended = () => {
+      setSpeaking(false);
+      usingCloudRef.current = false;
+      revokeObjectUrl();
     };
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-      // Hard-stop any in-flight speech on unmount — without this, navigating
-      // away from a roleplay page lets the patient keep talking in the
-      // background (Web Speech API is global to the document).
+    el.onerror = () => {
+      setSpeaking(false);
+      usingCloudRef.current = false;
+    };
+    audioRef.current = el;
+    return el;
+  }, []);
+
+  // Stop any in-flight cloud TTS fetch + playback.
+  const stopCloud = useCallback(() => {
+    if (fetchAbortRef.current) {
+      fetchAbortRef.current.abort();
+      fetchAbortRef.current = null;
+    }
+    const el = audioRef.current;
+    if (el) {
       try {
-        window.speechSynthesis.cancel();
+        el.pause();
+        el.currentTime = 0;
       } catch {
         /* ignore */
       }
+    }
+    usingCloudRef.current = false;
+    revokeObjectUrl();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // Supported if EITHER path is available. In practice every target browser
+    // has both Web Speech and <audio>, so this is effectively always true.
+    setSupported(!!window.speechSynthesis || typeof Audio !== "undefined");
+    setSettings(loadSettings());
+    if (window.speechSynthesis) {
+      // Seed the cached voices synchronously, then refresh on `voiceschanged`.
+      voicesRef.current = window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        voicesRef.current = window.speechSynthesis.getVoices();
+      };
+    }
+    return () => {
+      if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = null;
+      // Hard-stop any in-flight speech on unmount — without this, navigating
+      // away from a roleplay page lets the patient keep talking in the
+      // background (both Web Speech and the <audio> element are document-global).
+      try {
+        window.speechSynthesis?.cancel();
+      } catch {
+        /* ignore */
+      }
+      stopCloud();
       if (keepaliveRef.current) {
         clearInterval(keepaliveRef.current);
         keepaliveRef.current = null;
@@ -150,17 +245,18 @@ export function useSpeechSynthesis() {
         volumeRestartTimerRef.current = null;
       }
     };
-  }, []);
+  }, [stopCloud]);
 
   // Belt-and-braces — also stop speech if the page is hidden / unloaded.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stopAll = () => {
       try {
-        window.speechSynthesis.cancel();
+        window.speechSynthesis?.cancel();
       } catch {
         /* ignore */
       }
+      stopCloud();
     };
     const onVisibility = () => {
       if (document.hidden) stopAll();
@@ -173,9 +269,10 @@ export function useSpeechSynthesis() {
       window.removeEventListener("beforeunload", stopAll);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [stopCloud]);
 
   function pickVoice(gender: Gender): SpeechSynthesisVoice | null {
+    if (!window.speechSynthesis) return null;
     // Reuse the locked voice if we already chose one for this gender.
     const existing = lockedVoiceRef.current[gender];
     if (existing) return existing;
@@ -196,33 +293,49 @@ export function useSpeechSynthesis() {
     return chosen;
   }
 
-  // Mobile Chrome / iOS Safari require speechSynthesis.speak() to be called
-  // inside a user gesture (button click / tap). Async streaming responses
-  // arrive AFTER the gesture token has expired, so the actual patient reply
-  // speak() is silently rejected. Workaround: call a tiny silent utterance
-  // synchronously during the user's click — this primes the engine so later
-  // speak() calls (from async stream handlers) are permitted.
+  // Mobile Chrome / iOS Safari require speechSynthesis.speak() AND
+  // HTMLAudioElement.play() to be first triggered inside a user gesture.
+  // Async stream responses arrive AFTER the gesture token expires, so we prime
+  // BOTH engines synchronously during the user's click.
   //
-  // Earlier we cancelled() right after speak() to "clean up". That cancel
-  // works on Safari/WebKit but on Chromium (Chrome, Edge, Comet, Brave) it
-  // tears down the synthesis state, so the next speak() — which is no
-  // longer inside a user gesture — gets rejected. The patient stays silent.
-  // Fix: do NOT cancel; let the silent utterance complete on its own
-  // (rate=10 + " " finishes in <100ms anyway).
+  // For Web Speech: a tiny silent utterance. (We deliberately do NOT cancel()
+  // it — on Chromium cancel() tears down synthesis state and the next speak(),
+  // no longer in a gesture, gets rejected.)
+  // For the <audio> element: play a muted 0-sample WAV to bless it.
   const primedRef = useRef(false);
   const prime = useCallback(() => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    if (typeof window === "undefined") return;
     if (primedRef.current) return;
+    primedRef.current = true;
     try {
-      const u = new SpeechSynthesisUtterance(" ");
-      u.volume = 0;
-      u.rate = 10;
-      window.speechSynthesis.speak(u);
-      primedRef.current = true;
+      if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance(" ");
+        u.volume = 0;
+        u.rate = 10;
+        window.speechSynthesis.speak(u);
+      }
     } catch {
       /* ignore */
     }
-  }, []);
+    try {
+      const el = ensureAudioEl();
+      if (el) {
+        el.muted = true;
+        el.src = SILENT_WAV;
+        el.play()
+          .then(() => {
+            el.pause();
+            el.currentTime = 0;
+            el.muted = false;
+          })
+          .catch(() => {
+            el.muted = false;
+          });
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [ensureAudioEl]);
 
   const stop = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -234,16 +347,17 @@ export function useSpeechSynthesis() {
       clearInterval(keepaliveRef.current);
       keepaliveRef.current = null;
     }
-    window.speechSynthesis.cancel();
+    stopCloud();
+    window.speechSynthesis?.cancel();
     currentUtteranceRef.current = null;
     pausedByMuteRef.current = false;
     setSpeaking(false);
-  }, []);
+  }, [stopCloud]);
 
-  const speak = useCallback(
+  // ── Native Web Speech path (fallback) ──────────────────────────────────────
+  const speakNative = useCallback(
     (text: string, gender: Gender) => {
-      if (!supported || typeof window === "undefined") return;
-      // Mute = swallow new audio entirely.
+      if (typeof window === "undefined" || !window.speechSynthesis) return;
       if (settingsRef.current.muted) return;
 
       if (pendingRef.current) {
@@ -254,12 +368,6 @@ export function useSpeechSynthesis() {
         clearInterval(keepaliveRef.current);
         keepaliveRef.current = null;
       }
-      // ONLY cancel if we own a current real utterance. Earlier we cancelled
-      // whenever speaking|pending was true — but a prime() silent utterance
-      // sits in `pending` momentarily, and Chromium's cancel() then races
-      // with the queued real utterance and fires 'canceled' on it (this was
-      // the actual symptom: chunkIndex 0 of the patient reply got error
-      // 'canceled' before audio started). Safari ignored the race.
       if (currentUtteranceRef.current) {
         window.speechSynthesis.cancel();
       }
@@ -289,44 +397,10 @@ export function useSpeechSynthesis() {
           }
           return;
         }
-        console.info("[tts] speak", {
-          textLen: text.length,
-          gender,
-          paused: window.speechSynthesis.paused,
-          speaking: window.speechSynthesis.speaking,
-          pending: window.speechSynthesis.pending,
-          primed: primedRef.current,
-        });
         speakWithVoice(chosen);
       };
       const speakWithVoice = (chosen: SpeechSynthesisVoice) => {
-
-        // Strip markdown + stage directions before speaking.
-        const speakable = text
-          // Normalise Unicode smart quotes / dashes BEFORE the strip+chunk
-          // pipeline. Some Chromium voices read curly apostrophes ('I'm')
-          // as the literal word "apostrophe" — straight ASCII (') is read
-          // silently as a contraction, which is the natural reading.
-          .replace(/[‘’‚‛]/g, "'")
-          .replace(/[“”„‟]/g, '"')
-          .replace(/[–—]/g, "-")
-          .replace(/[…]/g, "...")
-          // Strip any stray HTML / SSML-ish tags (Claude occasionally emits
-          // <break> or <emphasis> if it thinks the channel supports it).
-          .replace(/<[^>]+>/g, "")
-          .replace(/\*\*([^*\n]+)\*\*/g, "$1")
-          .replace(/__([^_\n]+)__/g, "$1")
-          .replace(/\*[^*\n]+\*/g, "")
-          .replace(/_[^_\n]+_/g, "")
-          .replace(/\([^)\n]+\)/g, "")
-          .replace(/\[[^\]\n]+\]/g, "")
-          .replace(/[`#>~]+/g, "")
-          // Strip quote marks that some Chromium voices announce literally
-          // ("double quote", "open quote"). Straight apostrophes survive —
-          // they're needed for natural contraction pronunciation.
-          .replace(/["«»]/g, "")
-          .replace(/\s{2,}/g, " ")
-          .trim();
+        const speakable = stripForSpeech(text);
         if (!speakable) return;
 
         // Chunk into sentences. Mobile Chrome stops speaking after ~15s and
@@ -353,9 +427,6 @@ export function useSpeechSynthesis() {
           utterance.pitch = gender === "female" ? 1.05 : gender === "male" ? 0.95 : 1.0;
           utterance.volume = settingsRef.current.volume;
 
-          // First chunk owns the speaking-state flip. Earlier code overrode
-          // this onstart in the else-branch below, which silently dropped
-          // the setSpeaking(true) for any multi-chunk reply.
           const isFirst = i === 0;
           const isLast = i === chunks.length - 1;
           utterance.onstart = () => {
@@ -365,10 +436,6 @@ export function useSpeechSynthesis() {
           utterance.onboundary = (ev: SpeechSynthesisEvent) => {
             currentCharIndexRef.current = ev.charIndex ?? 0;
           };
-          // Surface failures on EVERY chunk — silent rejection (mobile
-          // gesture-token expired, voice not ready, etc) is the #1 reason
-          // people report "no patient voice". The console.warn lets us
-          // diagnose remotely.
           utterance.onerror = (ev: SpeechSynthesisErrorEvent) => {
             console.warn("[tts] utterance error", { chunkIndex: i, chunk, error: ev.error });
             if (isLast) {
@@ -387,12 +454,99 @@ export function useSpeechSynthesis() {
         });
       };
 
-      // Try synchronously first — on Chromium this preserves the user-
-      // gesture activation chain primed seconds earlier. If voices aren't
-      // ready yet we'll fall through to the trySpeak retry loop's setTimeout.
       trySpeak();
     },
-    [supported]
+    [],
+  );
+
+  // ── Cloud path (preferred). Resolves true if it played (or was superseded),
+  //    false if the caller should fall back to native for this utterance. ─────
+  const speakCloud = useCallback(
+    async (text: string, gender: Gender): Promise<boolean> => {
+      if (typeof window === "undefined") return false;
+      const speakable = stripForSpeech(text);
+      if (!speakable) return false;
+
+      // Supersede any in-flight TTS fetch.
+      fetchAbortRef.current?.abort();
+      const ac = new AbortController();
+      fetchAbortRef.current = ac;
+
+      let res: Response;
+      try {
+        res = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: speakable, gender }),
+          signal: ac.signal,
+        });
+      } catch (e) {
+        // A newer speak() aborted us — it owns playback now, don't fall back.
+        if (e instanceof DOMException && e.name === "AbortError") return true;
+        return false;
+      }
+
+      // 503 = not configured / kill-switch, 403 = plan gate. Both are sticky:
+      // stop paying the round-trip and use native from here on.
+      if (res.status === 503 || res.status === 403) {
+        cloudDisabledRef.current = true;
+        return false;
+      }
+      if (!res.ok) return false;
+
+      let blob: Blob;
+      try {
+        blob = await res.blob();
+      } catch {
+        return false;
+      }
+      if (ac.signal.aborted) return true; // superseded
+      if (blob.size === 0) return false;
+
+      const el = ensureAudioEl();
+      if (!el) return false;
+      revokeObjectUrl();
+      const url = URL.createObjectURL(blob);
+      objectUrlRef.current = url;
+      el.src = url;
+      el.muted = false;
+      el.volume = settingsRef.current.volume;
+      currentGenderRef.current = gender;
+
+      try {
+        usingCloudRef.current = true;
+        await el.play();
+        setSpeaking(true);
+        return true;
+      } catch {
+        // Autoplay/gesture blocked → let native take this one.
+        usingCloudRef.current = false;
+        revokeObjectUrl();
+        return false;
+      }
+    },
+    [ensureAudioEl],
+  );
+
+  const speak = useCallback(
+    (text: string, gender: Gender) => {
+      if (!supported || typeof window === "undefined") return;
+      // Mute = swallow new audio entirely.
+      if (settingsRef.current.muted) return;
+
+      // Tear down whatever is currently playing before starting the new turn.
+      stopCloud();
+
+      if (cloudDisabledRef.current) {
+        speakNative(text, gender);
+        return;
+      }
+      // Try the cloud voice; fall back to native if it can't play this turn.
+      speakCloud(text, gender).then((ok) => {
+        if (!ok) speakNative(text, gender);
+      });
+    },
+    [supported, stopCloud, speakCloud, speakNative],
   );
 
   const setMuted = useCallback((muted: boolean) => {
@@ -402,16 +556,21 @@ export function useSpeechSynthesis() {
     if (typeof window === "undefined") return;
     if (muted) {
       // Pause (don't cancel) so we can resume on unmute.
-      if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      if (usingCloudRef.current && audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+        pausedByMuteRef.current = true;
+      } else if (window.speechSynthesis?.speaking && !window.speechSynthesis.paused) {
         window.speechSynthesis.pause();
         pausedByMuteRef.current = true;
       }
-    } else {
-      // Resume if we paused due to mute earlier.
-      if (pausedByMuteRef.current && window.speechSynthesis.paused) {
+    } else if (pausedByMuteRef.current) {
+      // Resume whichever engine we paused.
+      if (usingCloudRef.current && audioRef.current) {
+        audioRef.current.play().catch(() => {});
+      } else if (window.speechSynthesis?.paused) {
         window.speechSynthesis.resume();
-        pausedByMuteRef.current = false;
       }
+      pausedByMuteRef.current = false;
     }
   }, []);
 
@@ -421,6 +580,13 @@ export function useSpeechSynthesis() {
     setSettings(next);
     saveSettings(next);
     if (typeof window === "undefined") return;
+
+    // Cloud <audio> supports instant volume changes — no restart trickery.
+    if (usingCloudRef.current && audioRef.current) {
+      audioRef.current.volume = v;
+      return;
+    }
+
     // Web Speech spec says volume changes mid-utterance MAY be ignored — and
     // most browsers DO ignore them (Chrome/Safari/Edge). Workaround: cancel
     // the current utterance and restart it from the last word boundary at the

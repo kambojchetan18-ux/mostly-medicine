@@ -63,15 +63,37 @@ SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 # constructing the RTCPeerConnection. If env missing the route returns 503
 # and the client falls back to STUN + Open Relay (free public TURN).
 
-# Peer RolePlay — server-side STT (Groq Whisper)
-#   GROQ_API_KEY                          # gsk_... (from console.groq.com/keys)
+# Patient voice — cloud TTS (ElevenLabs)
+#   ELEVENLABS_API_KEY                    # sk_... (from elevenlabs.io)
+#   ELEVENLABS_VOICE_FEMALE               # optional voice ID override
+#   ELEVENLABS_VOICE_MALE                 # optional voice ID override
 #
-# The /api/stt/transcribe route forwards 5s WebM chunks from the live mode
-# browser to Groq's whisper-large-v3-turbo (~$0.04/hour, $1/mo free credit).
-# This replaces the unreliable Web Speech API on Android Chrome / iOS Safari.
-# Set in Vercel → Project → Settings → Environment Variables (Production +
-# Preview). If missing, the route returns 503 and the live transcript stays
-# blank — handy as a kill-switch.
+# /api/tts streams ElevenLabs Flash v2.5 MP3 audio for the AI patient's reply.
+# Replaces the robotic browser Web Speech Synthesis (web) and expo-speech
+# (mobile) voices. Both clients try /api/tts first and fall back to the native
+# voice if it returns 503 (key missing — kill-switch) / 403 (plan) or if
+# playback is blocked. Mobile decodes the MP3 to a base64 data: URI and plays
+# it via expo-av Audio.Sound — no native rebuild needed (OTA-safe), unlike the
+# recording path. Defaults are British premade voices (closest to en-AU);
+# override with any voice ID from your ElevenLabs library.
+
+# Server-side STT — mic input for all roleplay surfaces (cat2, AMC solo, live)
+#   DEEPGRAM_API_KEY                       # from console.deepgram.com (preferred)
+#   DEEPGRAM_MODEL                         # optional, default nova-3-medical
+#   GROQ_API_KEY                           # gsk_... fallback (console.groq.com/keys)
+#
+# /api/stt/transcribe receives short WebM/Opus (or MP4 on iOS) audio chunks and
+# transcribes them, returning { text }. Provider order:
+#   1) Deepgram Nova-3 Medical — preferred. Clinical-domain model, markedly more
+#      accurate on the non-native/accented English our IMG users speak (exactly
+#      where generic Whisper degrades). Raw bytes POSTed with the blob's mime.
+#   2) Groq whisper-large-v3-turbo — fallback when DEEPGRAM_API_KEY is unset OR
+#      a Deepgram request fails, so Deepgram can never make things worse.
+# If NEITHER key is set the route returns 503 and the transcript stays blank
+# (kill-switch). The route contract is unchanged, so web + mobile clients need
+# no changes. Set keys in Vercel → Settings → Environment Variables (Prod +
+# Preview). True live-streaming (WebSocket) STT is a later phase — this is still
+# the chunked POST path.
 
 # AI Clinical RolePlay — offline content build (run once, or after adding PDFs)
 # 1) Drop new PDFs into roleplays/source-pdfs/ (gitignored)
