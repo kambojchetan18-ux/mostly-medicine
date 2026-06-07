@@ -49,7 +49,8 @@ async function loadReviewLater(): Promise<Set<string>> {
     if (!raw) return new Set();
     const arr = JSON.parse(raw);
     return new Set(Array.isArray(arr) ? arr : []);
-  } catch {
+  } catch (err) {
+    console.warn('[cat1] loadReviewLater failed:', err instanceof Error ? err.message : err);
     return new Set();
   }
 }
@@ -57,8 +58,8 @@ async function loadReviewLater(): Promise<Set<string>> {
 async function saveReviewLater(set: Set<string>): Promise<void> {
   try {
     await AsyncStorage.setItem(REVIEW_LATER_KEY, JSON.stringify([...set]));
-  } catch {
-    /* ignore */
+  } catch (err) {
+    console.warn('[cat1] saveReviewLater failed:', err instanceof Error ? err.message : err);
   }
 }
 

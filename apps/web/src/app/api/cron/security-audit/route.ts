@@ -23,13 +23,10 @@ import crypto from "crypto";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-// Family / staff accounts that legitimately bypass billing.
-const PRIV_WHITELIST = new Set<string>([
-  "nikhil.kamboj83@gmail.com",
-  "amankamboj10@gmail.com",
-  "kamboj.chetan18@gmail.com",
-  "chetan.kamboj844@gmail.com",
-]);
+// Family / staff accounts that legitimately bypass billing are identified by
+// founder_rank (assigned automatically to the first 100 signups in migration
+// 023). Queries below filter on founder_rank IS NOT NULL instead of a
+// hardcoded email list — keeps the check current as staff changes.
 
 function service() {
   return createServiceClient(
@@ -65,17 +62,15 @@ async function detectPrivEscalation(sb: ReturnType<typeof service>): Promise<Fin
     stripe_subscription_id: string | null; founder_rank: number | null;
     pro_until: string | null; updated_at: string;
   }>;
-  return rows
-    .filter((r) => !PRIV_WHITELIST.has((r.email ?? "").toLowerCase()))
-    .map((r) => ({
-      kind: "priv_escalation",
-      severity: "critical" as const,
-      subjectType: "user" as const,
-      subjectId: r.id,
-      fingerprint: fingerprint(["priv_escalation", r.id, r.plan, r.role]),
-      summary: `${r.email} is ${r.plan}/${r.role} without Stripe + without founder grant`,
-      payload: r as unknown as Record<string, unknown>,
-    }));
+  return rows.map((r) => ({
+    kind: "priv_escalation",
+    severity: "critical" as const,
+    subjectType: "user" as const,
+    subjectId: r.id,
+    fingerprint: fingerprint(["priv_escalation", r.id, r.plan, r.role]),
+    summary: `${r.email} is ${r.plan}/${r.role} without Stripe + without founder grant`,
+    payload: r as unknown as Record<string, unknown>,
+  }));
 }
 
 async function detectPlanDrift(sb: ReturnType<typeof service>): Promise<Finding[]> {
@@ -141,17 +136,15 @@ async function detectNewAdmins(sb: ReturnType<typeof service>): Promise<Finding[
     .eq("role", "admin")
     .gte("updated_at", since);
   const rows = (data ?? []) as Array<{ id: string; email: string; role: string; plan: string; updated_at: string }>;
-  return rows
-    .filter((r) => !PRIV_WHITELIST.has((r.email ?? "").toLowerCase()))
-    .map((r) => ({
-      kind: "new_admin",
-      severity: "critical" as const,
-      subjectType: "user" as const,
-      subjectId: r.id,
-      fingerprint: fingerprint(["new_admin", r.id]),
-      summary: `${r.email} is admin and was updated in the last 24h`,
-      payload: r as unknown as Record<string, unknown>,
-    }));
+  return rows.map((r) => ({
+    kind: "new_admin",
+    severity: "critical" as const,
+    subjectType: "user" as const,
+    subjectId: r.id,
+    fingerprint: fingerprint(["new_admin", r.id]),
+    summary: `${r.email} is admin and was updated in the last 24h`,
+    payload: r as unknown as Record<string, unknown>,
+  }));
 }
 
 async function notify(newAlerts: Finding[]): Promise<void> {

@@ -53,36 +53,20 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
 
 export async function recordFailedAttempt(key: string): Promise<{ locked: boolean; attemptsLeft: number }> {
   const supabase = serviceClient();
-  const now = new Date().toISOString();
+  const lockedUntil = new Date(Date.now() + WINDOW_MS).toISOString();
 
-  // Upsert with count=1 for new rows. For existing rows the upsert merges,
-  // so we read-back the current count and write a +1 in a single call.
-  // This still has a tiny TOCTOU window but is acceptable for login-throttle
-  // where near-miss is tolerable. True atomic increment would need an RPC.
-  const { data: existing } = await supabase
-    .from("rate_limit_attempts")
-    .select("count, first_attempt_at")
-    .eq("key", key)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("increment_rate_limit", {
+    p_key: key,
+    p_max: MAX_ATTEMPTS,
+    p_locked_until: lockedUntil,
+  });
 
-  const currentCount = existing?.count ?? 0;
-  const firstAttempt = existing?.first_attempt_at ?? now;
-  const newCount = currentCount + 1;
-  const lockedUntil = newCount >= MAX_ATTEMPTS
-    ? new Date(Date.now() + WINDOW_MS).toISOString()
-    : null;
+  if (error) {
+    console.error("[rate-limit] increment_rate_limit RPC failed:", error.message);
+    return { locked: false, attemptsLeft: MAX_ATTEMPTS };
+  }
 
-  await supabase.from("rate_limit_attempts").upsert(
-    {
-      key,
-      count: newCount,
-      first_attempt_at: firstAttempt,
-      locked_until: lockedUntil,
-      updated_at: now,
-    },
-    { onConflict: "key" }
-  );
-
+  const newCount = (data as Array<{ new_count: number }>)?.[0]?.new_count ?? 1;
   return {
     locked: newCount >= MAX_ATTEMPTS,
     attemptsLeft: Math.max(0, MAX_ATTEMPTS - newCount),
