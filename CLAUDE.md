@@ -77,15 +77,23 @@ SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 # recording path. Defaults are British premade voices (closest to en-AU);
 # override with any voice ID from your ElevenLabs library.
 
-# Peer RolePlay — server-side STT (Groq Whisper)
-#   GROQ_API_KEY                          # gsk_... (from console.groq.com/keys)
+# Server-side STT — mic input for all roleplay surfaces (cat2, AMC solo, live)
+#   DEEPGRAM_API_KEY                       # from console.deepgram.com (preferred)
+#   DEEPGRAM_MODEL                         # optional, default nova-3-medical
+#   GROQ_API_KEY                           # gsk_... fallback (console.groq.com/keys)
 #
-# The /api/stt/transcribe route forwards 5s WebM chunks from the live mode
-# browser to Groq's whisper-large-v3-turbo (~$0.04/hour, $1/mo free credit).
-# This replaces the unreliable Web Speech API on Android Chrome / iOS Safari.
-# Set in Vercel → Project → Settings → Environment Variables (Production +
-# Preview). If missing, the route returns 503 and the live transcript stays
-# blank — handy as a kill-switch.
+# /api/stt/transcribe receives short WebM/Opus (or MP4 on iOS) audio chunks and
+# transcribes them, returning { text }. Provider order:
+#   1) Deepgram Nova-3 Medical — preferred. Clinical-domain model, markedly more
+#      accurate on the non-native/accented English our IMG users speak (exactly
+#      where generic Whisper degrades). Raw bytes POSTed with the blob's mime.
+#   2) Groq whisper-large-v3-turbo — fallback when DEEPGRAM_API_KEY is unset OR
+#      a Deepgram request fails, so Deepgram can never make things worse.
+# If NEITHER key is set the route returns 503 and the transcript stays blank
+# (kill-switch). The route contract is unchanged, so web + mobile clients need
+# no changes. Set keys in Vercel → Settings → Environment Variables (Prod +
+# Preview). True live-streaming (WebSocket) STT is a later phase — this is still
+# the chunked POST path.
 
 # AI Clinical RolePlay — offline content build (run once, or after adding PDFs)
 # 1) Drop new PDFs into roleplays/source-pdfs/ (gitignored)
