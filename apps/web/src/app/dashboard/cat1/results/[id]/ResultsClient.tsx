@@ -662,6 +662,20 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
             <p className="text-[11px] text-gray-500">{data.review.length} questions</p>
           </div>
 
+          {wrong > 0 && (
+            <div className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-900 flex items-center gap-2">
+              <span className="text-lg" aria-hidden>✨</span>
+              <span>
+                <strong>Turn wrong answers into flashcards.</strong> Each of the {wrong} wrong question
+                {wrong === 1 ? "" : "s"} below is already expanded — scroll down and tap{" "}
+                <span className="rounded border border-violet-300 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-violet-700">
+                  ✨ Make flashcards
+                </span>{" "}
+                to add 1-3 AU-cited cloze cards to your spaced-rep library.
+              </span>
+            </div>
+          )}
+
           {data.review.map((q, idx) => {
             const correct = q.isCorrect === true;
             const wrong = q.isCorrect === false;
@@ -669,7 +683,11 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
               <details
                 key={`rev-${q.id}-${idx}`}
                 className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
-                open={data.session.isMock}
+                // Auto-expand wrong answers so the "✨ Make flashcards"
+                // button is visible without an extra click — wrong is
+                // exactly where users want it most. Mock-exam reviews
+                // still expand everything (existing behaviour).
+                open={data.session.isMock || wrong}
               >
                 <summary className="cursor-pointer list-none px-4 py-3 sm:px-5 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 min-w-0">
