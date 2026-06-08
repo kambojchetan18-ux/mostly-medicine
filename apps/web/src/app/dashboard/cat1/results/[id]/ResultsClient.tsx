@@ -3,6 +3,30 @@
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 
+// ── AI MCQ → flashcards draft shape (returned by
+// /api/flashcards/generate-from-mcq, persisted via /api/flashcards/save).
+// Kept inline because no other component needs it.
+interface McqDraftCard {
+  tempId: string;
+  subtopic: string;
+  front_md: string;
+  back_md: string;
+  citation: string;
+  mark_sheet_domain: string;
+  amc_part: string;
+  keep: boolean;
+}
+
+interface McqFlashcardState {
+  // "idle" → button rendered. "loading" → spinner. "drafts" → panel
+  // with toggles + save. "saving" → save in flight. "saved" → "Saved N
+  // cards" pill. "error" → inline error + retry.
+  status: "idle" | "loading" | "drafts" | "saving" | "saved" | "error";
+  drafts: McqDraftCard[];
+  savedCount: number;
+  errorMsg: string | null;
+}
+
 export interface AttemptRow {
   id: string;
   question_id: string;
@@ -203,6 +227,130 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
   const percentile  = session.percentile;
   const lpRefs      = useRef<Record<string, HTMLDivElement | null>>({});
   const [shareMsg, setShareMsg] = useState<string | null>(null);
+
+  // Per-question flashcard generation state. Keyed by questionId so
+  // multiple panels can be open simultaneously (a user reviewing 10
+  // wrong answers can fan out 10 drafts).
+  const [fcState, setFcState] = useState<Record<string, McqFlashcardState>>({});
+  function patchFc(qid: string, patch: Partial<McqFlashcardState>) {
+    setFcState((prev) => {
+      const base: McqFlashcardState = prev[qid] ?? {
+        status: "idle",
+        drafts: [],
+        savedCount: 0,
+        errorMsg: null,
+      };
+      return { ...prev, [qid]: { ...base, ...patch } };
+    });
+  }
+
+  async function generateFlashcards(qid: string) {
+    patchFc(qid, { status: "loading", errorMsg: null });
+    try {
+      const r = await fetch("/api/flashcards/generate-from-mcq", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionId: qid }),
+      });
+      const json = await r.json().catch(() => null);
+      if (!r.ok) {
+        const msg =
+          (json && typeof json === "object" && "error" in json && typeof json.error === "string"
+            ? json.error === "daily_limit_reached"
+              ? `Free plan: ${json.dailyLimit ?? 5} AI MCQ→cards / day used. Upgrade for unlimited.`
+              : json.error === "rate_limited"
+                ? "Slow down — try again in a few seconds."
+                : json.error
+            : null) ?? "Could not generate flashcards. Try again.";
+        patchFc(qid, { status: "error", errorMsg: msg });
+        return;
+      }
+      const rawCards: unknown = json?.cards;
+      if (!Array.isArray(rawCards) || rawCards.length === 0) {
+        patchFc(qid, { status: "error", errorMsg: "AI returned no cards. Try again." });
+        return;
+      }
+      const drafts: McqDraftCard[] = rawCards.map((c) => {
+        const obj = c as Partial<McqDraftCard>;
+        return {
+          tempId: typeof obj.tempId === "string" ? obj.tempId : `${qid}-d-${Math.random().toString(36).slice(2, 7)}`,
+          subtopic: typeof obj.subtopic === "string" ? obj.subtopic : "",
+          front_md: typeof obj.front_md === "string" ? obj.front_md : "",
+          back_md: typeof obj.back_md === "string" ? obj.back_md : "",
+          citation: typeof obj.citation === "string" ? obj.citation : "",
+          mark_sheet_domain: typeof obj.mark_sheet_domain === "string" ? obj.mark_sheet_domain : "",
+          amc_part: typeof obj.amc_part === "string" ? obj.amc_part : "part_1",
+          keep: true,
+        };
+      });
+      patchFc(qid, { status: "drafts", drafts, errorMsg: null });
+    } catch (err) {
+      console.error("[results] generate flashcards failed", err);
+      patchFc(qid, { status: "error", errorMsg: "Network error. Try again." });
+    }
+  }
+
+  function toggleDraft(qid: string, tempId: string) {
+    setFcState((prev) => {
+      const cur = prev[qid];
+      if (!cur) return prev;
+      return {
+        ...prev,
+        [qid]: {
+          ...cur,
+          drafts: cur.drafts.map((d) =>
+            d.tempId === tempId ? { ...d, keep: !d.keep } : d
+          ),
+        },
+      };
+    });
+  }
+
+  async function saveFlashcards(qid: string, subtopicLabel: string) {
+    const cur = fcState[qid];
+    if (!cur) return;
+    const kept = cur.drafts.filter((d) => d.keep);
+    if (kept.length === 0) {
+      patchFc(qid, { errorMsg: "Tick at least one card to save." });
+      return;
+    }
+    patchFc(qid, { status: "saving", errorMsg: null });
+    try {
+      const r = await fetch("/api/flashcards/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "ai_mcq",
+          deckName: `MCQ: ${subtopicLabel}`,
+          cards: kept.map((d) => ({
+            subtopic: d.subtopic,
+            front_md: d.front_md,
+            back_md: d.back_md,
+            citation: d.citation,
+            mark_sheet_domain: d.mark_sheet_domain,
+            amc_part: d.amc_part,
+          })),
+        }),
+      });
+      const json = await r.json().catch(() => null);
+      if (!r.ok) {
+        const msg =
+          (json && typeof json === "object" && "error" in json && typeof json.error === "string"
+            ? json.error
+            : null) ?? "Save failed. Try again.";
+        patchFc(qid, { status: "drafts", errorMsg: msg });
+        return;
+      }
+      patchFc(qid, {
+        status: "saved",
+        savedCount: typeof json?.saved === "number" ? json.saved : kept.length,
+        errorMsg: null,
+      });
+    } catch (err) {
+      console.error("[results] save flashcards failed", err);
+      patchFc(qid, { status: "drafts", errorMsg: "Network error. Try again." });
+    }
+  }
 
   const startedAtLabel = useMemo(() => {
     try {
@@ -585,6 +733,148 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
                     <p className="font-semibold text-violet-800 mb-1">Explanation</p>
                     {q.explanation}
                   </div>
+
+                  {/* AI: Make flashcards from this MCQ ------------------ */}
+                  {(() => {
+                    const fc = fcState[q.id];
+                    const status = fc?.status ?? "idle";
+                    const subtopicLabel = q.subtopic || q.topic || "MCQ";
+
+                    if (status === "saved") {
+                      return (
+                        <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800">
+                          <span aria-hidden>✓</span>
+                          <span>
+                            Saved {fc?.savedCount ?? 0} card
+                            {(fc?.savedCount ?? 0) === 1 ? "" : "s"} to your library
+                          </span>
+                          <Link
+                            href="/dashboard/flashcards"
+                            className="ml-auto rounded-md border border-emerald-300 bg-white px-2 py-0.5 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100"
+                          >
+                            Open library →
+                          </Link>
+                        </div>
+                      );
+                    }
+
+                    if (status === "idle" || status === "error") {
+                      return (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => generateFlashcards(q.id)}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-white px-3 py-1.5 text-xs font-semibold text-violet-700 shadow-sm transition hover:bg-violet-50"
+                          >
+                            <span aria-hidden>✨</span>
+                            Make flashcards
+                          </button>
+                          {status === "error" && fc?.errorMsg && (
+                            <span className="text-[11px] text-rose-600">{fc.errorMsg}</span>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    if (status === "loading") {
+                      return (
+                        <div className="flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-700">
+                          <span
+                            aria-hidden
+                            className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-violet-300 border-t-violet-700"
+                          />
+                          Drafting flashcards…
+                        </div>
+                      );
+                    }
+
+                    // status === "drafts" | "saving" — show the panel
+                    const drafts = fc?.drafts ?? [];
+                    const keptCount = drafts.filter((d) => d.keep).length;
+                    const saving = status === "saving";
+
+                    return (
+                      <div className="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="text-xs font-semibold text-gray-900">
+                            <span aria-hidden>✨</span> {drafts.length} draft flashcard
+                            {drafts.length === 1 ? "" : "s"}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] text-gray-500">
+                              {keptCount} keeping
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => saveFlashcards(q.id, subtopicLabel)}
+                              disabled={saving || keptCount === 0}
+                              className="rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 hover:shadow"
+                            >
+                              {saving ? "Saving…" : `Save ${keptCount} to library`}
+                            </button>
+                          </div>
+                        </div>
+
+                        <ul className="mt-3 space-y-2">
+                          {drafts.map((d) => (
+                            <li
+                              key={d.tempId}
+                              className={`rounded-xl border px-3 py-2 transition ${
+                                d.keep
+                                  ? "border-violet-200 bg-violet-50/40"
+                                  : "border-gray-200 bg-gray-50 opacity-60"
+                              }`}
+                            >
+                              <label className="flex items-start gap-2 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={d.keep}
+                                  onChange={() => toggleDraft(q.id, d.tempId)}
+                                  className="mt-1 h-3.5 w-3.5 accent-violet-600"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs font-medium text-gray-900 whitespace-pre-wrap">
+                                    {d.front_md}
+                                  </p>
+                                  {d.back_md && (
+                                    <p className="mt-1 text-[11px] text-gray-600 whitespace-pre-wrap leading-relaxed">
+                                      {d.back_md}
+                                    </p>
+                                  )}
+                                  <div className="mt-1.5 flex flex-wrap gap-1">
+                                    {d.subtopic && (
+                                      <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-medium text-violet-700">
+                                        {d.subtopic}
+                                      </span>
+                                    )}
+                                    {d.mark_sheet_domain && (
+                                      <span className="rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-medium text-pink-700">
+                                        {d.mark_sheet_domain}
+                                      </span>
+                                    )}
+                                    {d.amc_part && (
+                                      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                                        {d.amc_part}
+                                      </span>
+                                    )}
+                                    {d.citation && (
+                                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-600">
+                                        {d.citation}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </label>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {fc?.errorMsg && (
+                          <p className="mt-2 text-[11px] text-rose-600">{fc.errorMsg}</p>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </details>
             );
