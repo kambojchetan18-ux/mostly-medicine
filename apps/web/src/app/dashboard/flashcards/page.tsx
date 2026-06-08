@@ -1,5 +1,6 @@
 import Link from "next/link";
 import StatsHeader from "./StatsHeader";
+import MyLibrarySection from "./MyLibrarySection";
 import {
   cardiologyFlashcards,
   respiratoryFlashcards,
@@ -109,6 +110,8 @@ export default function FlashcardsHubPage() {
           </p>
         </Link>
       </section>
+
+      <MyLibrarySection />
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
         Packaged decks
