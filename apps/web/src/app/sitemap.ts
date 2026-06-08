@@ -38,6 +38,13 @@ const entries: Entry[] = [
   { path: "/amc-from-pakistan",    changeFrequency: "monthly", priority: 0.9 },
   { path: "/amc-from-philippines", changeFrequency: "monthly", priority: 0.9 },
 
+  // Tier 4 — AU moat landing pages (zero global competitor ranks for these)
+  { path: "/aboriginal-health-amc",         changeFrequency: "monthly", priority: 0.9 },
+  { path: "/rural-gp-amc-pathway",          changeFrequency: "monthly", priority: 0.9 },
+  { path: "/amc-pharmacology-australia",    changeFrequency: "monthly", priority: 0.9 },
+  { path: "/amc-ethics-medico-legal-au",    changeFrequency: "monthly", priority: 0.9 },
+  { path: "/img-cultural-safety-australia", changeFrequency: "monthly", priority: 0.9 },
+
   // Tier 2 — specialty MCQ pages (auto-generated from packages/content)
   { path: "/amc-mcq",                            changeFrequency: "monthly", priority: 0.8 },
   { path: "/amc-mcq/cardiology",                 changeFrequency: "monthly", priority: 0.7 },
