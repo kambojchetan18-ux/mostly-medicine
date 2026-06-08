@@ -1,4 +1,5 @@
 import Link from "next/link";
+import StatsHeader from "./StatsHeader";
 import {
   cardiologyFlashcards,
   respiratoryFlashcards,
@@ -75,6 +76,8 @@ export default function FlashcardsHubPage() {
           </span>
         </div>
       </header>
+
+      <StatsHeader />
 
       {/* AI generation + Anki import — surfaced first so users see the
           "make your own" path before scrolling to packaged decks. */}
