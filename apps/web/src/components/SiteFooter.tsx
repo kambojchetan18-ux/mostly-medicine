@@ -11,6 +11,10 @@ import Link from "next/link";
  *   3. Contact — email, website, location
  *
  * Pure server component. No auth, no DB, no client JS.
+ *
+ * Palette: matches the v3 homepage (ink-950 base + cream-50 text + saffron
+ * accents). Other public pillar pages still use this footer; their dark
+ * footer continues to feel cohesive even if their hero is light.
  */
 type QuickLink = {
   href: string;
@@ -18,12 +22,15 @@ type QuickLink = {
 };
 
 const quickLinks: QuickLink[] = [
+  { href: "/amc-cat2",                  label: "AMC Clinical · AI RolePlay" },
+  { href: "/amc-mcq",                   label: "AMC MCQ"                 },
+  { href: "/ask-ai",                    label: "Ask AI (Free)"           },
+  { href: "/dashboard/flashcards",      label: "Flashcards"              },
   { href: "/amc",                       label: "AMC Exam Guide"          },
   { href: "/amc-fee-calculator",        label: "AMC Fee Calculator"      },
   { href: "/amc-eligibility-checker",   label: "AMC Eligibility Checker" },
   { href: "/osce-guide",                label: "OSCE Prep Guide"         },
   { href: "/blog",                      label: "Blog"                    },
-  { href: "/ask-ai",                    label: "Ask AI (Free)"           },
   // Public pricing page — always linked (no auth, no flag gate). Checkout
   // itself stays on /dashboard/billing, which keeps its own beta gating.
   { href: "/pricing",                   label: "Pricing & Plans"         },
@@ -36,9 +43,9 @@ const quickLinks: QuickLink[] = [
 
 export default function SiteFooter(): JSX.Element {
   return (
-    <footer className="relative z-10 mt-24 bg-[#070714] text-slate-300">
-      {/* Top hairline — emerald gradient, matches brand palette */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+    <footer className="relative z-10 bg-ink-950 text-cream-50/80">
+      {/* Top hairline — saffron gradient, matches v3 brand palette */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-saffron-500/40 to-transparent" />
 
       <div className="mx-auto max-w-[1280px] px-6 py-10 sm:px-10 md:py-16">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-10">
@@ -48,13 +55,13 @@ export default function SiteFooter(): JSX.Element {
               href="/"
               className="font-display inline-block text-[1.25rem] font-bold tracking-tight"
             >
-              <span className="gradient-text">Mostly</span>
-              <span className="text-white"> Medicine</span>
+              <span className="text-saffron-400">Mostly</span>
+              <span className="text-cream-50"> Medicine</span>
             </Link>
-            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300">
+            <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-saffron-400/90">
               AMC Prep Platform
             </p>
-            <p className="mt-5 text-sm leading-relaxed text-slate-400">
+            <p className="mt-5 text-sm leading-relaxed text-cream-50/65">
               AMC exam preparation built for International Medical Graduates
               pursuing Australian medical registration. Free to start,
               AI-powered, handbook-aligned.
@@ -63,7 +70,7 @@ export default function SiteFooter(): JSX.Element {
 
           {/* Column 2 — Quick links */}
           <div>
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300">
+            <h3 className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-saffron-400/90">
               Quick Links
             </h3>
             <ul className="mt-5 space-y-3">
@@ -71,7 +78,7 @@ export default function SiteFooter(): JSX.Element {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-slate-400 transition-colors hover:text-white"
+                    className="text-sm text-cream-50/65 transition-colors hover:text-cream-50"
                   >
                     {link.label}
                   </Link>
@@ -82,34 +89,34 @@ export default function SiteFooter(): JSX.Element {
 
           {/* Column 3 — Contact */}
           <div>
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300">
+            <h3 className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-saffron-400/90">
               Contact
             </h3>
-            <ul className="mt-5 space-y-3 text-sm text-slate-400">
+            <ul className="mt-5 space-y-3 text-sm text-cream-50/65">
               <li>
-                <span className="block text-xs uppercase tracking-wider text-slate-600">
+                <span className="block font-mono text-[10px] uppercase tracking-wider text-cream-50/40">
                   Email
                 </span>
                 <a
                   href="mailto:info@mostlymedicine.com"
-                  className="mt-1 inline-block transition-colors hover:text-white"
+                  className="mt-1 inline-block transition-colors hover:text-cream-50"
                 >
                   info@mostlymedicine.com
                 </a>
               </li>
               <li>
-                <span className="block text-xs uppercase tracking-wider text-slate-600">
+                <span className="block font-mono text-[10px] uppercase tracking-wider text-cream-50/40">
                   Website
                 </span>
-                <span className="mt-1 inline-block text-slate-300">
+                <span className="mt-1 inline-block text-cream-50/80">
                   mostlymedicine.com
                 </span>
               </li>
               <li>
-                <span className="block text-xs uppercase tracking-wider text-slate-600">
+                <span className="block font-mono text-[10px] uppercase tracking-wider text-cream-50/40">
                   Location
                 </span>
-                <span className="mt-1 inline-block text-slate-300">
+                <span className="mt-1 inline-block text-cream-50/80">
                   Sydney, Australia
                 </span>
               </li>
@@ -118,8 +125,8 @@ export default function SiteFooter(): JSX.Element {
         </div>
 
         {/* Bottom strip */}
-        <div className="mt-12 border-t border-slate-900/80 pt-6">
-          <p className="text-xs text-slate-600">
+        <div className="mt-12 border-t border-cream-50/10 pt-6">
+          <p className="text-xs text-cream-50/40">
             &copy; 2026 Mostly Medicine. Built for IMGs. Powered by Claude AI.
           </p>
         </div>

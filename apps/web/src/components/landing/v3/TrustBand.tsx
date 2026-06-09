@@ -3,9 +3,9 @@
 // "marketing".
 
 const ITEMS = [
-  { figure: "151", label: "AMC Handbook stations" },
+  { figure: "151", label: "AMC Handbook cases" },
+  { figure: "∞", label: "Beyond-Handbook cases" },
   { figure: "13", label: "AMC examiner domains" },
-  { figure: "8 min", label: "Voice station length" },
   { figure: "100%", label: "AU clinical aligned" },
 ];
 

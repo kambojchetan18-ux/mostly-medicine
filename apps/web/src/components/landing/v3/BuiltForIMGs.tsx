@@ -34,7 +34,7 @@ export default function BuiltForIMGs() {
               <Credential
                 figure="2026"
                 label="AMC Handbook edition"
-                detail="All 151 stations aligned"
+                detail="151 cases aligned + unlimited Beyond"
               />
               <Credential
                 figure="Sydney"

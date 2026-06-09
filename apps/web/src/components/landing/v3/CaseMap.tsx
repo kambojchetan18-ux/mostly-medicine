@@ -1,5 +1,7 @@
-// 151 cases laid out as a domain tag-cloud. Visual proof of depth that
-// the v2 "21 specialty decks" KPI tile could never carry.
+// 151 Handbook cases laid out as a domain tag-cloud. Visual proof of depth.
+// Pairs with an "+ unlimited Beyond-Handbook" callout so visitors see both
+// the AMC-aligned core AND the unlimited extra practice — these are the
+// two distinct product modes inside AMC Clinical AI roleplay.
 
 const CATEGORIES: { label: string; count: number; tone: "ink" | "saffron" | "cream" }[] = [
   { label: "Cardiology", count: 14, tone: "ink" },
@@ -36,11 +38,43 @@ export default function CaseMap() {
             Case coverage
           </p>
           <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-ink-950 sm:text-4xl">
-            {total} stations. Every AMC Handbook domain.
+            {total} Handbook cases. Plus unlimited Beyond.
           </h2>
           <p className="mt-3 text-base text-ink-900/70 sm:text-lg">
-            We don&rsquo;t pretend to cover &ldquo;everything&rdquo;. We cover the exam.
+            The 151 AMC Handbook cases below are the exam-aligned core. When you want more reps,
+            Beyond-Handbook generates fresh AI cases &mdash; no daily cap.
           </p>
+        </div>
+
+        {/* Mode comparison strip — Handbook (fixed, exam-aligned) vs
+            Beyond-Handbook (unlimited, AI-generated). */}
+        <div className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-ink-950/10 bg-cream-50 p-5">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink-900/60">
+                Handbook mode
+              </span>
+              <span className="rounded-full bg-ink-950 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-cream-50">
+                151 cases
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-ink-900/75">
+              The exam-aligned set. Every AMC Handbook 2026 case, mapped to the 13-domain rubric.
+            </p>
+          </div>
+          <div className="rounded-2xl border-2 border-saffron-400 bg-saffron-50 p-5">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-saffron-700">
+                Beyond-Handbook mode
+              </span>
+              <span className="rounded-full bg-saffron-500 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink-950">
+                Unlimited
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-ink-900/80">
+              Fresh AI-generated cases across every specialty &mdash; no daily cap, infinite reps for the systems you&rsquo;re weakest on.
+            </p>
+          </div>
         </div>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
@@ -56,8 +90,7 @@ export default function CaseMap() {
         </div>
 
         <p className="mx-auto mt-10 max-w-md text-center text-xs text-ink-900/55">
-          Counts approximate &mdash; the platform adds 4–8 cases each week as new AMC Handbook
-          editions land.
+          Handbook counts above are the AMC-aligned set. Beyond-Handbook adds infinite extras.
         </p>
       </div>
     </section>

@@ -4,8 +4,8 @@
 const STEPS = [
   {
     n: "01",
-    title: "Pick a station",
-    body: "Browse 151 AMC Handbook cases by specialty — cardiology, peds, mental health, ethics, communication. Or let the platform pick the system you're lowest on.",
+    title: "Pick a case",
+    body: "Browse the 151 AMC Handbook cases by specialty — or switch to Beyond-Handbook mode for unlimited AI-generated cases on the systems you're weakest on.",
     detail: "5 sec to start",
   },
   {

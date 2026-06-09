@@ -5,6 +5,7 @@ import ProblemFraming from "@/components/landing/v3/ProblemFraming";
 import HowItWorksV3 from "@/components/landing/v3/HowItWorksV3";
 import AIExaminer from "@/components/landing/v3/AIExaminer";
 import CaseMap from "@/components/landing/v3/CaseMap";
+import MoreModules from "@/components/landing/v3/MoreModules";
 import BuiltForIMGs from "@/components/landing/v3/BuiltForIMGs";
 import PricingSimple from "@/components/landing/v3/PricingSimple";
 import FaqV3 from "@/components/landing/v3/FaqV3";
@@ -23,6 +24,14 @@ const faqSchema = {
       acceptedAnswer: {
         "@type": "Answer",
         text: "You hit start, see the scenario, and the AI patient greets you in voice. You talk; it responds — coherently across an 8-minute station. After you say 'thank you', a Sonnet examiner scores your transcript against the 13-domain AMC rubric. Available 24/7.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What's the difference between Handbook and Beyond-Handbook cases?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Handbook mode = the 151 cases mapped 1:1 to the AMC Handbook 2026. Beyond-Handbook mode = unlimited AI-generated cases across every specialty — no daily cap. Use Handbook to cover the exam, Beyond to drill weak systems without running out of practice.",
       },
     },
     {
@@ -84,6 +93,7 @@ export default function Home() {
       <HowItWorksV3 />
       <AIExaminer />
       <CaseMap />
+      <MoreModules />
       <BuiltForIMGs />
       <PricingSimple />
       <FaqV3 />

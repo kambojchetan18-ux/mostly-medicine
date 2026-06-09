@@ -41,8 +41,9 @@ export default function HeroV3() {
 
           {/* Subhead */}
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-900/75 sm:text-lg">
-            151 AMC Handbook stations. Voice in, voice out. Scored against the same
-            13-domain rubric the AMC uses. Built by IMGs in Sydney.
+            All <strong className="text-ink-950">151 AMC Handbook cases</strong>, plus{" "}
+            <strong className="text-ink-950">unlimited Beyond-Handbook</strong> AI clinical
+            cases. Voice in, voice out. Scored against the same 13-domain AMC rubric.
           </p>
 
           {/* CTAs */}

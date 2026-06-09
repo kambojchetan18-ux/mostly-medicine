@@ -8,6 +8,10 @@ const FAQS: { q: string; a: string }[] = [
     a: "You hit start, see the scenario (e.g. \"40-year-old with chest pain\"), and the AI patient greets you in voice. You talk; it responds. You can interrupt, redirect, summarise — like a real exam. After 8 minutes you say \"thank you\", and a Sonnet-4.6 examiner scores you against the 13-domain AMC rubric. Available 24/7.",
   },
   {
+    q: "What's the difference between Handbook and Beyond-Handbook cases?",
+    a: "Handbook mode = the 151 cases mapped 1:1 to the AMC Handbook 2026 — the exam-aligned set everyone needs to know. Beyond-Handbook mode = unlimited AI-generated cases across every specialty, refreshed every time you start one. Use Handbook to cover the exam, Beyond to drill the systems you're weakest on without running out of practice.",
+  },
+  {
     q: "Is the content actually aligned with the AMC Handbook 2026?",
     a: "Yes. Every station maps to the AMC Handbook 2026 case categories (cardiology, peds, mental health, etc.). Investigation choices, management plans and counselling lines are written against Australian clinical guidelines — not USMLE or UK NICE.",
   },
