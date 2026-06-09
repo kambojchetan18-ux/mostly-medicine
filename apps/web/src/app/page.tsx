@@ -1,81 +1,68 @@
-import HeroV2 from "@/components/landing/HeroV2";
-import TrustStrip from "@/components/landing/TrustStrip";
-import HowItWorks from "@/components/landing/HowItWorks";
-import FeatureBlock from "@/components/landing/FeatureBlock";
-import ComparisonStrip from "@/components/landing/ComparisonStrip";
-import LiveCounter from "@/components/landing/LiveCounter";
-import FaqSection from "@/components/landing/FaqSection";
-import PricingTeaser from "@/components/landing/PricingTeaser";
-import FooterMantra from "@/components/landing/FooterMantra";
+import SiteNav from "@/components/landing/v3/SiteNav";
+import HeroV3 from "@/components/landing/v3/HeroV3";
+import TrustBand from "@/components/landing/v3/TrustBand";
+import ProblemFraming from "@/components/landing/v3/ProblemFraming";
+import HowItWorksV3 from "@/components/landing/v3/HowItWorksV3";
+import AIExaminer from "@/components/landing/v3/AIExaminer";
+import CaseMap from "@/components/landing/v3/CaseMap";
+import BuiltForIMGs from "@/components/landing/v3/BuiltForIMGs";
+import PricingSimple from "@/components/landing/v3/PricingSimple";
+import FaqV3 from "@/components/landing/v3/FaqV3";
+import FinalCTA from "@/components/landing/v3/FinalCTA";
 import SiteFooter from "@/components/SiteFooter";
 
-// ISR — page is rebuilt once every 5 minutes so the LiveCounter
-// reflects the latest 24h aggregates without paying for a Supabase
-// query on every visit.
-export const revalidate = 300;
-
-// Existing FAQ JSON-LD kept verbatim so the homepage's rich-result
-// eligibility doesn't regress when the section UI moves into
-// <FaqSection /> below. The schema and the visible FAQ should stay
-// roughly in sync — if you change one, update the other.
+// FAQPage JSON-LD — visible FaqV3 questions mirrored here so Google can
+// emit rich results. Keep the two lists in sync.
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: [
     {
       "@type": "Question",
-      name: "Is Mostly Medicine really AMC-aligned for 2026?",
+      name: "What does an AMC Clinical AI station actually feel like?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. Every MCQ, every roleplay scenario, every flashcard cites the AMC Handbook 2026, Murtagh's General Practice 8th edition, RACGP Red Book, Therapeutic Guidelines (eTG) or the relevant Australian college. We never substitute US sources like USPSTF, AHA or UpToDate without an Australian equivalent first.",
+        text: "You hit start, see the scenario, and the AI patient greets you in voice. You talk; it responds — coherently across an 8-minute station. After you say 'thank you', a Sonnet examiner scores your transcript against the 13-domain AMC rubric. Available 24/7.",
       },
     },
     {
       "@type": "Question",
-      name: "Do I still need eMedici or AMBOSS?",
+      name: "Is the content actually aligned with the AMC Handbook 2026?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Most IMGs run Mostly Medicine alongside eMedici's free official MCQ samples for a few weeks, then drop back to MM alone once their CAT 1 readiness curve crosses 70%. AMBOSS is USMLE-tuned — the AMC questions in its bank are an afterthought.",
+        text: "Yes. Every station maps to AMC Handbook 2026 case categories. Investigations, management and counselling are written against Australian clinical guidelines — not USMLE or NICE.",
       },
     },
     {
       "@type": "Question",
-      name: "What's free vs paid?",
+      name: "How is the AI examiner score calculated?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Free: 5 MCQs/day, 1 voice OSCE/day, full reference library, 5 flashcard reviews/day across 21 packaged decks. Pro (A$29/mo): unlimited MCQs, unlimited voice OSCE, 3 AI-generated decks/day, 1 Anki .apkg import/day. Enterprise (A$49/mo): everything plus AMC Peer RolePlay.",
+        text: "Your transcript is graded by Claude Sonnet 4.6 against the AMC's 13-domain rubric. Each domain is scored 0–10 with quote-level rationale, and weak-domain tracking persists across sessions.",
       },
     },
     {
       "@type": "Question",
-      name: "Does it cover Aboriginal and Torres Strait Islander Health?",
+      name: "Can I use it on my phone?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — a dedicated 20-card flashcard deck plus weighted MCQs across CAT 1 specialties. We also cover Rural & Remote Medicine, Cultural Safety, AU Pharmacology and AU Ethics as dedicated decks.",
+        text: "Yes — Android via Play Store APK (in active testing), iOS via TestFlight. Voice OSCE also works in mobile Safari and Chrome directly.",
       },
     },
     {
       "@type": "Question",
-      name: "Does the voice OSCE feel like a real patient?",
+      name: "What's the free tier really worth?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "It speaks back to you, holds the history coherently over an 8-minute station, and uses the same emotional cues the AMC Handbook specifies. After 'thank you, that's all', a Claude-Sonnet examiner grades you against the 13-domain AMC rubric.",
+        text: "1 voice OSCE station / day, 5 AMC MCQs / day, 5 flashcard reviews / day, and full Ask AI reference library. No card required.",
       },
     },
     {
       "@type": "Question",
-      name: "Mobile app?",
+      name: "Refund / cancellation policy?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — Android via Play Store APK (in active testing), iOS via TestFlight. The Cards tab mirrors web with the same FSRS scheduling. AI generation and Anki import stay on web for v1.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Who builds Mostly Medicine?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A small team of IMGs and IT professionals who walked the AMC pathway. Independent — not affiliated with the AMC, AHPRA or any official body. Mostly Medicine is a study tool aligned with publicly available AMC Handbooks and Australian clinical guidelines.",
+        text: "Cancel any time in your account — the remainder of the paid month stays active. We don't promise pass-or-refund guarantees, but email us within 30 days if something breaks.",
       },
     },
   ],
@@ -83,93 +70,24 @@ const faqSchema = {
 
 export default function Home() {
   return (
-    <main className="bg-white">
+    <main className="bg-cream-50 font-sans text-ink-950">
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <HeroV2 />
-      <TrustStrip />
-      <HowItWorks />
-
-      {/* Feature blocks — alternating image left/right. Each block sells
-          one of the four pillars: MCQs, voice OSCE, flashcards, AU moat. */}
-      <FeatureBlock
-        tag="AMC MCQ · CAT 1"
-        title="Drill the system you'll fail on."
-        blurb="4,400+ adaptive MCQs across 24 specialties, with the AU-weighted content (Aboriginal Health, rural medicine, AU pharmacology) that US tools skip. Every explanation cites a source you'll be expected to know on exam day."
-        bullets={[
-          "Specialty filters — drill the one that's lowest on your readiness curve",
-          "Cited from Murtagh / RACGP / eTG / AMC Handbook 2026",
-          "FSRS-5 spaced repetition — never review the same card twice in a week",
-          "Free tier: 5 MCQs/day. Pro: unlimited.",
-        ]}
-        cta={{ href: "/amc-mcq", label: "Explore AMC MCQ" }}
-        imageSrc="/marketing/mobile-mcq.png"
-        imageAlt="Mostly Medicine MCQ on mobile — case stem with multiple choice"
-        accent="emerald"
-        variant="phone"
-      />
-
-      <FeatureBlock
-        tag="Voice OSCE · CAT 2"
-        title="Rehearse the case out loud, 24/7."
-        blurb="150+ AMC Handbook stations with a Claude-powered patient who holds the history. After 'thank you', a Sonnet examiner scores you against the 13-domain mark-sheet — same rubric the AMC uses."
-        bullets={[
-          "Speaks back to you in real time — voice in, voice out",
-          "Patient holds context coherently over an 8-minute station",
-          "Examiner feedback grounded in your transcript, no waffle",
-          "No partner needed. No scheduling. Free tier: 1/day.",
-        ]}
-        cta={{ href: "/amc-cat2", label: "Try voice OSCE" }}
-        imageSrc="/marketing/mobile-roleplay.png"
-        imageAlt="Mostly Medicine voice OSCE on mobile — scenario briefing"
-        accent="violet"
-        variant="phone"
-        reverse
-      />
-
-      <FeatureBlock
-        tag="Flashcards · FSRS-5"
-        title="Cited like a textbook. Fast like a flashcard."
-        blurb="21 hand-curated specialty decks (407 AU-cited cards) plus AI generation from your own notes plus Anki .apkg import. FSRS-5 schedules every review so you study less and remember more."
-        bullets={[
-          "21 packaged decks — Cardiology to Aboriginal Health",
-          "AI cards from your notes, your lectures, or your wrong MCQs",
-          "Anki .apkg import — keep your AnKing deck, sync to FSRS",
-          "Free tier: 5 reviews/day across all decks.",
-        ]}
-        cta={{ href: "/dashboard/flashcards", label: "Open flashcards" }}
-        imageSrc="/marketing/mobile-flashcards.png"
-        imageAlt="Mostly Medicine flashcards on mobile — plan caps + due today + streak"
-        accent="sky"
-        variant="phone"
-      />
-
-      <FeatureBlock
-        tag="🇦🇺 The AU moat"
-        title="Aboriginal Health, built in — not a footnote."
-        blurb="Dedicated decks for the topics no global competitor builds: Aboriginal & Torres Strait Islander Health, Rural & Remote Medicine, Cultural Safety, AU Pharmacology (PBS / S8 / RTPM), and AU Medico-Legal (AHPRA / VAD / Austroads)."
-        bullets={[
-          "Closing the Gap, RHD secondary prophylaxis, MBS 715 — examinable",
-          "ACRRM pathway, 19AB moratorium, MM categories explained",
-          "AHPRA Code 2020, Rogers v Whitaker, Austroads — every state nuance",
-          "PBS Authority, S8 prescribing, RTPM SafeScript / QScript",
-        ]}
-        cta={{ href: "/aboriginal-health-amc", label: "See the AU moat decks" }}
-        imageSrc="/marketing/flashcards-hub.png"
-        imageAlt="Mostly Medicine specialty deck hub"
-        accent="rose"
-        reverse
-      />
-
-      <ComparisonStrip />
-      <LiveCounter />
-      <PricingTeaser />
-      <FaqSection />
-      <FooterMantra />
+      <SiteNav />
+      <HeroV3 />
+      <TrustBand />
+      <ProblemFraming />
+      <HowItWorksV3 />
+      <AIExaminer />
+      <CaseMap />
+      <BuiltForIMGs />
+      <PricingSimple />
+      <FaqV3 />
+      <FinalCTA />
       <SiteFooter />
     </main>
   );

@@ -28,10 +28,36 @@ const config: Config = {
           600: "#0891b2",
           700: "#0e7490",
         },
+        // v3 homepage palette — warm ivory + ink + saffron.
+        // Picked to break away from the Slack-emerald / Stripe-white SaaS
+        // pattern. Cream is a designed off-white (not #fff) so the page
+        // feels editorial / premium instead of stock. Saffron CTA pops
+        // against cream without going Christmas-red.
+        cream: {
+          50:  "#FBF8F2", // page background
+          100: "#F5EFE2",
+          200: "#EADFC6",
+        },
+        ink: {
+          800: "#1A1A1F",
+          900: "#0E0E12",
+          950: "#08080B", // primary text
+        },
+        saffron: {
+          50:  "#FFF7E6",
+          100: "#FDEBC0",
+          400: "#F1A82A",
+          500: "#E89216", // primary CTA
+          600: "#C9740A",
+          700: "#9F5A08",
+        },
       },
       fontFamily: {
-        sans:    ["var(--font-inter)",         "Inter",         "system-ui", "sans-serif"],
-        display: ["var(--font-space-grotesk)", "Space Grotesk", "system-ui", "sans-serif"],
+        sans:    ["var(--font-inter-tight)",   "Inter",         "system-ui", "sans-serif"],
+        display: ["var(--font-fraunces)",      "Fraunces",      "Georgia", "serif"],
+        mono:    ["var(--font-jetbrains)",     "JetBrains Mono", "ui-monospace", "monospace"],
+        // Legacy aliases kept so dashboard / other pages don't break.
+        grotesk: ["var(--font-space-grotesk)", "Space Grotesk", "system-ui", "sans-serif"],
       },
       animation: {
         float:        "float 7s ease-in-out infinite",

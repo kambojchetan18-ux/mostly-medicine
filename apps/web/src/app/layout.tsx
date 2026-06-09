@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Inter_Tight, Space_Grotesk, Fraunces, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -27,6 +27,31 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   display: "swap",
   weight: ["300", "400", "500", "600", "700"],
+});
+
+// v3 homepage type system. Fraunces (serif display) for editorial H1s — calmer
+// than generic geometric sans and signals "thoughtful medical content". Inter
+// Tight for large display copy. JetBrains Mono for the live AI transcript
+// widget; mono visually says "actual product output, not marketing fluff".
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter-tight",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+  weight: ["400", "500", "600"],
 });
 
 const SITE_URL = "https://mostlymedicine.com";
@@ -198,7 +223,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${spaceGrotesk.variable} ${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+    >
       <head>
         {/* Standard Web App capable — Chrome warns when only the
             apple-mobile-web-app-capable meta is present (Next 14's
