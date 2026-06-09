@@ -41,6 +41,7 @@ const config: Config = {
         "glow-pulse": "glowPulse 2.5s ease-in-out infinite",
         "spin-slow":  "spin 10s linear infinite",
         "fade-in":    "fadeIn 0.4s ease forwards",
+        marquee:      "marquee 60s linear infinite",
       },
       keyframes: {
         float: {
@@ -62,6 +63,10 @@ const config: Config = {
         fadeIn: {
           "0%":   { opacity: "0" },
           "100%": { opacity: "1" },
+        },
+        marquee: {
+          "0%":   { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-20%)" },
         },
       },
       boxShadow: {
