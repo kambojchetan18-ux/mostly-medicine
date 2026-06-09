@@ -19,9 +19,8 @@
 //   supabase storage create flashcard-media
 // Storage paths: {user.id}/{cardId}/{filename}
 
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import StreamZip from "node-stream-zip";
 import BetterSqlite3 from "better-sqlite3";
@@ -86,12 +85,7 @@ function parseFields(flds: string): ParsedNote {
 }
 
 export async function POST(req: NextRequest) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  );
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
