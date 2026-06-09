@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
 import { allQuestions } from "@mostly-medicine/content";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -122,6 +123,12 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
       learning_points: [],
     })
     .eq("id", id);
+
+  // Per-user rate limit on the AI call (10 requests / 60s).
+  const rl = await aiRateLimit(clientKey(_req, "cat1-end", user.id), { max: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60_000) / 1000)) } });
+  }
 
   // Best-effort AI learning points — bounded to 8s so we never starve the
   // route's overall budget on a Vercel cold start. Falls back silently.

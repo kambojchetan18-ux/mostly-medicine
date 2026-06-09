@@ -71,6 +71,14 @@ const nextConfig = {
           // Defense-in-depth XSS hint for legacy Safari. Modern browsers
           // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
+          // Permissive CSP that still closes raw inline-injection vectors.
+          // Allows Stripe Elements, Supabase realtime, Anthropic, Groq,
+          // Cloudflare TURN, and Vercel toolbar without breakage.
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.groq.com https://api.stripe.com https://rtc.live.cloudflare.com https://vercel.live; frame-src 'self' https://js.stripe.com; object-src 'none'; base-uri 'self';",
+          },
         ],
       },
     ];
