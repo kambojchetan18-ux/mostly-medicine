@@ -1,6 +1,5 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 // Returns the user's personal flashcard library grouped by deck.
 // One row per (source, source_deck_name) with a count and the most
@@ -17,12 +16,7 @@ interface DeckSummary {
 }
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  );
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {

@@ -77,7 +77,7 @@ export default function JobsScreen() {
           <Text style={s.sectionLabel}>Quick Links</Text>
 
           {QUICK_LINKS.map((l) => (
-            <TouchableOpacity key={l.label} style={s.linkRow} onPress={() => Linking.openURL(l.url)}>
+            <TouchableOpacity key={l.label} style={s.linkRow} onPress={() => Linking.openURL(l.url).catch(() => {})}>
               <Ionicons name="open-outline" size={16} color="#64748b" />
               <Text style={s.linkText}>{l.label}</Text>
             </TouchableOpacity>
@@ -92,7 +92,7 @@ export default function JobsScreen() {
               { name: 'Medrecruit', url: 'https://medrecruit.medworld.com' },
               { name: 'Wavelength', url: 'https://www.wavelength.com.au' },
             ].map((a) => (
-              <TouchableOpacity key={a.name} style={s.agencyCard} onPress={() => Linking.openURL(a.url)}>
+              <TouchableOpacity key={a.name} style={s.agencyCard} onPress={() => Linking.openURL(a.url).catch(() => {})}>
                 <Text style={s.agencyName}>{a.name}</Text>
                 <Ionicons name="open-outline" size={14} color="#64748b" />
               </TouchableOpacity>

@@ -48,6 +48,10 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     return { allowed: true };
   }
 
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: WINDOW_MS };
+  }
+
   return { allowed: true };
 }
 
