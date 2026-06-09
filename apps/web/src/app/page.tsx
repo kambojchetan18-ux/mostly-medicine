@@ -107,9 +107,10 @@ export default function Home() {
           "Free tier: 5 MCQs/day. Pro: unlimited.",
         ]}
         cta={{ href: "/amc-mcq", label: "Explore AMC MCQ" }}
-        imageSrc="/marketing/mcq-feedback.png"
-        imageAlt="Mostly Medicine MCQ feedback screen with citation"
+        imageSrc="/marketing/mobile-mcq.png"
+        imageAlt="Mostly Medicine MCQ on mobile — case stem with multiple choice"
         accent="emerald"
+        variant="phone"
       />
 
       <FeatureBlock
@@ -123,9 +124,10 @@ export default function Home() {
           "No partner needed. No scheduling. Free tier: 1/day.",
         ]}
         cta={{ href: "/amc-cat2", label: "Try voice OSCE" }}
-        imageSrc="/marketing/roleplay-session.png"
-        imageAlt="Mostly Medicine voice OSCE session with patient avatar"
+        imageSrc="/marketing/mobile-roleplay.png"
+        imageAlt="Mostly Medicine voice OSCE on mobile — scenario briefing"
         accent="violet"
+        variant="phone"
         reverse
       />
 
@@ -140,9 +142,10 @@ export default function Home() {
           "Free tier: 5 reviews/day across all decks.",
         ]}
         cta={{ href: "/dashboard/flashcards", label: "Open flashcards" }}
-        imageSrc="/marketing/flashcards-detail.png"
-        imageAlt="Mostly Medicine flashcards mid-review with cloze"
+        imageSrc="/marketing/mobile-flashcards.png"
+        imageAlt="Mostly Medicine flashcards on mobile — plan caps + due today + streak"
         accent="sky"
+        variant="phone"
       />
 
       <FeatureBlock
