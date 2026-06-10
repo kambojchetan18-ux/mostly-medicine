@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 const LINKS = [
   { href: "/amc-cat2", label: "AMC Clinical" },
+  { href: "/amc-mcq", label: "AMC MCQ" },
   { href: "#how-it-works", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },
