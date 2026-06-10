@@ -72,10 +72,10 @@ export default function AskAiTaste() {
   }
 
   return (
-    <div className="rounded-3xl border border-emerald-800/40 bg-slate-950/70 backdrop-blur p-5 sm:p-7 shadow-[0_0_60px_rgba(16,185,129,0.08)]">
+    <div className="rounded-3xl border border-saffron-800/40 bg-slate-950/70 backdrop-blur p-5 sm:p-7 shadow-[0_0_60px_rgba(16,185,129,0.08)]">
       <div className="flex items-center gap-2 mb-4">
-        <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-        <p className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">Ask AI · Free taste · {MAX_TASTE_QUESTIONS - userTurns} of {MAX_TASTE_QUESTIONS} questions left</p>
+        <span className="inline-flex h-2 w-2 rounded-full bg-saffron-400 animate-pulse" />
+        <p className="text-[11px] font-bold text-saffron-400 uppercase tracking-widest">Ask AI · Free taste · {MAX_TASTE_QUESTIONS - userTurns} of {MAX_TASTE_QUESTIONS} questions left</p>
       </div>
 
       <div ref={scrollRef} className="max-h-[420px] overflow-y-auto space-y-4 pr-1">
@@ -91,7 +91,7 @@ export default function AskAiTaste() {
                   type="button"
                   onClick={() => ask(p)}
                   disabled={loading}
-                  className="text-left rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-900 hover:border-emerald-700 px-3 py-2.5 text-xs text-slate-300 transition disabled:opacity-50"
+                  className="text-left rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-900 hover:border-saffron-700 px-3 py-2.5 text-xs text-slate-300 transition disabled:opacity-50"
                 >
                   {p}
                 </button>
@@ -104,7 +104,7 @@ export default function AskAiTaste() {
               <div
                 className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   m.role === "user"
-                    ? "bg-emerald-600/90 text-white"
+                    ? "bg-saffron-600/90 text-white"
                     : "bg-slate-800/80 text-slate-100 border border-slate-700"
                 }`}
               >
@@ -123,8 +123,8 @@ export default function AskAiTaste() {
       </div>
 
       {reachedLimit ? (
-        <div className="mt-5 rounded-2xl border border-emerald-700/40 bg-emerald-900/20 p-5">
-          <p className="text-sm font-semibold text-emerald-200 mb-1">
+        <div className="mt-5 rounded-2xl border border-saffron-700/40 bg-saffron-900/20 p-5">
+          <p className="text-sm font-semibold text-saffron-200 mb-1">
             You&apos;ve used your {MAX_TASTE_QUESTIONS} free questions ✨
           </p>
           <p className="text-xs text-slate-300 mb-4">
@@ -133,7 +133,7 @@ export default function AskAiTaste() {
           <div className="flex flex-wrap gap-2">
             <Link
               href="/auth/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-4 py-2 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-4 py-2 transition"
             >
               Sign up free →
             </Link>
@@ -158,12 +158,12 @@ export default function AskAiTaste() {
             onChange={(e) => setInput(e.target.value)}
             disabled={loading}
             placeholder="Ask a clinical or AMC-prep question…"
-            className="flex-1 rounded-xl border border-slate-700 bg-slate-900/70 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-700/30"
+            className="flex-1 rounded-xl border border-slate-700 bg-slate-900/70 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-saffron-600 focus:outline-none focus:ring-2 focus:ring-saffron-700/30"
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Ask →
           </button>

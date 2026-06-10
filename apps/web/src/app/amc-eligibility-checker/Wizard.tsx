@@ -230,17 +230,17 @@ function computeVerdict(a: Answers): Verdict {
 }
 
 const COLORS: Record<Verdict["status"], string> = {
-  eligible: "from-emerald-900/60 to-emerald-950/40 border-emerald-700/50",
+  eligible: "from-saffron-900/60 to-saffron-950/40 border-saffron-700/50",
   almost: "from-violet-900/60 to-pink-950/40 border-violet-700/50",
   blocked: "from-rose-900/60 to-rose-950/40 border-rose-700/50",
-  info: "from-indigo-900/60 to-slate-900/40 border-indigo-800/40",
+  info: "from-saffron-900/60 to-slate-900/40 border-saffron-800/40",
 };
 
 const BADGE: Record<Verdict["status"], string> = {
-  eligible: "bg-emerald-900/60 text-emerald-200 border-emerald-700/50",
+  eligible: "bg-saffron-900/60 text-saffron-200 border-saffron-700/50",
   almost: "bg-violet-900/60 text-violet-200 border-violet-700/50",
   blocked: "bg-rose-900/60 text-rose-200 border-rose-700/50",
-  info: "bg-indigo-900/60 text-indigo-200 border-indigo-700/50",
+  info: "bg-saffron-900/60 text-saffron-200 border-saffron-700/50",
 };
 
 export default function Wizard() {
@@ -277,7 +277,7 @@ export default function Wizard() {
   };
 
   return (
-    <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-indigo-950/40 to-slate-900/80 p-6 sm:p-10 backdrop-blur-sm">
+    <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-slate-900/80 p-6 sm:p-10 backdrop-blur-sm">
       {/* Progress */}
       <div className="mb-7">
         <div className="flex justify-between items-center mb-2 text-xs">

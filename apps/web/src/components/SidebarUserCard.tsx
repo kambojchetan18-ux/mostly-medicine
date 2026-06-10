@@ -92,7 +92,7 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
         ? "🏢 Enterprise"
         : "Free";
   const planColor = features.betaMode
-    ? "text-emerald-300"
+    ? "text-saffron-300"
     : effectivePlan === "pro"
       ? "text-amber-400"
       : effectivePlan === "enterprise"

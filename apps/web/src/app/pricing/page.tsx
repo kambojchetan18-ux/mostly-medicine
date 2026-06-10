@@ -208,7 +208,7 @@ export default async function PricingPage() {
       <section className="mx-auto max-w-5xl px-6 pb-16 pt-6 sm:px-10">
         {/* Hero */}
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-emerald-300">
+          <p className="text-xs font-bold uppercase tracking-widest text-saffron-300">
             Simple, honest pricing
           </p>
           <h1 className="font-display mt-3 text-4xl font-bold sm:text-5xl">
@@ -326,7 +326,7 @@ export default async function PricingPage() {
         </div>
 
         {/* Closing CTA */}
-        <div className="mx-auto mt-16 max-w-2xl rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent p-8 text-center">
+        <div className="mx-auto mt-16 max-w-2xl rounded-2xl border border-saffron-500/30 bg-gradient-to-br from-saffron-500/10 to-transparent p-8 text-center">
           <h2 className="font-display text-2xl font-bold">Ready to pass the AMC?</h2>
           <p className="mt-2 text-sm text-slate-400">
             Start free today — upgrade to Pro the moment you want unlimited practice.

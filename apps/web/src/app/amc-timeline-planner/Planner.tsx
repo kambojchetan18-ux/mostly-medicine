@@ -31,7 +31,7 @@ const MILESTONES: Milestone[] = [
     label: "Submit EPIC verification",
     detail: "Open ECFMG EPIC account, request primary-source verification of your medical degree. Allow 3–6 months.",
     emoji: "📨",
-    color: "from-cyan-900/40 to-cyan-950/30 border-cyan-800/40",
+    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-800/40",
   },
   {
     id: "english-sit",
@@ -49,7 +49,7 @@ const MILESTONES: Milestone[] = [
     label: "MCQ foundation phase",
     detail: "Build core knowledge. Murtagh's General Practice + RACGP Red Book + 1,500+ MCQs across all systems.",
     emoji: "📚",
-    color: "from-indigo-900/40 to-indigo-950/30 border-indigo-800/40",
+    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-800/40",
   },
   {
     id: "mcq-revision",
@@ -113,7 +113,7 @@ const MILESTONES: Milestone[] = [
     label: "AMC Handbook AI RolePlay exam day",
     detail: "MCAT clinical exam in Melbourne or Adelaide.",
     emoji: "🏁",
-    color: "from-emerald-900/50 to-emerald-950/30 border-emerald-700/50",
+    color: "from-saffron-900/50 to-saffron-950/30 border-saffron-700/50",
   },
 ];
 
@@ -160,7 +160,7 @@ export default function Planner() {
   return (
     <div className="space-y-8">
       {/* Inputs */}
-      <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-indigo-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm">
+      <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm">
         <div className="grid sm:grid-cols-2 gap-5">
           <div>
             <label htmlFor="cat1-date" className="block text-sm font-semibold text-slate-200 mb-2">

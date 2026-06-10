@@ -171,7 +171,7 @@ export default function TasteClient() {
         <span
           className={`ml-auto rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${
             sessionDone
-              ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+              ? "border-saffron-300 bg-saffron-50 text-saffron-700"
               : "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-700"
           }`}
         >

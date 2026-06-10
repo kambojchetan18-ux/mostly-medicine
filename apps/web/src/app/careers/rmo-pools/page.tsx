@@ -46,7 +46,7 @@ export default function RmoPools() {
   return (
     <main className="min-h-screen bg-white">
       {/* Page Header */}
-      <section className="bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-b from-saffron-50 to-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             RMO & JMO Job Pools
@@ -100,7 +100,7 @@ export default function RmoPools() {
           </ol>
           <p className="text-gray-700">
             If No to questions 1–3 →{' '}
-            <Link href="/amc-cat-1" className="text-blue-600 hover:text-blue-800 font-semibold">
+            <Link href="/amc-cat-1" className="text-saffron-600 hover:text-saffron-800 font-semibold">
               Start your AMC preparation first →
             </Link>
           </p>
@@ -160,7 +160,7 @@ export default function RmoPools() {
                     href={p.applyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-lg hover:underline"
+                    className="text-saffron-600 hover:text-saffron-800 font-semibold text-lg hover:underline"
                   >
                     {p.state} — {p.applyLabel}
                   </a>
@@ -173,7 +173,7 @@ export default function RmoPools() {
                             href={dl.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 hover:underline"
+                            className="text-saffron-600 hover:text-saffron-800 hover:underline"
                           >
                             {dl.label}
                           </a>
@@ -186,12 +186,12 @@ export default function RmoPools() {
               );
             })}
             {RMO_FALLBACK_LINKS.map((fb) => (
-              <li key={fb.url} className="p-4 rounded border-l-4 bg-blue-50 border-blue-400">
+              <li key={fb.url} className="p-4 rounded border-l-4 bg-saffron-50 border-saffron-400">
                 <a
                   href={fb.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 font-semibold text-lg hover:underline"
+                  className="text-saffron-600 hover:text-saffron-800 font-semibold text-lg hover:underline"
                 >
                   {fb.label}
                 </a>
@@ -226,8 +226,8 @@ export default function RmoPools() {
               </li>
             ))}
           </ul>
-          <p className="text-blue-600 font-semibold">
-            <Link href="/careers/cv-checker" className="hover:text-blue-800">
+          <p className="text-saffron-600 font-semibold">
+            <Link href="/careers/cv-checker" className="hover:text-saffron-800">
               → Upload your CV and check your gaps with our free CV analyser
             </Link>
           </p>
@@ -256,7 +256,7 @@ export default function RmoPools() {
                 href="https://medrecruit.medworld.com/doctors/rmo-jobs-australia"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 font-semibold"
+                className="text-saffron-600 hover:text-saffron-800 font-semibold"
               >
                 Medrecruit
               </a>
@@ -270,7 +270,7 @@ export default function RmoPools() {
             </li>
             <li>
               <strong>Continue AMC exam preparation:</strong>{' '}
-              <Link href="/amc-cat-1" className="text-blue-600 hover:text-blue-800 font-semibold">
+              <Link href="/amc-cat-1" className="text-saffron-600 hover:text-saffron-800 font-semibold">
                 Use Mostly Medicine tools →
               </Link>{' '}
               to fill the time productively and strengthen your application for the next cycle.
@@ -279,14 +279,14 @@ export default function RmoPools() {
         </section>
 
         {/* CV Gap Analyser CTA */}
-        <section className="bg-blue-50 p-8 rounded-lg border border-blue-200">
+        <section className="bg-saffron-50 p-8 rounded-lg border border-saffron-200">
           <h3 className="text-2xl font-bold text-gray-900 mb-3">Not sure if your CV is ready?</h3>
           <p className="text-gray-700 mb-6">
             Upload your CV and we'll compare it against the Queensland Health International Junior Medical Officer benchmark JD — showing exactly what's missing before you apply.
           </p>
           <Link
             href="/careers/cv-checker"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded transition"
+            className="inline-block bg-saffron-600 hover:bg-saffron-700 text-white font-semibold py-3 px-6 rounded transition"
           >
             Check my CV for free →
           </Link>

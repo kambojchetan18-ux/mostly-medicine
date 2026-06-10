@@ -23,7 +23,7 @@ const sections: Section[] = [
     title: "Eligibility & Application",
     tag: "STEP 1",
     tagColor: "text-violet-300 bg-violet-900/40 border-violet-700/40",
-    gradient: "from-violet-950/80 via-indigo-950/60 to-slate-900/80",
+    gradient: "from-violet-950/80 via-saffron-950/60 to-slate-900/80",
     border: "border-violet-800/30",
     items: [
       { id: "e1", text: "Confirm your primary medical degree is AMC-accepted", note: "Check the AMC Recognised Overseas Qualifications list" },
@@ -43,9 +43,9 @@ const sections: Section[] = [
     emoji: "🧠",
     title: "AMC MCQ — Exam",
     tag: "STEP 2",
-    tagColor: "text-indigo-300 bg-indigo-900/40 border-indigo-700/40",
-    gradient: "from-indigo-950/80 via-violet-950/60 to-slate-900/80",
-    border: "border-indigo-800/30",
+    tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+    gradient: "from-saffron-950/80 via-violet-950/60 to-slate-900/80",
+    border: "border-saffron-800/30",
     items: [
       { id: "c1a", text: "Read the AMC MCQ Examination Handbook (latest edition)", note: "Available free on amc.org.au" },
       { id: "c1b", text: "Download and study the AMC Content Outline (blueprint)", note: "Tells you exactly what topics are tested and their weighting" },
@@ -90,9 +90,9 @@ const sections: Section[] = [
     emoji: "🏥",
     title: "After AMC — Registration & Jobs",
     tag: "STEP 4",
-    tagColor: "text-emerald-300 bg-emerald-900/40 border-emerald-700/40",
-    gradient: "from-emerald-950/80 to-slate-900/80",
-    border: "border-emerald-800/30",
+    tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+    gradient: "from-saffron-950/80 to-slate-900/80",
+    border: "border-saffron-800/30",
     items: [
       { id: "r1", text: "Receive AMC Certificate (issued after passing both AMC MCQ and AMC Handbook AI RolePlay)" },
       { id: "r2", text: "Apply for General Registration with AHPRA (ahpra.gov.au)" },
@@ -128,9 +128,9 @@ const sections: Section[] = [
     emoji: "📅",
     title: "Typical Timeline & Tips",
     tag: "PLANNING",
-    tagColor: "text-cyan-300 bg-cyan-900/40 border-cyan-700/40",
-    gradient: "from-cyan-950/70 to-slate-900/80",
-    border: "border-cyan-800/30",
+    tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+    gradient: "from-saffron-950/70 to-slate-900/80",
+    border: "border-saffron-800/30",
     items: [
       { id: "t1", text: "MQA assessment: allow 3–6 months from submission to outcome" },
       { id: "t2", text: "AMC MCQ preparation: most candidates study 4–9 months" },
@@ -161,7 +161,7 @@ export default function AMCChecklistPage() {
       <div className="pointer-events-none select-none" aria-hidden>
         <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-violet-700/15 rounded-full blur-[130px]" />
         <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] bg-pink-700/10 rounded-full blur-[110px]" />
-        <div className="absolute bottom-[10%] left-[30%] w-[500px] h-[500px] bg-indigo-800/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[10%] left-[30%] w-[500px] h-[500px] bg-saffron-800/10 rounded-full blur-[120px]" />
       </div>
 
       {/* Nav */}

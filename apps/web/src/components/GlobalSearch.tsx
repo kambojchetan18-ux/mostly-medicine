@@ -20,7 +20,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  library: "bg-blue-100 text-blue-700",
+  library: "bg-saffron-100 text-saffron-700",
   case: "bg-purple-100 text-purple-700",
   note: "bg-green-100 text-green-700",
 };

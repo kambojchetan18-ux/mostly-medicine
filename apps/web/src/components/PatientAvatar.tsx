@@ -64,7 +64,7 @@ export default function PatientAvatar({ persona, size = 96, className, backgroun
     <div
       className={[
         "relative inline-block overflow-hidden",
-        background ? "bg-emerald-50" : "",
+        background ? "bg-saffron-50" : "",
         className ?? "",
       ].join(" ")}
       style={{ width: size, height: size, borderRadius: "9999px" }}

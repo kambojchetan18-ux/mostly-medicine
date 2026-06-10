@@ -88,7 +88,7 @@ export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) 
               <span className="text-white"> Medicine</span>
             </h1>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shrink-0" />
+              <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
               <p className="text-[9px] text-slate-500 font-semibold tracking-widest uppercase">AMC Prep 2026</p>
             </div>
           </Link>

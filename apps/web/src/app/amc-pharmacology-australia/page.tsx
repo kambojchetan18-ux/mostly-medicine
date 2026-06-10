@@ -77,12 +77,12 @@ export default function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-sky-50 via-white to-indigo-50 border-b border-slate-200">
+      <section className="bg-gradient-to-br from-saffron-50 via-white to-saffron-50 border-b border-slate-200">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 pt-12 pb-14">
-          <Link href="/" className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-700 hover:text-indigo-800">
+          <Link href="/" className="text-xs font-bold uppercase tracking-[0.2em] text-saffron-700 hover:text-saffron-800">
             Mostly Medicine
           </Link>
-          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
+          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-saffron-700">
             AMC pharmacology · Updated 8 June 2026
           </p>
           <h1 className="mt-3 text-3xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.08]">
@@ -98,13 +98,13 @@ export default function Page() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl bg-saffron-600 hover:bg-saffron-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors"
             >
               Start studying free →
             </Link>
             <Link
               href="/dashboard/flashcards/pharmacology"
-              className="inline-flex items-center gap-2 rounded-xl border border-indigo-300 bg-white hover:bg-indigo-50 px-6 py-3 text-sm font-bold text-indigo-800 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border border-saffron-300 bg-white hover:bg-saffron-50 px-6 py-3 text-sm font-bold text-saffron-800 transition-colors"
             >
               Open Pharmacology flashcards
             </Link>
@@ -115,7 +115,7 @@ export default function Page() {
         </div>
       </section>
 
-      <article className="mx-auto max-w-3xl px-6 sm:px-10 pt-12 pb-16 prose prose-slate prose-headings:font-display prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:tracking-tight prose-a:text-indigo-700 hover:prose-a:text-indigo-800 prose-strong:text-gray-900">
+      <article className="mx-auto max-w-3xl px-6 sm:px-10 pt-12 pb-16 prose prose-slate prose-headings:font-display prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:tracking-tight prose-a:text-saffron-700 hover:prose-a:text-saffron-800 prose-strong:text-gray-900">
 
         <p>
           The single most common comment on IMG AMC debriefs is some version of &ldquo;I knew the

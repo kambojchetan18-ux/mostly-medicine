@@ -10,31 +10,32 @@
     @apply bg-slate-50 text-gray-900 antialiased;
   }
 
-  /* Rich custom scrollbar */
+  /* Rich custom scrollbar — v3 saffron palette */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #14b8a6, #06b6d4);
+    background: linear-gradient(to bottom, #F1A82A, #E89216);
     border-radius: 999px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
+  ::-webkit-scrollbar-thumb:hover { background: #C9740A; }
 }
 
 @layer components {
-  /* Gradient text utility */
+  /* Gradient text utility — v3 saffron palette (was teal/cyan v1).
+     Used across public landing pages for brand wordmarks and hero accents. */
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #5eead4 0%, #14b8a6 50%, #0e7490 100%);
+    background-image: linear-gradient(135deg, #F1A82A 0%, #E89216 50%, #C9740A 100%);
   }
 
   .gradient-text-cool {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #34d399 0%, #14b8a6 50%, #0284c7 100%);
+    background-image: linear-gradient(135deg, #FBD994 0%, #F1A82A 50%, #C9740A 100%);
   }
 
   /* CTA gradient — used on hero pills + key buttons */
   .gradient-cta {
-    background-image: linear-gradient(135deg, #14b8a6 0%, #06b6d4 60%, #0284c7 100%);
+    background-image: linear-gradient(135deg, #F1A82A 0%, #E89216 60%, #C9740A 100%);
   }
 
   /* Glassmorphism card */
@@ -73,8 +74,8 @@
 
   /* Nav active indicator */
   .nav-active {
-    @apply bg-brand-600/15 text-brand-300;
-    border-left: 2px solid #14b8a6;
+    @apply bg-saffron-600/15 text-saffron-300;
+    border-left: 2px solid #E89216;
   }
 
   /* Bento card base */
@@ -119,9 +120,12 @@
  * Tailwind equivalents: shadow-glow-teal / shadow-glow-cyan (see tailwind.config.ts)
  * ───────────────────────────────────────────────────────────────────────── */
 :root {
-  --glow-teal: 0 0 40px rgba(20, 184, 166, 0.35);
-  --glow-cyan: 0 0 40px rgba(6, 182, 212, 0.35);
-  --grad-cta:  linear-gradient(135deg, #14b8a6 0%, #06b6d4 60%, #0284c7 100%);
+  /* CSS-variable aliases — kept under old names so existing
+     dashboard/internal references don't break, but values now point at
+     the v3 saffron palette. */
+  --glow-teal: 0 0 40px rgba(232, 146, 22, 0.35);
+  --glow-cyan: 0 0 40px rgba(241, 168, 42, 0.35);
+  --grad-cta:  linear-gradient(135deg, #F1A82A 0%, #E89216 60%, #C9740A 100%);
 }
 
 /* Calm palette — Phase 2 tokens, opt-in via class names.

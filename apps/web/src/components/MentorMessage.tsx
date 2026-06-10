@@ -78,11 +78,11 @@ export default function MentorMessage({
   if (!message) {
     return (
       <div className={wrapperClasses} aria-live="polite">
-        <div className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 shadow-sm animate-in fade-in duration-300">
-          <Sparkles className="h-4 w-4 shrink-0 text-emerald-600 animate-pulse" />
+        <div className="flex items-center gap-3 rounded-lg border border-saffron-200 bg-saffron-50 px-4 py-3 shadow-sm animate-in fade-in duration-300">
+          <Sparkles className="h-4 w-4 shrink-0 text-saffron-600 animate-pulse" />
           <div className="flex-1 space-y-1.5">
-            <div className="h-2.5 w-3/4 rounded bg-emerald-100" />
-            <div className="h-2.5 w-1/2 rounded bg-emerald-100" />
+            <div className="h-2.5 w-3/4 rounded bg-saffron-100" />
+            <div className="h-2.5 w-1/2 rounded bg-saffron-100" />
           </div>
         </div>
       </div>
@@ -91,9 +91,9 @@ export default function MentorMessage({
 
   return (
     <div className={wrapperClasses} aria-live="polite">
-      <div className="flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
-        <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-        <p className="flex-1 text-sm leading-snug text-emerald-900">{message}</p>
+      <div className="flex items-start gap-3 rounded-lg border border-saffron-200 bg-saffron-50 px-4 py-3 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
+        <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-saffron-600" />
+        <p className="flex-1 text-sm leading-snug text-saffron-900">{message}</p>
         <button
           type="button"
           onClick={() => {
@@ -101,7 +101,7 @@ export default function MentorMessage({
             onDismiss?.();
           }}
           aria-label="Dismiss mentor message"
-          className="shrink-0 rounded p-0.5 text-emerald-700 transition hover:bg-emerald-100 hover:text-emerald-900"
+          className="shrink-0 rounded p-0.5 text-saffron-700 transition hover:bg-saffron-100 hover:text-saffron-900"
         >
           <X className="h-4 w-4" />
         </button>

@@ -42,15 +42,15 @@ export default async function FreeAccessCard() {
 
   return (
     <section className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 pb-16">
-      <div className="rounded-3xl border border-emerald-800/30 bg-gradient-to-br from-emerald-950/40 via-slate-950/40 to-emerald-950/30 backdrop-blur-sm p-8 sm:p-10">
+      <div className="rounded-3xl border border-saffron-800/30 bg-gradient-to-br from-saffron-950/40 via-slate-950/40 to-saffron-950/30 backdrop-blur-sm p-8 sm:p-10">
         <div className="grid md:grid-cols-5 gap-8 items-center">
           <div className="md:col-span-3">
-            <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-[0.25em] mb-3">
+            <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-[0.25em] mb-3">
               No credit card needed
             </p>
             <h2 className="font-display font-bold text-2xl sm:text-3xl text-white mb-3">
               Try Mostly Medicine{" "}
-              <span className="bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-saffron-300 to-saffron-300 bg-clip-text text-transparent">
                 free, every day
               </span>
             </h2>
@@ -63,17 +63,17 @@ export default async function FreeAccessCard() {
             <ul className="space-y-2 text-sm">
               {perks.map((p) => (
                 <li key={p.label} className="flex items-baseline gap-2.5">
-                  <span className="text-emerald-400 shrink-0">✓</span>
+                  <span className="text-saffron-400 shrink-0">✓</span>
                   <span className="text-slate-200 font-medium">{p.daily}</span>
                   <span className="text-slate-400">{p.label}</span>
                 </li>
               ))}
               {ALWAYS_FREE.map((item) => (
                 <li key={item.label} className="flex items-baseline gap-2.5">
-                  <span className="text-emerald-400 shrink-0">✓</span>
+                  <span className="text-saffron-400 shrink-0">✓</span>
                   <span className="text-slate-200 font-medium">Free forever</span>
                   {item.href ? (
-                    <Link href={item.href} className="text-slate-300 hover:text-emerald-300 underline-offset-2 hover:underline">
+                    <Link href={item.href} className="text-slate-300 hover:text-saffron-300 underline-offset-2 hover:underline">
                       {item.label}
                     </Link>
                   ) : (
@@ -86,7 +86,7 @@ export default async function FreeAccessCard() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/auth/signup"
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-5 py-2.5 shadow-lg shadow-emerald-500/20 transition"
+                className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 shadow-lg shadow-saffron-500/20 transition"
               >
                 Sign up free — no credit card →
               </Link>
@@ -114,14 +114,14 @@ export default async function FreeAccessCard() {
               </p>
               <Link
                 href="/dashboard/billing"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-emerald-700/50 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-200 font-semibold text-sm px-4 py-2 transition"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-saffron-700/50 bg-saffron-900/30 hover:bg-saffron-900/50 text-saffron-200 font-semibold text-sm px-4 py-2 transition"
               >
                 See plans →
               </Link>
             </div>
           ) : (
-            <div className="md:col-span-2 rounded-2xl border border-emerald-700/50 bg-gradient-to-br from-emerald-950/50 to-slate-950/60 p-6">
-              <p className="text-[10px] font-bold text-emerald-300 uppercase tracking-widest mb-3">
+            <div className="md:col-span-2 rounded-2xl border border-saffron-700/50 bg-gradient-to-br from-saffron-950/50 to-slate-950/60 p-6">
+              <p className="text-[10px] font-bold text-saffron-300 uppercase tracking-widest mb-3">
                 Beta access
               </p>
               <p className="text-xl font-bold text-white mb-1">Free during beta</p>
@@ -134,7 +134,7 @@ export default async function FreeAccessCard() {
               </p>
               <Link
                 href="/auth/signup"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-emerald-700/50 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-200 font-semibold text-sm px-4 py-2 transition"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-saffron-700/50 bg-saffron-900/30 hover:bg-saffron-900/50 text-saffron-200 font-semibold text-sm px-4 py-2 transition"
               >
                 Get started →
               </Link>

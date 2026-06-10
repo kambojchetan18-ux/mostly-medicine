@@ -391,14 +391,14 @@ export default function OsceGuidePage() {
           </Link>
           <Link
             href="/try-amc-clinical-roleplay"
-            className="group rounded-2xl border border-emerald-800/40 bg-gradient-to-br from-emerald-950/60 to-slate-900/60 hover:border-emerald-500/60 hover:from-emerald-950/80 p-5 transition-all"
+            className="group rounded-2xl border border-saffron-800/40 bg-gradient-to-br from-saffron-950/60 to-slate-900/60 hover:border-saffron-500/60 hover:from-saffron-950/80 p-5 transition-all"
           >
-            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 mb-2">No signup · Try first</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-2">No signup · Try first</p>
             <h3 className="text-base font-semibold text-white mb-1">Free taste — no signup</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
               5-turn chest pain scenario, runs entirely without an account. See the format before you commit.
             </p>
-            <p className="mt-3 text-xs font-semibold text-emerald-300 group-hover:text-emerald-200">Try it now →</p>
+            <p className="mt-3 text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">Try it now →</p>
           </Link>
         </div>
 

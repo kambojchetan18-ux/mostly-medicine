@@ -78,7 +78,7 @@ export default function Calculator() {
   return (
     <div className="grid lg:grid-cols-5 gap-6">
       {/* Inputs */}
-      <div className="lg:col-span-3 rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-indigo-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm space-y-6">
+      <div className="lg:col-span-3 rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm space-y-6">
         <div>
           <label className="block text-sm font-semibold text-slate-200 mb-2">
             AMC MCQ attempts
@@ -144,7 +144,7 @@ export default function Calculator() {
                 onClick={() => setEnglishTest(opt.id)}
                 className={`py-3 rounded-xl font-semibold transition-all ${
                   englishTest === opt.id
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-saffron-600 text-white"
                     : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
                 }`}
                 aria-pressed={englishTest === opt.id}
@@ -211,7 +211,7 @@ export default function Calculator() {
                 onClick={() => setCurrency(c)}
                 className={`py-3 rounded-xl font-display font-bold transition-all ${
                   currency === c
-                    ? "bg-emerald-600 text-white"
+                    ? "bg-saffron-600 text-white"
                     : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
                 }`}
                 aria-pressed={currency === c}

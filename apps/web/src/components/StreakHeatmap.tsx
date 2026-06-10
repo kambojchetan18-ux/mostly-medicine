@@ -20,18 +20,18 @@ const TOTAL = ROWS * COLS; // 84
 
 function intensity(count: number): string {
   if (count <= 0) return "bg-slate-100";
-  if (count <= 2) return "bg-emerald-200";
-  if (count <= 5) return "bg-emerald-400";
-  if (count <= 10) return "bg-emerald-600";
-  return "bg-emerald-800";
+  if (count <= 2) return "bg-saffron-200";
+  if (count <= 5) return "bg-saffron-400";
+  if (count <= 10) return "bg-saffron-600";
+  return "bg-saffron-800";
 }
 
 const LEGEND_STEPS = [
   "bg-slate-100",
-  "bg-emerald-200",
-  "bg-emerald-400",
-  "bg-emerald-600",
-  "bg-emerald-800",
+  "bg-saffron-200",
+  "bg-saffron-400",
+  "bg-saffron-600",
+  "bg-saffron-800",
 ];
 
 const DAY_LABELS = ["Mon", "Wed", "Fri"]; // sparse labels — Mon/Wed/Fri rows
@@ -79,10 +79,10 @@ export default function StreakHeatmap() {
   }
 
   return (
-    <section className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50/60 to-teal-50/40 p-5 sm:p-6 shadow-card">
+    <section className="rounded-3xl border border-saffron-100 bg-gradient-to-br from-saffron-50/60 to-saffron-50/40 p-5 sm:p-6 shadow-card">
       <div className="flex items-start justify-between mb-4 gap-3 flex-wrap">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold tracking-widest uppercase text-emerald-600 mb-1">
+          <p className="text-[10px] font-bold tracking-widest uppercase text-saffron-600 mb-1">
             Streak Heatmap
           </p>
           <h3 className="font-display text-lg font-bold text-gray-900 leading-tight">

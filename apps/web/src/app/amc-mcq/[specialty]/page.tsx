@@ -63,14 +63,14 @@ function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
               key={opt.label}
               className={`flex gap-3 rounded-lg border px-4 py-2 text-sm ${
                 isCorrect
-                  ? "border-emerald-700/40 bg-emerald-900/20 text-emerald-200"
+                  ? "border-saffron-700/40 bg-saffron-900/20 text-saffron-200"
                   : "border-slate-800 bg-slate-950/40 text-slate-300"
               }`}
             >
               <span className="font-bold w-5 shrink-0">{opt.label}.</span>
               <span>{opt.text}</span>
               {isCorrect ? (
-                <span className="ml-auto text-xs uppercase tracking-widest text-emerald-300 shrink-0">
+                <span className="ml-auto text-xs uppercase tracking-widest text-saffron-300 shrink-0">
                   Correct
                 </span>
               ) : null}

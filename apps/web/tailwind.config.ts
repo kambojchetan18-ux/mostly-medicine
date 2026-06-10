@@ -46,10 +46,15 @@ const config: Config = {
         saffron: {
           50:  "#FFF7E6",
           100: "#FDEBC0",
+          200: "#FBD994",
+          300: "#F8C45D",
           400: "#F1A82A",
           500: "#E89216", // primary CTA
           600: "#C9740A",
           700: "#9F5A08",
+          800: "#7C4806",
+          900: "#5C3505",
+          950: "#3D2303",
         },
       },
       fontFamily: {

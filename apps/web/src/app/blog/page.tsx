@@ -134,8 +134,8 @@ const blogSchema = {
 };
 
 const CATEGORY_STYLES: Record<BlogPost["category"], string> = {
-  AMC: "text-indigo-300 bg-indigo-900/40 border-indigo-700/40",
-  AHPRA: "text-emerald-300 bg-emerald-900/40 border-emerald-700/40",
+  AMC: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+  AHPRA: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
   English: "text-amber-300 bg-amber-900/40 border-amber-700/40",
   OSCE: "text-violet-300 bg-violet-900/40 border-violet-700/40",
 };
@@ -155,14 +155,14 @@ export default function BlogIndexPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }} />
 
       <div className="pointer-events-none select-none" aria-hidden>
-        <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-emerald-700/15 rounded-full blur-[130px]" />
+        <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-saffron-700/15 rounded-full blur-[130px]" />
         <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] bg-violet-700/10 rounded-full blur-[110px]" />
       </div>
 
       <PillarPageNav />
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pt-12 pb-8">
-        <p className="text-xs uppercase tracking-widest text-emerald-300 font-bold mb-3">
+        <p className="text-xs uppercase tracking-widest text-saffron-300 font-bold mb-3">
           Blog &middot; AMC + AHPRA + IMG Pathway
         </p>
         <h1
@@ -182,7 +182,7 @@ export default function BlogIndexPage() {
             <Link
               key={post.slug}
               href={`/${post.slug}`}
-              className="group rounded-2xl border border-white/10 bg-white/[0.03] hover:border-emerald-500/40 hover:bg-white/[0.06] p-6 sm:p-7 transition-all"
+              className="group rounded-2xl border border-white/10 bg-white/[0.03] hover:border-saffron-500/40 hover:bg-white/[0.06] p-6 sm:p-7 transition-all"
             >
               <div className="flex items-center gap-3 mb-3">
                 <span
@@ -192,13 +192,13 @@ export default function BlogIndexPage() {
                 </span>
                 <span className="text-xs text-slate-500">{formatDate(post.publishedAt)}</span>
               </div>
-              <h2 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 group-hover:text-emerald-200 transition-colors leading-tight">
+              <h2 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 group-hover:text-saffron-200 transition-colors leading-tight">
                 {post.title}
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed mb-3">
                 {post.description}
               </p>
-              <p className="text-xs font-semibold text-emerald-300 group-hover:text-emerald-200">
+              <p className="text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">
                 Read the article &rarr;
               </p>
             </Link>
@@ -208,7 +208,7 @@ export default function BlogIndexPage() {
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20">
         <div className="rounded-3xl border border-slate-800 bg-slate-950/40 p-7 sm:p-9 text-center">
-          <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3">
+          <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-widest mb-3">
             More on the way
           </p>
           <h2 className="font-display font-bold text-2xl text-white mb-3">
@@ -220,7 +220,7 @@ export default function BlogIndexPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/auth/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition"
             >
               Sign up free &rarr;
             </Link>

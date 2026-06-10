@@ -182,7 +182,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
   return (
     <>
       {/* Slim banner */}
-      <div className="relative z-30 flex items-center gap-3 border-b border-emerald-800/40 bg-gradient-to-r from-emerald-950/80 via-slate-950 to-violet-950/60 px-4 py-2.5 text-sm">
+      <div className="relative z-30 flex items-center gap-3 border-b border-saffron-800/40 bg-gradient-to-r from-saffron-950/80 via-slate-950 to-violet-950/60 px-4 py-2.5 text-sm">
         <span className="text-base shrink-0" aria-hidden>📲</span>
         <p className="flex-1 text-slate-200 leading-snug">
           <span className="font-semibold text-white">Install Mostly Medicine</span>{" "}
@@ -192,7 +192,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
         <button
           type="button"
           onClick={handleInstallClick}
-          className="shrink-0 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs px-3 py-1.5 transition"
+          className="shrink-0 rounded-lg bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-semibold text-xs px-3 py-1.5 transition"
         >
           {platform === "ios" ? "How to install" : "Install"}
         </button>
@@ -227,7 +227,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
             >
               ✕
             </button>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 mb-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-3">
               Install on iPhone / iPad
             </p>
             <h2 className="font-display font-bold text-white text-xl mb-3 leading-tight">
@@ -238,7 +238,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
             </p>
             <ol className="space-y-4 mb-5">
               <li className="flex gap-3">
-                <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm font-bold">
+                <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-saffron-500/20 border border-saffron-500/40 text-saffron-300 text-sm font-bold">
                   1
                 </span>
                 <div className="flex-1 text-sm text-slate-200 leading-relaxed">
@@ -253,7 +253,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm font-bold">
+                <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-saffron-500/20 border border-saffron-500/40 text-saffron-300 text-sm font-bold">
                   2
                 </span>
                 <div className="flex-1 text-sm text-slate-200 leading-relaxed">
@@ -262,7 +262,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-sm font-bold">
+                <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-saffron-500/20 border border-saffron-500/40 text-saffron-300 text-sm font-bold">
                   3
                 </span>
                 <div className="flex-1 text-sm text-slate-200 leading-relaxed">
@@ -276,7 +276,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
             <button
               type="button"
               onClick={dismiss}
-              className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-4 py-2.5 transition"
+              className="w-full rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-4 py-2.5 transition"
             >
               Got it
             </button>

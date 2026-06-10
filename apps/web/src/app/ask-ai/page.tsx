@@ -89,8 +89,8 @@ export default function AskAiPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       <div className="pointer-events-none select-none" aria-hidden>
-        <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-emerald-700/15 rounded-full blur-[130px]" />
-        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] bg-teal-700/10 rounded-full blur-[110px]" />
+        <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-saffron-700/15 rounded-full blur-[130px]" />
+        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] bg-saffron-700/10 rounded-full blur-[110px]" />
       </div>
 
       <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-7xl mx-auto">
@@ -104,7 +104,7 @@ export default function AskAiPage() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="inline-flex items-center gap-1.5 bg-saffron-500 hover:bg-saffron-400 text-slate-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
           >
             Sign up free →
           </Link>
@@ -112,9 +112,9 @@ export default function AskAiPage() {
       </nav>
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pt-10 pb-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-700/40 bg-emerald-900/30 px-3 py-1 mb-5">
-          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300">
+        <div className="inline-flex items-center gap-2 rounded-full border border-saffron-700/40 bg-saffron-900/30 px-3 py-1 mb-5">
+          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-saffron-400 animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-saffron-300">
             Free · No signup · No credit card
           </span>
         </div>
@@ -123,7 +123,7 @@ export default function AskAiPage() {
           style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
         >
           Ask AI — your{" "}
-          <span className="bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-saffron-300 to-saffron-300 bg-clip-text text-transparent">
             AMC study mentor
           </span>{" "}
           on call
@@ -165,7 +165,7 @@ export default function AskAiPage() {
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20">
         <div className="rounded-3xl border border-slate-800 bg-slate-950/40 p-7 sm:p-9 text-center">
-          <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3">
+          <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-widest mb-3">
             Inside the dashboard
           </p>
           <h2 className="font-display font-bold text-2xl text-white mb-3">
@@ -179,7 +179,7 @@ export default function AskAiPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/auth/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition"
             >
               Sign up free →
             </Link>

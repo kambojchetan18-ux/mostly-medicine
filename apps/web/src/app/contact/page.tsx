@@ -59,14 +59,14 @@ export default function ContactPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgContactSchema) }} />
 
       <div className="pointer-events-none select-none" aria-hidden>
-        <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-emerald-700/15 rounded-full blur-[130px]" />
-        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] bg-teal-700/10 rounded-full blur-[110px]" />
+        <div className="absolute top-[-6%] left-[15%] w-[600px] h-[600px] bg-saffron-700/15 rounded-full blur-[130px]" />
+        <div className="absolute top-[10%] right-[10%] w-[400px] h-[400px] bg-saffron-700/10 rounded-full blur-[110px]" />
       </div>
 
       <PillarPageNav />
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pt-12 pb-16">
-        <p className="text-xs uppercase tracking-widest text-emerald-300 font-bold mb-3">
+        <p className="text-xs uppercase tracking-widest text-saffron-300 font-bold mb-3">
           Contact
         </p>
         <h1
@@ -83,16 +83,16 @@ export default function ContactPage() {
         <div className="grid sm:grid-cols-2 gap-4">
           <a
             href="mailto:info@mostlymedicine.com"
-            className="group rounded-2xl border border-emerald-800/40 bg-gradient-to-br from-emerald-950/60 to-slate-900/60 hover:border-emerald-500/60 p-6 transition-all"
+            className="group rounded-2xl border border-saffron-800/40 bg-gradient-to-br from-saffron-950/60 to-slate-900/60 hover:border-saffron-500/60 p-6 transition-all"
           >
-            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-2">
               Email
             </p>
             <p className="text-base font-semibold text-white mb-1">info@mostlymedicine.com</p>
             <p className="text-xs text-slate-400 leading-relaxed">
               We typically reply within one business day. For exam-prep help, include your AMC sitting date so we can prioritise.
             </p>
-            <p className="mt-4 text-xs font-semibold text-emerald-300 group-hover:text-emerald-200">
+            <p className="mt-4 text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">
               Send an email →
             </p>
           </a>
@@ -117,7 +117,7 @@ export default function ContactPage() {
             <li>
               <span className="font-semibold text-white">Account or billing issue?</span>{" "}
               Sign in and visit{" "}
-              <Link href="/dashboard/billing" className="text-emerald-300 hover:text-emerald-200 underline-offset-2 hover:underline">
+              <Link href="/dashboard/billing" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
                 /dashboard/billing
               </Link>{" "}
               — most subscription changes can be done there directly via Stripe.
@@ -125,7 +125,7 @@ export default function ContactPage() {
             <li>
               <span className="font-semibold text-white">Question about AMC prep itself?</span>{" "}
               Try{" "}
-              <Link href="/ask-ai" className="text-emerald-300 hover:text-emerald-200 underline-offset-2 hover:underline">
+              <Link href="/ask-ai" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
                 Ask AI
               </Link>{" "}
               first — three free questions, no signup needed, grounded in Murtagh, RACGP and the AMC Handbook.
@@ -133,11 +133,11 @@ export default function ContactPage() {
             <li>
               <span className="font-semibold text-white">Want to know what we offer?</span>{" "}
               The{" "}
-              <Link href="/amc" className="text-emerald-300 hover:text-emerald-200 underline-offset-2 hover:underline">
+              <Link href="/amc" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
                 AMC Exam Guide
               </Link>{" "}
               and{" "}
-              <Link href="/amc-fee-calculator" className="text-emerald-300 hover:text-emerald-200 underline-offset-2 hover:underline">
+              <Link href="/amc-fee-calculator" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
                 Fee Calculator
               </Link>{" "}
               cover the full pathway end-to-end.
