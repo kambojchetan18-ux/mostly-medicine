@@ -23,35 +23,34 @@ const peerRolePlayVisible =
   features.peerRolePlayInBeta || features.paidTiersEnabled;
 
 const navItems = [
-  { href: "/dashboard",           label: "Home",      icon: "🏠", hover: "hover:text-brand-300"  },
-  { href: "/dashboard/ask-ai",    label: "Ask AI",    icon: "✨", hover: "hover:text-emerald-300" },
-  { href: "/dashboard/cat1",      label: "AMC MCQ", icon: "🧠", hover: "hover:text-indigo-300" },
-  { href: "/dashboard/flashcards", label: "Flashcards", icon: "🗂️", hover: "hover:text-rose-300" },
-  { href: "/dashboard/progress",  label: "My Progress", icon: "📊", hover: "hover:text-blue-300"  },
-  { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆", hover: "hover:text-amber-300" },
-  { href: "/dashboard/cat2",      label: "AMC Handbook AI RolePlay", icon: "🩺", hover: "hover:text-pink-300"   },
-  { href: "/dashboard/ai-roleplay", label: "AMC Clinical AI RolePlay", icon: "🎙️", hover: "hover:text-fuchsia-300" },
-  { href: "/osce-guide",          label: "OSCE Prep Guide", icon: "📋", hover: "hover:text-violet-300" },
+  { href: "/dashboard",           label: "Home",      icon: "🏠" },
+  { href: "/dashboard/cat2",      label: "Clinical RolePlay", icon: "🩺" },
+  { href: "/dashboard/ask-ai",    label: "Ask AI",    icon: "✨" },
+  { href: "/dashboard/cat1",      label: "MCQ Practice", icon: "🧠" },
+  { href: "/dashboard/flashcards", label: "Flashcards", icon: "🗂️" },
+  { href: "/dashboard/progress",  label: "My Progress", icon: "📊" },
+  { href: "/dashboard/leaderboard", label: "Leaderboard", icon: "🏆" },
+  { href: "/osce-guide",          label: "OSCE Prep Guide", icon: "📋" },
   ...(peerRolePlayVisible
-    ? [{ href: "/dashboard/ai-roleplay/live", label: "AMC Peer RolePlay", icon: "🎥", hover: "hover:text-pink-300" }]
+    ? [{ href: "/dashboard/ai-roleplay/live", label: "Peer RolePlay (Live)", icon: "🎥" }]
     : []),
-  { href: "/dashboard/library",   label: "Library",   icon: "📚", hover: "hover:text-amber-300"  },
-  { href: "/dashboard/reference", label: "Reference", icon: "📖", hover: "hover:text-emerald-300"},
+  { href: "/dashboard/library",   label: "Library",   icon: "📚" },
+  { href: "/dashboard/reference", label: "Reference", icon: "📖" },
 ];
 
 const jobNavItems = [
-  { href: "/dashboard/jobs",             label: "Jobs Hub",    icon: "💼", hover: "hover:text-lime-300"   },
-  { href: "/dashboard/jobs/rmo",         label: "RMO Pools",   icon: "🗺️", hover: "hover:text-sky-300"    },
-  { href: "/dashboard/jobs/gp",          label: "GP Pathway",  icon: "🩺", hover: "hover:text-teal-300"   },
-  { href: "/dashboard/jobs/action-plan", label: "Action Plan", icon: "✅", hover: "hover:text-green-300"  },
-  { href: "/dashboard/jobs/tracker",     label: "App Tracker", icon: "📋", hover: "hover:text-orange-300" },
-  { href: "/dashboard/profile",          label: "My Profile",  icon: "👤", hover: "hover:text-rose-300"   },
+  { href: "/dashboard/jobs",             label: "Jobs Hub",    icon: "💼" },
+  { href: "/dashboard/jobs/rmo",         label: "RMO Pools",   icon: "🗺️" },
+  { href: "/dashboard/jobs/gp",          label: "GP Pathway",  icon: "🩺" },
+  { href: "/dashboard/jobs/action-plan", label: "Action Plan", icon: "✅" },
+  { href: "/dashboard/jobs/tracker",     label: "App Tracker", icon: "📋" },
+  { href: "/dashboard/profile",          label: "My Profile",  icon: "👤" },
   // Billing tab is paid-tier only. During beta the page redirects to /dashboard,
   // so the nav entry is hidden to avoid a dead click.
   ...(features.paidTiersEnabled
-    ? [{ href: "/dashboard/billing", label: "Billing", icon: "💳", hover: "hover:text-yellow-300" }]
+    ? [{ href: "/dashboard/billing", label: "Billing", icon: "💳" }]
     : []),
-  { href: "/dashboard/help",             label: "Help",        icon: "💬", hover: "hover:text-cyan-300"   },
+  { href: "/dashboard/help",             label: "Help",        icon: "💬" },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -90,10 +89,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-cream-50">
 
       {/* ── Dark Sidebar ──────────────────────────────────────────────── */}
-      <aside className="hidden md:flex flex-col w-64 bg-slate-950 border-r border-slate-800/70 py-5 px-3 sticky top-0 h-screen overflow-y-auto shrink-0">
+      <aside className="hidden md:flex flex-col w-64 bg-ink-950 border-r border-cream-50/10 py-5 px-3 sticky top-0 h-screen overflow-y-auto shrink-0">
 
         {/* Logo */}
         <div className="flex items-center justify-between mb-6 px-2">
@@ -101,27 +100,27 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Link href="/dashboard" className="hover:opacity-80 transition-opacity">
               <h1 className="font-display font-bold text-[1.1rem] leading-tight tracking-tight">
                 <span className="gradient-text">Mostly</span>
-                <span className="text-white"> Medicine</span>
+                <span className="text-cream-50"> Medicine</span>
               </h1>
             </Link>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shrink-0" />
-              <p className="text-[9px] text-slate-500 font-semibold tracking-widest uppercase">AMC Prep 2026</p>
+              <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
+              <p className="text-[9px] text-cream-50/55 font-semibold tracking-widest uppercase">AMC Prep 2026</p>
             </div>
           </div>
-          <div className="text-slate-500 hover:text-slate-300 transition">
+          <div className="text-cream-50/55 hover:text-cream-50 transition">
             <SearchTrigger />
           </div>
         </div>
 
         {/* Study nav */}
         <nav className="flex-1 space-y-0.5">
-          <p className="px-2 text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-2">Study</p>
+          <p className="px-2 text-[11px] font-bold text-cream-50/40 uppercase tracking-widest mb-2">Study</p>
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 ${item.hover} hover:bg-white/5 transition-all duration-150 text-sm font-medium group`}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-cream-50/70 hover:text-cream-50 hover:bg-cream-50/5 transition-all duration-150 text-sm font-medium group"
             >
               <span className="text-[15px] group-hover:scale-110 transition-transform duration-150 shrink-0">
                 {item.icon}
@@ -132,13 +131,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
           {/* Jobs section */}
           <div className="pt-5 pb-1.5">
-            <p className="px-2 text-[9px] font-bold text-slate-600 uppercase tracking-widest">🇦🇺 Australian Jobs</p>
+            <p className="px-2 text-[11px] font-bold text-cream-50/40 uppercase tracking-widest">🇦🇺 Australian Jobs</p>
           </div>
           {jobNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 ${item.hover} hover:bg-white/5 transition-all duration-150 text-sm font-medium group`}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-cream-50/70 hover:text-cream-50 hover:bg-cream-50/5 transition-all duration-150 text-sm font-medium group"
             >
               <span className="text-[15px] group-hover:scale-110 transition-transform duration-150 shrink-0">
                 {item.icon}
@@ -152,15 +151,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <SidebarUserCard user={userCard} />
 
         {/* Bottom card */}
-        <div className="mt-3 border-t border-slate-800/50 pt-3">
-          <div className="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-violet-950/80 via-purple-950/60 to-pink-950/40 border border-violet-800/25">
-            <div className="absolute -top-6 -right-6 w-20 h-20 bg-violet-500/20 rounded-full blur-2xl pointer-events-none" />
-            <p className="text-[11px] font-bold text-violet-300 mb-1 relative">🎯 Handbook-Aligned</p>
-            <p className="text-[10px] text-slate-500 relative leading-relaxed">
+        <div className="mt-3 border-t border-cream-50/10 pt-3">
+          <div className="relative overflow-hidden rounded-2xl p-4 border border-cream-50/10 bg-cream-50/[0.04]">
+            <div className="absolute -top-6 -right-6 w-20 h-20 bg-saffron-500/10 rounded-full blur-2xl pointer-events-none" />
+            <p className="text-[11px] font-bold text-saffron-400 mb-1 relative">🎯 Handbook-Aligned</p>
+            <p className="text-[10px] text-cream-50/55 relative leading-relaxed">
               Official AMC MCAT scenarios · AI examiner feedback · Evidence-based
             </p>
           </div>
-          <p className="text-center text-[9px] text-slate-800 mt-3 tracking-widest font-bold">
+          <p className="text-center text-[9px] text-cream-50/30 mt-3 tracking-widest font-bold">
             MOSTLY MEDICINE · v2.0
           </p>
         </div>

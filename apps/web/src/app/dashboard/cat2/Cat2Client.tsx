@@ -11,6 +11,7 @@ import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import VoiceControls from "@/components/VoiceControls";
 import { cleanForDisplay } from "@/lib/clean-message";
 import FunLoading from "@/components/FunLoading";
+import RoleplayModeTabs from "@/components/RoleplayModeTabs";
 import { features } from "@/config/features";
 import PatientAvatar from "@/components/PatientAvatar";
 import { buildPatientPersona } from "@/lib/patientPersona";
@@ -541,13 +542,16 @@ export default function Cat2Client() {
   if (activeScenario === null) {
     return (
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">AMC Handbook AI RolePlay</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">Clinical RolePlay</h2>
         <p className="text-gray-500 text-sm mb-4">
-          AI plays the patient. Speak or type your responses. Receive examiner feedback at the end.
+          Handbook mode — 151 cases mapped to the AMC Handbook 2026. AI plays the patient. Speak or type your responses. Receive examiner feedback at the end.
           {ttsSupported && micSupported !== false && (
             <span className="ml-2 text-green-600 font-medium">🎤 Voice enabled</span>
           )}
         </p>
+
+        {/* Mode switcher — Handbook vs Beyond Handbook */}
+        <RoleplayModeTabs active="handbook" />
 
         {/* Source & compliance disclaimer */}
         <div className="mb-5 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-xs text-amber-800">

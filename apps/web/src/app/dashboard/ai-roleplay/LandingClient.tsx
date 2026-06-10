@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import FunLoading from "@/components/FunLoading";
+import RoleplayModeTabs from "@/components/RoleplayModeTabs";
 import { features } from "@/config/features";
 
 interface LimitInfo {
@@ -119,7 +120,7 @@ export default function LandingClient({
   if (!isAuthenticated) {
     return (
       <div className="mx-auto max-w-3xl py-12 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">AMC Clinical AI RolePlay Cases</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Clinical RolePlay</h1>
         <p className="mt-2 text-sm text-gray-600">
           Please <Link href="/auth/login" className="text-brand-600 underline">log in</Link> to start a roleplay session.
         </p>
@@ -129,12 +130,15 @@ export default function LandingClient({
 
   return (
     <div className="space-y-10">
+      {/* Mode switcher — Handbook vs Beyond Handbook */}
+      <RoleplayModeTabs active="beyond" />
+
       {/* Hero */}
       <section className="rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-8 text-white shadow-lg">
-        <h1 className="text-2xl font-bold sm:text-3xl">AMC Clinical AI RolePlay Cases</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Clinical RolePlay</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/85 sm:text-base">
-          Original AI-generated AMC-style practice cases inspired by broader clinical patterns. 2 minutes reading, 8
-          minutes interaction, structured feedback.
+          Beyond Handbook — unlimited AI-generated cases. Original AMC-style practice cases inspired by broader
+          clinical patterns. 2 minutes reading, 8 minutes interaction, structured feedback.
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <button

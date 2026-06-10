@@ -10,7 +10,6 @@ interface NavItem {
   href: string;
   label: string;
   icon: string;
-  hover: string;
 }
 
 interface Props {
@@ -70,7 +69,7 @@ export default function MobileTopBar({ navItems, jobNavItems, user }: Props) {
         </div>
       </div>
       {/* Subtle brand hairline so the bar feels intentional, not a flat slab */}
-      <div className="h-px bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-saffron-500/40 to-transparent" />
     </div>
   );
 }

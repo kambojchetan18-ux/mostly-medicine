@@ -4,124 +4,54 @@ import StreakHeatmap from "@/components/StreakHeatmap";
 
 const modules = [
   {
-    href:     "/dashboard/cat1",
-    emoji:    "🧠",
-    tag:      "AMC PART 1",
-    tagColor: "text-indigo-600 bg-indigo-50 border-indigo-200",
-    title:    "AMC MCQ",
-    subtitle: "Multiple Choice Questions",
-    desc:     "3 000+ MCQs with spaced repetition, weak-area targeting, and AI-powered explanations.",
-    gradient: "from-indigo-50 to-violet-50",
-    border:   "border-indigo-100 hover:border-indigo-300",
-    accent:   "bg-indigo-500",
-    span:     "md:col-span-2",
-    badge:    "AMC Part 1",
+    href:  "/dashboard/cat1",
+    emoji: "🧠",
+    tag:   "AMC Part 1",
+    title: "MCQ Practice",
+    desc:  "3 000+ MCQs with spaced repetition, weak-area targeting, and AI-powered explanations.",
   },
   {
-    href:     "/dashboard/cat2",
-    emoji:    "🩺",
-    tag:      "AMC PART 2",
-    tagColor: "text-pink-600 bg-pink-50 border-pink-200",
-    title:    "AMC Handbook AI RolePlay",
-    subtitle: "AI Patient Role-Play",
-    desc:     "Simulate OSCE consultations with an AI patient. Handbook-aligned scenarios. Examiner feedback.",
-    gradient: "from-pink-50 to-rose-50",
-    border:   "border-pink-100 hover:border-pink-300",
-    accent:   "bg-pink-500",
-    span:     "",
-    badge:    "OSCE Prep",
+    href:  "/dashboard/ai-roleplay/live",
+    emoji: "🎥",
+    tag:   "Live · 2-player",
+    title: "Peer RolePlay (Live)",
+    desc:  "Pair up with another candidate over live video and roleplay AMC scenarios. Examiner-grade feedback on the conversation afterwards.",
   },
   {
-    href:     "/dashboard/ai-roleplay",
-    emoji:    "🎙️",
-    tag:      "BEYOND HANDBOOK",
-    tagColor: "text-fuchsia-600 bg-fuchsia-50 border-fuchsia-200",
-    title:    "AMC Clinical AI RolePlay",
-    subtitle: "Unlimited Cases · AI Examiner",
-    desc:     "Practise hundreds of synthesised AMC scenarios beyond the handbook. Voice consults with AI patients and instant examiner feedback.",
-    gradient: "from-fuchsia-50 to-purple-50",
-    border:   "border-fuchsia-100 hover:border-fuchsia-300",
-    accent:   "bg-fuchsia-500",
-    span:     "",
-    badge:    "Voice Practice",
+    href:  "/dashboard/reference",
+    emoji: "📖",
+    tag:   "Reference",
+    title: "Reference Library",
+    desc:  "Clinical summaries, preventive care guidelines, and AMC exam blueprints — Murtagh, Red Book, AMC Handbook.",
   },
   {
-    href:     "/dashboard/ai-roleplay/live",
-    emoji:    "🎥",
-    tag:      "LIVE · 2-PLAYER",
-    tagColor: "text-rose-600 bg-rose-50 border-rose-200",
-    title:    "AMC Peer RolePlay",
-    subtitle: "Real Candidate · Real Feedback",
-    desc:     "Pair up with another candidate over live video and roleplay AMC scenarios. Examiner-grade feedback on the conversation afterwards.",
-    gradient: "from-rose-50 to-pink-50",
-    border:   "border-rose-100 hover:border-rose-300",
-    accent:   "bg-rose-500",
-    span:     "",
-    badge:    "Live Video",
+    href:  "/dashboard/library",
+    emoji: "📚",
+    tag:   "Library",
+    title: "Study Library",
+    desc:  "Upload and search your study materials with AI-powered retrieval.",
   },
   {
-    href:     "/dashboard/reference",
-    emoji:    "📖",
-    tag:      "REFERENCE",
-    tagColor: "text-emerald-600 bg-emerald-50 border-emerald-200",
-    title:    "Reference Library",
-    subtitle: "Murtagh · Red Book · AMC Handbook",
-    desc:     "Clinical summaries, preventive care guidelines, and AMC exam blueprints.",
-    gradient: "from-emerald-50 to-teal-50",
-    border:   "border-emerald-100 hover:border-emerald-300",
-    accent:   "bg-emerald-500",
-    span:     "",
-    badge:    "Resources",
+    href:  "/amc-fee-calculator?source=dashboard",
+    emoji: "💰",
+    tag:   "Cost planner",
+    title: "Cost Calculator",
+    desc:  "Live calculator: see your AUD/USD/INR total in 30 seconds.",
   },
   {
-    href:     "/dashboard/library",
-    emoji:    "📚",
-    tag:      "LIBRARY",
-    tagColor: "text-amber-600 bg-amber-50 border-amber-200",
-    title:    "Study Library",
-    subtitle: "Notes · Documents · AI Search",
-    desc:     "Upload and search your study materials with AI-powered retrieval.",
-    gradient: "from-amber-50 to-orange-50",
-    border:   "border-amber-100 hover:border-amber-300",
-    accent:   "bg-amber-500",
-    span:     "",
-    badge:    "Notes",
-  },
-  {
-    href:     "/amc-fee-calculator?source=dashboard",
-    emoji:    "💰",
-    tag:      "COST PLANNER",
-    tagColor: "text-cyan-700 bg-cyan-50 border-cyan-200",
-    title:    "Plan your AMC costs",
-    subtitle: "Live calculator · AUD/USD/INR",
-    desc:     "Live calculator: see your AUD/USD/INR total in 30 seconds.",
-    gradient: "from-cyan-50 to-sky-50",
-    border:   "border-cyan-100 hover:border-cyan-300",
-    accent:   "bg-cyan-500",
-    span:     "",
-    badge:    "Cost",
-  },
-  {
-    href:     "/dashboard/jobs",
-    emoji:    "💼",
-    tag:      "CAREERS",
-    tagColor: "text-lime-700 bg-lime-50 border-lime-200",
-    title:    "Australian Jobs",
-    subtitle: "RMO Pools · GP Pathway · Tracker",
-    desc:     "Find RMO positions, explore the GP pathway, and track your applications.",
-    gradient: "from-lime-50 to-green-50",
-    border:   "border-lime-100 hover:border-lime-300",
-    accent:   "bg-lime-500",
-    span:     "md:col-span-2",
-    badge:    "🇦🇺 Jobs",
+    href:  "/dashboard/jobs",
+    emoji: "💼",
+    tag:   "Careers",
+    title: "Australian Jobs",
+    desc:  "Find RMO positions, explore the GP pathway, and track your applications.",
   },
 ];
 
 const quickStats = [
-  { emoji: "🎯", value: "151",   label: "MCAT Scenarios",   color: "text-brand-600" },
-  { emoji: "📝", value: "3k+",   label: "Practice MCQs",    color: "text-pink-600"   },
-  { emoji: "📖", value: "5",     label: "Reference Guides", color: "text-emerald-600"},
-  { emoji: "🇦🇺", value: "100+", label: "Job Listings",     color: "text-amber-600"  },
+  { emoji: "🎯", value: "151",   label: "MCAT Scenarios"   },
+  { emoji: "📝", value: "3k+",   label: "Practice MCQs"    },
+  { emoji: "📖", value: "5",     label: "Reference Guides" },
+  { emoji: "🇦🇺", value: "100+", label: "Job Listings"     },
 ];
 
 export default async function DashboardHome() {
@@ -144,19 +74,19 @@ export default async function DashboardHome() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="font-display text-3xl font-bold text-gray-900">Welcome back, {firstName} 👋</h2>
+          <h2 className="font-display text-3xl font-bold text-ink-950">Welcome back, {firstName} 👋</h2>
         </div>
-        <p className="text-slate-500 text-sm">Choose a module to continue your AMC preparation.</p>
+        <p className="text-ink-900/60 text-sm">Choose a module to continue your AMC preparation.</p>
       </div>
 
       {/* Quick stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         {quickStats.map((s) => (
-          <div key={s.label} className="bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-card flex items-center gap-3">
+          <div key={s.label} className="rounded-3xl border border-ink-950/10 bg-white px-4 py-3 flex items-center gap-3">
             <span className="text-2xl shrink-0">{s.emoji}</span>
             <div>
-              <p className={`font-display font-bold text-xl leading-none ${s.color}`}>{s.value}</p>
-              <p className="text-xs text-slate-400 mt-0.5">{s.label}</p>
+              <p className="font-display font-bold text-xl leading-none text-ink-950">{s.value}</p>
+              <p className="text-[11px] uppercase tracking-wider text-ink-900/60 mt-1">{s.label}</p>
             </div>
           </div>
         ))}
@@ -167,36 +97,59 @@ export default async function DashboardHome() {
         <StreakHeatmap />
       </div>
 
-      {/* Module bento grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {/* Featured hero — Clinical RolePlay, the core product */}
+      <div className="mb-4 sm:mb-5 rounded-3xl border-2 border-saffron-400 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-6 sm:p-8 shadow-[0_24px_48px_-24px_rgba(232,146,22,0.4)]">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-saffron-700 mb-2">
+          Core practice · voice OSCE
+        </p>
+        <h3 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink-950 mb-2">
+          Clinical RolePlay
+        </h3>
+        <p className="text-sm sm:text-base text-ink-900/75 max-w-2xl">
+          Talk to an AI patient in a timed station, then get examiner feedback scored against the 13-domain AMC rubric.
+        </p>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <Link
+            href="/dashboard/cat2"
+            className="inline-flex items-center gap-2 rounded-full bg-saffron-500 px-6 py-3.5 text-sm font-bold text-ink-950 shadow-[0_8px_24px_-8px_rgba(232,146,22,0.5)] transition-all hover:-translate-y-0.5 hover:bg-saffron-400"
+          >
+            Start a station →
+          </Link>
+          <Link
+            href="/dashboard/cat2"
+            className="inline-flex items-center rounded-full border border-ink-950/15 bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink-900/80 hover:border-saffron-400 hover:text-ink-950 transition"
+          >
+            Handbook · 151 cases
+          </Link>
+          <Link
+            href="/dashboard/ai-roleplay"
+            className="inline-flex items-center rounded-full border border-ink-950/15 bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink-900/80 hover:border-saffron-400 hover:text-ink-950 transition"
+          >
+            Beyond Handbook · unlimited
+          </Link>
+        </div>
+      </div>
+
+      {/* Module grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {modules.map((m) => (
           <Link
             key={m.href}
             href={m.href}
-            className={`
-              group relative overflow-hidden rounded-3xl p-6 border bg-gradient-to-br ${m.gradient} ${m.border}
-              shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 ${m.span}
-            `}
+            className="rounded-3xl border border-ink-950/10 bg-white p-6 transition hover:border-ink-950/20 hover:shadow-[0_24px_48px_-24px_rgba(8,8,11,0.15)]"
           >
-            {/* Accent bar top */}
-            <div className={`absolute top-0 left-0 right-0 h-0.5 ${m.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-
             <div className="flex items-start justify-between mb-4">
-              <span className="text-4xl group-hover:scale-110 transition-transform duration-300 inline-block">
-                {m.emoji}
-              </span>
-              <span className={`text-[9px] font-bold px-2 py-1 rounded-full border tracking-widest uppercase ${m.tagColor}`}>
+              <span className="text-4xl inline-block">{m.emoji}</span>
+              <span className="rounded-full bg-saffron-100 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-saffron-700">
                 {m.tag}
               </span>
             </div>
 
-            <h3 className="font-display font-bold text-gray-900 text-lg mb-0.5">{m.title}</h3>
-            <p className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">{m.subtitle}</p>
-            <p className="text-sm text-slate-600 leading-relaxed">{m.desc}</p>
+            <h3 className="font-display font-bold text-ink-950 text-lg mb-1">{m.title}</h3>
+            <p className="text-sm text-ink-900/70 leading-relaxed">{m.desc}</p>
 
-            <div className="mt-4 flex items-center gap-1 text-xs font-bold text-slate-400 group-hover:text-slate-700 transition-colors duration-200">
-              Open module
-              <span className="group-hover:translate-x-1 transition-transform duration-150">→</span>
+            <div className="mt-4 text-sm font-semibold text-saffron-700">
+              Open module →
             </div>
           </Link>
         ))}
@@ -204,17 +157,17 @@ export default async function DashboardHome() {
 
       {/* Bottom tip card — wraps onto two rows on phones so the CTA button
           drops below the copy instead of squeezing it. */}
-      <div className="mt-8 rounded-3xl p-4 sm:p-5 bg-gradient-to-r from-violet-50 to-pink-50 border border-violet-100 flex flex-wrap items-center gap-3 sm:gap-4">
+      <div className="mt-8 rounded-2xl border border-saffron-200 bg-saffron-50 p-4 sm:p-5 flex flex-wrap items-center gap-3 sm:gap-4">
         <span className="text-3xl shrink-0">💡</span>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold text-gray-800 text-sm">Pro tip — start with AMC Handbook AI RolePlay</p>
-          <p className="text-xs text-slate-500 mt-0.5">
-            The AMC MCAT is an 8-minute OSCE. Practising with AI patients builds speed and confidence faster than MCQs alone.
+          <p className="font-semibold text-ink-900/80 text-sm">Pro tip — start with a Handbook station</p>
+          <p className="text-sm text-ink-900/80 mt-0.5">
+            Start with a Handbook station — 151 cases map 1:1 to the AMC Handbook 2026.
           </p>
         </div>
         <Link
           href="/dashboard/cat2"
-          className="shrink-0 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap min-h-[40px] flex items-center"
+          className="shrink-0 inline-flex items-center rounded-full bg-saffron-500 px-5 py-3 text-sm font-bold text-ink-950 transition hover:bg-saffron-400 whitespace-nowrap min-h-[44px]"
         >
           Try a roleplay →
         </Link>
