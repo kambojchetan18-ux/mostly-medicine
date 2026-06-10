@@ -42,19 +42,19 @@ export default async function FreeAccessCard() {
 
   return (
     <section className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 pb-16">
-      <div className="rounded-3xl border border-saffron-800/30 bg-gradient-to-br from-saffron-950/40 via-slate-950/40 to-saffron-950/30 backdrop-blur-sm p-8 sm:p-10">
+      <div className="rounded-3xl border border-saffron-800/30 bg-gradient-to-br from-saffron-950/40 via-cream-50/40 to-saffron-950/30 backdrop-blur-sm p-8 sm:p-10">
         <div className="grid md:grid-cols-5 gap-8 items-center">
           <div className="md:col-span-3">
             <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-[0.25em] mb-3">
               No credit card needed
             </p>
-            <h2 className="font-display font-bold text-2xl sm:text-3xl text-white mb-3">
+            <h2 className="font-display font-bold text-2xl sm:text-3xl text-ink-950 mb-3">
               Try Mostly Medicine{" "}
               <span className="bg-gradient-to-r from-saffron-300 to-saffron-300 bg-clip-text text-transparent">
                 free, every day
               </span>
             </h2>
-            <p className="text-sm text-slate-400 leading-relaxed mb-5">
+            <p className="text-sm text-ink-900/70 leading-relaxed mb-5">
               {features.betaMode
                 ? "Mostly Medicine is in free beta. Every signed-in user gets full access — MCQs, AMC Handbook RolePlay, Clinical RolePlay, and the reference library. Help us improve."
                 : "Test-drive the platform that's helped IMGs across Australia prep for AMC. Daily caps reset at midnight UTC — upgrade only if you want unlimited access and spaced-repetition for your weak areas."}
@@ -64,20 +64,20 @@ export default async function FreeAccessCard() {
               {perks.map((p) => (
                 <li key={p.label} className="flex items-baseline gap-2.5">
                   <span className="text-saffron-400 shrink-0">✓</span>
-                  <span className="text-slate-200 font-medium">{p.daily}</span>
-                  <span className="text-slate-400">{p.label}</span>
+                  <span className="text-ink-900 font-medium">{p.daily}</span>
+                  <span className="text-ink-900/70">{p.label}</span>
                 </li>
               ))}
               {ALWAYS_FREE.map((item) => (
                 <li key={item.label} className="flex items-baseline gap-2.5">
                   <span className="text-saffron-400 shrink-0">✓</span>
-                  <span className="text-slate-200 font-medium">Free forever</span>
+                  <span className="text-ink-900 font-medium">Free forever</span>
                   {item.href ? (
-                    <Link href={item.href} className="text-slate-300 hover:text-saffron-300 underline-offset-2 hover:underline">
+                    <Link href={item.href} className="text-ink-900/80 hover:text-saffron-300 underline-offset-2 hover:underline">
                       {item.label}
                     </Link>
                   ) : (
-                    <span className="text-slate-400">{item.label}</span>
+                    <span className="text-ink-900/70">{item.label}</span>
                   )}
                 </li>
               ))}
@@ -86,13 +86,13 @@ export default async function FreeAccessCard() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/auth/signup"
-                className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 shadow-lg shadow-saffron-500/20 transition"
+                className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-ink-950 font-bold text-sm px-5 py-2.5 shadow-lg shadow-saffron-500/20 transition"
               >
                 Sign up free — no credit card →
               </Link>
               <Link
                 href="/try-amc-clinical-roleplay"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-900 text-slate-200 font-semibold text-sm px-5 py-2.5 transition"
+                className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 text-ink-900 font-semibold text-sm px-5 py-2.5 transition"
               >
                 Try a roleplay (no signup)
               </Link>
@@ -100,16 +100,16 @@ export default async function FreeAccessCard() {
           </div>
 
           {features.paidTiersEnabled ? (
-            <div className="md:col-span-2 rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
+            <div className="md:col-span-2 rounded-2xl border border-ink-950/10 bg-cream-50/60 p-6">
+              <p className="text-[10px] font-bold text-ink-900/60 uppercase tracking-widest mb-3">
                 When you're ready
               </p>
-              <p className="text-xl font-bold text-white mb-1">Pro · A$29/mo</p>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xl font-bold text-ink-950 mb-1">Pro · A$29/mo</p>
+              <p className="text-xs text-ink-900/70 leading-relaxed">
                 Unlimited MCQs, unlimited Solo RolePlay, unlimited Handbook RolePlay,
                 spaced repetition, weak-area targeting, priority support.
               </p>
-              <p className="text-[11px] text-slate-500 mt-3">
+              <p className="text-[11px] text-ink-900/60 mt-3">
                 Upgrade or cancel any time from your dashboard.
               </p>
               <Link
@@ -120,16 +120,16 @@ export default async function FreeAccessCard() {
               </Link>
             </div>
           ) : (
-            <div className="md:col-span-2 rounded-2xl border border-saffron-700/50 bg-gradient-to-br from-saffron-950/50 to-slate-950/60 p-6">
+            <div className="md:col-span-2 rounded-2xl border border-saffron-700/50 bg-gradient-to-br from-saffron-950/50 to-cream-50/60 p-6">
               <p className="text-[10px] font-bold text-saffron-300 uppercase tracking-widest mb-3">
                 Beta access
               </p>
-              <p className="text-xl font-bold text-white mb-1">Free during beta</p>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xl font-bold text-ink-950 mb-1">Free during beta</p>
+              <p className="text-xs text-ink-900/70 leading-relaxed">
                 All features unlocked — MCQs, AMC Handbook AI RolePlay, Clinical
                 RolePlay, examiner-style feedback, the full reference library.
               </p>
-              <p className="text-[11px] text-slate-500 mt-3">
+              <p className="text-[11px] text-ink-900/60 mt-3">
                 Help us improve — feedback shapes what ships next.
               </p>
               <Link

@@ -182,17 +182,17 @@ export default function InstallPwaBanner(): JSX.Element | null {
   return (
     <>
       {/* Slim banner */}
-      <div className="relative z-30 flex items-center gap-3 border-b border-saffron-800/40 bg-gradient-to-r from-saffron-950/80 via-slate-950 to-violet-950/60 px-4 py-2.5 text-sm">
+      <div className="relative z-30 flex items-center gap-3 border-b border-saffron-800/40 bg-gradient-to-r from-saffron-950/80 via-cream-50 to-violet-950/60 px-4 py-2.5 text-sm">
         <span className="text-base shrink-0" aria-hidden>📲</span>
-        <p className="flex-1 text-slate-200 leading-snug">
-          <span className="font-semibold text-white">Install Mostly Medicine</span>{" "}
-          <span className="hidden sm:inline text-slate-400">— no Play Store, no App Store, free forever. Open it like a native app.</span>
-          <span className="sm:hidden text-slate-400">— like a native app, no store needed.</span>
+        <p className="flex-1 text-ink-900 leading-snug">
+          <span className="font-semibold text-ink-950">Install Mostly Medicine</span>{" "}
+          <span className="hidden sm:inline text-ink-900/70">— no Play Store, no App Store, free forever. Open it like a native app.</span>
+          <span className="sm:hidden text-ink-900/70">— like a native app, no store needed.</span>
         </p>
         <button
           type="button"
           onClick={handleInstallClick}
-          className="shrink-0 rounded-lg bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-semibold text-xs px-3 py-1.5 transition"
+          className="shrink-0 rounded-lg bg-saffron-500 hover:bg-saffron-400 text-ink-950 font-semibold text-xs px-3 py-1.5 transition"
         >
           {platform === "ios" ? "How to install" : "Install"}
         </button>
@@ -200,7 +200,7 @@ export default function InstallPwaBanner(): JSX.Element | null {
           type="button"
           onClick={dismiss}
           aria-label="Dismiss install banner"
-          className="shrink-0 rounded-md text-slate-500 hover:text-slate-200 transition px-1.5 py-1"
+          className="shrink-0 rounded-md text-ink-900/60 hover:text-ink-900 transition px-1.5 py-1"
         >
           ✕
         </button>
@@ -209,31 +209,31 @@ export default function InstallPwaBanner(): JSX.Element | null {
       {/* iOS-specific instructions sheet */}
       {showIosSheet && (
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-cream-50/80 backdrop-blur-sm p-4"
           onClick={dismiss}
           role="dialog"
           aria-modal="true"
           aria-label="iOS install instructions"
         >
           <div
-            className="relative w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-950 p-6 shadow-2xl"
+            className="relative w-full max-w-sm rounded-2xl border border-ink-950/15 bg-cream-50 p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={dismiss}
               aria-label="Close"
-              className="absolute top-3 right-3 text-slate-500 hover:text-slate-200 transition text-xl leading-none"
+              className="absolute top-3 right-3 text-ink-900/60 hover:text-ink-900 transition text-xl leading-none"
             >
               ✕
             </button>
             <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-3">
               Install on iPhone / iPad
             </p>
-            <h2 className="font-display font-bold text-white text-xl mb-3 leading-tight">
+            <h2 className="font-display font-bold text-ink-950 text-xl mb-3 leading-tight">
               Add Mostly Medicine to your Home Screen
             </h2>
-            <p className="text-sm text-slate-400 leading-relaxed mb-5">
+            <p className="text-sm text-ink-900/70 leading-relaxed mb-5">
               iOS doesn&apos;t auto-prompt apps from the web (Apple-only quirk). Two taps and you&apos;re done:
             </p>
             <ol className="space-y-4 mb-5">
@@ -241,10 +241,10 @@ export default function InstallPwaBanner(): JSX.Element | null {
                 <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-saffron-500/20 border border-saffron-500/40 text-saffron-300 text-sm font-bold">
                   1
                 </span>
-                <div className="flex-1 text-sm text-slate-200 leading-relaxed">
+                <div className="flex-1 text-sm text-ink-900 leading-relaxed">
                   Tap the <strong>Share button</strong>{" "}
                   <span
-                    className="inline-block align-middle mx-1 rounded-md border border-slate-700 bg-slate-900 px-1.5 py-0.5 text-[11px] font-mono text-slate-300"
+                    className="inline-block align-middle mx-1 rounded-md border border-ink-950/15 bg-cream-50 px-1.5 py-0.5 text-[11px] font-mono text-ink-900/80"
                     aria-label="Share icon"
                   >
                     ⬆︎
@@ -256,27 +256,27 @@ export default function InstallPwaBanner(): JSX.Element | null {
                 <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-saffron-500/20 border border-saffron-500/40 text-saffron-300 text-sm font-bold">
                   2
                 </span>
-                <div className="flex-1 text-sm text-slate-200 leading-relaxed">
+                <div className="flex-1 text-sm text-ink-900 leading-relaxed">
                   Scroll down and tap <strong>Add to Home Screen</strong>{" "}
-                  <span className="inline-block align-middle mx-1 text-slate-500">➕</span>
+                  <span className="inline-block align-middle mx-1 text-ink-900/60">➕</span>
                 </div>
               </li>
               <li className="flex gap-3">
                 <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-saffron-500/20 border border-saffron-500/40 text-saffron-300 text-sm font-bold">
                   3
                 </span>
-                <div className="flex-1 text-sm text-slate-200 leading-relaxed">
+                <div className="flex-1 text-sm text-ink-900 leading-relaxed">
                   Tap <strong>Add</strong> — the brand &ldquo;M&rdquo; icon appears on your home screen.
                 </div>
               </li>
             </ol>
-            <p className="text-xs text-slate-500 leading-relaxed mb-4">
+            <p className="text-xs text-ink-900/60 leading-relaxed mb-4">
               You&apos;ll get the same look-and-feel as a native app: launches full-screen, dark splash, no browser bar. Free forever, no app store account needed.
             </p>
             <button
               type="button"
               onClick={dismiss}
-              className="w-full rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-4 py-2.5 transition"
+              className="w-full rounded-xl bg-saffron-500 hover:bg-saffron-400 text-ink-950 font-bold text-sm px-4 py-2.5 transition"
             >
               Got it
             </button>

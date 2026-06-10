@@ -58,7 +58,7 @@ const webAppSchema = {
 
 export default function AmcFeeCalculatorPage() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -88,12 +88,12 @@ export default function AmcFeeCalculatorPage() {
           Updated 2026 · AUD · USD · INR
         </div>
         <h1
-          className="font-display font-bold text-white mb-4"
+          className="font-display font-bold text-ink-950 mb-4"
           style={{ fontSize: "clamp(2rem, 5.5vw, 4rem)", lineHeight: 1.05, letterSpacing: "-0.03em" }}
         >
           AMC Fee <span className="gradient-text">Calculator</span>
         </h1>
-        <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed text-base sm:text-lg">
+        <p className="text-ink-900/70 max-w-2xl mx-auto leading-relaxed text-base sm:text-lg">
           Estimate the full cost of becoming a registered doctor in Australia — exam attempts, EPIC, English testing, and AHPRA — in your local currency.
         </p>
         <Link
@@ -159,12 +159,12 @@ export default function AmcFeeCalculatorPage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-900/80 py-8 text-center">
+      <footer className="relative z-10 border-t border-ink-950/10/80 py-8 text-center">
         <p className="font-display font-bold text-sm mb-1">
           <span className="gradient-text">Mostly Medicine</span>
-          <span className="text-slate-700"> · AMC Exam Preparation</span>
+          <span className="text-ink-900/55"> · AMC Exam Preparation</span>
         </p>
-        <p className="text-xs text-slate-700 mt-1">
+        <p className="text-xs text-ink-900/55 mt-1">
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>

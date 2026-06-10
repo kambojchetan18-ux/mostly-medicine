@@ -114,7 +114,7 @@ const faqSchema = {
 
 export default function AmcCat2Page() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -134,7 +134,7 @@ export default function AmcCat2Page() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -148,7 +148,7 @@ export default function AmcCat2Page() {
           <h1 className="font-display font-bold mb-4">
             AMC Handbook AI RolePlay (MCAT): The Clinical Exam Mastery Guide
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-ink-900/70 text-lg leading-relaxed">
             Station types, the four marking domains, 8-minute timing strategy,
             and the consultation frameworks — Calgary-Cambridge, SPIKES,
             SOCRATES — that turn nervous candidates into confident ones.
@@ -416,7 +416,7 @@ export default function AmcCat2Page() {
           <p>
             <Link
               href="/auth/signup"
-              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Start AMC Handbook AI RolePlay roleplay free →
             </Link>
@@ -465,7 +465,7 @@ export default function AmcCat2Page() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-ink-950/10 text-sm text-ink-900/60">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official AMC Handbook AI RolePlay examination information, refer to{" "}

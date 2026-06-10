@@ -85,10 +85,10 @@ export default function StreakHeatmap() {
           <p className="text-[10px] font-bold tracking-widest uppercase text-saffron-600 mb-1">
             Streak Heatmap
           </p>
-          <h3 className="font-display text-lg font-bold text-gray-900 leading-tight">
+          <h3 className="font-display text-lg font-bold text-ink-950 leading-tight">
             Last 12 weeks
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-ink-900/60 mt-1">
             {error
               ? "Could not load activity — try refreshing."
               : isEmpty
@@ -103,7 +103,7 @@ export default function StreakHeatmap() {
       <div className="flex gap-3">
         {/* Day-of-week labels — sparse, aligned with rows 1/3/5 (Mon/Wed/Fri) */}
         <div
-          className="hidden sm:flex flex-col text-[9px] text-slate-400 font-semibold pt-0.5"
+          className="hidden sm:flex flex-col text-[9px] text-ink-900/70 font-semibold pt-0.5"
           style={{ gap: "3px" }}
           aria-hidden
         >
@@ -151,7 +151,7 @@ export default function StreakHeatmap() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-2 mt-4 text-[10px] font-semibold text-slate-400">
+      <div className="flex items-center gap-2 mt-4 text-[10px] font-semibold text-ink-900/70">
         <span>Less</span>
         <div className="flex gap-[3px]">
           {LEGEND_STEPS.map((cls) => (

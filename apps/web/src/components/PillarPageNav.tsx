@@ -24,13 +24,13 @@ export default async function PillarPageNav() {
     <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-7xl mx-auto">
       <Link href="/" className="font-display font-bold text-[1.15rem] tracking-tight">
         <span className="gradient-text">Mostly</span>
-        <span className="text-white"> Medicine</span>
+        <span className="text-ink-950"> Medicine</span>
       </Link>
       <div className="flex items-center gap-2">
         {isLoggedIn ? (
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
           >
             ← Back to dashboard
           </Link>
@@ -38,13 +38,13 @@ export default async function PillarPageNav() {
           <>
             <Link
               href="/auth/login"
-              className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
+              className="hidden sm:inline text-ink-900/70 hover:text-ink-950 px-4 py-2 text-sm transition-colors font-medium"
             >
               Log in
             </Link>
             <Link
               href="/auth/signup"
-              className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+              className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
             >
               Get started →
             </Link>

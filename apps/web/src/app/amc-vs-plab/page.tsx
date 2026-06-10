@@ -119,14 +119,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-slate-100 text-base leading-relaxed">{children}</p>
+      <p className="text-ink-950 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -144,17 +144,17 @@ export default function Page() {
             AMC vs PLAB · Updated May 2026
           </p>
           <h1
-            className="font-display font-bold text-white mb-5"
+            className="font-display font-bold text-ink-950 mb-5"
             style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
           >
             AMC vs PLAB in 2026: Which Exam Should an IMG Take First (Australia or UK)?
           </h1>
-          <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-ink-900/70 text-base leading-relaxed mb-3">
+            By <span className="text-ink-900 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           AMC gets you registered in Australia, PLAB gets you registered in the UK — there is no automatic recognition between them. AMC is the more expensive single exam (around A$2,790 for Part 1 vs £268 for PLAB 1) but Australian RMO salaries close the gap inside a year. The honest answer to &ldquo;which first&rdquo; is not difficulty — it&apos;s which country you actually want to build a life in.
         </blockquote>
 
@@ -206,8 +206,8 @@ looked seriously at PLAB and chose AMC directly. She finished Part 1, Part 2 and
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-slate-200">
-            <thead className="bg-white/5 text-slate-300">
+          <table className="w-full text-sm text-left text-ink-900">
+            <thead className="bg-white/5 text-ink-900/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Cost line</th>
                 <th className="px-4 py-3 font-semibold">AMC pathway (2026)</th>
@@ -323,8 +323,8 @@ looked seriously at PLAB and chose AMC directly. She finished Part 1, Part 2 and
         <h2>Time to PR: AU vs UK side-by-side</h2>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-slate-200">
-            <thead className="bg-white/5 text-slate-300">
+          <table className="w-full text-sm text-left text-ink-900">
+            <thead className="bg-white/5 text-ink-900/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Milestone</th>
                 <th className="px-4 py-3 font-semibold">Australia (AMC pathway)</th>
@@ -404,23 +404,23 @@ looked seriously at PLAB and chose AMC directly. She finished Part 1, Part 2 and
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-slate-300 leading-relaxed">{f.a}</p>
+              <p className="text-sm font-semibold text-ink-950 mb-2">{f.q}</p>
+              <p className="text-sm text-ink-900/80 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-slate-500 space-y-1">
-          <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
-          <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-ink-900/60 space-y-1">
+          <p><strong className="text-ink-900/70">Last reviewed:</strong> 2 May 2026</p>
+          <p><strong className="text-ink-900/70">Next review:</strong> 2 November 2026</p>
+          <p><strong className="text-ink-900/70">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-ink-900/70">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">
-          <p className="font-semibold text-slate-300 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-900/70">
+          <p className="font-semibold text-ink-900/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.amc.org.au/assessment/fees" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council exam information and fees</a></li>
             <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC statistics and annual reports</a></li>

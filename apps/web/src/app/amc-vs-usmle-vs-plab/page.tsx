@@ -139,7 +139,7 @@ const itemListSchema = {
 
 export default function AmcVsUsmleVsPlabPage() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -163,7 +163,7 @@ export default function AmcVsUsmleVsPlabPage() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -177,7 +177,7 @@ export default function AmcVsUsmleVsPlabPage() {
           <h1 className="font-display font-bold mb-4">
             AMC vs USMLE vs PLAB: The Honest 2026 Comparison
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-ink-900/70 text-lg leading-relaxed">
             A clinician&apos;s side-by-side comparison of the three major IMG
             licensing pathways — Australia (AMC), the United States (USMLE),
             and the United Kingdom (PLAB). Cost, format, pass rates,
@@ -199,9 +199,9 @@ export default function AmcVsUsmleVsPlabPage() {
 
         <section>
           <h2>Side-by-side comparison table</h2>
-          <div className="not-prose my-8 overflow-x-auto rounded-2xl border border-slate-800">
-            <table className="w-full text-sm text-left text-slate-300">
-              <thead className="bg-slate-900/60 text-xs uppercase tracking-wider text-brand-300">
+          <div className="not-prose my-8 overflow-x-auto rounded-2xl border border-ink-950/10">
+            <table className="w-full text-sm text-left text-ink-900/80">
+              <thead className="bg-cream-50/60 text-xs uppercase tracking-wider text-brand-300">
                 <tr>
                   <th className="px-4 py-3 font-bold">Dimension</th>
                   <th className="px-4 py-3 font-bold">AMC (Australia)</th>
@@ -209,63 +209,63 @@ export default function AmcVsUsmleVsPlabPage() {
                   <th className="px-4 py-3 font-bold">PLAB (UK)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-ink-950/10">
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Parts</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Parts</td>
                   <td className="px-4 py-3">2 (AMC MCQ, AMC Handbook AI RolePlay Clinical/MCAT)</td>
                   <td className="px-4 py-3">3 (Step 1, Step 2 CK, Step 3)</td>
                   <td className="px-4 py-3">2 (Part 1 MCQ, Part 2 OSCE)</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Total exam cost</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Total exam cost</td>
                   <td className="px-4 py-3">~AUD 6,200</td>
                   <td className="px-4 py-3">~USD 3,800 (~AUD 5,900)</td>
                   <td className="px-4 py-3">~GBP 1,500 (~AUD 2,900)</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">English test</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">English test</td>
                   <td className="px-4 py-3">IELTS 7+ or OET B+</td>
                   <td className="px-4 py-3">OET, TOEFL, or USMLE itself</td>
                   <td className="px-4 py-3">IELTS 7.5+ or OET B+</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">First-attempt pass rate</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">First-attempt pass rate</td>
                   <td className="px-4 py-3">AMC MCQ ~50–70%, AMC Handbook AI RolePlay ~40–60%</td>
                   <td className="px-4 py-3">Step 1 ~70–80%, Step 2 CK ~80%</td>
                   <td className="px-4 py-3">Part 1 ~65–75%, Part 2 ~70%</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Time to registration</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Time to registration</td>
                   <td className="px-4 py-3">12–24 months end-to-end</td>
                   <td className="px-4 py-3">2–4 years incl. residency match</td>
                   <td className="px-4 py-3">12–18 months end-to-end</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Post-exam pathway</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Post-exam pathway</td>
                   <td className="px-4 py-3">AHPRA registration → Internship/RMO → Fellowship</td>
                   <td className="px-4 py-3">ECFMG cert → NRMP residency match → Board cert</td>
                   <td className="px-4 py-3">GMC registration → Foundation Year → Specialty</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Avg. attending salary</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Avg. attending salary</td>
                   <td className="px-4 py-3">AUD 250k–500k+</td>
                   <td className="px-4 py-3">USD 250k–700k+</td>
                   <td className="px-4 py-3">GBP 90k–150k+ (NHS)</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Work-life balance</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Work-life balance</td>
                   <td className="px-4 py-3">High</td>
                   <td className="px-4 py-3">Medium-low (residency)</td>
                   <td className="px-4 py-3">Medium</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Visa pathway</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Visa pathway</td>
                   <td className="px-4 py-3">482/186 sponsored, regional incentives</td>
                   <td className="px-4 py-3">J-1 or H-1B, then Green Card</td>
                   <td className="px-4 py-3">Skilled Worker (Health &amp; Care)</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 font-semibold text-white">Family friendliness</td>
+                  <td className="px-4 py-3 font-semibold text-ink-950">Family friendliness</td>
                   <td className="px-4 py-3">High (lifestyle, schools, climate)</td>
                   <td className="px-4 py-3">Variable (depends on city/state)</td>
                   <td className="px-4 py-3">High (NHS family policies)</td>
@@ -273,7 +273,7 @@ export default function AmcVsUsmleVsPlabPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-900/60">
             Figures are 2026 estimates compiled from public sources (AMC, USMLE,
             GMC) and IMG community reports. Always verify current fees on the
             official sites before budgeting.
@@ -455,7 +455,7 @@ export default function AmcVsUsmleVsPlabPage() {
           <p>
             <Link
               href="/auth/signup"
-              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Start AMC prep free →
             </Link>
@@ -506,7 +506,7 @@ export default function AmcVsUsmleVsPlabPage() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-ink-950/10 text-sm text-ink-900/60">
           <p>
             This comparison is provided for educational purposes by Mostly
             Medicine. Verify current fees and policies on{" "}

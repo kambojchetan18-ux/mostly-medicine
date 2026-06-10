@@ -11,12 +11,12 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-12">
       <div className="mx-auto max-w-3xl">
-        <Link href="/" className="text-xs text-gray-500 hover:text-gray-700">← Mostly Medicine</Link>
+        <Link href="/" className="text-xs text-ink-900/60 hover:text-ink-900/85">← Mostly Medicine</Link>
 
-        <h1 className="mt-4 text-3xl font-bold text-gray-900">Terms of Service</h1>
-        <p className="mt-2 text-xs text-gray-500">Last updated / Effective Date: {LAST_UPDATED}</p>
+        <h1 className="mt-4 text-3xl font-bold text-ink-950">Terms of Service</h1>
+        <p className="mt-2 text-xs text-ink-900/60">Last updated / Effective Date: {LAST_UPDATED}</p>
 
-        <div className="prose prose-slate mt-8 max-w-none text-sm leading-relaxed text-gray-800">
+        <div className="prose prose-slate mt-8 max-w-none text-sm leading-relaxed text-ink-950">
           <p>
             Mostly Medicine (&quot;<strong>Mostly Medicine</strong>&quot;, &quot;we&quot;,
             &quot;our&quot; or &quot;us&quot;) respects your privacy. These Terms of Service apply
@@ -618,7 +618,7 @@ export default function TermsPage() {
             <a href="mailto:hello@mostlymedicine.com">hello@mostlymedicine.com</a>.
           </p>
 
-          <p className="mt-8 text-xs text-gray-500">
+          <p className="mt-8 text-xs text-ink-900/60">
             Mostly Medicine — built by IMGs and IT professionals who walked the AMC pathway.
             For International Medical Graduates, by people who have lived the journey.
           </p>

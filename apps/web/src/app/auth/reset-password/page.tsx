@@ -83,19 +83,19 @@ function ResetPasswordInner() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="mb-6">
-          <Link href="/auth/login" className="text-sm text-slate-400 hover:text-slate-600 transition">← Back to login</Link>
-          <h1 className="text-2xl font-bold text-gray-900 mt-3 mb-1">Reset your password</h1>
-          <p className="text-gray-500 text-sm">Enter a new password for your account</p>
+          <Link href="/auth/login" className="text-sm text-ink-900/70 hover:text-ink-900/55 transition">← Back to login</Link>
+          <h1 className="text-2xl font-bold text-ink-950 mt-3 mb-1">Reset your password</h1>
+          <p className="text-ink-900/60 text-sm">Enter a new password for your account</p>
         </div>
 
         {!ready ? (
-          <div className="text-sm text-gray-500 py-8 text-center">
+          <div className="text-sm text-ink-900/60 py-8 text-center">
             Validating recovery link…
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New password</label>
+              <label className="block text-sm font-medium text-ink-900/85 mb-1">New password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -105,7 +105,7 @@ function ResetPasswordInner() {
                   minLength={8}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                 />
-                <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-ink-900/70">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     {showPassword
                       ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
@@ -117,7 +117,7 @@ function ResetPasswordInner() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm new password</label>
+              <label className="block text-sm font-medium text-ink-900/85 mb-1">Confirm new password</label>
               <input
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
@@ -137,7 +137,7 @@ function ResetPasswordInner() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-ink-950 font-semibold py-2.5 rounded-lg transition disabled:opacity-50"
             >
               {loading ? "Updating…" : "Update password"}
             </button>

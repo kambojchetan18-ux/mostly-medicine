@@ -84,7 +84,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
       {/* Floating button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-brand-600 text-white rounded-full shadow-lg hover:bg-brand-700 transition text-sm font-medium"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-brand-600 text-ink-950 rounded-full shadow-lg hover:bg-brand-700 transition text-sm font-medium"
       >
         <span>✨</span> Ask AI
       </button>
@@ -103,7 +103,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
           <div>
-            <h2 className="text-sm font-semibold text-gray-900">Ask AI</h2>
+            <h2 className="text-sm font-semibold text-ink-950">Ask AI</h2>
             {topicTitle && (
               <p className="text-xs text-gray-400 truncate max-w-[280px]">
                 Context: {topicTitle}
@@ -114,14 +114,14 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
             {messages.length > 0 && (
               <button
                 onClick={() => setMessages([])}
-                className="text-xs text-gray-400 hover:text-gray-600 transition"
+                className="text-xs text-gray-400 hover:text-ink-900/70 transition"
               >
                 Clear
               </button>
             )}
             <button
               onClick={() => setOpen(false)}
-              className="text-gray-400 hover:text-gray-600 transition text-xl leading-none"
+              className="text-gray-400 hover:text-ink-900/70 transition text-xl leading-none"
             >
               ×
             </button>
@@ -139,7 +139,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
                 <button
                   key={prompt}
                   onClick={() => sendMessage(prompt)}
-                  className="w-full text-left text-xs px-3 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 transition"
+                  className="w-full text-left text-xs px-3 py-2.5 rounded-lg border border-gray-200 text-ink-900/70 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 transition"
                 >
                   {prompt}
                 </button>
@@ -151,8 +151,8 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
                 <div
                   className={`max-w-[85%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-wrap ${
                     m.role === "user"
-                      ? "bg-brand-600 text-white rounded-br-sm"
-                      : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                      ? "bg-brand-600 text-ink-950 rounded-br-sm"
+                      : "bg-gray-100 text-ink-950 rounded-bl-sm"
                   }`}
                 >
                   {m.content}
@@ -183,7 +183,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="px-3 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition disabled:opacity-50 text-sm font-medium"
+              className="px-3 py-2 bg-brand-600 text-ink-950 rounded-lg hover:bg-brand-700 transition disabled:opacity-50 text-sm font-medium"
             >
               Send
             </button>

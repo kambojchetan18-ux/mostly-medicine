@@ -78,9 +78,9 @@ export default function Calculator() {
   return (
     <div className="grid lg:grid-cols-5 gap-6">
       {/* Inputs */}
-      <div className="lg:col-span-3 rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm space-y-6">
+      <div className="lg:col-span-3 rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-cream-50/80 p-6 sm:p-8 backdrop-blur-sm space-y-6">
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">
+          <label className="block text-sm font-semibold text-ink-900 mb-2">
             AMC MCQ attempts
           </label>
           <div className="flex items-center gap-2">
@@ -91,8 +91,8 @@ export default function Calculator() {
                 onClick={() => setCat1Attempts(n)}
                 className={`flex-1 py-3 rounded-xl font-display font-bold transition-all ${
                   cat1Attempts === n
-                    ? "bg-brand-600 text-white shadow-glow-teal"
-                    : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
+                    ? "bg-brand-600 text-ink-950 shadow-glow-teal"
+                    : "bg-cream-100/60 text-ink-900/80 hover:bg-cream-100"
                 }`}
                 aria-pressed={cat1Attempts === n}
               >
@@ -100,11 +100,11 @@ export default function Calculator() {
               </button>
             ))}
           </div>
-          <p className="text-xs text-slate-500 mt-2">Most pass first or second sitting.</p>
+          <p className="text-xs text-ink-900/60 mt-2">Most pass first or second sitting.</p>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">
+          <label className="block text-sm font-semibold text-ink-900 mb-2">
             AMC Handbook AI RolePlay attempts
           </label>
           <div className="flex items-center gap-2">
@@ -115,8 +115,8 @@ export default function Calculator() {
                 onClick={() => setCat2Attempts(n)}
                 className={`flex-1 py-3 rounded-xl font-display font-bold transition-all ${
                   cat2Attempts === n
-                    ? "bg-pink-600 text-white"
-                    : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
+                    ? "bg-pink-600 text-ink-950"
+                    : "bg-cream-100/60 text-ink-900/80 hover:bg-cream-100"
                 }`}
                 aria-pressed={cat2Attempts === n}
               >
@@ -127,7 +127,7 @@ export default function Calculator() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">
+          <label className="block text-sm font-semibold text-ink-900 mb-2">
             English test
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -144,8 +144,8 @@ export default function Calculator() {
                 onClick={() => setEnglishTest(opt.id)}
                 className={`py-3 rounded-xl font-semibold transition-all ${
                   englishTest === opt.id
-                    ? "bg-saffron-600 text-white"
-                    : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
+                    ? "bg-saffron-600 text-ink-950"
+                    : "bg-cream-100/60 text-ink-900/80 hover:bg-cream-100"
                 }`}
                 aria-pressed={englishTest === opt.id}
               >
@@ -155,10 +155,10 @@ export default function Calculator() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-cream-50/60 border border-ink-950/10">
           <div>
-            <p className="font-semibold text-white text-sm">Include EPIC verification</p>
-            <p className="text-xs text-slate-500">ECFMG credential check (USD 130).</p>
+            <p className="font-semibold text-ink-950 text-sm">Include EPIC verification</p>
+            <p className="text-xs text-ink-900/60">ECFMG credential check (USD 130).</p>
           </div>
           <button
             type="button"
@@ -166,7 +166,7 @@ export default function Calculator() {
             role="switch"
             aria-checked={includeEpic}
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              includeEpic ? "bg-brand-600" : "bg-slate-700"
+              includeEpic ? "bg-brand-600" : "bg-cream-100"
             }`}
           >
             <span
@@ -177,10 +177,10 @@ export default function Calculator() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-cream-50/60 border border-ink-950/10">
           <div>
-            <p className="font-semibold text-white text-sm">Include AHPRA registration</p>
-            <p className="text-xs text-slate-500">Final step for medical practice.</p>
+            <p className="font-semibold text-ink-950 text-sm">Include AHPRA registration</p>
+            <p className="text-xs text-ink-900/60">Final step for medical practice.</p>
           </div>
           <button
             type="button"
@@ -188,7 +188,7 @@ export default function Calculator() {
             role="switch"
             aria-checked={includeAhpra}
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              includeAhpra ? "bg-brand-600" : "bg-slate-700"
+              includeAhpra ? "bg-brand-600" : "bg-cream-100"
             }`}
           >
             <span
@@ -200,7 +200,7 @@ export default function Calculator() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">
+          <label className="block text-sm font-semibold text-ink-900 mb-2">
             Display currency
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -211,8 +211,8 @@ export default function Calculator() {
                 onClick={() => setCurrency(c)}
                 className={`py-3 rounded-xl font-display font-bold transition-all ${
                   currency === c
-                    ? "bg-saffron-600 text-white"
-                    : "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
+                    ? "bg-saffron-600 text-ink-950"
+                    : "bg-cream-100/60 text-ink-900/80 hover:bg-cream-100"
                 }`}
                 aria-pressed={currency === c}
               >
@@ -224,7 +224,7 @@ export default function Calculator() {
       </div>
 
       {/* Results */}
-      <div className="lg:col-span-2 rounded-3xl border border-pink-800/30 bg-gradient-to-br from-pink-950/60 via-rose-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm">
+      <div className="lg:col-span-2 rounded-3xl border border-pink-800/30 bg-gradient-to-br from-pink-950/60 via-rose-950/40 to-cream-50/80 p-6 sm:p-8 backdrop-blur-sm">
         <p className="text-[10px] font-bold text-pink-300 uppercase tracking-[0.25em] mb-3">
           Total estimate
         </p>
@@ -234,7 +234,7 @@ export default function Calculator() {
         >
           {fmt(totalAud, currency)}
         </p>
-        <p className="text-sm text-slate-400 mt-2">
+        <p className="text-sm text-ink-900/70 mt-2">
           {currency !== "AUD" && (
             <>
               ≈ {fmt(totalAud, "AUD")} ·{" "}
@@ -243,16 +243,16 @@ export default function Calculator() {
           End-to-end AMC pathway
         </p>
 
-        <div className="mt-6 pt-6 border-t border-slate-800/80 space-y-3">
+        <div className="mt-6 pt-6 border-t border-ink-950/10/80 space-y-3">
           {breakdown.map((item, i) => (
             <div key={i} className="flex items-start justify-between gap-3 text-sm">
               <div className="min-w-0">
-                <p className="text-slate-200 font-medium">{item.label}</p>
+                <p className="text-ink-900 font-medium">{item.label}</p>
                 {item.detail && (
-                  <p className="text-xs text-slate-500 mt-0.5">{item.detail}</p>
+                  <p className="text-xs text-ink-900/60 mt-0.5">{item.detail}</p>
                 )}
               </div>
-              <p className="text-slate-300 font-mono shrink-0">
+              <p className="text-ink-900/80 font-mono shrink-0">
                 {fmt(item.amountAud, currency)}
               </p>
             </div>
@@ -261,7 +261,7 @@ export default function Calculator() {
 
         <Link
           href="/auth/signup"
-          className="mt-7 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-display font-bold text-white transition-all hover:-translate-y-0.5"
+          className="mt-7 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-display font-bold text-ink-950 transition-all hover:-translate-y-0.5"
           style={{
             background: "linear-gradient(135deg, #7c3aed, #db2777)",
             boxShadow: "0 8px 30px rgba(124,58,237,0.35)",
@@ -269,7 +269,7 @@ export default function Calculator() {
         >
           Start prep free →
         </Link>
-        <p className="text-[11px] text-slate-500 mt-3 leading-relaxed">
+        <p className="text-[11px] text-ink-900/60 mt-3 leading-relaxed">
           Estimates only. Confirm current fees on amc.org.au, ecfmg.org, ahpra.gov.au, ielts.org and occupationalenglishtest.com. Exchange rates approximate (April 2026).
         </p>
       </div>

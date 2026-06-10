@@ -114,7 +114,7 @@ const faqSchema = {
 
 export default function AmcCat1Page() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -134,7 +134,7 @@ export default function AmcCat1Page() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -148,7 +148,7 @@ export default function AmcCat1Page() {
           <h1 className="font-display font-bold mb-4">
             AMC MCQ: The Complete MCQ Exam Guide for IMGs
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-ink-900/70 text-lg leading-relaxed">
             Format, syllabus weighting, sample question patterns, Angoff pass-mark
             logic, an 8-month study schedule, and the most common pitfalls that
             sink first-time candidates.
@@ -443,7 +443,7 @@ export default function AmcCat1Page() {
           <p>
             <Link
               href="/auth/signup"
-              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Start AMC MCQ prep free →
             </Link>
@@ -492,7 +492,7 @@ export default function AmcCat1Page() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-ink-950/10 text-sm text-ink-900/60">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official AMC MCQ examination information, refer to{" "}

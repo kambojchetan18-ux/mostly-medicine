@@ -60,7 +60,7 @@ export default function AmcMcqIndexPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -76,7 +76,7 @@ export default function AmcMcqIndexPage() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -89,7 +89,7 @@ export default function AmcMcqIndexPage() {
         <h1 className="font-display font-bold text-4xl sm:text-5xl mb-4">
           AMC MCQ Practice by Specialty
         </h1>
-        <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">
+        <p className="text-ink-900/70 text-lg leading-relaxed max-w-2xl">
           {totalQuestions.toLocaleString()}+ Australian-aligned MCQs for
           International Medical Graduates, split across the {SPECIALTIES.length}{" "}
           core AMC MCQ specialties. Free sample questions with worked
@@ -99,13 +99,13 @@ export default function AmcMcqIndexPage() {
         <div className="mt-6 flex gap-3 flex-wrap">
           <Link
             href="/auth/signup"
-            className="bg-brand-600 hover:bg-brand-500 text-white px-6 py-3 rounded-xl text-sm font-bold"
+            className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-6 py-3 rounded-xl text-sm font-bold"
           >
             Start free
           </Link>
           <Link
             href="/amc"
-            className="border border-slate-700 hover:border-slate-500 text-slate-200 px-6 py-3 rounded-xl text-sm font-bold"
+            className="border border-ink-950/15 hover:border-ink-950/20 text-ink-900 px-6 py-3 rounded-xl text-sm font-bold"
           >
             Read the AMC exam guide
           </Link>
@@ -123,17 +123,17 @@ export default function AmcMcqIndexPage() {
               <li key={s.slug}>
                 <Link
                   href={`/amc-mcq/${s.slug}`}
-                  className="block h-full rounded-2xl border border-slate-800 hover:border-brand-700/60 bg-slate-900/40 hover:bg-slate-900/70 p-5 transition"
+                  className="block h-full rounded-2xl border border-ink-950/10 hover:border-brand-700/60 bg-cream-50/40 hover:bg-cream-50/70 p-5 transition"
                 >
                   <div className="flex items-baseline justify-between mb-2">
-                    <h3 className="font-display font-bold text-lg text-white">
+                    <h3 className="font-display font-bold text-lg text-ink-950">
                       {s.name}
                     </h3>
                     <span className="text-xs uppercase tracking-widest text-brand-300">
                       {n} MCQs
                     </span>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">
+                  <p className="text-sm text-ink-900/70 leading-relaxed">
                     {s.tagline}
                   </p>
                   <p className="mt-3 text-xs uppercase tracking-widest text-brand-400 font-bold">
@@ -146,7 +146,7 @@ export default function AmcMcqIndexPage() {
         </ul>
       </section>
 
-      <footer className="max-w-4xl mx-auto px-6 sm:px-10 pb-16 text-sm text-slate-500">
+      <footer className="max-w-4xl mx-auto px-6 sm:px-10 pb-16 text-sm text-ink-900/60">
         <p>
           Educational practice content from Mostly Medicine, mapped to publicly
           available Australian guidelines (RACGP, Therapeutic Guidelines, AMH,

@@ -25,7 +25,7 @@ export default function RoleplayDiagnosticRadar({
   if (n < 3) {
     return (
       <div className="flex h-64 w-full max-w-[360px] items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-ink-900/60">
           Your diagnostic scores are still being computed…
         </p>
       </div>
@@ -78,7 +78,7 @@ export default function RoleplayDiagnosticRadar({
   return (
     <div className="w-full max-w-[360px]">
       {caseTitle && (
-        <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+        <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wide text-ink-900/60">
           {caseTitle}
         </p>
       )}

@@ -48,10 +48,10 @@ export default function RmoPools() {
       {/* Page Header */}
       <section className="bg-gradient-to-b from-saffron-50 to-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-ink-950 mb-4">
             RMO & JMO Job Pools
           </h1>
-          <p className="text-xl text-gray-700">
+          <p className="text-xl text-ink-900/85">
             Find and apply to open Resident Medical Officer (RMO) and Junior Medical Officer (JMO)
             talent pools across every Australian state — updated for 2026.
           </p>
@@ -64,10 +64,10 @@ export default function RmoPools() {
           <div className="flex gap-3">
             <span className="text-2xl">🚨</span>
             <div>
-              <p className="font-bold text-gray-900 mb-2">
+              <p className="font-bold text-ink-950 mb-2">
                 RMO campaigns are time-sensitive.
               </p>
-              <p className="text-gray-700">
+              <p className="text-ink-900/85">
                 {urgentPools.length > 0 ? (
                   <>
                     {urgentPools
@@ -87,18 +87,18 @@ export default function RmoPools() {
 
         {/* Eligibility Pre-Screen */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Am I eligible to apply?</h2>
-          <p className="text-gray-700 mb-6">
+          <h2 className="text-2xl font-bold text-ink-950 mb-4">Am I eligible to apply?</h2>
+          <p className="text-ink-900/85 mb-6">
             Answer these 5 questions before you click Apply. If you're not ready yet, we'll show you exactly what to do next.
           </p>
-          <ol className="list-decimal list-inside space-y-3 mb-6 text-gray-700">
+          <ol className="list-decimal list-inside space-y-3 mb-6 text-ink-900/85">
             <li>Do you hold, or are you eligible for, AHPRA registration in Australia?</li>
             <li>Have you completed your medical internship in your home country?</li>
             <li>Do you have at least 1 year of post-internship clinical hospital experience?</li>
             <li>Do you have experience across multiple hospital rotations (e.g. medicine, surgery, ED)?</li>
             <li>Do you have a current CV, cover letter, and selection criteria statement ready?</li>
           </ol>
-          <p className="text-gray-700">
+          <p className="text-ink-900/85">
             If No to questions 1–3 →{' '}
             <Link href="/amc-cat-1" className="text-saffron-600 hover:text-saffron-800 font-semibold">
               Start your AMC preparation first →
@@ -108,7 +108,7 @@ export default function RmoPools() {
 
         {/* Campaign Calendar */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">2026 Campaign Calendar — When to Apply</h2>
+          <h2 className="text-2xl font-bold text-ink-950 mb-6">2026 Campaign Calendar — When to Apply</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse border border-gray-300">
               <thead className="bg-gray-100">
@@ -144,7 +144,7 @@ export default function RmoPools() {
 
         {/* Direct RMO / JMO Job Pool Links */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Apply Now — Direct RMO & JMO Links</h2>
+          <h2 className="text-2xl font-bold text-ink-950 mb-6">Apply Now — Direct RMO & JMO Links</h2>
           <ul className="space-y-4">
             {RMO_POOLS.map((p) => {
               const isConfirmed = p.cycle2027.status === 'confirmed';
@@ -164,7 +164,7 @@ export default function RmoPools() {
                   >
                     {p.state} — {p.applyLabel}
                   </a>
-                  {p.imgNotes && <p className="text-gray-600 text-sm mt-2">{p.imgNotes}</p>}
+                  {p.imgNotes && <p className="text-ink-900/70 text-sm mt-2">{p.imgNotes}</p>}
                   {p.directLinks && p.directLinks.length > 0 && (
                     <ul className="mt-3 space-y-2 pl-4 border-l border-gray-300">
                       {p.directLinks.map((dl) => (
@@ -177,7 +177,7 @@ export default function RmoPools() {
                           >
                             {dl.label}
                           </a>
-                          {dl.note && <span className="text-gray-600 text-sm"> — {dl.note}</span>}
+                          {dl.note && <span className="text-ink-900/70 text-sm"> — {dl.note}</span>}
                         </li>
                       ))}
                     </ul>
@@ -195,7 +195,7 @@ export default function RmoPools() {
                 >
                   {fb.label}
                 </a>
-                <p className="text-gray-600 text-sm mt-2">{fb.note}</p>
+                <p className="text-ink-900/70 text-sm mt-2">{fb.note}</p>
               </li>
             ))}
           </ul>
@@ -203,8 +203,8 @@ export default function RmoPools() {
 
         {/* Document Checklist */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">📋 Before You Click Apply — Document Checklist</h2>
-          <p className="text-gray-700 mb-6">
+          <h2 className="text-2xl font-bold text-ink-950 mb-6">📋 Before You Click Apply — Document Checklist</h2>
+          <p className="text-ink-900/85 mb-6">
             Most applications are rejected because of missing or incorrectly formatted documents. Have these ready before you open any application form.
           </p>
           <ul className="space-y-3 mb-6">
@@ -220,7 +220,7 @@ export default function RmoPools() {
               'Work rights / visa documentation (subclass 485, 482, PR, or citizenship)',
               'Two referees briefed and available — current or recent clinical supervisors',
             ].map((item, idx) => (
-              <li key={idx} className="flex gap-3 text-gray-700">
+              <li key={idx} className="flex gap-3 text-ink-900/85">
                 <input type="checkbox" className="mt-1" />
                 <span>{item}</span>
               </li>
@@ -235,8 +235,8 @@ export default function RmoPools() {
 
         {/* Victoria Warning */}
         <section className="mb-12 p-4 bg-orange-50 border-l-4 border-orange-400 rounded">
-          <h3 className="font-bold text-gray-900 mb-3">⚠️ Victoria note for IMGs</h3>
-          <p className="text-gray-700">
+          <h3 className="font-bold text-ink-950 mb-3">⚠️ Victoria note for IMGs</h3>
+          <p className="text-ink-900/85">
             The main PMCV match process is <strong>not open to most IMGs</strong>.
             The <strong>Late Vacancy Match (LVM) in September–October 2026</strong> is the primary IMG pathway into Victorian public hospitals.
             Most VIC hospitals also recruit directly outside PMCV — check individual hospital career pages regularly from August onwards.
@@ -245,8 +245,8 @@ export default function RmoPools() {
 
         {/* Closed Campaign Fallback */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Campaign closed? Don't stop — here's what to do next</h2>
-          <ul className="space-y-4 text-gray-700">
+          <h2 className="text-2xl font-bold text-ink-950 mb-6">Campaign closed? Don't stop — here's what to do next</h2>
+          <ul className="space-y-4 text-ink-900/85">
             <li>
               <strong>Apply directly to hospitals:</strong> Email the Medical Workforce unit with your CV and a brief expression of interest. Many hospitals fill gaps outside the formal campaign.
             </li>
@@ -280,13 +280,13 @@ export default function RmoPools() {
 
         {/* CV Gap Analyser CTA */}
         <section className="bg-saffron-50 p-8 rounded-lg border border-saffron-200">
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">Not sure if your CV is ready?</h3>
-          <p className="text-gray-700 mb-6">
+          <h3 className="text-2xl font-bold text-ink-950 mb-3">Not sure if your CV is ready?</h3>
+          <p className="text-ink-900/85 mb-6">
             Upload your CV and we'll compare it against the Queensland Health International Junior Medical Officer benchmark JD — showing exactly what's missing before you apply.
           </p>
           <Link
             href="/careers/cv-checker"
-            className="inline-block bg-saffron-600 hover:bg-saffron-700 text-white font-semibold py-3 px-6 rounded transition"
+            className="inline-block bg-saffron-600 hover:bg-saffron-700 text-ink-950 font-semibold py-3 px-6 rounded transition"
           >
             Check my CV for free →
           </Link>

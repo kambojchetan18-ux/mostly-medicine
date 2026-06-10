@@ -5,11 +5,11 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 text-center">
-      <h1 className="text-6xl font-bold text-gray-900">404</h1>
-      <p className="mt-2 text-sm text-gray-600">This page doesn&apos;t exist.</p>
+      <h1 className="text-6xl font-bold text-ink-950">404</h1>
+      <p className="mt-2 text-sm text-ink-900/70">This page doesn&apos;t exist.</p>
       <Link
         href="/dashboard"
-        className="mt-6 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+        className="mt-6 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-brand-700"
       >
         Back to dashboard
       </Link>

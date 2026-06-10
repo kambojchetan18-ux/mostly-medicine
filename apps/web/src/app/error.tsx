@@ -6,21 +6,21 @@
 export default function GlobalError({ reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 text-center">
-      <h1 className="text-4xl font-bold text-gray-900">Something went wrong</h1>
-      <p className="mt-2 max-w-md text-sm text-gray-600">
+      <h1 className="text-4xl font-bold text-ink-950">Something went wrong</h1>
+      <p className="mt-2 max-w-md text-sm text-ink-900/70">
         We hit an unexpected error. Try again, or head back to the dashboard.
       </p>
       <div className="mt-6 flex gap-2">
         <button
           type="button"
           onClick={reset}
-          className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+          className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-brand-700"
         >
           Try again
         </button>
         <a
           href="/dashboard"
-          className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink-900/85 hover:bg-gray-50"
         >
           Back to dashboard
         </a>

@@ -160,10 +160,10 @@ export default function Planner() {
   return (
     <div className="space-y-8">
       {/* Inputs */}
-      <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-slate-900/80 p-6 sm:p-8 backdrop-blur-sm">
+      <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-cream-50/80 p-6 sm:p-8 backdrop-blur-sm">
         <div className="grid sm:grid-cols-2 gap-5">
           <div>
-            <label htmlFor="cat1-date" className="block text-sm font-semibold text-slate-200 mb-2">
+            <label htmlFor="cat1-date" className="block text-sm font-semibold text-ink-900 mb-2">
               AMC MCQ target date
             </label>
             <input
@@ -171,11 +171,11 @@ export default function Planner() {
               type="date"
               value={cat1Date}
               onChange={(e) => setCat1Date(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white font-medium focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-cream-50/80 border border-ink-950/15 text-ink-950 font-medium focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 transition-colors"
             />
           </div>
           <div>
-            <label htmlFor="cat2-date" className="block text-sm font-semibold text-slate-200 mb-2">
+            <label htmlFor="cat2-date" className="block text-sm font-semibold text-ink-900 mb-2">
               AMC Handbook AI RolePlay target date
             </label>
             <input
@@ -184,19 +184,19 @@ export default function Planner() {
               value={cat2Date}
               onChange={(e) => setCat2Date(e.target.value)}
               min={cat1Date}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white font-medium focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/30 transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-cream-50/80 border border-ink-950/15 text-ink-950 font-medium focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/30 transition-colors"
             />
           </div>
         </div>
         {monthsToCat1 > 0 && (
-          <p className="text-sm text-slate-400 mt-4">
+          <p className="text-sm text-ink-900/70 mt-4">
             <span className="font-display font-bold gradient-text text-lg">{monthsToCat1}</span> months until your AMC MCQ exam.
           </p>
         )}
       </div>
 
       {/* Timeline */}
-      <ol className="relative border-l-2 border-slate-800 ml-3 space-y-5">
+      <ol className="relative border-l-2 border-ink-950/10 ml-3 space-y-5">
         {items.map((m) => {
           const past = m.date.getTime() < today.getTime();
           return (
@@ -204,8 +204,8 @@ export default function Planner() {
               <span
                 className={`absolute -left-[2.45rem] top-2 w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs ${
                   past
-                    ? "bg-slate-800 border-slate-700 text-slate-500"
-                    : "bg-brand-600 border-brand-400 text-white"
+                    ? "bg-cream-100 border-ink-950/15 text-ink-900/60"
+                    : "bg-brand-600 border-brand-400 text-ink-950"
                 }`}
                 aria-hidden
               >
@@ -217,13 +217,13 @@ export default function Planner() {
                 <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{m.emoji}</span>
-                    <h3 className="font-display font-bold text-white text-lg">{m.label}</h3>
+                    <h3 className="font-display font-bold text-ink-950 text-lg">{m.label}</h3>
                   </div>
-                  <p className={`text-sm font-mono ${past ? "text-slate-500 line-through" : "text-brand-200"}`}>
+                  <p className={`text-sm font-mono ${past ? "text-ink-900/60 line-through" : "text-brand-200"}`}>
                     {fmtDate(m.date)}
                   </p>
                 </div>
-                <p className="text-sm text-slate-300 leading-relaxed">{m.detail}</p>
+                <p className="text-sm text-ink-900/80 leading-relaxed">{m.detail}</p>
               </div>
             </li>
           );
