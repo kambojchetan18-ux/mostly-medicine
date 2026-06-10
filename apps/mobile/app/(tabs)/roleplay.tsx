@@ -10,8 +10,8 @@ import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
-import { scenarios } from '@mostly-medicine/ai';
-import type { Scenario } from '@mostly-medicine/ai';
+import { scenariosMeta } from '@mostly-medicine/ai';
+import type { ScenarioMeta } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
@@ -59,13 +59,14 @@ async function requestMicPermission(): Promise<boolean> {
       },
     );
     return granted === PermissionsAndroid.RESULTS.GRANTED;
-  } catch {
+  } catch (e) {
+    console.warn('[Roleplay] requestMicPermission failed', e);
     return false;
   }
 }
 
 export default function RoleplayScreen() {
-  const [scenario, setScenario] = useState<Scenario | null>(null);
+  const [scenario, setScenario] = useState<ScenarioMeta | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -95,7 +96,7 @@ export default function RoleplayScreen() {
       const rec = recordingRef.current;
       recordingRef.current = null;
       if (rec) {
-        rec.stopAndUnloadAsync().catch(() => {});
+        rec.stopAndUnloadAsync().catch((e) => console.warn('[Roleplay] cleanup stopAndUnload failed', e));
       }
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -204,7 +205,7 @@ export default function RoleplayScreen() {
             playsInSilentModeIOS: true,
             staysActiveInBackground: false,
           });
-        } catch { /* ignore */ }
+        } catch (e) { console.warn('[Roleplay] setAudioMode reset failed', e); }
         if (uri) await uploadAudio(uri);
       } catch (e) {
         setVoiceError(e instanceof Error ? e.message : 'Could not stop recording');
@@ -247,7 +248,7 @@ export default function RoleplayScreen() {
     recordingRef.current = null;
     setIsRecording(false);
     if (rec) {
-      try { await rec.stopAndUnloadAsync(); } catch { /* ignore */ }
+      try { await rec.stopAndUnloadAsync(); } catch (e) { console.warn('[Roleplay] abortRecording failed', e); }
     }
   }
 
@@ -305,7 +306,8 @@ export default function RoleplayScreen() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
       });
-      const data = await res.json();
+      let data: { reply?: string; error?: string };
+      try { data = await res.json(); } catch { throw new Error('Invalid server response'); }
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
       setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
       speakPatient(data.reply, scenario?.patientProfile ?? '');
@@ -329,7 +331,8 @@ export default function RoleplayScreen() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages, requestFeedback: true }),
       });
-      const data = await res.json();
+      let data: { reply?: string; error?: string };
+      try { data = await res.json(); } catch { throw new Error('Invalid server response'); }
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
       setFeedback(data.reply);
     } catch (e) {
@@ -346,7 +349,7 @@ export default function RoleplayScreen() {
     }
   }, [timeLeft, scenario, messages.length, loading, getFeedback]);
 
-  function startScenario(sc: Scenario) {
+  function startScenario(sc: ScenarioMeta) {
     feedbackRequestedRef.current = false;
     setFeedback(null);
     setMessages([{ role: 'assistant', content: sc.openingStatement }]);
@@ -392,7 +395,7 @@ export default function RoleplayScreen() {
             </Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 10 }}>
-            {scenarios.map((sc) => (
+            {scenariosMeta.map((sc) => (
               <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenario(sc)} activeOpacity={0.7}>
                 <View style={s.scenarioTop}>
                   <Text style={s.scenarioEmoji}>{getEmoji(sc.patientProfile)}</Text>

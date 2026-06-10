@@ -24,12 +24,10 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 // Family / staff accounts that legitimately bypass billing.
-const PRIV_WHITELIST = new Set<string>([
-  "nikhil.kamboj83@gmail.com",
-  "amankamboj10@gmail.com",
-  "kamboj.chetan18@gmail.com",
-  "chetan.kamboj844@gmail.com",
-]);
+// Configured via SECURITY_AUDIT_WHITELIST env var (comma-separated emails).
+const PRIV_WHITELIST = new Set<string>(
+  (process.env.SECURITY_AUDIT_WHITELIST ?? "").split(",").map((e: string) => e.trim()).filter(Boolean)
+);
 
 function service() {
   return createServiceClient(

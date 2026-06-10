@@ -50,21 +50,12 @@ export async function GET() {
   const keyId = process.env.CLOUDFLARE_TURN_KEY_ID;
   const apiToken = process.env.CLOUDFLARE_TURN_API_TOKEN;
   if (!keyId || !apiToken) {
-    // Tell the user EXACTLY which env var the runtime is missing so we
-    // don't go in circles. List every CLOUDFLARE_ key the runtime DOES see
-    // so a typo (extra space, wrong word) is obvious.
-    const seen = Object.keys(process.env)
-      .filter((k) => k.startsWith("CLOUDFLARE_"))
-      .sort();
+    console.error("[turn-credentials] missing env vars", {
+      CLOUDFLARE_TURN_KEY_ID: !keyId,
+      CLOUDFLARE_TURN_API_TOKEN: !apiToken,
+    });
     return NextResponse.json(
-      {
-        error: "TURN not configured",
-        missing: {
-          CLOUDFLARE_TURN_KEY_ID: !keyId,
-          CLOUDFLARE_TURN_API_TOKEN: !apiToken,
-        },
-        cloudflareKeysSeen: seen,
-      },
+      { error: "TURN not configured" },
       { status: 503 }
     );
   }
@@ -73,6 +64,8 @@ export async function GET() {
   // `generate` — the older docs called it generate but the live API
   // requires the longer name. Wrong endpoint returns 404 not 200.
   const url = `https://rtc.live.cloudflare.com/v1/turn/keys/${keyId}/credentials/generate-ice-servers`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -82,6 +75,7 @@ export async function GET() {
       },
       body: JSON.stringify({ ttl: TTL_SECONDS }),
       cache: "no-store",
+      signal: controller.signal,
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
@@ -96,8 +90,14 @@ export async function GET() {
     const payload = (await res.json()) as CloudflareIceServers;
     return NextResponse.json(payload);
   } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      console.error("[turn-credentials] cloudflare timeout (5s)");
+      return NextResponse.json({ error: "Cloudflare upstream timeout" }, { status: 504 });
+    }
     const msg = err instanceof Error ? err.message : "fetch failed";
     console.error("[turn-credentials] fetch error", msg);
     return NextResponse.json({ error: msg }, { status: 502 });
+  } finally {
+    clearTimeout(timeout);
   }
 }

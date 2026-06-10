@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { validateOrigin } from "@/lib/csrf";
 
 const PUBLIC_API_ROUTES = [
   "/api/auth/login",
@@ -86,6 +87,17 @@ export async function middleware(request: NextRequest) {
       if (!isPublic) {
         return NextResponse.json({ error: "Email not confirmed" }, { status: 403 });
       }
+    }
+  }
+
+  // CSRF origin check — block cross-origin state-changing requests to
+  // protected API routes. Public routes (auth, search, health) and the
+  // Stripe webhook (verified by its own signature) are exempt.
+  if (pathname.startsWith("/api/")) {
+    const isPublicOrWebhook = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+    if (!isPublicOrWebhook) {
+      const originError = validateOrigin(request);
+      if (originError) return originError;
     }
   }
 

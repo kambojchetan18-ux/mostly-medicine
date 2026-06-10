@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/audit";
 
 // Service-role client used to mutate user_profiles columns that
 // authenticated users no longer have column-level UPDATE on (role, plan,
@@ -87,5 +88,14 @@ export async function PATCH(req: NextRequest) {
   const svc = serviceClient();
   const { error } = await svc.from("user_profiles").update(updates).eq("id", userId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAdminAction({
+    adminUserId: user.id,
+    action: "user_update",
+    targetUserId: userId,
+    details: { plan, role },
+    ipAddress: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
+
   return NextResponse.json({ success: true });
 }

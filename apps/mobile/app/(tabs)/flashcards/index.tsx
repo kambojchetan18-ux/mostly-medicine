@@ -21,7 +21,7 @@ export default function FlashcardsHubScreen() {
 
   const openWebFlow = (kind: 'generate' | 'import') => {
     const path = kind === 'generate' ? '/dashboard/flashcards/generate' : '/dashboard/flashcards/import';
-    Linking.openURL(`${WEB_URL}${path}`).catch(() => {});
+    Linking.openURL(`${WEB_URL}${path}`).catch(console.warn);
     setWebOnlyModal(null);
   };
 

@@ -98,6 +98,12 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+  if (audio.size > 5 * 1024 * 1024) {
+    return NextResponse.json(
+      { error: "Audio chunk too large (max 5MB)" },
+      { status: 400 }
+    );
+  }
 
   // 5. Build a fresh FormData for Groq — we can't forward the incoming one
   //    directly because the file part needs an explicit filename for Groq's
@@ -129,19 +135,31 @@ export async function POST(req: NextRequest) {
 
   // 6. Forward to Groq. fetch with FormData lets the runtime set the
   //    multipart boundary header automatically.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
   let groqRes: Response;
   try {
     groqRes = await fetch(GROQ_TRANSCRIPTIONS_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}` },
       body: groqForm,
+      signal: controller.signal,
     });
   } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      console.error("[stt/transcribe] groq timeout (10s)");
+      return NextResponse.json(
+        { error: "Transcription upstream timeout" },
+        { status: 504 }
+      );
+    }
     console.error("[stt/transcribe] groq fetch failed", err);
     return NextResponse.json(
       { error: "Transcription upstream unreachable" },
       { status: 502 }
     );
+  } finally {
+    clearTimeout(timeout);
   }
 
   if (!groqRes.ok) {
