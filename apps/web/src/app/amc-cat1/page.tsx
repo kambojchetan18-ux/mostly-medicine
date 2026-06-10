@@ -114,7 +114,7 @@ const faqSchema = {
 
 export default function AmcCat1Page() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-ink-950 text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -148,7 +148,7 @@ export default function AmcCat1Page() {
           <h1 className="font-display font-bold mb-4">
             AMC MCQ: The Complete MCQ Exam Guide for IMGs
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-cream-50/65 text-lg leading-relaxed">
             Format, syllabus weighting, sample question patterns, Angoff pass-mark
             logic, an 8-month study schedule, and the most common pitfalls that
             sink first-time candidates.
@@ -492,7 +492,7 @@ export default function AmcCat1Page() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official AMC MCQ examination information, refer to{" "}

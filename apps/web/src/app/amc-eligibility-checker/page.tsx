@@ -57,7 +57,7 @@ const webAppSchema = {
 
 export default function AmcEligibilityCheckerPage() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -84,7 +84,7 @@ export default function AmcEligibilityCheckerPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/auth/login"
-            className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
+            className="hidden sm:inline text-cream-50/65 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
           >
             Log in
           </Link>
@@ -108,7 +108,7 @@ export default function AmcEligibilityCheckerPage() {
         >
           AMC Eligibility <span className="gradient-text">Checker</span>
         </h1>
-        <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed text-base sm:text-lg">
+        <p className="text-cream-50/65 max-w-2xl mx-auto leading-relaxed text-base sm:text-lg">
           Find out in under a minute whether you&apos;re ready to sit AMC MCQ, AMC Handbook AI RolePlay, or apply for AHPRA general registration — and what to do next.
         </p>
         <Link
@@ -135,12 +135,12 @@ export default function AmcEligibilityCheckerPage() {
         </p>
       </section>
 
-      <footer className="relative z-10 border-t border-slate-900/80 py-8 text-center">
+      <footer className="relative z-10 border-t border-cream-50/10/80 py-8 text-center">
         <p className="font-display font-bold text-sm mb-1">
           <span className="gradient-text">Mostly Medicine</span>
-          <span className="text-slate-700"> · AMC Exam Preparation</span>
+          <span className="text-cream-50/40"> · AMC Exam Preparation</span>
         </p>
-        <p className="text-xs text-slate-700 mt-1">
+        <p className="text-xs text-cream-50/40 mt-1">
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>

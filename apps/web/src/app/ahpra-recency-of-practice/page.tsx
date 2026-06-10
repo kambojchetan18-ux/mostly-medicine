@@ -115,14 +115,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-slate-100 text-base leading-relaxed">{children}</p>
+      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -145,12 +145,12 @@ export default function Page() {
           >
             Recency of Practice and AMC: What Order Should an IMG Do Things In?
           </h1>
-          <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
+            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
           For most International Medical Graduates the lowest-risk order is AMC Part 1 &rarr; English test &rarr; AMC Part 2 &rarr; AHPRA application &rarr; Recency completed in Australia post provisional registration. Doctors with a clinical gap of more than 3 years should do supervised recency in their home country before sitting AMC Part 2. There is no single legally mandated sequence &mdash; but the wrong order routinely costs IMGs 6&ndash;12 months of avoidable delay.
         </blockquote>
 
@@ -205,8 +205,8 @@ sat AMC Part 1 from India, sat AMC Part 2 in Australia, and is currently complet
         <p>The MBA standard sits across three concepts. Confusing one for another is the most frequent cause of incorrect advice in IMG forums.</p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-slate-200">
-            <thead className="bg-white/5 text-slate-300">
+          <table className="w-full text-sm text-left text-cream-50/90">
+            <thead className="bg-white/5 text-cream-50/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Concept</th>
                 <th className="px-4 py-3 font-semibold">What it means</th>
@@ -363,22 +363,22 @@ MBBS (Kasturba Medical College), passed AMC Part 1 in late 2024 from India, pass
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
               <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-slate-300 leading-relaxed">{f.a}</p>
+              <p className="text-sm text-cream-50/80 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-slate-500 space-y-1">
-          <p><strong className="text-slate-400">Last reviewed:</strong> 4 May 2026</p>
-          <p><strong className="text-slate-400">Next review:</strong> 4 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-cream-50/55 space-y-1">
+          <p><strong className="text-cream-50/65">Last reviewed:</strong> 4 May 2026</p>
+          <p><strong className="text-cream-50/65">Next review:</strong> 4 November 2026</p>
+          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">
-          <p className="font-semibold text-slate-300 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
+          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia, Registration Standard: Recency of Practice</a></li>
             <li><a href="https://www.ahpra.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA, Registration Standards and Policies</a></li>

@@ -152,7 +152,7 @@ const faqSchema = {
 
 export default function SpikesProtocolPage() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-ink-950 text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -190,7 +190,7 @@ export default function SpikesProtocolPage() {
           <h1 className="font-display font-bold mb-4">
             SPIKES Protocol: Breaking Bad News in AMC Handbook AI RolePlay Stations
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-cream-50/65 text-lg leading-relaxed">
             A six-step communication framework every IMG should drill before the
             AMC clinical exam. Learn each step with example phrases an examinee
             can deliver under pressure in eight minutes.
@@ -387,7 +387,7 @@ export default function SpikesProtocolPage() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official AMC examination information, refer to{" "}

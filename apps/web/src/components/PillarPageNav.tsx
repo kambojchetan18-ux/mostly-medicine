@@ -38,7 +38,7 @@ export default async function PillarPageNav() {
           <>
             <Link
               href="/auth/login"
-              className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
+              className="hidden sm:inline text-cream-50/65 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
             >
               Log in
             </Link>

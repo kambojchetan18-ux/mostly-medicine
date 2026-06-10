@@ -53,7 +53,7 @@ export default function MobileTopBar({ navItems, jobNavItems, user }: Props) {
       }`}
     >
       <div
-        className="flex items-center justify-between gap-2 px-3 py-2 bg-slate-950/85 backdrop-blur-xl shadow-lg shadow-black/30"
+        className="flex items-center justify-between gap-2 px-3 py-2 bg-ink-950/85 backdrop-blur-xl shadow-lg shadow-black/30"
         style={{ paddingTop: "calc(0.5rem + env(safe-area-inset-top))" }}
       >
         <MobileNavDrawer navItems={navItems} jobNavItems={jobNavItems} user={user} />
@@ -65,7 +65,7 @@ export default function MobileTopBar({ navItems, jobNavItems, user }: Props) {
           <span className="gradient-text">Mostly</span>
           <span className="text-white"> Medicine</span>
         </Link>
-        <div className="text-slate-300 flex items-center justify-center w-11 h-11 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5">
+        <div className="text-cream-50/80 flex items-center justify-center w-11 h-11 rounded-xl bg-white/5 hover:bg-white/10 transition border border-white/5">
           <SearchTrigger />
         </div>
       </div>

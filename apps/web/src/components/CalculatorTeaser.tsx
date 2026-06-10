@@ -32,10 +32,10 @@ export default function CalculatorTeaser() {
         A$6,690
       </p>
 
-      <p className="mt-2 text-sm text-slate-300 leading-snug">
+      <p className="mt-2 text-sm text-cream-50/80 leading-snug">
         for the full AMC pathway
       </p>
-      <p className="mt-1 text-[11px] text-slate-500 leading-snug">
+      <p className="mt-1 text-[11px] text-cream-50/55 leading-snug">
         AMC CAT 1 + CAT 2 + IELTS + EPIC + AHPRA
       </p>
 

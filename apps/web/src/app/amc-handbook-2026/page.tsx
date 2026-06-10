@@ -106,7 +106,7 @@ const faqSchema = {
 
 export default function AmcHandbook2026Page() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-ink-950 text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -140,7 +140,7 @@ export default function AmcHandbook2026Page() {
           <h1 className="font-display font-bold mb-4">
             AMC Handbook 2026: Structure, Weighting, and How to Use It
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-cream-50/65 text-lg leading-relaxed">
             The AMC Handbook is the official blueprint for the AMC exams. This
             page summarises its structure, the 2026 changes, and exactly how
             to use it as a study spine alongside your question bank — without
@@ -429,7 +429,7 @@ export default function AmcHandbook2026Page() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
           <p>
             This summary is provided for educational purposes by Mostly
             Medicine and is not a substitute for the official AMC Handbook.

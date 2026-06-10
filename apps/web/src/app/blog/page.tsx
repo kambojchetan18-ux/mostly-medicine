@@ -150,7 +150,7 @@ export default function BlogIndexPage() {
   const sortedPosts = [...posts].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }} />
 
@@ -171,7 +171,7 @@ export default function BlogIndexPage() {
         >
           Honest guides for IMGs preparing for AMC
         </h1>
-        <p className="text-base text-slate-400 leading-relaxed mb-2">
+        <p className="text-base text-cream-50/65 leading-relaxed mb-2">
           Long-form, founder-written, evidence-cited. Every article is reviewed by an AMC pass-graduate IMG on our team, an AMC pass-graduate IMG. We update guides every 6 months as standards shift.
         </p>
       </section>
@@ -190,12 +190,12 @@ export default function BlogIndexPage() {
                 >
                   {post.category}
                 </span>
-                <span className="text-xs text-slate-500">{formatDate(post.publishedAt)}</span>
+                <span className="text-xs text-cream-50/55">{formatDate(post.publishedAt)}</span>
               </div>
               <h2 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 group-hover:text-saffron-200 transition-colors leading-tight">
                 {post.title}
               </h2>
-              <p className="text-sm text-slate-400 leading-relaxed mb-3">
+              <p className="text-sm text-cream-50/65 leading-relaxed mb-3">
                 {post.description}
               </p>
               <p className="text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">
@@ -207,26 +207,26 @@ export default function BlogIndexPage() {
       </section>
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20">
-        <div className="rounded-3xl border border-slate-800 bg-slate-950/40 p-7 sm:p-9 text-center">
+        <div className="rounded-3xl border border-cream-50/10 bg-ink-950/40 p-7 sm:p-9 text-center">
           <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-widest mb-3">
             More on the way
           </p>
           <h2 className="font-display font-bold text-2xl text-white mb-3">
             Get the next article in your inbox
           </h2>
-          <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-xl mx-auto">
+          <p className="text-sm text-cream-50/65 leading-relaxed mb-5 max-w-xl mx-auto">
             Sign up free (no credit card) and we&apos;ll send a daily Mostly Daily teaser plus the next pillar guide as it goes live. Unsubscribe anytime.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/auth/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-ink-950 font-bold text-sm px-5 py-2.5 transition"
             >
               Sign up free &rarr;
             </Link>
             <Link
               href="/ask-ai"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-900 text-slate-200 font-semibold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-cream-50/15 bg-ink-950/60 hover:bg-ink-950 text-cream-50/90 font-semibold text-sm px-5 py-2.5 transition"
             >
               Try Ask AI (3 free questions)
             </Link>

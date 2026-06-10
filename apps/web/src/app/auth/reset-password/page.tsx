@@ -83,7 +83,7 @@ function ResetPasswordInner() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="mb-6">
-          <Link href="/auth/login" className="text-sm text-slate-400 hover:text-slate-600 transition">← Back to login</Link>
+          <Link href="/auth/login" className="text-sm text-cream-50/65 hover:text-cream-50/45 transition">← Back to login</Link>
           <h1 className="text-2xl font-bold text-gray-900 mt-3 mb-1">Reset your password</h1>
           <p className="text-gray-500 text-sm">Enter a new password for your account</p>
         </div>

@@ -53,11 +53,11 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
   // they can't escape from.
   if (!user) {
     return (
-      <div className="mt-4 pt-4 border-t border-slate-800/50">
+      <div className="mt-4 pt-4 border-t border-cream-50/10/50">
         <button
           onClick={handleLogout}
           disabled={loggingOut}
-          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/5 transition text-xs font-medium disabled:opacity-50"
+          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-cream-50/65 hover:text-red-400 hover:bg-white/5 transition text-xs font-medium disabled:opacity-50"
         >
           <span>→</span>
           {loggingOut ? "Signing out…" : "Sign Out"}
@@ -97,7 +97,7 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
       ? "text-amber-400"
       : effectivePlan === "enterprise"
         ? "text-violet-400"
-        : "text-slate-500";
+        : "text-cream-50/55";
 
   // Pin locale to en-AU. Without an explicit locale, Safari and iOS use the
   // user's OS locale (could be ar/he/ja) so the rendered date varies between
@@ -113,13 +113,13 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
       : "Start a streak today";
 
   return (
-    <div className="mt-4 pt-4 border-t border-slate-800/50 space-y-1.5">
+    <div className="mt-4 pt-4 border-t border-cream-50/10/50 space-y-1.5">
       {/* Streak pill */}
       <div
         className={`px-3 py-1.5 rounded-lg text-[11px] font-medium ${
           user.current_streak > 0
             ? "text-orange-300 bg-orange-500/10"
-            : "text-slate-500 bg-white/5"
+            : "text-cream-50/55 bg-white/5"
         }`}
         title="Daily activity streak"
       >
@@ -155,7 +155,7 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-slate-300 truncate group-hover:text-white transition">{user.name}</p>
+          <p className="text-xs font-semibold text-cream-50/80 truncate group-hover:text-white transition">{user.name}</p>
           <p className={`text-[10px] font-medium ${planColor}`}>{planBadge}{user.role === "admin" ? " · Admin" : ""}</p>
         </div>
       </Link>
@@ -164,7 +164,7 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
       {user.role === "admin" && (
         <Link
           href="/dashboard/admin"
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-500 hover:text-amber-300 hover:bg-white/5 transition text-xs font-medium"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-cream-50/55 hover:text-amber-300 hover:bg-white/5 transition text-xs font-medium"
         >
           <span>⚙️</span> Admin Panel
         </Link>
@@ -174,7 +174,7 @@ export default function SidebarUserCard({ user }: { user: UserCardData | null })
       <button
         onClick={handleLogout}
         disabled={loggingOut}
-        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-white/5 transition text-xs font-medium disabled:opacity-50"
+        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-cream-50/45 hover:text-red-400 hover:bg-white/5 transition text-xs font-medium disabled:opacity-50"
       >
         <span>→</span>
         {loggingOut ? "Signing out…" : "Sign Out"}

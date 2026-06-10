@@ -83,7 +83,7 @@ const faqSchema = {
 
 export default function AskAiPage() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -99,12 +99,12 @@ export default function AskAiPage() {
           <span className="text-white"> Medicine</span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/auth/login" className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium">
+          <Link href="/auth/login" className="hidden sm:inline text-cream-50/65 hover:text-white px-4 py-2 text-sm transition-colors font-medium">
             Log in
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-saffron-500 hover:bg-saffron-400 text-slate-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="inline-flex items-center gap-1.5 bg-saffron-500 hover:bg-saffron-400 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
           >
             Sign up free →
           </Link>
@@ -128,7 +128,7 @@ export default function AskAiPage() {
           </span>{" "}
           on call
         </h1>
-        <p className="text-base text-slate-400 leading-relaxed mb-2">
+        <p className="text-base text-cream-50/65 leading-relaxed mb-2">
           Three free questions before signup. Answers are grounded in Murtagh, RACGP, the AMC Handbook and eTG — not a generic chatbot guessing.
         </p>
       </section>
@@ -139,24 +139,24 @@ export default function AskAiPage() {
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-16">
         <div className="grid sm:grid-cols-3 gap-3">
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
+          <div className="rounded-2xl border border-cream-50/10 bg-ink-950/60 p-5">
             <p className="text-xl mb-2">📚</p>
             <p className="text-sm font-bold text-white mb-1">Source-grounded</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-cream-50/65 leading-relaxed">
               Murtagh · RACGP · AMC Handbook · eTG · AMH. No hallucinated guidelines.
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
+          <div className="rounded-2xl border border-cream-50/10 bg-ink-950/60 p-5">
             <p className="text-xl mb-2">⚡</p>
             <p className="text-sm font-bold text-white mb-1">Claude Haiku 4.5</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-cream-50/65 leading-relaxed">
               Sub-second replies with prompt caching. Built for IMG prep, not generic chat.
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
+          <div className="rounded-2xl border border-cream-50/10 bg-ink-950/60 p-5">
             <p className="text-xl mb-2">🇦🇺</p>
             <p className="text-sm font-bold text-white mb-1">Australian context</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-cream-50/65 leading-relaxed">
               PBS, eTG, RACGP. Tuned for AMC Part 1, Part 2 and AHPRA pathway questions.
             </p>
           </div>
@@ -164,14 +164,14 @@ export default function AskAiPage() {
       </section>
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20">
-        <div className="rounded-3xl border border-slate-800 bg-slate-950/40 p-7 sm:p-9 text-center">
+        <div className="rounded-3xl border border-cream-50/10 bg-ink-950/40 p-7 sm:p-9 text-center">
           <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-widest mb-3">
             Inside the dashboard
           </p>
           <h2 className="font-display font-bold text-2xl text-white mb-3">
             Sign up to keep asking — and unlock the rest
           </h2>
-          <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-xl mx-auto">
+          <p className="text-sm text-cream-50/65 leading-relaxed mb-5 max-w-xl mx-auto">
             {features.paidTiersEnabled
               ? "Free plan: unlimited Ask AI inside the library, 20 MCQs/day, 1 Solo Clinical AI RolePlay/day, 1 AMC Handbook AI RolePlay/day. No credit card. Pro is A$29/mo only when you want unlimited."
               : "Mostly Medicine is in free beta — sign up for unlimited Ask AI, MCQs, Clinical AI RolePlay, AMC Handbook AI RolePlay, and the full reference library. No card needed."}
@@ -179,13 +179,13 @@ export default function AskAiPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/auth/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-slate-950 font-bold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 hover:bg-saffron-400 text-ink-950 font-bold text-sm px-5 py-2.5 transition"
             >
               Sign up free →
             </Link>
             <Link
               href="/amc-fee-calculator"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-900 text-slate-200 font-semibold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-cream-50/15 bg-ink-950/60 hover:bg-ink-950 text-cream-50/90 font-semibold text-sm px-5 py-2.5 transition"
             >
               See the AMC fee calculator
             </Link>

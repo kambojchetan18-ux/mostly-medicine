@@ -117,14 +117,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-slate-100 text-base leading-relaxed">{children}</p>
+      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -147,12 +147,12 @@ export default function Page() {
           >
             IELTS vs OET for AHPRA in 2026: Which English Test Should an IMG Doctor Take?
           </h1>
-          <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> &middot; medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
+            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> &middot; medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
           AHPRA accepts four English tests for medical registration &mdash; IELTS Academic, OET Medicine, PTE Academic and TOEFL iBT &mdash; with no test ranked above another. OET Medicine is widely considered easier for working clinicians because the content is medical scenario-based; IELTS Academic is cheaper, more globally available and tests general academic English. Both meet AHPRA&apos;s standard if you hit the minimum scores. Pick by daily English habits, not by price.
         </blockquote>
 
@@ -208,8 +208,8 @@ sat OET Medicine in Delhi after weighing both options seriously. She finished AM
         <p>Both tests are four-skill: Listening, Reading, Writing, Speaking. The differences are in <em>what</em> you read, write, listen to and discuss.</p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-slate-200">
-            <thead className="bg-white/5 text-slate-300">
+          <table className="w-full text-sm text-left text-cream-50/90">
+            <thead className="bg-white/5 text-cream-50/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Dimension</th>
                 <th className="px-4 py-3 font-semibold">IELTS Academic (AHPRA)</th>
@@ -276,7 +276,7 @@ sat OET Medicine in Delhi after weighing both options seriously. She finished AM
           </table>
         </div>
 
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-cream-50/55">
           Sources: <a href="https://www.ielts.org" target="_blank" rel="noopener noreferrer">ielts.org</a> and <a href="https://www.idp.com/australia/ielts" target="_blank" rel="noopener noreferrer">idp.com</a> (IELTS); <a href="https://www.occupationalenglishtest.org" target="_blank" rel="noopener noreferrer">occupationalenglishtest.org</a> (OET); <a href="https://www.medicalboard.gov.au" target="_blank" rel="noopener noreferrer">medicalboard.gov.au</a> (AHPRA standard).
         </p>
 
@@ -315,8 +315,8 @@ sat OET Medicine in Delhi after weighing both options seriously. She finished AM
         <p>Test fee is only one slice. The full English-test budget for an AHPRA-bound IMG includes the test, prep materials, and almost always at least one re-sit.</p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-slate-200">
-            <thead className="bg-white/5 text-slate-300">
+          <table className="w-full text-sm text-left text-cream-50/90">
+            <thead className="bg-white/5 text-cream-50/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Cost line</th>
                 <th className="px-4 py-3 font-semibold">IELTS Academic 2026</th>
@@ -442,7 +442,7 @@ sat OET Medicine in Delhi after weighing both options seriously. She finished AM
 
         <h2>Founder note: how the team chose OET</h2>
         <p>the clinical lead on our team looked at both. Her reasoning, which I have heard repeated by half a dozen of her IMG friends since:</p>
-        <blockquote className="not-prose my-6 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
+        <blockquote className="not-prose my-6 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
           &ldquo;I write referral letters every week. I have not written an academic essay since medical school. The OET letter format is one I already use; the IELTS Task 2 essay is a skill I&apos;d have to <em>learn</em>, not refresh. I&apos;d rather pay the extra A$167 for content I already work in.&rdquo;
         </blockquote>
         <p>
@@ -473,22 +473,22 @@ sat OET Medicine in Delhi after weighing both options seriously. She finished AM
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
               <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-slate-300 leading-relaxed">{f.a}</p>
+              <p className="text-sm text-cream-50/80 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-slate-500 space-y-1">
-          <p><strong className="text-slate-400">Last reviewed:</strong> 3 May 2026</p>
-          <p><strong className="text-slate-400">Next review:</strong> 3 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-cream-50/55 space-y-1">
+          <p><strong className="text-cream-50/65">Last reviewed:</strong> 3 May 2026</p>
+          <p><strong className="text-cream-50/65">Next review:</strong> 3 November 2026</p>
+          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">
-          <p className="font-semibold text-slate-300 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
+          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.medicalboard.gov.au/Registration-Standards/English-language-skills.aspx" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA / Medical Board of Australia &mdash; English Language Skills Registration Standard</a></li>
             <li><a href="https://www.ahpra.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA</a></li>

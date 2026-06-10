@@ -139,7 +139,7 @@ const itemListSchema = {
 
 export default function AmcVsUsmleVsPlabPage() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-ink-950 text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -177,7 +177,7 @@ export default function AmcVsUsmleVsPlabPage() {
           <h1 className="font-display font-bold mb-4">
             AMC vs USMLE vs PLAB: The Honest 2026 Comparison
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-cream-50/65 text-lg leading-relaxed">
             A clinician&apos;s side-by-side comparison of the three major IMG
             licensing pathways — Australia (AMC), the United States (USMLE),
             and the United Kingdom (PLAB). Cost, format, pass rates,
@@ -199,9 +199,9 @@ export default function AmcVsUsmleVsPlabPage() {
 
         <section>
           <h2>Side-by-side comparison table</h2>
-          <div className="not-prose my-8 overflow-x-auto rounded-2xl border border-slate-800">
-            <table className="w-full text-sm text-left text-slate-300">
-              <thead className="bg-slate-900/60 text-xs uppercase tracking-wider text-brand-300">
+          <div className="not-prose my-8 overflow-x-auto rounded-2xl border border-cream-50/10">
+            <table className="w-full text-sm text-left text-cream-50/80">
+              <thead className="bg-ink-950/60 text-xs uppercase tracking-wider text-brand-300">
                 <tr>
                   <th className="px-4 py-3 font-bold">Dimension</th>
                   <th className="px-4 py-3 font-bold">AMC (Australia)</th>
@@ -209,7 +209,7 @@ export default function AmcVsUsmleVsPlabPage() {
                   <th className="px-4 py-3 font-bold">PLAB (UK)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-cream-50/10">
                 <tr>
                   <td className="px-4 py-3 font-semibold text-white">Parts</td>
                   <td className="px-4 py-3">2 (AMC MCQ, AMC Handbook AI RolePlay Clinical/MCAT)</td>
@@ -273,7 +273,7 @@ export default function AmcVsUsmleVsPlabPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-cream-50/55">
             Figures are 2026 estimates compiled from public sources (AMC, USMLE,
             GMC) and IMG community reports. Always verify current fees on the
             official sites before budgeting.
@@ -506,7 +506,7 @@ export default function AmcVsUsmleVsPlabPage() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
           <p>
             This comparison is provided for educational purposes by Mostly
             Medicine. Verify current fees and policies on{" "}

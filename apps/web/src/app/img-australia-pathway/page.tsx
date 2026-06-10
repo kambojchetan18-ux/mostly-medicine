@@ -113,7 +113,7 @@ const faqSchema = {
 
 export default function ImgAustraliaPathwayPage() {
   return (
-    <main className="min-h-screen bg-[#070714] text-white">
+    <main className="min-h-screen bg-ink-950 text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -147,7 +147,7 @@ export default function ImgAustraliaPathwayPage() {
           <h1 className="font-display font-bold mb-4">
             The Complete IMG Pathway to Practising Medicine in Australia
           </h1>
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-cream-50/65 text-lg leading-relaxed">
             From your first EPIC verification step to fellowship as a
             consultant — every gate, every timeline, every common detour.
             Built for International Medical Graduates planning their move to
@@ -510,7 +510,7 @@ export default function ImgAustraliaPathwayPage() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
+        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official information, refer to{" "}

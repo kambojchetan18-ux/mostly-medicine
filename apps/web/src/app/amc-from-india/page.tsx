@@ -118,14 +118,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-slate-100 text-base leading-relaxed">{children}</p>
+      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -148,12 +148,12 @@ export default function Page() {
           >
             AMC Pathway from India 2026: Complete Guide for Indian Medical Graduates
           </h1>
-          <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
+            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
           India is the largest single source country of overseas-trained doctors in Australia (per AIHW Medical Workforce data). Indian MBBS holders register via the standard AMC pathway: NMC primary-source verification through EPIC, an approved English test, AMC CAT 1 (MCQ), AMC CAT 2 (Clinical), 12 months recency-of-practice and AHPRA application. Total end-to-end cost lands in the A$25,000-A$55,000 band (roughly INR 14-30 lakh, fluctuating with the AUD rate).
         </blockquote>
 
@@ -210,8 +210,8 @@ is from Punjab and is currently completing recency-of-practice in Gurugram befor
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-slate-200">
-            <thead className="bg-white/5 text-slate-300">
+          <table className="w-full text-sm text-left text-cream-50/90">
+            <thead className="bg-white/5 text-cream-50/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Cost line</th>
                 <th className="px-4 py-3 font-semibold">AUD (2026)</th>
@@ -381,26 +381,26 @@ is from Punjab and is currently completing recency-of-practice in Gurugram befor
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
               <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-slate-300 leading-relaxed">{f.a}</p>
+              <p className="text-sm text-cream-50/80 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-slate-300">
+        <p className="text-cream-50/80">
           If you are an Indian MBBS graduate planning AMC and want a structured prep platform built by people who walked this path - try Mostly Medicine free at <Link href="/">mostlymedicine.com</Link>. No hard sell; the free tier is genuinely useful even if you never upgrade.
         </p>
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-slate-500 space-y-1">
-          <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
-          <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-cream-50/55 space-y-1">
+          <p><strong className="text-cream-50/65">Last reviewed:</strong> 2 May 2026</p>
+          <p><strong className="text-cream-50/65">Next review:</strong> 2 November 2026</p>
+          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">
-          <p className="font-semibold text-slate-300 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
+          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council</a></li>
             <li><a href="https://www.amc.org.au/assessment/fees" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC fee schedule</a></li>

@@ -111,7 +111,7 @@ export default function HeroMiniCalc() {
                 className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl border transition-all duration-150 text-left ${
                   on
                     ? "bg-white/[0.04] border-white/10 text-white hover:bg-white/[0.06]"
-                    : "bg-transparent border-white/5 text-slate-500 hover:text-slate-300 hover:border-white/10"
+                    : "bg-transparent border-white/5 text-cream-50/55 hover:text-cream-50/80 hover:border-white/10"
                 }`}
               >
                 <span className="flex items-center gap-2.5 text-sm font-medium">
@@ -120,7 +120,7 @@ export default function HeroMiniCalc() {
                     className={`inline-flex items-center justify-center w-4 h-4 rounded border transition-colors ${
                       on
                         ? "bg-brand-500 border-brand-400 text-white"
-                        : "bg-transparent border-slate-600 text-transparent"
+                        : "bg-transparent border-cream-50/20 text-transparent"
                     }`}
                   >
                     <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -129,7 +129,7 @@ export default function HeroMiniCalc() {
                   </span>
                   {item.label}
                 </span>
-                <span className={`text-sm tabular-nums ${on ? "text-slate-200" : "text-slate-600 line-through"}`}>
+                <span className={`text-sm tabular-nums ${on ? "text-cream-50/90" : "text-cream-50/45 line-through"}`}>
                   {formatAud(item.cost)}
                 </span>
               </button>
@@ -139,7 +139,7 @@ export default function HeroMiniCalc() {
       </ul>
 
       <div className="border-t border-white/10 pt-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-cream-50/55 mb-1">
           Your total
         </p>
         <p
@@ -150,7 +150,7 @@ export default function HeroMiniCalc() {
         >
           {formatAud(displayed)}
         </p>
-        <p className="mt-1.5 text-[11px] text-slate-500 leading-snug">
+        <p className="mt-1.5 text-[11px] text-cream-50/55 leading-snug">
           Tap items to include or exclude · AUD only
         </p>
       </div>
