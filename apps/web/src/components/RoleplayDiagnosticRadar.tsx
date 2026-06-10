@@ -166,7 +166,7 @@ export default function RoleplayDiagnosticRadar({
                 x={lp.x}
                 y={lp.y + 9}
                 textAnchor={lp.anchor}
-                className="fill-brand-700"
+                className="fill-saffron-700"
                 style={{ fontSize: 10, fontWeight: 700 }}
               >
                 {score}%

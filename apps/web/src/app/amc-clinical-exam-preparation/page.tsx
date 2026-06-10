@@ -113,8 +113,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -136,9 +136,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             AMC Part 2 Clinical &middot; Updated 12 May 2026
           </p>
           <h1
@@ -152,7 +152,7 @@ export default function Page() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           AMC Clinical (Part 2) is a 16-station OSCE &mdash; 14 examined cases plus 2 rest stations, 8 minutes each, candidates must pass 9 of 14 to be awarded the AMC Certificate. First-attempt pass rates sit lower than AMC MCQ &mdash; the bottleneck for International Medical Graduates is communication style and Australian consultation norms, not medical knowledge. A 12-week structured prep plan post Part 1, anchored on 30+ recorded mock stations, turns Part 2 into a single-attempt pass for most candidates with current clinical experience.
         </blockquote>
 
@@ -434,12 +434,12 @@ sat AMC Part 2 in early 2025 in Melbourne after passing Part 1 from India. She i
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council, AMC Clinical Examination Handbook</a></li>
-            <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC, Examination Statistics</a></li>
-            <li><a href="https://www.racgp.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">RACGP, Curriculum and Outcomes Framework</a></li>
-            <li><a href="https://www.acsqhc.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Commission on Safety and Quality in Health Care, Charter of Healthcare Rights</a></li>
-            <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia, Cultural Safety Strategy 2020&ndash;2025</a></li>
-            <li><a href="https://www.tg.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines (eTG)</a></li>
+            <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medical Council, AMC Clinical Examination Handbook</a></li>
+            <li><a href="https://www.amc.org.au/about/statistics" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC, Examination Statistics</a></li>
+            <li><a href="https://www.racgp.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">RACGP, Curriculum and Outcomes Framework</a></li>
+            <li><a href="https://www.acsqhc.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Commission on Safety and Quality in Health Care, Charter of Healthcare Rights</a></li>
+            <li><a href="https://www.medicalboard.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia, Cultural Safety Strategy 2020&ndash;2025</a></li>
+            <li><a href="https://www.tg.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines (eTG)</a></li>
           </ul>
         </div>
       </article>

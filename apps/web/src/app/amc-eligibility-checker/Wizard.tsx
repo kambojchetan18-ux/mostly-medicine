@@ -308,7 +308,7 @@ export default function Wizard() {
               <button
                 key={opt.id}
                 onClick={() => choose(opt.id)}
-                className="w-full text-left px-5 py-4 rounded-2xl border border-ink-950/15 bg-cream-50/70 hover:bg-cream-100/80 hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all"
+                className="w-full text-left px-5 py-4 rounded-2xl border border-ink-950/15 bg-cream-50/70 hover:bg-cream-100/80 hover:border-saffron-500 focus:outline-none focus:ring-2 focus:ring-saffron-500/50 transition-all"
               >
                 <p className="font-semibold text-ink-950 text-base">{opt.label}</p>
                 {opt.detail && <p className="text-xs text-ink-950/65 mt-1">{opt.detail}</p>}
@@ -354,13 +354,13 @@ export default function Wizard() {
           </div>
 
           <div className="mt-7">
-            <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+            <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
               Recommended next steps
             </p>
             <ul className="space-y-2.5">
               {verdict.next.map((n, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-ink-950/80">
-                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-brand-600 text-ink-950 text-xs font-bold flex items-center justify-center">
+                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-saffron-600 text-ink-950 text-xs font-bold flex items-center justify-center">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{n}</span>

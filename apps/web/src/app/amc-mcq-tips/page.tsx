@@ -112,8 +112,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -135,9 +135,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             AMC MCQ Tips · Updated May 2026
           </p>
           <h1
@@ -151,7 +151,7 @@ export default function Page() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           AMC Part 1 MCQs use a &ldquo;best answer&rdquo; format — multiple options can be technically correct, but only one is most appropriate in the Australian primary-care context. The 12 most common traps reduce to four underlying patterns: stem-verb misreading, Australian-context distractors, conservative-management bias, and time-pressure errors. Once you can see the pattern in 20 seconds, your first-attempt pass odds rise sharply.
         </blockquote>
 
@@ -405,15 +405,15 @@ sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugr
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC &mdash; Multiple Choice Question Examination Information Booklet</a></li>
-            <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC &mdash; Statistics and annual reports</a></li>
-            <li><a href="https://www.tg.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines Australia (eTG)</a></li>
-            <li><a href="https://amhonline.amh.net.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medicines Handbook (AMH)</a></li>
-            <li><a href="https://www.pbs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Pharmaceutical Benefits Scheme (PBS)</a></li>
-            <li><a href="https://immunisationhandbook.health.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Immunisation Handbook</a></li>
-            <li><a href="https://www.nhmrc.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">National Health and Medical Research Council (NHMRC)</a></li>
-            <li><a href="https://www.usmle.org" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">USMLE Content Outline</a></li>
-            <li><a href="https://www.gmc-uk.org" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">General Medical Council (UK) &mdash; PLAB blueprint</a></li>
+            <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC &mdash; Multiple Choice Question Examination Information Booklet</a></li>
+            <li><a href="https://www.amc.org.au/about/statistics" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC &mdash; Statistics and annual reports</a></li>
+            <li><a href="https://www.tg.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines Australia (eTG)</a></li>
+            <li><a href="https://amhonline.amh.net.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medicines Handbook (AMH)</a></li>
+            <li><a href="https://www.pbs.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Pharmaceutical Benefits Scheme (PBS)</a></li>
+            <li><a href="https://immunisationhandbook.health.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Immunisation Handbook</a></li>
+            <li><a href="https://www.nhmrc.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">National Health and Medical Research Council (NHMRC)</a></li>
+            <li><a href="https://www.usmle.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">USMLE Content Outline</a></li>
+            <li><a href="https://www.gmc-uk.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">General Medical Council (UK) &mdash; PLAB blueprint</a></li>
           </ul>
         </div>
       </article>

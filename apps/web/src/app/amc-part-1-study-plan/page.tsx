@@ -111,8 +111,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -143,16 +143,16 @@ export default function Page() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="inline-flex items-center gap-1.5 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
           >
             Get started →
           </Link>
         </div>
       </nav>
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             AMC Part 1 · Updated May 2026
           </p>
           <h1
@@ -166,7 +166,7 @@ export default function Page() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           Sixteen weeks. Two hours on weekdays, six on weekends. Three thousand or more practice MCQs. Three full timed mocks. That is the plan that consistently converts for working IMGs in our platform data. It is not a comfortable plan, but it is an honest one &mdash; and if you are still working clinically while you prep, it is the only schedule that reliably gets you across the line.
         </blockquote>
 
@@ -535,19 +535,19 @@ export default function Page() {
         </ul>
         <p><strong>Logistics:</strong></p>
         <ul>
-          <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">amc.org.au</a> &mdash; AMC ID, exam booking, fee schedule, exam regulations.</li>
-          <li><a href="https://www.pearsonvue.com" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">pearsonvue.com</a> &mdash; test centre locations and check-in procedures.</li>
-          <li><a href="https://www.ahpra.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">ahpra.gov.au</a> &mdash; English test requirements and registration process.</li>
+          <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">amc.org.au</a> &mdash; AMC ID, exam booking, fee schedule, exam regulations.</li>
+          <li><a href="https://www.pearsonvue.com" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">pearsonvue.com</a> &mdash; test centre locations and check-in procedures.</li>
+          <li><a href="https://www.ahpra.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">ahpra.gov.au</a> &mdash; English test requirements and registration process.</li>
         </ul>
 
-        <div className="not-prose my-10 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-6">
+        <div className="not-prose my-10 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-6">
           <p className="text-sm font-semibold text-ink-950 mb-2">Start your AMC Part 1 prep today</p>
           <p className="text-sm text-ink-950/80 leading-relaxed mb-4">
             Mostly Medicine&apos;s MCQ bank is free to try &mdash; 4,400+ questions mapped to AMC topic areas, wrong-answer log built in, performance tracked by system and difficulty. {features.paidTiersEnabled ? "Pro is A$29/month with no lock-in." : "Free during beta — every feature unlocked while we iterate."}
           </p>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="inline-flex items-center gap-1.5 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
           >
             Start free at mostlymedicine.com →
           </Link>
@@ -574,16 +574,16 @@ export default function Page() {
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.amc.org.au/assessment/fees" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council — exam information and fees</a></li>
-            <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC statistics and annual reports</a></li>
-            <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC Handbook of Multiple Choice Questions</a></li>
-            <li><a href="https://www.ahpra.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA English Language Skills Registration Standard</a></li>
-            <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia</a></li>
-            <li><a href="https://www.tg.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines (eTG) Australia</a></li>
-            <li><a href="https://www.racgp.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">RACGP Clinical Guidelines</a></li>
-            <li><a href="https://www.health.gov.au/topics/immunisation/immunisation-throughout-life/national-immunisation-program-schedule" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">National Immunisation Program schedule</a></li>
-            <li><a href="https://www.health.gov.au/our-work/national-cervical-screening-program" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">National Cervical Screening Program (HPV-primary, 2017)</a></li>
-            <li><a href="https://www.ecfmg.org/epic" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">ECFMG / EPIC primary-source verification</a></li>
+            <li><a href="https://www.amc.org.au/assessment/fees" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medical Council — exam information and fees</a></li>
+            <li><a href="https://www.amc.org.au/about/statistics" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC statistics and annual reports</a></li>
+            <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC Handbook of Multiple Choice Questions</a></li>
+            <li><a href="https://www.ahpra.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA English Language Skills Registration Standard</a></li>
+            <li><a href="https://www.medicalboard.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia</a></li>
+            <li><a href="https://www.tg.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines (eTG) Australia</a></li>
+            <li><a href="https://www.racgp.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">RACGP Clinical Guidelines</a></li>
+            <li><a href="https://www.health.gov.au/topics/immunisation/immunisation-throughout-life/national-immunisation-program-schedule" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">National Immunisation Program schedule</a></li>
+            <li><a href="https://www.health.gov.au/our-work/national-cervical-screening-program" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">National Cervical Screening Program (HPV-primary, 2017)</a></li>
+            <li><a href="https://www.ecfmg.org/epic" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">ECFMG / EPIC primary-source verification</a></li>
           </ul>
         </div>
       </article>

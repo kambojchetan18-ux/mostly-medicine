@@ -115,8 +115,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -138,9 +138,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             AMC vs PLAB · Updated May 2026
           </p>
           <h1
@@ -154,7 +154,7 @@ export default function Page() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           AMC gets you registered in Australia, PLAB gets you registered in the UK — there is no automatic recognition between them. AMC is the more expensive single exam (around A$2,790 for Part 1 vs £268 for PLAB 1) but Australian RMO salaries close the gap inside a year. The honest answer to &ldquo;which first&rdquo; is not difficulty — it&apos;s which country you actually want to build a life in.
         </blockquote>
 
@@ -422,19 +422,19 @@ looked seriously at PLAB and chose AMC directly. She finished Part 1, Part 2 and
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.amc.org.au/assessment/fees" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council exam information and fees</a></li>
-            <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC statistics and annual reports</a></li>
-            <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC Competent Authority pathway</a></li>
-            <li><a href="https://www.ahpra.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA registration standards</a></li>
-            <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia</a></li>
-            <li><a href="https://www.gmc-uk.org" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">General Medical Council (UK) — PLAB information and fees</a></li>
-            <li><a href="https://www.gmc-uk.org" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">GMC PLAB pass rates by primary medical qualification</a></li>
-            <li><a href="https://www.nhsemployers.org" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">NHS England pay and conditions (FY2 base salary)</a></li>
-            <li><a href="https://asmof.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">ASMOF / state award schedules (RMO base salary)</a></li>
-            <li><a href="https://www.health.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Department of Health workforce data</a></li>
-            <li><a href="https://www.aihw.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AIHW Medical Workforce</a></li>
-            <li><a href="https://immi.homeaffairs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs subclass pages (482, 186, DAMA)</a></li>
-            <li><a href="https://www.ecfmg.org/epic" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">ECFMG / EPIC primary-source verification</a></li>
+            <li><a href="https://www.amc.org.au/assessment/fees" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medical Council exam information and fees</a></li>
+            <li><a href="https://www.amc.org.au/about/statistics" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC statistics and annual reports</a></li>
+            <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC Competent Authority pathway</a></li>
+            <li><a href="https://www.ahpra.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA registration standards</a></li>
+            <li><a href="https://www.medicalboard.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia</a></li>
+            <li><a href="https://www.gmc-uk.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">General Medical Council (UK) — PLAB information and fees</a></li>
+            <li><a href="https://www.gmc-uk.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">GMC PLAB pass rates by primary medical qualification</a></li>
+            <li><a href="https://www.nhsemployers.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">NHS England pay and conditions (FY2 base salary)</a></li>
+            <li><a href="https://asmof.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">ASMOF / state award schedules (RMO base salary)</a></li>
+            <li><a href="https://www.health.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Department of Health workforce data</a></li>
+            <li><a href="https://www.aihw.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AIHW Medical Workforce</a></li>
+            <li><a href="https://immi.homeaffairs.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs subclass pages (482, 186, DAMA)</a></li>
+            <li><a href="https://www.ecfmg.org/epic" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">ECFMG / EPIC primary-source verification</a></li>
           </ul>
         </div>
       </article>

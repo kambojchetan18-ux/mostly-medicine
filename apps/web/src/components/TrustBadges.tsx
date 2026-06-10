@@ -17,7 +17,7 @@ type BadgeProps = {
 
 function Badge({ icon: Icon, label }: BadgeProps): JSX.Element {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-900/30 ring-1 ring-brand-700/40 text-brand-300 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-saffron-900/30 ring-1 ring-saffron-700/40 text-saffron-300 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm">
       <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden />
       {label}
     </span>

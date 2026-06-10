@@ -122,8 +122,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -177,9 +177,9 @@ export default function OsceGuidePage() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             OSCE Preparation · Updated May 2026
           </p>
           <h1
@@ -193,7 +193,7 @@ export default function OsceGuidePage() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           The AMC Clinical Exam is a structured OSCE — around 16 stations of 8 minutes each, marked on communication, history-taking, counselling, examination, and procedural skills. Most IMGs lose marks not on knowledge but on structure: jumping to management, missing summarisation, forgetting safety-netting at closure. This guide walks the four communication frameworks that fix that, the day-of-exam strategy that buys you back time, and the practice modules that turn the structure into reflex.
         </blockquote>
 
@@ -222,20 +222,20 @@ export default function OsceGuidePage() {
             <Link
               key={s.step}
               href={s.href}
-              className="group relative flex gap-5 rounded-2xl border border-white/10 bg-white/[0.03] hover:border-brand-500/50 hover:bg-white/[0.06] p-5 transition-all"
+              className="group relative flex gap-5 rounded-2xl border border-white/10 bg-white/[0.03] hover:border-saffron-500/50 hover:bg-white/[0.06] p-5 transition-all"
             >
-              <div className="shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-brand-600/20 border border-brand-500/40 text-brand-300 font-display font-bold text-lg">
+              <div className="shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-saffron-600/20 border border-saffron-500/40 text-saffron-300 font-display font-bold text-lg">
                 {s.step}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-brand-400 bg-brand-900/40 border border-brand-700/40 px-2 py-0.5 rounded-full">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-saffron-400 bg-saffron-900/40 border border-saffron-700/40 px-2 py-0.5 rounded-full">
                     {s.pill}
                   </span>
                 </div>
                 <h3 className="text-base font-semibold text-ink-950 mb-1">{s.title}</h3>
                 <p className="text-sm text-ink-950/65 leading-relaxed">{s.desc}</p>
-                <p className="mt-2 text-xs font-semibold text-brand-400 group-hover:text-brand-300">
+                <p className="mt-2 text-xs font-semibold text-saffron-400 group-hover:text-saffron-300">
                   Read the guide →
                 </p>
               </div>
@@ -452,13 +452,13 @@ export default function OsceGuidePage() {
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council — clinical exam information</a></li>
-            <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia — Cultural Safety Strategy</a></li>
-            <li><a href="https://www.tg.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines (eTG)</a></li>
-            <li><a href="https://amh.net.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medicines Handbook (AMH)</a></li>
-            <li><a href="https://www.racgp.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Royal Australian College of General Practitioners (RACGP)</a></li>
-            <li><a href="https://geekymedics.com" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Geeky Medics — third-party OSCE walkthroughs</a></li>
-            <li><a href="https://oscestop.com" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">OSCE Stop — third-party station resources</a></li>
+            <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medical Council — clinical exam information</a></li>
+            <li><a href="https://www.medicalboard.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia — Cultural Safety Strategy</a></li>
+            <li><a href="https://www.tg.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Therapeutic Guidelines (eTG)</a></li>
+            <li><a href="https://amh.net.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medicines Handbook (AMH)</a></li>
+            <li><a href="https://www.racgp.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Royal Australian College of General Practitioners (RACGP)</a></li>
+            <li><a href="https://geekymedics.com" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Geeky Medics — third-party OSCE walkthroughs</a></li>
+            <li><a href="https://oscestop.com" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">OSCE Stop — third-party station resources</a></li>
           </ul>
         </div>
       </article>

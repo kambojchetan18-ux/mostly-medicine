@@ -30,7 +30,7 @@ export default async function PillarPageNav() {
         {isLoggedIn ? (
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+            className="inline-flex items-center gap-1.5 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
           >
             ← Back to dashboard
           </Link>
@@ -44,7 +44,7 @@ export default async function PillarPageNav() {
             </Link>
             <Link
               href="/auth/signup"
-              className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+              className="inline-flex items-center gap-1.5 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
             >
               Get started →
             </Link>

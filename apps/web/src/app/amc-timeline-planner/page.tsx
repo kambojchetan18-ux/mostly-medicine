@@ -90,7 +90,7 @@ export default function AmcTimelinePlannerPage() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
@@ -98,8 +98,8 @@ export default function AmcTimelinePlannerPage() {
       </nav>
 
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-12 pb-10 text-center">
-        <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-6 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
+        <div className="inline-flex items-center gap-2.5 bg-saffron-900/30 border border-saffron-700/40 rounded-full px-5 py-2 text-xs text-saffron-300 font-semibold mb-6 backdrop-blur-sm">
+          <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
           Backwards plan · 11 milestones · 2026 ready
         </div>
         <h1
@@ -113,7 +113,7 @@ export default function AmcTimelinePlannerPage() {
         </p>
         <Link
           href="/auth/signup"
-          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-brand-300 hover:text-brand-200"
+          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-saffron-300 hover:text-saffron-200"
         >
           Start prep with Mostly Medicine →
         </Link>

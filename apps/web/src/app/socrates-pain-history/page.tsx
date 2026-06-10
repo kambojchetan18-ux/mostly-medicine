@@ -193,15 +193,15 @@ export default function SocratesPainHistoryPage() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
       </nav>
 
-      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-8 mb-12">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             AMC Handbook AI RolePlay Frameworks · Updated 2026
           </p>
           <h1 className="font-display font-bold mb-4">
@@ -421,7 +421,7 @@ export default function SocratesPainHistoryPage() {
           <p>
             <Link
               href="/auth/signup"
-              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-4 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Start practising free →
             </Link>

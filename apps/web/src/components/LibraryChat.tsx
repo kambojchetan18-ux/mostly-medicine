@@ -84,7 +84,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
       {/* Floating button */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-brand-600 text-ink-950 rounded-full shadow-lg hover:bg-brand-700 transition text-sm font-medium"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-saffron-600 text-ink-950 rounded-full shadow-lg hover:bg-saffron-700 transition text-sm font-medium"
       >
         <span>✨</span> Ask AI
       </button>
@@ -139,7 +139,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
                 <button
                   key={prompt}
                   onClick={() => sendMessage(prompt)}
-                  className="w-full text-left text-xs px-3 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 transition"
+                  className="w-full text-left text-xs px-3 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-saffron-50 hover:border-saffron-200 hover:text-saffron-700 transition"
                 >
                   {prompt}
                 </button>
@@ -151,7 +151,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
                 <div
                   className={`max-w-[85%] px-3 py-2 rounded-xl text-sm leading-relaxed whitespace-pre-wrap ${
                     m.role === "user"
-                      ? "bg-brand-600 text-ink-950 rounded-br-sm"
+                      ? "bg-saffron-600 text-ink-950 rounded-br-sm"
                       : "bg-gray-100 text-gray-800 rounded-bl-sm"
                   }`}
                 >
@@ -177,13 +177,13 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask a clinical question..."
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
               disabled={isLoading}
             />
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="px-3 py-2 bg-brand-600 text-ink-950 rounded-lg hover:bg-brand-700 transition disabled:opacity-50 text-sm font-medium"
+              className="px-3 py-2 bg-saffron-600 text-ink-950 rounded-lg hover:bg-saffron-700 transition disabled:opacity-50 text-sm font-medium"
             >
               Send
             </button>

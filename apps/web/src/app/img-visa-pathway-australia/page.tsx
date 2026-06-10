@@ -112,8 +112,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -135,9 +135,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             IMG Visa Pathway · Updated May 2026
           </p>
           <h1
@@ -151,7 +151,7 @@ export default function Page() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           Most IMG doctors reach Australian PR through one of three stacks: (1) Australian medical graduate &rarr; 485 Temporary Graduate &rarr; 482 Skills in Demand &rarr; 186 Employer Nomination, (2) overseas IMG &rarr; direct 482 sponsored by an Australian hospital &rarr; 186, or (3) regional employer &rarr; DAMA &rarr; 186. Time-to-PR sits realistically at 4&ndash;6 years after general AHPRA registration. Skilled Independent (subclass 189) is technically possible but rare for doctors who already have a sponsoring employer.
         </blockquote>
 
@@ -451,12 +451,12 @@ completed AMC Part 1 and Part 2 in Australia and is currently doing recency of p
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://immi.homeaffairs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Visa subclass pages (482, 485, 494, 491, 186, 189, 191)</a></li>
-            <li><a href="https://immi.homeaffairs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Designated Area Migration Agreements (DAMA)</a></li>
-            <li><a href="https://immi.homeaffairs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Core Skills Occupation List 2026</a></li>
-            <li><a href="https://www.doctorconnect.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Health and Aged Care &mdash; DoctorConnect, Distribution Priority Area map</a></li>
-            <li><a href="https://www.mara.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Office of the Migration Agents Registration Authority (OMARA)</a></li>
-            <li><a href="https://www.medicalboard.gov.au/Registration-Standards.aspx" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA &mdash; Medical Board of Australia Registration Standards</a></li>
+            <li><a href="https://immi.homeaffairs.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Visa subclass pages (482, 485, 494, 491, 186, 189, 191)</a></li>
+            <li><a href="https://immi.homeaffairs.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Designated Area Migration Agreements (DAMA)</a></li>
+            <li><a href="https://immi.homeaffairs.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Core Skills Occupation List 2026</a></li>
+            <li><a href="https://www.doctorconnect.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Health and Aged Care &mdash; DoctorConnect, Distribution Priority Area map</a></li>
+            <li><a href="https://www.mara.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Office of the Migration Agents Registration Authority (OMARA)</a></li>
+            <li><a href="https://www.medicalboard.gov.au/Registration-Standards.aspx" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA &mdash; Medical Board of Australia Registration Standards</a></li>
           </ul>
         </div>
       </article>

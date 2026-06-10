@@ -83,8 +83,8 @@ export default function AmcFeeCalculatorPage() {
 
       {/* Hero */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-12 pb-10 text-center">
-        <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-6 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
+        <div className="inline-flex items-center gap-2.5 bg-saffron-900/30 border border-saffron-700/40 rounded-full px-5 py-2 text-xs text-saffron-300 font-semibold mb-6 backdrop-blur-sm">
+          <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
           Updated 2026 · AUD · USD · INR
         </div>
         <h1
@@ -98,7 +98,7 @@ export default function AmcFeeCalculatorPage() {
         </p>
         <Link
           href="/auth/signup"
-          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-brand-300 hover:text-brand-200"
+          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-saffron-300 hover:text-saffron-200"
         >
           Start AMC prep free →
         </Link>
@@ -110,7 +110,7 @@ export default function AmcFeeCalculatorPage() {
       </section>
 
       {/* Notes */}
-      <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-invert prose-headings:font-display prose-h2:text-2xl">
+      <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose  prose-headings:font-display prose-h2:text-2xl">
         <h2>What&apos;s included in this estimate</h2>
         <ul>
           <li>

@@ -93,8 +93,8 @@ export default function HeroMiniCalc() {
       className="w-full md:max-w-[340px] rounded-2xl border border-white/10 bg-gradient-to-br from-[#0d0d22] via-[#0a0a1c] to-[#10101e] p-5 sm:p-6 shadow-[0_0_40px_rgba(20,184,166,0.08)] backdrop-blur-sm text-left"
       aria-label="AMC fee mini calculator"
     >
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-3 flex items-center gap-2">
-        <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-3 flex items-center gap-2">
+        <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
         AMC pathway · 2026
       </p>
 
@@ -119,7 +119,7 @@ export default function HeroMiniCalc() {
                     aria-hidden
                     className={`inline-flex items-center justify-center w-4 h-4 rounded border transition-colors ${
                       on
-                        ? "bg-brand-500 border-brand-400 text-ink-950"
+                        ? "bg-saffron-500 border-saffron-400 text-ink-950"
                         : "bg-transparent border-ink-950/20 text-transparent"
                     }`}
                   >
@@ -143,7 +143,7 @@ export default function HeroMiniCalc() {
           Your total
         </p>
         <p
-          className="font-display font-bold text-ink-950 leading-none tabular-nums bg-gradient-to-r from-brand-300 via-violet-300 to-pink-300 bg-clip-text text-transparent"
+          className="font-display font-bold text-ink-950 leading-none tabular-nums bg-gradient-to-r from-saffron-300 via-violet-300 to-pink-300 bg-clip-text text-transparent"
           style={{ fontSize: "clamp(2rem, 5vw, 2.5rem)", letterSpacing: "-0.02em" }}
           aria-live="polite"
           aria-atomic="true"
@@ -159,7 +159,7 @@ export default function HeroMiniCalc() {
         href="/amc-fee-calculator?source=hero"
         aria-label="Open the full AMC fee calculator"
         data-source="hero"
-        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-300 hover:text-brand-200 transition-colors group"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-saffron-300 hover:text-saffron-200 transition-colors group"
       >
         Open full calculator
         <span className="group-hover:translate-x-0.5 transition-transform duration-150">→</span>

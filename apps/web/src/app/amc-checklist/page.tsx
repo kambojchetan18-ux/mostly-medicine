@@ -179,7 +179,7 @@ export default function AMCChecklistPage() {
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
@@ -188,8 +188,8 @@ export default function AMCChecklistPage() {
 
       {/* Hero */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-14 pb-16 text-center">
-        <div className="inline-flex items-center gap-2.5 bg-brand-900/30 border border-brand-700/40 rounded-full px-5 py-2 text-xs text-brand-300 font-semibold mb-8 backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse shrink-0" />
+        <div className="inline-flex items-center gap-2.5 bg-saffron-900/30 border border-saffron-700/40 rounded-full px-5 py-2 text-xs text-saffron-300 font-semibold mb-8 backdrop-blur-sm">
+          <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
           Complete IMG Guide · AMC 2026 Handbook Aligned · Free to use
         </div>
 
@@ -273,7 +273,7 @@ export default function AMCChecklistPage() {
                       <span
                         className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 ${
                           checked[item.id]
-                            ? "border-brand-500 bg-brand-600"
+                            ? "border-saffron-500 bg-saffron-600"
                             : "border-ink-950/20 bg-cream-100/50 group-hover:border-slate-400"
                         }`}
                       >

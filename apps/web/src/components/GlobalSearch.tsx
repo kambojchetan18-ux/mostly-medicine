@@ -200,7 +200,7 @@ export default function GlobalSearch() {
                           onClick={() => navigate(result.url)}
                           onMouseEnter={() => setActiveIndex(idx)}
                           className={`w-full text-left flex items-start gap-3 px-3 py-2.5 rounded-lg transition ${
-                            activeIndex === idx ? "bg-brand-50" : "hover:bg-gray-50"
+                            activeIndex === idx ? "bg-saffron-50" : "hover:bg-gray-50"
                           }`}
                         >
                           <span className={`mt-0.5 shrink-0 text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[result.type]}`}>

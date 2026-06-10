@@ -333,7 +333,7 @@ export default async function PricingPage() {
           </p>
           <Link
             href="/auth/signup"
-            className="mt-5 inline-block rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-500"
+            className="mt-5 inline-block rounded-xl bg-saffron-600 px-6 py-3 text-sm font-bold text-ink-950 hover:bg-saffron-500"
           >
             Create your free account
           </Link>

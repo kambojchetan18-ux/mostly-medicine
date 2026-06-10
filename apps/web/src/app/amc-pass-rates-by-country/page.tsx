@@ -110,8 +110,8 @@ const faqSchema = {
 
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
-    <aside className="not-prose my-7 rounded-2xl border border-brand-500/30 bg-brand-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
+    <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -133,9 +133,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose prose-invert prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-brand-400 hover:prose-a:text-brand-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-brand-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
             AMC Pass Rates · Updated May 2026
           </p>
           <h1
@@ -149,7 +149,7 @@ export default function Page() {
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-saffron-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           AMC Part 1 (MCQ) first-attempt pass rates have averaged roughly 60–70% across recent reporting cycles, with AMC Clinical (Part 2) sitting lower. The AMC has not published a country-of-training breakdown publicly — country-level claims online are usually inferred from AHPRA workforce data, not direct AMC stats. The biggest predictor of passing first time is structured, timed practice — not nationality.
         </blockquote>
 
@@ -389,15 +389,15 @@ finished AMC Part 1, Part 2 and is currently completing recency-of-practice in G
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council statistics</a></li>
-            <li><a href="https://www.amc.org.au/assessment/fees" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC fee schedule</a></li>
-            <li><a href="https://www.ahpra.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA annual report and workforce data</a></li>
-            <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia registration standards</a></li>
-            <li><a href="https://www.aihw.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AIHW Medical Workforce</a></li>
-            <li><a href="https://www.health.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Health workforce reports</a></li>
-            <li><a href="https://www.gmc-uk.org" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">General Medical Council (UK) PLAB statistics</a></li>
-            <li><a href="https://www.mja.com.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Journal of Australia</a> (IMG outcome literature)</li>
-            <li><a href="https://bmcmededuc.biomedcentral.com" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">BMC Medical Education</a> (IMG performance studies)</li>
+            <li><a href="https://www.amc.org.au/about/statistics" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medical Council statistics</a></li>
+            <li><a href="https://www.amc.org.au/assessment/fees" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AMC fee schedule</a></li>
+            <li><a href="https://www.ahpra.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA annual report and workforce data</a></li>
+            <li><a href="https://www.medicalboard.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia registration standards</a></li>
+            <li><a href="https://www.aihw.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AIHW Medical Workforce</a></li>
+            <li><a href="https://www.health.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Health workforce reports</a></li>
+            <li><a href="https://www.gmc-uk.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">General Medical Council (UK) PLAB statistics</a></li>
+            <li><a href="https://www.mja.com.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Medical Journal of Australia</a> (IMG outcome literature)</li>
+            <li><a href="https://bmcmededuc.biomedcentral.com" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">BMC Medical Education</a> (IMG performance studies)</li>
           </ul>
         </div>
       </article>
