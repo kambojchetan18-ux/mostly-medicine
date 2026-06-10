@@ -1,10 +1,10 @@
 import Link from "next/link";
-import TranscriptDemo from "./TranscriptDemo";
+import HeroShowcase from "./HeroShowcase";
 
 // Split hero — left: niche-clear headline + dual CTA + tiny trust line.
-// Right: live transcript widget (TranscriptDemo) playing back an AMC
-// station turn by turn. The transcript is the moat; the headline names
-// what you do, the widget proves it.
+// Right: interactive feature switcher (HeroShowcase) — tab pills for
+// RolePlay / MCQ / Ask AI / Flashcards so every core module is one click
+// away at the top of the page, no scrolling needed to discover features.
 
 export default function HeroV3() {
   return (
@@ -71,9 +71,9 @@ export default function HeroV3() {
           </p>
         </div>
 
-        {/* RIGHT — transcript widget */}
+        {/* RIGHT — interactive feature switcher */}
         <div className="relative">
-          <TranscriptDemo />
+          <HeroShowcase />
         </div>
       </div>
     </section>
