@@ -305,7 +305,8 @@ export default function RoleplayScreen() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages: newMsgs }),
       });
-      const data = await res.json();
+      let data: { reply?: string; error?: string };
+      try { data = await res.json(); } catch { throw new Error('Invalid server response'); }
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
       setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
       speakPatient(data.reply, scenario?.patientProfile ?? '');
@@ -329,7 +330,8 @@ export default function RoleplayScreen() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ scenarioId: scenario.id, messages, requestFeedback: true }),
       });
-      const data = await res.json();
+      let data: { reply?: string; error?: string };
+      try { data = await res.json(); } catch { throw new Error('Invalid server response'); }
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
       setFeedback(data.reply);
     } catch (e) {

@@ -54,7 +54,7 @@ export default function ProgressScreen() {
         return;
       }
 
-      const [attRes, streakRes, dueRes] = await Promise.all([
+      const [attResult, streakResult, dueResult] = await Promise.allSettled([
         supabase.from('attempts').select('question_id, is_correct').eq('user_id', user.id),
         supabase.from('study_streaks').select('current_streak').eq('user_id', user.id).maybeSingle(),
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
@@ -62,11 +62,15 @@ export default function ProgressScreen() {
       ]);
       if (cancelled) return;
 
-      const attempts = attRes.data ?? [];
+      const attRes = attResult.status === 'fulfilled' ? attResult.value : null;
+      const streakRes = streakResult.status === 'fulfilled' ? streakResult.value : null;
+      const dueRes = dueResult.status === 'fulfilled' ? dueResult.value : null;
+
+      const attempts = attRes?.data ?? [];
       setTotalAttempts(attempts.length);
       setTotalCorrect(attempts.filter((a) => a.is_correct).length);
-      setStreak(streakRes.data?.current_streak ?? 0);
-      setDue(dueRes.count ?? 0);
+      setStreak(streakRes?.data?.current_streak ?? 0);
+      setDue(dueRes?.count ?? 0);
 
       const topicMap: Record<string, { done: number; correct: number }> = {};
       for (const a of attempts) {

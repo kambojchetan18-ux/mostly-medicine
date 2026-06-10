@@ -69,7 +69,8 @@ export async function POST(req: NextRequest) {
   // Surface insert failures instead of silently swallowing them — this is the
   // class of bug that left analytics showing 0 MCQs despite XP firing.
   if (attemptRes.error) {
-    console.error("[cat1/attempt] insert into attempts failed", attemptRes.error);
+    console.error("[cat1/attempt] insert into attempts failed", { userId: user.id, questionId, error: attemptRes.error });
+    return NextResponse.json({ error: "Failed to save attempt" }, { status: 500 });
   }
   const existing = existingRes.data;
 
@@ -166,7 +167,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await Promise.all(writes);
+  try {
+    await Promise.all(writes);
+  } catch (err) {
+    console.error("[cat1/attempt] one or more writes failed", err);
+    // Return success for the attempt itself — SR card was already saved above,
+    // and partial streak/XP failures shouldn't block the user.
+    return NextResponse.json({ ok: true, due: next.due, writeWarning: true });
+  }
 
   return NextResponse.json({ ok: true, due: next.due });
 }

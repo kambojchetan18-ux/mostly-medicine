@@ -98,6 +98,12 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+  if (audio.size > 5 * 1024 * 1024) {
+    return NextResponse.json(
+      { error: "Audio chunk too large (max 5MB)" },
+      { status: 400 }
+    );
+  }
 
   // 5. Build a fresh FormData for Groq — we can't forward the incoming one
   //    directly because the file part needs an explicit filename for Groq's
