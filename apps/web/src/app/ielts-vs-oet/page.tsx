@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -148,7 +148,7 @@ export default function Page() {
             IELTS vs OET for AHPRA in 2026: Which English Test Should an IMG Doctor Take?
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder &middot; medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> &middot; medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -162,7 +162,7 @@ export default function Page() {
           If you&apos;re an IMG searching &ldquo;is OET easier than IELTS&rdquo; or &ldquo;which English test does AHPRA prefer&rdquo;, the short answer is: AHPRA does not prefer one. The Medical Board of Australia explicitly accepts four tests under the <a href="https://www.medicalboard.gov.au/Registration-Standards/English-language-skills.aspx" target="_blank" rel="noopener noreferrer">English Language Skills Registration Standard</a>, and your registration application is treated identically whichever test you choose. The interesting question is which test fits <em>you</em> &mdash; your daily English habits, your timeline, your budget, and how often you want to re-sit.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an AMC-pass IMG. My wife, Dr Amandeep Kamboj, sat OET Medicine in Delhi after weighing both options seriously. She finished AMC Part 1, Part 2, and is currently completing recency-of-practice in Gurugram before returning to Sydney. Her English-test reasoning is the founder note further down &mdash; it&apos;s specific, and it might mirror your own.
+sat OET Medicine in Delhi after weighing both options seriously. She finished AMC Part 1, Part 2, and is currently completing recency-of-practice in Gurugram before returning to Sydney. Her English-test reasoning is the founder note further down &mdash; it&apos;s specific, and it might mirror your own.
         </p>
 
         <h2>Quick facts at a glance</h2>
@@ -440,8 +440,8 @@ export default function Page() {
           Book the test before you start prep. A scheduled date with money on the line concentrates effort like nothing else. (Yes, this is the same advice we give for <Link href="/amc-cat1">AMC CAT 1</Link>.)
         </p>
 
-        <h2>Founder note: how Amandeep chose OET</h2>
-        <p>Amandeep looked at both. Her reasoning, which I have heard repeated by half a dozen of her IMG friends since:</p>
+        <h2>Founder note: how the team chose OET</h2>
+        <p>the clinical lead on our team looked at both. Her reasoning, which I have heard repeated by half a dozen of her IMG friends since:</p>
         <blockquote className="not-prose my-6 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
           &ldquo;I write referral letters every week. I have not written an academic essay since medical school. The OET letter format is one I already use; the IELTS Task 2 essay is a skill I&apos;d have to <em>learn</em>, not refresh. I&apos;d rather pay the extra A$167 for content I already work in.&rdquo;
         </blockquote>
@@ -483,8 +483,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 3 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 3 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

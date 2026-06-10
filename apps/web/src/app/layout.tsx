@@ -165,7 +165,6 @@ const organizationSchema = {
     "@type": "EducationalAudience",
     educationalRole: "International Medical Graduate",
   },
-  founder: [{ "@id": `${SITE_URL}/#founder` }, { "@id": `${SITE_URL}/#cofounder` }],
 };
 
 const websiteSchema = {
@@ -185,36 +184,6 @@ const websiteSchema = {
     },
     "query-input": "required name=search_term_string",
   },
-};
-
-// E-E-A-T signal — names a real founder behind the platform so AI engines
-// have a Person entity to attribute. Wife's involvement (Dr Amandeep, AMC
-// pass-graduate) is a real authority signal worth surfacing.
-const founderSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": `${SITE_URL}/#founder`,
-  name: "Chetan Kamboj",
-  jobTitle: "Founder, Mostly Medicine",
-  url: SITE_URL,
-  worksFor: { "@id": `${SITE_URL}/#organization` },
-  description:
-    "Engineer-turned-founder of Mostly Medicine, an AMC exam preparation platform built for International Medical Graduates after his wife (an AMC pass-graduate IMG) identified gaps in existing prep tools.",
-};
-
-// Co-founder E-E-A-T signal — a real doctor who passed the AMC is the
-// strongest authority entity for this domain, so name her explicitly rather
-// than only alluding to "his wife" in the founder description above.
-const coFounderSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": `${SITE_URL}/#cofounder`,
-  name: "Dr Amandeep Kamboj",
-  jobTitle: "Co-Founder & Clinical Lead, Mostly Medicine",
-  url: SITE_URL,
-  worksFor: { "@id": `${SITE_URL}/#organization` },
-  description:
-    "Medical doctor and AMC pass-graduate (International Medical Graduate). She shapes the clinical content and roleplay scenarios on Mostly Medicine, drawing on her own experience passing the AMC exams on the pathway to Australian registration.",
 };
 
 export default function RootLayout({
@@ -239,14 +208,6 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(founderSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(coFounderSchema) }}
         />
       </head>
       <body>

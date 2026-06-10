@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -145,7 +145,7 @@ export default function Page() {
             AMC Pass Rates by Country (2024–2026): What the Data Actually Shows IMGs
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -159,7 +159,7 @@ export default function Page() {
           If you are searching &ldquo;AMC pass rate India&rdquo; or &ldquo;is the AMC harder than PLAB&rdquo;, you&apos;re really asking whether people from your country actually clear this thing. Fair question. The honest answer: the AMC publishes far less granular data than the GMC does for PLAB, so most country-by-country numbers in forums are extrapolations. This piece walks through what&apos;s actually published, what isn&apos;t, and the real drivers of first-attempt success.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an AMC-pass IMG. My wife, Dr Amandeep Kamboj, finished AMC Part 1, Part 2 and is currently completing recency-of-practice in Gurugram before returning to Sydney. The platform exists because she identified, painfully, the gaps in how IMGs prep. Several observations below come from watching her cohort up close.
+finished AMC Part 1, Part 2 and is currently completing recency-of-practice in Gurugram before returning to Sydney. The platform exists because she identified, painfully, the gaps in how IMGs prep. Several observations below come from watching her cohort up close.
         </p>
 
         <h2>Key facts at a glance</h2>
@@ -326,7 +326,7 @@ export default function Page() {
         </CitationHook>
 
         <p>
-          Founder note from Amandeep&apos;s prep specifically: she felt confident on systems, then lost six points on a population-health mock and rebuilt that section in a week. It&apos;s the section every IMG underestimates and the easiest one to lift with targeted drilling.
+          Note from the clinical team&apos;s prep specifically: she felt confident on systems, then lost six points on a population-health mock and rebuilt that section in a week. It&apos;s the section every IMG underestimates and the easiest one to lift with targeted drilling.
         </p>
 
         <h2>If you&apos;re from India, Pakistan, the Philippines, Egypt, Iran, Bangladesh or Sri Lanka</h2>
@@ -356,7 +356,7 @@ export default function Page() {
 
         <h2>Where Mostly Medicine fits</h2>
         <p>
-          The platform was built specifically because Amandeep — and the IMGs around her — kept hitting the same gap: lots of static PDFs and decade-old question recalls, very little Australian-context drilling under timed conditions. Mostly Medicine gives IMGs:
+          The platform was built specifically because our clinical lead — and the IMGs around her — kept hitting the same gap: lots of static PDFs and decade-old question recalls, very little Australian-context drilling under timed conditions. Mostly Medicine gives IMGs:
         </p>
         <ul>
           <li>4,400+ AMC MCQs filterable by system, difficulty and Australian-context tag, attempt-tracked so you can see your timed-conditions volume rise.</li>
@@ -382,8 +382,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

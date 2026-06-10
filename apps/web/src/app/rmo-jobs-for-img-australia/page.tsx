@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -37,7 +37,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -150,7 +150,7 @@ export default function Page() {
             How IMGs Land Their First RMO Job in Australia: State-by-State Strategy for 2026
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -164,7 +164,7 @@ export default function Page() {
           If you have just passed AMC Part 2 and finished your AHPRA paperwork, the next problem is the one no exam prepared you for: actually landing a hospital job. Australian RMO recruitment does not work like most countries IMGs come from. There is no national match, no central register of vacancies, and the cycles run on different calendars in every state. This article maps the system as it exists in 2026, with the specific decisions an IMG needs to make in May, June, July, August.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link>. My wife, Dr Amandeep Kamboj, is an AMC pass-graduate IMG currently completing her recency of practice in Gurugram before returning to Sydney. Her own job search across NSW and Victoria is what drove the structure of the Australian Jobs module on Mostly Medicine, and the patterns below come from watching dozens of IMGs in our community work this end of the pathway in real time.
+is an AMC pass-graduate IMG currently completing her recency of practice in Gurugram before returning to Sydney. Her own job search across NSW and Victoria is what drove the structure of the Australian Jobs module on Mostly Medicine, and the patterns below come from watching dozens of IMGs in our community work this end of the pathway in real time.
         </p>
 
         <h2>Quick facts at a glance</h2>
@@ -438,9 +438,9 @@ export default function Page() {
           <li><strong>Underestimating the 3&ndash;6 month timeline.</strong> IMGs who arrive in Australia in February expecting a March contract get blindsided. The cycle starts in May for the following February.</li>
         </ol>
 
-        <h2>Founder note: how Amandeep is timing this</h2>
+        <h2>Founder note: how our clinical lead is timing this</h2>
         <p>
-          Amandeep is currently in Gurugram completing recency of practice post-AMC. The plan we are running together is exactly the parallel-applications strategy above — NSW HETI in May, PMCV match in June, Queensland Health in May&ndash;June, with a Sydney + regional NSW + outer-metro Melbourne shortlist. Rural Generalist Pathway is on the table as a backup if the metro RMO route stalls.
+          our clinical lead is currently in Gurugram completing recency of practice post-AMC. The plan we are running together is exactly the parallel-applications strategy above — NSW HETI in May, PMCV match in June, Queensland Health in May&ndash;June, with a Sydney + regional NSW + outer-metro Melbourne shortlist. Rural Generalist Pathway is on the table as a backup if the metro RMO route stalls.
         </p>
         <p>
           The thing she has flagged repeatedly: <strong>you cannot start applications without an AHPRA application reference number</strong>. Even if your AHPRA registration is &ldquo;in progress&rdquo;, recruiters want to see proof you are in the system. Start the <Link href="/ahpra-registration-for-imgs">AHPRA registration paperwork</Link> the week you pass AMC Part 2 — do not wait for the registration to be granted.
@@ -473,8 +473,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 7 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 7 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC-pass IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

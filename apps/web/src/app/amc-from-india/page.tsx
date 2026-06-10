@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -149,7 +149,7 @@ export default function Page() {
             AMC Pathway from India 2026: Complete Guide for Indian Medical Graduates
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -163,7 +163,7 @@ export default function Page() {
           If you are an Indian MBBS graduate searching &ldquo;AMC from India&rdquo;, &ldquo;MCI to AHPRA&rdquo; or &ldquo;cost of AMC in INR&rdquo;, this is the page that answers all three honestly. The Indian doctor pathway to Australia is well-trodden but full of small gotchas - name mismatches, EPIC delays, recency postings that AHPRA does not accept - that turn a 2-year plan into a 4-year one.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an Indian MBBS-trained AMC pass-graduate. My wife, Dr Amandeep Kamboj, is from Punjab and is currently completing recency-of-practice in Gurugram before returning to Sydney. The platform exists because she catalogued every avoidable mistake in the Indian pathway. Several of those gotchas are below.
+is from Punjab and is currently completing recency-of-practice in Gurugram before returning to Sydney. The platform exists because she catalogued every avoidable mistake in the Indian pathway. Several of those gotchas are below.
         </p>
 
         <h2>Who this guide is for</h2>
@@ -339,21 +339,21 @@ export default function Page() {
           Document every single shift: dated supervisor signature, hospital letterhead, role description, hours per week, supervision structure. AHPRA assessors are explicit - the burden of proof is yours.
         </p>
         <p>
-          My wife is doing exactly this in Gurugram right now (Medanta-style structured posting with weekly supervision logs) precisely because the alternative - assuming AHPRA would accept a casual locum log - was the highest-risk path. If you are planning recency in India, plan it for AHPRA evidence, not just the salary.
+          An IMG on our team is doing exactly this in Gurugram right now (Medanta-style structured posting with weekly supervision logs) precisely because the alternative - assuming AHPRA would accept a casual locum log - was the highest-risk path. If you are planning recency in India, plan it for AHPRA evidence, not just the salary.
         </p>
 
         <h2>How Mostly Medicine helps Indian candidates specifically</h2>
         <p>
-          Built by a Chetan-Amandeep team that walked this exact path: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal with another Indian-trained IMG. {features.paidTiersEnabled ? "Pricing is in AUD but accessible from India - free tier is honest, Pro is A$29/mo (roughly INR 1,600)." : "Mostly Medicine is in free beta — every feature unlocked for signed-in candidates worldwide."} Indian-specific content drilling: PBS first lines, Australian-context ethics and population-health items - the three areas Indian-trained candidates routinely under-score on.
+          Built by IMGs and IT professionals who walked this exact path: 4,400+ AMC MCQs filterable by Australian-context tag (PBS, eTG, Australian Immunisation Handbook), AMC Handbook RolePlay and Clinical RolePlay built on the Anthropic Claude API for Part 2 simulation, and Peer RolePlay for live OSCE rehearsal with another Indian-trained IMG. {features.paidTiersEnabled ? "Pricing is in AUD but accessible from India - free tier is honest, Pro is A$29/mo (roughly INR 1,600)." : "Mostly Medicine is in free beta — every feature unlocked for signed-in candidates worldwide."} Indian-specific content drilling: PBS first lines, Australian-context ethics and population-health items - the three areas Indian-trained candidates routinely under-score on.
         </p>
 
         <CitationHook n={4}>
           Indian MBBS graduates tend to under-score on Australian-context distractors (PBS first-line therapy, Australian Immunisation Handbook items, population-health framing) on AMC Part 1 - not on systems knowledge. The fix is targeted Australian-context drilling, not re-reading textbooks.
         </CitationHook>
 
-        <h2>Founder note from Amandeep</h2>
+        <h2>Note from the clinical team</h2>
         <p>
-          Amandeep is from Punjab, MBBS-trained at an NMC-recognised college, NMC permanent-registered. She sat AMC Part 1 from India, then Part 2, and is now finishing recency in Gurugram - 3 months apart from me as I write this from Sydney. The hardest line item was not any single exam. It was the document chain: getting NMC, MBBS degree, passport and EPIC to align on her legal name across three states&apos; medical councils. If she could redo one thing it would be starting good-standing letter requests three months earlier. Her exact words: &ldquo;The exams are hard but solvable. The paperwork is tedious but mandatory. Do the paperwork first.&rdquo;
+          the clinical lead on our team is an Indian MBBS-trained IMG from Punjab, MBBS-trained at an NMC-recognised college, NMC permanent-registered. She sat AMC Part 1 from India, then Part 2, and is now finishing recency in Gurugram - 3 months apart from me as I write this from Sydney. The hardest line item was not any single exam. It was the document chain: getting NMC, MBBS degree, passport and EPIC to align on her legal name across three states&apos; medical councils. If she could redo one thing it would be starting good-standing letter requests three months earlier. Her exact words: &ldquo;The exams are hard but solvable. The paperwork is tedious but mandatory. Do the paperwork first.&rdquo;
         </p>
 
         <CitationHook n={5}>
@@ -395,8 +395,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS, India)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

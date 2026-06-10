@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -37,7 +37,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -147,7 +147,7 @@ export default function Page() {
             12 AMC MCQ Traps That Catch Out IMGs (And How to Think Like an AMC Examiner) &mdash; 2026
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -161,7 +161,7 @@ export default function Page() {
           If you are mid-prep on AMC Part 1 and watching your practice scores plateau in the high 50s, the bottleneck is rarely knowledge. It is <strong>how AMC writes questions</strong> — and how that differs from USMLE, PLAB, and the textbooks you trained on. This article unpacks the 12 most common MCQ traps that catch out IMGs, then compresses them into the 4 underlying patterns the AMC examiner training framework actually rewards.
         </p>
         <p>
-          I write as the founder of <Link href="/">Mostly Medicine</Link>. My wife, Dr Amandeep Kamboj, sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugram. The patterns below come from her own prep notes, the AMC Multiple Choice Question Examination Information Booklet, and the most-missed-MCQ aggregates from 136 IMGs working through the Mostly Medicine bank.
+sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugram. The patterns below come from her own prep notes, the AMC Multiple Choice Question Examination Information Booklet, and the most-missed-MCQ aggregates from 136 IMGs working through the Mostly Medicine bank.
         </p>
 
         <h2>How AMC writes its questions</h2>
@@ -364,9 +364,9 @@ export default function Page() {
           The single most common AMC trap is mis-reading &ldquo;most likely diagnosis&rdquo; as &ldquo;most concerning diagnosis&rdquo; — these require fundamentally different reasoning paths and account for a meaningful proportion of first-attempt fails on AMC Part 1.
         </CitationHook>
 
-        <h2>Founder note: how Amandeep drilled these</h2>
+        <h2>Founder note: how our clinical lead drilled these</h2>
         <p>
-          Amandeep&apos;s prep used a deliberate sequence — 800 untimed questions to build coverage, then 1500 timed in blocks of 50 to drill pacing, then three full-length mock exams in the final month. The number that mattered was not total MCQs answered, it was <strong>timed MCQs answered while consciously checking the trap pattern</strong>. She tracked her pattern-recognition speed for &ldquo;most likely vs best next step&rdquo; specifically — by week 10 she could classify the verb-type within 5 seconds of reading any new stem.
+          our clinical lead&apos;s prep used a deliberate sequence — 800 untimed questions to build coverage, then 1500 timed in blocks of 50 to drill pacing, then three full-length mock exams in the final month. The number that mattered was not total MCQs answered, it was <strong>timed MCQs answered while consciously checking the trap pattern</strong>. She tracked her pattern-recognition speed for &ldquo;most likely vs best next step&rdquo; specifically — by week 10 she could classify the verb-type within 5 seconds of reading any new stem.
         </p>
         <p>
           The eTG access is non-negotiable. If you are studying AMC without eTG (or the equivalent Australian-context reference) open in the next tab, you are guessing at the Australian-context distractor instead of learning it. Most universities and Australian hospitals provide eTG access; for IMGs prepping from overseas, a personal subscription pays back across the prep window.
@@ -398,8 +398,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 9 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 9 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC-pass IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

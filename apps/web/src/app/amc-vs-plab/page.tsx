@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -150,7 +150,7 @@ export default function Page() {
             AMC vs PLAB in 2026: Which Exam Should an IMG Take First (Australia or UK)?
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -164,7 +164,7 @@ export default function Page() {
           If you are a working IMG asking &ldquo;should I do AMC or PLAB first&rdquo;, the worst mistake is to pick the cheaper exam and figure out the country later. Both pathways lead to safe, structured medical careers — but they diverge on cost, salary, family migration, and time to permanent residency. This piece compares them honestly, with citations from AMC, GMC, AHPRA, and the Australian Department of Health.
         </p>
         <p>
-          I write as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an AMC-pass IMG. My wife, Dr Amandeep Kamboj, looked seriously at PLAB and chose AMC directly. She finished Part 1, Part 2 and is now completing recency-of-practice in Gurugram before returning to Sydney. Her reasoning is below.
+looked seriously at PLAB and chose AMC directly. She finished Part 1, Part 2 and is now completing recency-of-practice in Gurugram before returning to Sydney. Her reasoning is below.
         </p>
 
         <h2>Quick facts at a glance</h2>
@@ -312,9 +312,9 @@ export default function Page() {
           A 2026 Australian RMO base sits roughly A$80,000–A$110,000 (PGY1–PGY3, before overtime and rural loadings) per state award rates and ASMOF schedules. A 2026 UK FY2 base sits around £37,000 before banding supplements (NHS England pay scales 2025/26). After currency conversion, total RMO package routinely lands 1.6–2× UK FY2 equivalent. The UK has lower out-of-pocket healthcare costs and a more linear specialty training structure; Australia compensates with sunshine and clearer regional-to-PR pathways. Family migration: both countries allow spouse and children inclusion at the time of primary application; Australia&apos;s 482 → 186 keeps family on one visa stream throughout.
         </p>
 
-        <h2>Founder note: why my wife chose AMC, not PLAB</h2>
+        <h2>Founder note: why an IMG on our team chose AMC, not PLAB</h2>
         <p>
-          Amandeep is Punjab MBBS-trained and looked at both pathways. Three things tipped her towards AMC. First, <strong>family geography</strong> — we were partly anchored to Sydney, so AMC fit the life we were already building rather than a hypothetical UK detour. PLAB has the lower headline exam fee, but uprooting twice (Manchester for PLAB 2, then potentially the UK-to-Australia move later) is the real cost. Second, <strong>salary differential</strong> — modelled on RMO and FY2 base rates, the Australian numbers won inside year one; the &ldquo;cheaper exam&rdquo; argument vanishes the moment you compare lifetime salary, not test fees. Third, <strong>specialty fit</strong> — Australia&apos;s primary-care orientation, RACGP and rural generalist routes match what she actually wants to practise.
+          our clinical lead is Punjab MBBS-trained and looked at both pathways. Three things tipped her towards AMC. First, <strong>family geography</strong> — we were partly anchored to Sydney, so AMC fit the life we were already building rather than a hypothetical UK detour. PLAB has the lower headline exam fee, but uprooting twice (Manchester for PLAB 2, then potentially the UK-to-Australia move later) is the real cost. Second, <strong>salary differential</strong> — modelled on RMO and FY2 base rates, the Australian numbers won inside year one; the &ldquo;cheaper exam&rdquo; argument vanishes the moment you compare lifetime salary, not test fees. Third, <strong>specialty fit</strong> — Australia&apos;s primary-care orientation, RACGP and rural generalist routes match what she actually wants to practise.
         </p>
         <p>
           She finished Part 1, then Part 2, and is now completing recency in Gurugram (3 months apart from Sydney as I write this). No regrets on skipping PLAB. Make your decision on country and life — not on whichever test fee is lower.
@@ -415,8 +415,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC-pass IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

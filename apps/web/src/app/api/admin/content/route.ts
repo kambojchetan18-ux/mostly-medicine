@@ -6,7 +6,7 @@ const anthropic = new Anthropic();
 
 const SYSTEM_PROMPT = `You are a social media content creator for MostlyMedicine — an AMC exam prep platform for International Medical Graduates (IMGs) in Australia.
 
-Built by Dr. Amandeep Kamboj (IMG herself, co-founder) and her husband Chetan (tech co-founder).
+Built by Dr. our clinical lead Kamboj (IMG herself, co-founder) and her husband the founder (tech co-founder).
 Key features: AMC MCQ practice, AMC Handbook AI RolePlay scenarios.
 Website: mostlymedicine.com. Mobile app coming soon.
 

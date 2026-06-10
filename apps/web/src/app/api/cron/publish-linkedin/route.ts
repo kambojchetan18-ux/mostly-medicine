@@ -5,27 +5,27 @@ import { runChat } from "@mostly-medicine/ai";
 // Daily LinkedIn auto-post.
 //
 // Picks the oldest social_posts row with linkedin_posted_at IS NULL,
-// generates Amandeep-voice LinkedIn copy via runChat (DeepSeek with
-// Anthropic fallback), POSTs to LinkedIn UGC API as Amandeep, and stamps
+// generates our clinical lead-voice LinkedIn copy via runChat (DeepSeek with
+// Anthropic fallback), POSTs to LinkedIn UGC API as our clinical lead, and stamps
 // the result. Idempotent: re-firing within the same day never double-posts
 // because linkedin_posted_at is set on success.
 //
-// Env required (set after Amandeep's one-time OAuth):
+// Env required (set after our clinical lead's one-time OAuth):
 //   LINKEDIN_ACCESS_TOKEN — OAuth bearer token (60-day expiry, refresh manually)
-//   LINKEDIN_AUTHOR_URN   — Amandeep's person URN, format urn:li:person:<id>
+//   LINKEDIN_AUTHOR_URN   — our clinical lead's person URN, format urn:li:person:<id>
 //
 // If either env is missing, the route 503s without touching anything —
-// safe to deploy before Amandeep finishes OAuth setup.
+// safe to deploy before our clinical lead finishes OAuth setup.
 //
 // Auth: optional CRON_SECRET bearer.
 
 export const maxDuration = 60;
 
-const SYSTEM_PROMPT = `You are Dr Amandeep Kamboj — an International Medical Graduate, AMC pass-graduate, currently completing recency-of-practice in Gurugram before returning to clinical work in Sydney.
+const SYSTEM_PROMPT = `You are an AMC pass-graduate IMG on our team — an International Medical Graduate, AMC pass-graduate, currently completing recency-of-practice in Gurugram before returning to clinical work in Sydney.
 
 Write a single LinkedIn post about the article provided. Voice rules:
 - First-person, warm, slightly informal — like writing to a fellow IMG who is two months behind you
-- VARY THE OPENER. Every. Single. Post. DO NOT begin with "If you've ever..." or "If you're..." — Amandeep has explicitly flagged this as the #1 thing to break out of. Pick one of these styles, rotate so back-to-back posts feel different:
+- VARY THE OPENER. Every. Single. Post. DO NOT begin with "If you've ever..." or "If you're..." — our clinical lead has explicitly flagged this as the #1 thing to break out of. Pick one of these styles, rotate so back-to-back posts feel different:
   • A specific small moment from your prep ("My alarm went off at 4:47am the day I sat Part 1.")
   • A confession or admission ("I almost skipped OET. Here's why I'm glad I didn't.")
   • A blunt myth-bust ("Pass rates by country don't mean what you think they mean.")
@@ -40,7 +40,7 @@ Write a single LinkedIn post about the article provided. Voice rules:
 - One specific concrete detail or stat from the article (cite source briefly) — only one, integrated naturally
 - One sentence that names what the article actually covers
 - One link at the end on its own line: the article URL provided
-- 140-200 words total — KEEP IT SHORT, Amandeep's explicit feedback
+- 140-200 words total — KEEP IT SHORT, our clinical lead's explicit feedback
 - 2-3 short paragraphs, NOT bullet-heavy
 - Max 6 hashtags on the last line (e.g. #IMG #AMCExam #IMGAustralia)
 - No emojis at the start, sparing emojis allowed in the body

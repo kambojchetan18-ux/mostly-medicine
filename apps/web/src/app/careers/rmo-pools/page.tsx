@@ -1,66 +1,48 @@
 'use client';
 
 import Link from 'next/link';
+import {
+  RMO_POOLS,
+  RMO_FALLBACK_LINKS,
+  type RmoPool,
+  type CycleStatus,
+} from '@mostly-medicine/content';
 
-const rmoLinks = [
-  // QLD
-  {
-    state: 'QLD',
-    label: 'International Junior Medical Officer Talent Pool – Queensland Health (QLD-672363)',
-    url: 'https://apply-springboard.health.qld.gov.au/jobs/QLD-672363',
-    status: 'open',
-    note: 'Matches benchmark International JMO role description. Direct application page.',
-  },
-  {
-    state: 'QLD',
-    label: 'Senior Medical Officer – Townsville Region (QLD-TV678551)',
-    url: 'https://apply-springboard.health.qld.gov.au/jobs/QLD-TV678551',
-    status: 'open',
-    note: 'Townsville-specific via Queensland Health Springboard portal.',
-  },
-  // NSW
-  {
-    state: 'NSW',
-    label: 'International Junior Medical Officers – NSW Health',
-    url: 'https://www.health.nsw.gov.au/jmo/Pages/international-applicants.aspx',
-    status: 'upcoming',
-    note: 'Official IMG-specific NSW Health JMO entry page. Campaign opens ~July 2026.',
-  },
-  // WA
-  {
-    state: 'WA',
-    label: 'Resident Medical Officer Recruitment – MedCareersWA (WA Health)',
-    url: 'https://medcareerswa.health.wa.gov.au/resident-medical-officers',
-    status: 'upcoming',
-    note: 'Official WA Health RMO hub with campaign dates and application links.',
-  },
-  // VIC
-  {
-    state: 'VIC',
-    label: 'International Medical Graduates – PMCV Late Vacancy Match',
-    url: 'https://www.pmcv.com.au/international-medical-graduates/',
-    status: 'restricted',
-    note: '⚠️ IMGs: main PMCV match is closed to IMGs. Late Vacancy Match (Sep–Oct 2026) is the IMG pathway.',
-  },
-  // SA
-  {
-    state: 'SA',
-    label: 'Postgraduate Year 2 and Beyond – SA Health Medical Officer Recruitment',
-    url: 'https://www.sahealth.sa.gov.au/wps/wcm/connect/public+content/sa+health+internet/careers/i+am+a/medical+professional/postgraduate',
-    status: 'upcoming',
-    note: 'SA Health PGY2+ and RMO campaign page.',
-  },
-  // Private / Agency fallback
-  {
-    state: 'All States',
-    label: 'RMO Jobs Australia – Medrecruit (Private Sector)',
-    url: 'https://medrecruit.medworld.com/doctors/rmo-jobs-australia',
-    status: 'open',
-    note: 'Private sector RMO vacancies updated daily. Use as fallback when public pools are closed.',
-  },
-];
+// Inline helper: format ISO date (YYYY-MM-DD) → "14 Jul 2026". Passes through "TBC".
+function formatCycleDate(value: string): string {
+  if (!value) return 'TBC';
+  const trimmed = value.trim();
+  if (trimmed.toUpperCase().startsWith('TBC')) return trimmed;
+  const iso = /^\d{4}-\d{2}-\d{2}$/;
+  if (!iso.test(trimmed)) return trimmed;
+  const [y, m, d] = trimmed.split('-').map(Number);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${d} ${months[m - 1]} ${y}`;
+}
+
+// Status → Tailwind badge classes + label.
+function statusBadge(status: CycleStatus): { className: string; label: string } {
+  switch (status) {
+    case 'confirmed':
+      return { className: 'bg-green-100 text-green-800', label: 'Confirmed' };
+    case 'estimated':
+      return { className: 'bg-yellow-100 text-yellow-800', label: 'Estimated' };
+    case 'tbc':
+    default:
+      return { className: 'bg-red-100 text-red-800', label: 'TBC' };
+  }
+}
+
+// Build the urgency banner string from the next confirmed windows.
+function urgencyHighlights(pools: RmoPool[]): RmoPool[] {
+  return pools
+    .filter((p) => p.cycle2027.status === 'confirmed')
+    .slice(0, 3);
+}
 
 export default function RmoPools() {
+  const urgentPools = urgencyHighlights(RMO_POOLS);
+
   return (
     <main className="min-h-screen bg-white">
       {/* Page Header */}
@@ -86,8 +68,18 @@ export default function RmoPools() {
                 RMO campaigns are time-sensitive.
               </p>
               <p className="text-gray-700">
-                QLD opens 1 June 2026 · NSW opens mid-July 2026 · WA next cycle ~May 2026.
-                Campaigns close within 4–6 weeks. <strong>Have your documents ready now.</strong>
+                {urgentPools.length > 0 ? (
+                  <>
+                    {urgentPools
+                      .map((p) => `${p.code} opens ${formatCycleDate(p.cycle2027.open)}`)
+                      .join(' · ')}
+                    . Campaigns close within 4–6 weeks. <strong>Have your documents ready now.</strong>
+                  </>
+                ) : (
+                  <>
+                    Campaigns close within 4–6 weeks. <strong>Have your documents ready now.</strong>
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -129,69 +121,22 @@ export default function RmoPools() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">QLD</td>
-                  <td className="border border-gray-300 px-4 py-2">1 Jun 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">29 Jun 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">✅ Yes</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded text-sm">Opening Soon</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">NSW</td>
-                  <td className="border border-gray-300 px-4 py-2">~15 Jul 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">~Aug 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">✅ Yes</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-red-100 text-red-800 rounded text-sm">Not Yet Open</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">WA</td>
-                  <td className="border border-gray-300 px-4 py-2">~May 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">~Jun 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">✅ Yes</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-red-100 text-red-800 rounded text-sm">Next Cycle TBC</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">VIC</td>
-                  <td className="border border-gray-300 px-4 py-2">Sep 2026 (LVM)</td>
-                  <td className="border border-gray-300 px-4 py-2">Oct 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">⚠️ Late Match Only</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded text-sm">IMGs: Restricted</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">SA</td>
-                  <td className="border border-gray-300 px-4 py-2">~Jun 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">~Jul 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">✅ Yes</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-red-100 text-red-800 rounded text-sm">Check SA Health</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">TAS</td>
-                  <td className="border border-gray-300 px-4 py-2">~May 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">~Jun 2026</td>
-                  <td className="border border-gray-300 px-4 py-2">✅ Yes</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-red-100 text-red-800 rounded text-sm">Next Cycle TBC</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-gray-300 px-4 py-2">NT</td>
-                  <td className="border border-gray-300 px-4 py-2">Rolling</td>
-                  <td className="border border-gray-300 px-4 py-2">Rolling</td>
-                  <td className="border border-gray-300 px-4 py-2">✅ Yes</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded text-sm">Check NT Health</span>
-                  </td>
-                </tr>
+                {RMO_POOLS.map((p) => {
+                  const badge = statusBadge(p.cycle2027.status);
+                  return (
+                    <tr key={p.code}>
+                      <td className="border border-gray-300 px-4 py-2">{p.code}</td>
+                      <td className="border border-gray-300 px-4 py-2">{formatCycleDate(p.cycle2027.open)}</td>
+                      <td className="border border-gray-300 px-4 py-2">{formatCycleDate(p.cycle2027.close)}</td>
+                      <td className="border border-gray-300 px-4 py-2">{p.imgEligible ? '✅ Yes' : '❌ No'}</td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <span className={`px-3 py-1 rounded text-sm ${badge.className}`}>
+                          {badge.label}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -201,26 +146,56 @@ export default function RmoPools() {
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Apply Now — Direct RMO & JMO Links</h2>
           <ul className="space-y-4">
-            {rmoLinks.map((link) => (
-              <li
-                key={link.url}
-                className={`p-4 rounded border-l-4 ${
-                  link.status === 'open'
-                    ? 'bg-green-50 border-green-400'
-                    : link.status === 'restricted'
-                    ? 'bg-orange-50 border-orange-400'
-                    : 'bg-gray-50 border-gray-400'
-                }`}
-              >
+            {RMO_POOLS.map((p) => {
+              const isConfirmed = p.cycle2027.status === 'confirmed';
+              const isTbc = p.cycle2027.status === 'tbc';
+              const wrapperClass = isConfirmed
+                ? 'bg-green-50 border-green-400'
+                : isTbc
+                ? 'bg-gray-50 border-gray-400'
+                : 'bg-yellow-50 border-yellow-400';
+              return (
+                <li key={p.code} className={`p-4 rounded border-l-4 ${wrapperClass}`}>
+                  <a
+                    href={p.applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 font-semibold text-lg hover:underline"
+                  >
+                    {p.state} — {p.applyLabel}
+                  </a>
+                  {p.imgNotes && <p className="text-gray-600 text-sm mt-2">{p.imgNotes}</p>}
+                  {p.directLinks && p.directLinks.length > 0 && (
+                    <ul className="mt-3 space-y-2 pl-4 border-l border-gray-300">
+                      {p.directLinks.map((dl) => (
+                        <li key={dl.url}>
+                          <a
+                            href={dl.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 hover:underline"
+                          >
+                            {dl.label}
+                          </a>
+                          {dl.note && <span className="text-gray-600 text-sm"> — {dl.note}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+            {RMO_FALLBACK_LINKS.map((fb) => (
+              <li key={fb.url} className="p-4 rounded border-l-4 bg-blue-50 border-blue-400">
                 <a
-                  href={link.url}
+                  href={fb.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-800 font-semibold text-lg hover:underline"
                 >
-                  {link.label}
+                  {fb.label}
                 </a>
-                <p className="text-gray-600 text-sm mt-2">{link.note}</p>
+                <p className="text-gray-600 text-sm mt-2">{fb.note}</p>
               </li>
             ))}
           </ul>

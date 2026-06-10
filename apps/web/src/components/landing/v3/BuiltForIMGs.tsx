@@ -19,8 +19,8 @@ export default function BuiltForIMGs() {
               </h2>
               <p className="mt-4 text-base leading-relaxed text-cream-50/75 sm:text-lg">
                 Mostly Medicine is built by a small team of International Medical Graduates and IT
-                professionals in Sydney. Dr Amandeep Kamboj passed the AMC and shaped every
-                clinical case on the platform. Chetan built the rest.
+                professionals in Sydney. AMC pass-graduates on the team shape every clinical case;
+                engineers ship the platform around them.
               </p>
               <p className="mt-5 text-sm text-cream-50/65">
                 We&rsquo;re not affiliated with the AMC, AHPRA or any official body. We&rsquo;re an

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -149,7 +149,7 @@ export default function Page() {
             AMC Pathway from Pakistan 2026: Complete Guide for PMC-Registered Doctors
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -163,7 +163,7 @@ export default function Page() {
           If you are a Pakistani MBBS graduate searching &ldquo;AMC from Pakistan&rdquo;, &ldquo;PMC to AHPRA&rdquo; or &ldquo;AMC cost in PKR&rdquo;, this is the page that answers all three honestly. The pathway is well-trodden by graduates of Dow, KMC, AKU, AIMC, KEMU, RMC and FJMC - but full of small gotchas (form F-2 vs F-1 confusion, FPC scope-of-practice mismatches, internship certificates issued by hospitals rather than colleges) that turn a 2-year plan into a 4-year one.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link>. My wife, Dr Amandeep Kamboj, is an Indian-trained AMC pass-graduate currently completing recency in Gurugram - and the platform exists because she catalogued every avoidable mistake in the South-Asian IMG pathway. The Pakistan-specific gotchas below are drawn from Pakistani candidates we have worked with on the platform.
+is an Indian-trained AMC pass-graduate currently completing recency in Gurugram - and the platform exists because she catalogued every avoidable mistake in the South-Asian IMG pathway. The Pakistan-specific gotchas below are drawn from Pakistani candidates we have worked with on the platform.
         </p>
 
         <h2>Who this guide is for</h2>
@@ -350,7 +350,7 @@ export default function Page() {
 
         <h2>Founder note</h2>
         <p>
-          My wife is Indian, not Pakistani, but the South-Asian MBBS pathway rhymes more than it diverges. The Pakistani candidates I have spoken to on Mostly Medicine consistently flag the same three pain points: PMC verification latency, hospital-vs-college house-job certificates, and OET writing on attempt 1. The Pakistani prep advantage: Pakistani MBBS graduates from AKU, Dow, KMC and AIMC have strong systems knowledge. The Pakistani prep gap: Australian-context therapeutics (PBS first lines), population health, and shared-decision-making framing in Clinical (Part 2). Drill those three buckets and your trajectory looks the same as any other strong IMG.
+          An IMG on our team is Indian, not Pakistani, but the South-Asian MBBS pathway rhymes more than it diverges. The Pakistani candidates I have spoken to on Mostly Medicine consistently flag the same three pain points: PMC verification latency, hospital-vs-college house-job certificates, and OET writing on attempt 1. The Pakistani prep advantage: Pakistani MBBS graduates from AKU, Dow, KMC and AIMC have strong systems knowledge. The Pakistani prep gap: Australian-context therapeutics (PBS first lines), population health, and shared-decision-making framing in Clinical (Part 2). Drill those three buckets and your trajectory looks the same as any other strong IMG.
         </p>
 
         <CitationHook n={5}>
@@ -390,8 +390,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

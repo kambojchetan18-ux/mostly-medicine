@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -149,7 +149,7 @@ export default function Page() {
             AMC Pathway from the Philippines 2026: Complete Guide for Filipino Medical Graduates
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -163,7 +163,7 @@ export default function Page() {
           If you are a Filipino MD graduate searching &ldquo;AMC from Philippines&rdquo;, &ldquo;PRC to AHPRA&rdquo; or &ldquo;AMC cost in PHP&rdquo;, this is the page that answers all three honestly. The pathway is well-trodden by graduates of UP-PGH, UST, FEU-NRMF, Cebu Doctors, AdventistU, Pamantasan ng Lungsod ng Maynila, and others - but full of small gotchas (USMLE-prep candidates pivoting to AMC, PRC name discrepancies post-marriage, internship logbook structure) that turn a 2-year plan into a 4-year one.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link>. My wife, Dr Amandeep Kamboj, is an Indian-trained AMC pass-graduate currently completing recency in Gurugram. The platform exists because she catalogued every avoidable mistake in the IMG pathway. The Philippines-specific gotchas below are drawn from Filipino candidates we have worked with on the platform.
+is an Indian-trained AMC pass-graduate currently completing recency in Gurugram. The platform exists because she catalogued every avoidable mistake in the IMG pathway. The Philippines-specific gotchas below are drawn from Filipino candidates we have worked with on the platform.
         </p>
 
         <h2>Who this guide is for</h2>
@@ -351,7 +351,7 @@ export default function Page() {
 
         <h2>Founder note</h2>
         <p>
-          My wife is Indian-trained, but the Filipino MDs I have spoken to on Mostly Medicine consistently flag the same three pain points: USMLE-to-AMC pivot Australian-context gap, marriage-related PRC name updates, and Australian-style primary-care framing on Part 2. The Filipino prep advantage: very strong English plus solid USMLE-style systems knowledge often gets Filipino candidates over the Part 1 line on attempt one. The Filipino prep gap: Australian primary-care orientation in Clinical (Part 2) - shared decision-making, lifestyle counselling, longer consultation structure. Drill these explicitly and your trajectory looks excellent.
+          An IMG on our team is Indian-trained, but the Filipino MDs I have spoken to on Mostly Medicine consistently flag the same three pain points: USMLE-to-AMC pivot Australian-context gap, marriage-related PRC name updates, and Australian-style primary-care framing on Part 2. The Filipino prep advantage: very strong English plus solid USMLE-style systems knowledge often gets Filipino candidates over the Part 1 line on attempt one. The Filipino prep gap: Australian primary-care orientation in Clinical (Part 2) - shared decision-making, lifestyle counselling, longer consultation structure. Drill these explicitly and your trajectory looks excellent.
         </p>
 
         <CitationHook n={5}>
@@ -391,8 +391,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 2 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 2 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

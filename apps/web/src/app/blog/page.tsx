@@ -129,7 +129,7 @@ const blogSchema = {
     description: p.description,
     datePublished: p.publishedAt,
     url: `${SITE_URL}/${p.slug}`,
-    author: { "@id": `${SITE_URL}/#founder` },
+    author: { "@id": `${SITE_URL}/#organization` },
   })),
 };
 
@@ -172,7 +172,7 @@ export default function BlogIndexPage() {
           Honest guides for IMGs preparing for AMC
         </h1>
         <p className="text-base text-slate-400 leading-relaxed mb-2">
-          Long-form, founder-written, evidence-cited. Every article is reviewed by Dr Amandeep Kamboj, an AMC pass-graduate IMG. We update guides every 6 months as standards shift.
+          Long-form, founder-written, evidence-cited. Every article is reviewed by an AMC pass-graduate IMG on our team, an AMC pass-graduate IMG. We update guides every 6 months as standards shift.
         </p>
       </section>
 

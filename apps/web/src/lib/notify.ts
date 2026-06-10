@@ -32,7 +32,7 @@ async function sendSlack({
   const url = process.env.SLACK_WEBHOOK_URL;
   if (!url) return;
   try {
-    const text = `🆘 *Tech ticket needs Chetan* — ${category ?? "uncategorised"} · confidence ${confidence ?? "n/a"}`;
+    const text = `🆘 *Tech ticket needs review* — ${category ?? "uncategorised"} · confidence ${confidence ?? "n/a"}`;
     await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

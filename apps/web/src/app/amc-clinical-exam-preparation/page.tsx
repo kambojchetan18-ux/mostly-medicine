@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -39,7 +39,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: MODIFIED,
@@ -148,7 +148,7 @@ export default function Page() {
             AMC Part 2 Clinical Exam: The IMG&apos;s Guide to Passing 16 Stations First Attempt
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder &middot; medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> &middot; medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -162,7 +162,7 @@ export default function Page() {
           If you have cleared AMC MCQ and you are now staring down 16 stations of 8 minutes each, this guide is for you. Part 2 is the exam where IMGs lose the most time and money in the AMC pathway. Each repeat costs roughly A$3,800&ndash;4,000 and adds 6&ndash;12 months because of cycle availability. This piece walks the format, the rubric examiners actually use, the 12-week prep plan we see work most reliably, and the eight failure modes that send candidates to a second attempt.
         </p>
         <p>
-          I write as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an AMC pass-graduate IMG. My wife, Dr Amandeep Kamboj, sat AMC Part 2 in early 2025 in Melbourne after passing Part 1 from India. She is now completing recency-of-practice in Gurugram before returning to Sydney. The prep schedule below is the one we built around her timetable when she was juggling clinical work plus exam preparation in different time zones.
+sat AMC Part 2 in early 2025 in Melbourne after passing Part 1 from India. She is now completing recency-of-practice in Gurugram before returning to Sydney. The prep schedule below is the one we built around her timetable when she was juggling clinical work plus exam preparation in different time zones.
         </p>
 
         <h2>Quick answer</h2>
@@ -332,7 +332,7 @@ export default function Page() {
           Mostly Medicine&apos;s AMC Peer RolePlay module pairs candidates over live video for exactly this purpose. It is enterprise-tier, A$49/mo on Pro, and the single most direct conversion path from Part-1-passed IMGs into a paid plan. For solo work between peer sessions, the <Link href="/dashboard/cat2">AMC Handbook AI RolePlay</Link> and <Link href="/dashboard/ai-roleplay">AMC Clinical AI RolePlay</Link> modules give voice-mode AI patient simulations any time of day.
         </p>
         <p>
-          Founder note from Amandeep specifically: in her last 4 weeks before sitting Part 2 she did 3 peer sessions per week with a fellow IMG in Australia (we are in Sydney; her partner was in Melbourne; live video). Her Part 2 result improved most measurably between week 8 and week 12 of prep &mdash; exactly the window when peer roleplay frequency was highest. Causation is not provable from one case but the correlation is striking and matches what we see across our users.
+          Note from the clinical team specifically: in her last 4 weeks before sitting Part 2 she did 3 peer sessions per week with a fellow IMG in Australia (we are in Sydney; her partner was in Melbourne; live video). Her Part 2 result improved most measurably between week 8 and week 12 of prep &mdash; exactly the window when peer roleplay frequency was highest. Causation is not provable from one case but the correlation is striking and matches what we see across our users.
         </p>
 
         <h2>Common station themes and structuring your first 30 seconds</h2>
@@ -427,8 +427,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 5 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 5 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

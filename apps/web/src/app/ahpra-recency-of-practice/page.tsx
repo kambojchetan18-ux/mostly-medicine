@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -38,7 +38,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -146,7 +146,7 @@ export default function Page() {
             Recency of Practice and AMC: What Order Should an IMG Do Things In?
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -160,7 +160,7 @@ export default function Page() {
           If you have stared at the AHPRA portal trying to work out whether you should be sitting AMC Part 1, polishing your IELTS, applying for a recency role, or all three at once, this article is for you. The Australian Medical Council, the Medical Board of Australia (MBA) and AHPRA all publish their requirements separately, and none of them sequence the steps for you. Most IMGs piece the order together from forum threads, ad-hoc Reddit replies, and (often) a friend who walked the path two years ago &mdash; when the standards were slightly different. We have watched 136 IMGs make this decision on Mostly Medicine, and one error keeps repeating: candidates either do recency too early (it expires before they need it for AHPRA) or too late (their AHPRA application stalls because their recency status is questioned). This guide walks the actual standards, then sequences them.
         </p>
         <p>
-          I write this as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an AMC pass-graduate IMG. My wife, Dr Amandeep Kamboj, sat AMC Part 1 from India, sat AMC Part 2 in Australia, and is currently completing recency-of-practice in Gurugram before returning to Sydney where I live. The Sydney+Gurugram split is exhausting but it is the cleanest path for her specific situation &mdash; and below I explain why we made it that way.
+sat AMC Part 1 from India, sat AMC Part 2 in Australia, and is currently completing recency-of-practice in Gurugram before returning to Sydney where I live. The Sydney+Gurugram split is exhausting but it is the cleanest path for her specific situation &mdash; and below I explain why we made it that way.
         </p>
 
         <h2>Quick answer</h2>
@@ -311,9 +311,9 @@ export default function Page() {
         </p>
 
         <h2>Real-world example: AMC pass first, recency in Gurugram</h2>
-        <p>I will use my wife&apos;s pathway because it is the closest example I have.</p>
+        <p>I will use an IMG on our team&apos;s pathway because it is the closest example I have.</p>
         <p>
-          Dr Amandeep Kamboj, MBBS (Kasturba Medical College), passed AMC Part 1 in late 2024 from India, passed AMC Part 2 in early 2025 in Australia, and is currently &mdash; May 2026 &mdash; completing recency-of-practice in Gurugram. We are based in Sydney; she is in Gurugram for the recency block, and the plan is for her to return to Sydney to commence a supervised role here once the AHPRA registration is confirmed.
+MBBS (Kasturba Medical College), passed AMC Part 1 in late 2024 from India, passed AMC Part 2 in early 2025 in Australia, and is currently &mdash; May 2026 &mdash; completing recency-of-practice in Gurugram. We are based in Sydney; she is in Gurugram for the recency block, and the plan is for her to return to Sydney to commence a supervised role here once the AHPRA registration is confirmed.
         </p>
         <p>
           The reason we sequenced it this way: she had a 14-month clinical gap during the AMC preparation phase (she stepped away from full-time clinical work to focus on Part 1 and Part 2 prep). Going into a Sydney supervised role straight after the AMC pass would have meant supervisor letters could only document the AMC-prep gap. Instead, returning to clinical practice in Gurugram for a structured 6-month supervised block has produced the recency evidence AHPRA actually wants &mdash; recent, supervised, in-scope, documented.
@@ -373,8 +373,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 4 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 4 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC pass-graduate IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: PAGE_URL,
     type: "article",
     publishedTime: PUBLISHED,
-    authors: ["Chetan Kamboj"],
+    authors: ["Mostly Medicine"],
   },
   twitter: {
     card: "summary_large_image",
@@ -37,7 +37,7 @@ const articleSchema = {
   description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
-  author: { "@id": `${SITE_URL}/#founder` },
+  author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   datePublished: PUBLISHED,
   dateModified: PUBLISHED,
@@ -147,7 +147,7 @@ export default function Page() {
             IMG Visa Pathway in Australia 2026: From Student or Graduate to Permanent Residency
           </h1>
           <p className="text-slate-400 text-base leading-relaxed mb-3">
-            By <span className="text-slate-200 font-semibold">Chetan Kamboj</span>, founder · medically reviewed by Dr Amandeep Kamboj (AMC pass-graduate IMG)
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
@@ -161,7 +161,7 @@ export default function Page() {
           If you are an International Medical Graduate searching &ldquo;best visa for doctor in Australia&rdquo; or &ldquo;how long to PR for IMG&rdquo;, the messy truth is that there is no single answer — there are roughly four pathways, each tied to a specific starting point, employer relationship and geographic constraint. This article maps the 2026 visa landscape for IMG doctors as it stands on the Department of Home Affairs subclass pages and the Department of Health and Aged Care DPA tooling, with the trade-offs each pathway carries.
         </p>
         <p>
-          I write as the founder of <Link href="/">Mostly Medicine</Link> and the husband of an AMC pass-graduate IMG. My wife, Dr Amandeep Kamboj, completed AMC Part 1 and Part 2 in Australia and is currently doing recency of practice in Gurugram before returning to Sydney on the next phase of her own visa stack. Visa decisions sit alongside <Link href="/ahpra-registration-for-imgs">AHPRA registration</Link> and <Link href="/rmo-jobs-for-img-australia">your first RMO contract</Link> as the three load-bearing decisions in the IMG pathway.
+completed AMC Part 1 and Part 2 in Australia and is currently doing recency of practice in Gurugram before returning to Sydney on the next phase of her own visa stack. Visa decisions sit alongside <Link href="/ahpra-registration-for-imgs">AHPRA registration</Link> and <Link href="/rmo-jobs-for-img-australia">your first RMO contract</Link> as the three load-bearing decisions in the IMG pathway.
         </p>
 
         <h2>Quick facts at a glance</h2>
@@ -342,7 +342,7 @@ export default function Page() {
         </CitationHook>
 
         <p>
-          For IMGs returning to Australia after recency abroad — a common pattern in Amandeep&apos;s situation — the partner visa interaction is worth checking with a registered migration agent. Spouse visas (subclass 309/100, 820/801) sit outside the skilled stream but can run in parallel.
+          For IMGs returning to Australia after recency abroad — a common pattern in our clinical lead&apos;s situation — the partner visa interaction is worth checking with a registered migration agent. Spouse visas (subclass 309/100, 820/801) sit outside the skilled stream but can run in parallel.
         </p>
 
         <h2>Common visa traps for IMGs</h2>
@@ -411,7 +411,7 @@ export default function Page() {
 
         <h2>Founder note: why we are running 482 &rarr; 186, not 189</h2>
         <p>
-          Amandeep is overseas-trained, AMC-complete and headed back to Sydney. We looked at 189 seriously — it would have meant landing in Australia with PR already granted, which is administratively beautiful. We chose 482 &rarr; 186 anyway, for three reasons. First, we have line-of-sight to a sponsoring hospital, which means the 482 grants quickly with a job attached. Second, the 189 EOI ranking is unpredictable — we are not in the 25&ndash;28 age bracket where points stack cleanly. Third, the 482 stack lets us start working (and earning) immediately, while 189 EOI candidates can wait 6&ndash;18 months for an invitation. The lifetime numbers favour starting work sooner.
+          our clinical lead is overseas-trained, AMC-complete and headed back to Sydney. We looked at 189 seriously — it would have meant landing in Australia with PR already granted, which is administratively beautiful. We chose 482 &rarr; 186 anyway, for three reasons. First, we have line-of-sight to a sponsoring hospital, which means the 482 grants quickly with a job attached. Second, the 189 EOI ranking is unpredictable — we are not in the 25&ndash;28 age bracket where points stack cleanly. Third, the 482 stack lets us start working (and earning) immediately, while 189 EOI candidates can wait 6&ndash;18 months for an invitation. The lifetime numbers favour starting work sooner.
         </p>
         <p>
           If you are at the same crossroads, the heuristic we use is: <strong>do you have a sponsor? If yes, default to 482 &rarr; 186. If no and your points are strong, run 189 in parallel as a backup.</strong>
@@ -444,8 +444,8 @@ export default function Page() {
         <div className="not-prose text-xs text-slate-500 space-y-1">
           <p><strong className="text-slate-400">Last reviewed:</strong> 8 May 2026</p>
           <p><strong className="text-slate-400">Next review:</strong> 8 November 2026</p>
-          <p><strong className="text-slate-400">Author:</strong> Chetan Kamboj, Founder, Mostly Medicine</p>
-          <p><strong className="text-slate-400">Medical reviewer:</strong> Dr Amandeep Kamboj (AMC-pass IMG, MBBS)</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">

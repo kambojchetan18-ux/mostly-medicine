@@ -31,7 +31,7 @@ PRODUCT FACTS (use these to answer FAQ-style questions):
 ${features.paidTiersEnabled ? PAID_PRICING_BLOCK : BETA_PRICING_BLOCK}
 - Modules: AMC MCQ (4,400+ questions, spaced repetition), AMC Handbook AI RolePlay (handbook-aligned scenarios), AMC Clinical AI RolePlay (synthesised cases, voice mode), AMC Peer RolePlay (live 2-player video), Library (clinical references), Australian Jobs (RMO pools, GP pathway, action plans, app tracker).
 - Tech: Web app at mostlymedicine.com, native mobile apps for Android (Play Store coming) and iOS. Voice uses Whisper + WebSpeech hybrid for cross-device support.
-- Founder: Chetan Kamboj. Support email: support@mostlymedicine.com.
+- Founder: the Mostly Medicine team. Support email: support@mostlymedicine.com.
 
 YOUR JOB:
 1. Read the user's subject + body.
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
     .eq("id", ticket.id);
 
   // Fire-and-forget tech-routed notification (Slack + email per env vars).
-  // Skipped for plain FAQ-answered tickets — those don't need to wake Chetan.
+  // Skipped for plain FAQ-answered tickets — those don't need to wake the founder.
   if (needsHuman) {
     void notifyAdminOfTicket({
       ticketId: ticket.id,

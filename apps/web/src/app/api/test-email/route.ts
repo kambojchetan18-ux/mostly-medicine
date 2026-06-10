@@ -3,7 +3,7 @@ import { sendBranded, newUnsubToken } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/email-templates";
 
 // Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
-// (Chetan's inbox). Used to verify Resend + brandedShell render correctly
+// (the founder's inbox). Used to verify Resend + brandedShell render correctly
 // before the DeepSeek balance is topped up. Auth: optional CRON_SECRET
 // bearer; open if unset.
 export const maxDuration = 30;
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     <h2 style="margin:0 0 12px;font-size:24px;color:#0f172a;">🩺 Mostly Daily</h2>
     <p style="margin:0 0 18px;font-size:14px;color:#64748b;">Cardiology</p>
 
-    <p style="margin:0 0 16px;font-size:15px;color:#0f172a;">G'day Chetan,</p>
+    <p style="margin:0 0 16px;font-size:15px;color:#0f172a;">G'day the founder,</p>
     <p style="margin:0 0 18px;font-size:14px;color:#334155;line-height:1.6;">
       Time to challenge your clinical thinking with today's brain teaser!
     </p>
@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
   // Optional ?type=welcome switches to the warm-welcome preview email.
   // Default = brain-teaser sample.
   const type = url.searchParams.get("type") ?? "teaser";
-  const firstName = url.searchParams.get("firstName") ?? "Chetan";
+  const firstName = url.searchParams.get("firstName") ?? "the founder";
 
   const payload = (() => {
     if (type === "welcome") {
