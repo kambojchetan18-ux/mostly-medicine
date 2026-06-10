@@ -286,7 +286,7 @@ export default function RmoPools() {
           </p>
           <Link
             href="/careers/cv-checker"
-            className="inline-block bg-saffron-600 hover:bg-saffron-700 text-white font-semibold py-3 px-6 rounded transition"
+            className="inline-block bg-saffron-600 hover:bg-saffron-700 text-ink-950 font-semibold py-3 px-6 rounded transition"
           >
             Check my CV for free →
           </Link>

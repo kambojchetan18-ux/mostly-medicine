@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
             <button
               onClick={handleResend}
               disabled={loading}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50 mb-3"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-ink-950 font-semibold py-2.5 rounded-lg transition disabled:opacity-50 mb-3"
             >
               {loading ? "Sending…" : "Resend confirmation email"}
             </button>

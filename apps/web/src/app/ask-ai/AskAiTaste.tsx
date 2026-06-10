@@ -72,7 +72,7 @@ export default function AskAiTaste() {
   }
 
   return (
-    <div className="rounded-3xl border border-saffron-800/40 bg-ink-950/70 backdrop-blur p-5 sm:p-7 shadow-[0_0_60px_rgba(16,185,129,0.08)]">
+    <div className="rounded-3xl border border-saffron-800/40 bg-cream-50/70 backdrop-blur p-5 sm:p-7 shadow-[0_0_60px_rgba(16,185,129,0.08)]">
       <div className="flex items-center gap-2 mb-4">
         <span className="inline-flex h-2 w-2 rounded-full bg-saffron-400 animate-pulse" />
         <p className="text-[11px] font-bold text-saffron-400 uppercase tracking-widest">Ask AI · Free taste · {MAX_TASTE_QUESTIONS - userTurns} of {MAX_TASTE_QUESTIONS} questions left</p>
@@ -81,7 +81,7 @@ export default function AskAiTaste() {
       <div ref={scrollRef} className="max-h-[420px] overflow-y-auto space-y-4 pr-1">
         {messages.length === 0 ? (
           <div className="space-y-3">
-            <p className="text-sm text-cream-50/80 leading-relaxed">
+            <p className="text-sm text-ink-950/80 leading-relaxed">
               Ask anything about clinical medicine or AMC exam prep. Answers are grounded in Murtagh, RACGP, AMC Handbook and eTG. No signup needed for the first {MAX_TASTE_QUESTIONS} questions.
             </p>
             <div className="grid sm:grid-cols-2 gap-2">
@@ -91,7 +91,7 @@ export default function AskAiTaste() {
                   type="button"
                   onClick={() => ask(p)}
                   disabled={loading}
-                  className="text-left rounded-xl border border-cream-50/15 bg-ink-950/60 hover:bg-ink-950 hover:border-saffron-700 px-3 py-2.5 text-xs text-cream-50/80 transition disabled:opacity-50"
+                  className="text-left rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 hover:border-saffron-700 px-3 py-2.5 text-xs text-ink-950/80 transition disabled:opacity-50"
                 >
                   {p}
                 </button>
@@ -104,8 +104,8 @@ export default function AskAiTaste() {
               <div
                 className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   m.role === "user"
-                    ? "bg-saffron-600/90 text-white"
-                    : "bg-ink-900/80 text-cream-50 border border-cream-50/15"
+                    ? "bg-saffron-600/90 text-ink-950"
+                    : "bg-cream-100/80 text-ink-950 border border-ink-950/15"
                 }`}
               >
                 {m.content}
@@ -115,7 +115,7 @@ export default function AskAiTaste() {
         )}
         {loading && (
           <div className="flex justify-start">
-            <div className="rounded-2xl px-4 py-2.5 bg-ink-900/60 text-xs text-cream-50/65 border border-cream-50/15">
+            <div className="rounded-2xl px-4 py-2.5 bg-cream-100/60 text-xs text-ink-950/65 border border-ink-950/15">
               Thinking…
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function AskAiTaste() {
           <p className="text-sm font-semibold text-saffron-200 mb-1">
             You&apos;ve used your {MAX_TASTE_QUESTIONS} free questions ✨
           </p>
-          <p className="text-xs text-cream-50/80 mb-4">
+          <p className="text-xs text-ink-950/80 mb-4">
             Sign up free (no credit card) and keep asking. Free plan also unlocks 20 MCQs/day, 1 AMC Clinical RolePlay/day, and 2 AMC Handbook RolePlays/day.
           </p>
           <div className="flex flex-wrap gap-2">
@@ -139,7 +139,7 @@ export default function AskAiTaste() {
             </Link>
             <Link
               href="/dashboard/ask-ai"
-              className="inline-flex items-center justify-center rounded-xl border border-cream-50/15 bg-ink-950/60 hover:bg-ink-950 text-cream-50/90 font-semibold text-sm px-4 py-2 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-4 py-2 transition"
             >
               Already a member? Continue →
             </Link>
@@ -158,7 +158,7 @@ export default function AskAiTaste() {
             onChange={(e) => setInput(e.target.value)}
             disabled={loading}
             placeholder="Ask a clinical or AMC-prep question…"
-            className="flex-1 rounded-xl border border-cream-50/15 bg-ink-950/70 px-4 py-2.5 text-sm text-cream-50 placeholder:text-cream-50/55 focus:border-saffron-600 focus:outline-none focus:ring-2 focus:ring-saffron-700/30"
+            className="flex-1 rounded-xl border border-ink-950/15 bg-cream-50/70 px-4 py-2.5 text-sm text-ink-950 placeholder:text-ink-950/55 focus:border-saffron-600 focus:outline-none focus:ring-2 focus:ring-saffron-700/30"
           />
           <button
             type="submit"

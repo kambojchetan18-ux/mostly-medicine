@@ -126,7 +126,7 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
+      <p className="text-ink-950 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
@@ -164,7 +164,7 @@ const learningPath = [
 
 export default function OsceGuidePage() {
   return (
-    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(learningPathSchema) }} />
@@ -183,17 +183,17 @@ export default function OsceGuidePage() {
             OSCE Preparation · Updated May 2026
           </p>
           <h1
-            className="font-display font-bold text-white mb-5"
+            className="font-display font-bold text-ink-950 mb-5"
             style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
           >
             OSCE Guide for IMGs: How to Prepare for the AMC Clinical Exam
           </h1>
-          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
-            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-ink-950/65 text-base leading-relaxed mb-3">
+            By <span className="text-ink-950/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           The AMC Clinical Exam is a structured OSCE — around 16 stations of 8 minutes each, marked on communication, history-taking, counselling, examination, and procedural skills. Most IMGs lose marks not on knowledge but on structure: jumping to management, missing summarisation, forgetting safety-netting at closure. This guide walks the four communication frameworks that fix that, the day-of-exam strategy that buys you back time, and the practice modules that turn the structure into reflex.
         </blockquote>
 
@@ -233,8 +233,8 @@ export default function OsceGuidePage() {
                     {s.pill}
                   </span>
                 </div>
-                <h3 className="text-base font-semibold text-white mb-1">{s.title}</h3>
-                <p className="text-sm text-cream-50/65 leading-relaxed">{s.desc}</p>
+                <h3 className="text-base font-semibold text-ink-950 mb-1">{s.title}</h3>
+                <p className="text-sm text-ink-950/65 leading-relaxed">{s.desc}</p>
                 <p className="mt-2 text-xs font-semibold text-brand-400 group-hover:text-brand-300">
                   Read the guide →
                 </p>
@@ -249,8 +249,8 @@ export default function OsceGuidePage() {
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Mnemonic</th>
                 <th className="px-4 py-3 font-semibold">Use case</th>
@@ -358,44 +358,44 @@ export default function OsceGuidePage() {
         <div className="not-prose my-6 grid sm:grid-cols-2 gap-4">
           <Link
             href="/dashboard/cat2"
-            className="group rounded-2xl border border-pink-800/40 bg-gradient-to-br from-pink-950/60 to-ink-950/60 hover:border-pink-500/60 hover:from-pink-950/80 p-5 transition-all"
+            className="group rounded-2xl border border-pink-800/40 bg-gradient-to-br from-pink-950/60 to-cream-50/60 hover:border-pink-500/60 hover:from-pink-950/80 p-5 transition-all"
           >
             <p className="text-[10px] font-bold uppercase tracking-widest text-pink-300 mb-2">Step 1 · Handbook scenarios</p>
-            <h3 className="text-base font-semibold text-white mb-1">AMC Handbook AI RolePlay</h3>
-            <p className="text-sm text-cream-50/65 leading-relaxed">
+            <h3 className="text-base font-semibold text-ink-950 mb-1">AMC Handbook AI RolePlay</h3>
+            <p className="text-sm text-ink-950/65 leading-relaxed">
               Official MCAT scenarios with AI patients. Voice mode, examiner-grade feedback. Free plan: 1/day.
             </p>
             <p className="mt-3 text-xs font-semibold text-pink-300 group-hover:text-pink-200">Open module →</p>
           </Link>
           <Link
             href="/dashboard/ai-roleplay"
-            className="group rounded-2xl border border-fuchsia-800/40 bg-gradient-to-br from-fuchsia-950/60 to-ink-950/60 hover:border-fuchsia-500/60 hover:from-fuchsia-950/80 p-5 transition-all"
+            className="group rounded-2xl border border-fuchsia-800/40 bg-gradient-to-br from-fuchsia-950/60 to-cream-50/60 hover:border-fuchsia-500/60 hover:from-fuchsia-950/80 p-5 transition-all"
           >
             <p className="text-[10px] font-bold uppercase tracking-widest text-fuchsia-300 mb-2">Step 2 · Beyond handbook</p>
-            <h3 className="text-base font-semibold text-white mb-1">AMC Clinical AI RolePlay</h3>
-            <p className="text-sm text-cream-50/65 leading-relaxed">
+            <h3 className="text-base font-semibold text-ink-950 mb-1">AMC Clinical AI RolePlay</h3>
+            <p className="text-sm text-ink-950/65 leading-relaxed">
               Synthesised scenarios beyond the handbook. Variable difficulty. Free plan: 1/day.
             </p>
             <p className="mt-3 text-xs font-semibold text-fuchsia-300 group-hover:text-fuchsia-200">Open module →</p>
           </Link>
           <Link
             href="/dashboard/ai-roleplay/live"
-            className="group rounded-2xl border border-rose-800/40 bg-gradient-to-br from-rose-950/60 to-ink-950/60 hover:border-rose-500/60 hover:from-rose-950/80 p-5 transition-all"
+            className="group rounded-2xl border border-rose-800/40 bg-gradient-to-br from-rose-950/60 to-cream-50/60 hover:border-rose-500/60 hover:from-rose-950/80 p-5 transition-all"
           >
             <p className="text-[10px] font-bold uppercase tracking-widest text-rose-300 mb-2">Step 3 · Live peer</p>
-            <h3 className="text-base font-semibold text-white mb-1">AMC Peer RolePlay</h3>
-            <p className="text-sm text-cream-50/65 leading-relaxed">
+            <h3 className="text-base font-semibold text-ink-950 mb-1">AMC Peer RolePlay</h3>
+            <p className="text-sm text-ink-950/65 leading-relaxed">
               Pair with another IMG over live video. Real candidate, real feedback, station-style.
             </p>
             <p className="mt-3 text-xs font-semibold text-rose-300 group-hover:text-rose-200">Open module →</p>
           </Link>
           <Link
             href="/try-amc-clinical-roleplay"
-            className="group rounded-2xl border border-saffron-800/40 bg-gradient-to-br from-saffron-950/60 to-ink-950/60 hover:border-saffron-500/60 hover:from-saffron-950/80 p-5 transition-all"
+            className="group rounded-2xl border border-saffron-800/40 bg-gradient-to-br from-saffron-950/60 to-cream-50/60 hover:border-saffron-500/60 hover:from-saffron-950/80 p-5 transition-all"
           >
             <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-2">No signup · Try first</p>
-            <h3 className="text-base font-semibold text-white mb-1">Free taste — no signup</h3>
-            <p className="text-sm text-cream-50/65 leading-relaxed">
+            <h3 className="text-base font-semibold text-ink-950 mb-1">Free taste — no signup</h3>
+            <p className="text-sm text-ink-950/65 leading-relaxed">
               5-turn chest pain scenario, runs entirely without an account. See the format before you commit.
             </p>
             <p className="mt-3 text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">Try it now →</p>
@@ -434,23 +434,23 @@ export default function OsceGuidePage() {
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-cream-50/80 leading-relaxed">{f.a}</p>
+              <p className="text-sm font-semibold text-ink-950 mb-2">{f.q}</p>
+              <p className="text-sm text-ink-950/80 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-cream-50/55 space-y-1">
-          <p><strong className="text-cream-50/65">Last reviewed:</strong> 4 May 2026</p>
-          <p><strong className="text-cream-50/65">Next review:</strong> 4 November 2026</p>
-          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-ink-950/55 space-y-1">
+          <p><strong className="text-ink-950/65">Last reviewed:</strong> 4 May 2026</p>
+          <p><strong className="text-ink-950/65">Next review:</strong> 4 November 2026</p>
+          <p><strong className="text-ink-950/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-ink-950/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
-          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
+          <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Australian Medical Council — clinical exam information</a></li>
             <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia — Cultural Safety Strategy</a></li>

@@ -7,7 +7,7 @@ import { features } from "@/config/features";
 export default function BetaBanner() {
   if (!features.betaMode) return null;
   return (
-    <div className="w-full bg-saffron-600 text-white text-center text-xs sm:text-sm font-medium px-4 py-2">
+    <div className="w-full bg-saffron-600 text-ink-950 text-center text-xs sm:text-sm font-medium px-4 py-2">
       🚀 Mostly Medicine is in free beta — every feature unlocked. We&rsquo;d love your
       feedback as we iterate.
     </div>

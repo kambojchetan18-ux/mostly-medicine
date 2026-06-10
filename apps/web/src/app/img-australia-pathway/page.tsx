@@ -113,7 +113,7 @@ const faqSchema = {
 
 export default function ImgAustraliaPathwayPage() {
   return (
-    <main className="min-h-screen bg-ink-950 text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -133,7 +133,7 @@ export default function ImgAustraliaPathwayPage() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -147,7 +147,7 @@ export default function ImgAustraliaPathwayPage() {
           <h1 className="font-display font-bold mb-4">
             The Complete IMG Pathway to Practising Medicine in Australia
           </h1>
-          <p className="text-cream-50/65 text-lg leading-relaxed">
+          <p className="text-ink-950/65 text-lg leading-relaxed">
             From your first EPIC verification step to fellowship as a
             consultant — every gate, every timeline, every common detour.
             Built for International Medical Graduates planning their move to
@@ -452,7 +452,7 @@ export default function ImgAustraliaPathwayPage() {
           <p>
             <Link
               href="/auth/signup"
-              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Start your AMC journey free →
             </Link>
@@ -510,7 +510,7 @@ export default function ImgAustraliaPathwayPage() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
+        <footer className="mt-16 pt-8 border-t border-ink-950/10 text-sm text-ink-950/55">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official information, refer to{" "}

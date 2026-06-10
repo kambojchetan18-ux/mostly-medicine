@@ -45,16 +45,16 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
 function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
   return (
-    <article className="not-prose mb-8 rounded-2xl border border-cream-50/10 bg-ink-950/40 p-6">
+    <article className="not-prose mb-8 rounded-2xl border border-ink-950/10 bg-cream-50/40 p-6">
       <div className="mb-3 flex items-center gap-3">
         <span className="rounded-full bg-brand-900/40 border border-brand-700/40 text-brand-300 text-xs font-bold uppercase tracking-widest px-3 py-1">
           Question {index + 1}
         </span>
-        <span className="text-xs uppercase tracking-widest text-cream-50/55">
+        <span className="text-xs uppercase tracking-widest text-ink-950/55">
           {q.subtopic} · {q.difficulty}
         </span>
       </div>
-      <p className="text-cream-50 leading-relaxed mb-4">{q.stem}</p>
+      <p className="text-ink-950 leading-relaxed mb-4">{q.stem}</p>
       <ol className="space-y-2 mb-4">
         {q.options.map((opt) => {
           const isCorrect = opt.label === q.correctAnswer;
@@ -64,7 +64,7 @@ function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
               className={`flex gap-3 rounded-lg border px-4 py-2 text-sm ${
                 isCorrect
                   ? "border-saffron-700/40 bg-saffron-900/20 text-saffron-200"
-                  : "border-cream-50/10 bg-ink-950/40 text-cream-50/80"
+                  : "border-ink-950/10 bg-cream-50/40 text-ink-950/80"
               }`}
             >
               <span className="font-bold w-5 shrink-0">{opt.label}.</span>
@@ -78,11 +78,11 @@ function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
           );
         })}
       </ol>
-      <details className="group rounded-lg border border-cream-50/10 bg-ink-950/60 p-4">
+      <details className="group rounded-lg border border-ink-950/10 bg-cream-50/60 p-4">
         <summary className="cursor-pointer list-none text-sm font-bold text-brand-300 group-open:text-brand-200">
           Show explanation
         </summary>
-        <p className="mt-3 text-sm leading-relaxed text-cream-50/80">
+        <p className="mt-3 text-sm leading-relaxed text-ink-950/80">
           {q.explanation}
         </p>
       </details>
@@ -159,7 +159,7 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
   };
 
   return (
-    <main className="min-h-screen bg-ink-950 text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -181,7 +181,7 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -195,23 +195,23 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
           <h1 className="font-display font-bold mb-4">
             AMC {spec.name} MCQ Practice — {roundedCount}+ Questions for IMGs
           </h1>
-          <p className="text-cream-50/65 text-lg leading-relaxed">
+          <p className="text-ink-950/65 text-lg leading-relaxed">
             {spec.tagline}
           </p>
-          <p className="text-cream-50/55 text-sm mt-4">
+          <p className="text-ink-950/55 text-sm mt-4">
             {totalCount} questions in the full bank · 5 free samples below ·
             Spaced repetition + AI explanations on the free tier.
           </p>
           <div className="not-prose mt-6 flex gap-3">
             <Link
               href="/auth/signup"
-              className="bg-brand-600 hover:bg-brand-500 text-white px-6 py-3 rounded-xl text-sm font-bold no-underline"
+              className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-6 py-3 rounded-xl text-sm font-bold no-underline"
             >
               Unlock full {spec.short} bank
             </Link>
             <Link
               href="/amc-mcq"
-              className="border border-cream-50/15 hover:border-slate-500 text-cream-50/90 px-6 py-3 rounded-xl text-sm font-bold no-underline"
+              className="border border-ink-950/15 hover:border-slate-500 text-ink-950/90 px-6 py-3 rounded-xl text-sm font-bold no-underline"
             >
               All specialties
             </Link>
@@ -234,7 +234,7 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
             panel so you can self-test first.
           </p>
           {samples.length === 0 ? (
-            <p className="not-prose text-cream-50/65">
+            <p className="not-prose text-ink-950/65">
               Sample questions for this specialty are being prepared. Check
               back soon, or browse all specialties below.
             </p>
@@ -255,7 +255,7 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
           <p className="not-prose">
             <Link
               href="/auth/signup"
-              className="inline-block mt-2 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-2 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Sign up free →
             </Link>
@@ -272,7 +272,7 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
           ))}
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-cream-50/10 text-sm text-cream-50/55">
+        <footer className="mt-16 pt-8 border-t border-ink-950/10 text-sm text-ink-950/55">
           <p>
             Sample MCQs and explanations are educational content from Mostly
             Medicine, mapped to publicly available Australian guidelines. For

@@ -38,8 +38,8 @@ const PLANS: Plan[] = [
     priceMonthly: 0,
     priceYearly: 0,
     tagline: "Get started — no card needed",
-    accent: "border-cream-50/15",
-    tick: "text-cream-50/55",
+    accent: "border-ink-950/15",
+    tick: "text-ink-950/55",
     features: [
       "5 AMC MCQs per day",
       "1 AMC Handbook AI RolePlay per day",
@@ -183,7 +183,7 @@ export default async function PricingPage() {
   const checkoutHref = user ? "/dashboard/billing" : "/auth/signup?next=/dashboard/billing";
 
   return (
-    <main className="min-h-screen bg-ink-950 text-white">
+    <main className="min-h-screen bg-cream-50 text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(offersSchema) }}
@@ -199,7 +199,7 @@ export default async function PricingPage() {
         </Link>
         <Link
           href={user ? "/dashboard" : "/auth/login"}
-          className="text-sm font-semibold text-cream-50/80 hover:text-white"
+          className="text-sm font-semibold text-ink-950/80 hover:text-ink-950"
         >
           {user ? "Dashboard" : "Sign in"}
         </Link>
@@ -214,7 +214,7 @@ export default async function PricingPage() {
           <h1 className="font-display mt-3 text-4xl font-bold sm:text-5xl">
             Start free. Upgrade when you&apos;re serious.
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-cream-50/65">
+          <p className="mt-4 text-lg leading-relaxed text-ink-950/65">
             Built for International Medical Graduates preparing for the AMC. No
             credit card to start — pay only when you want unlimited practice.
           </p>
@@ -230,27 +230,27 @@ export default async function PricingPage() {
               }`}
             >
               {plan.highlight && (
-                <span className="absolute -top-3 left-6 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold text-white">
+                <span className="absolute -top-3 left-6 rounded-full bg-amber-500 px-2.5 py-0.5 text-[10px] font-bold text-ink-950">
                   MOST POPULAR
                 </span>
               )}
-              <h2 className="text-lg font-bold text-white">{plan.name}</h2>
-              <p className="mt-2 text-3xl font-bold text-white">
+              <h2 className="text-lg font-bold text-ink-950">{plan.name}</h2>
+              <p className="mt-2 text-3xl font-bold text-ink-950">
                 {plan.priceMonthly === 0 ? "A$0" : `A$${plan.priceMonthly}`}
                 {plan.priceMonthly > 0 && (
-                  <span className="text-sm font-normal text-cream-50/65">/mo</span>
+                  <span className="text-sm font-normal text-ink-950/65">/mo</span>
                 )}
               </p>
               {plan.priceMonthly > 0 ? (
-                <p className="mt-0.5 text-xs text-cream-50/55">
+                <p className="mt-0.5 text-xs text-ink-950/55">
                   or A${plan.priceYearly}/yr · save ~17%
                 </p>
               ) : (
-                <p className="mt-0.5 text-xs text-cream-50/55">forever</p>
+                <p className="mt-0.5 text-xs text-ink-950/55">forever</p>
               )}
-              <p className="mt-2 text-xs text-cream-50/65">{plan.tagline}</p>
+              <p className="mt-2 text-xs text-ink-950/65">{plan.tagline}</p>
 
-              <ul className="mt-5 space-y-2 text-sm text-cream-50/80">
+              <ul className="mt-5 space-y-2 text-sm text-ink-950/80">
                 {plan.features.map((f) => (
                   <li key={f} className="flex gap-2">
                     <span className={plan.tick}>{plan.key === "free" ? "•" : "✓"}</span>
@@ -262,14 +262,14 @@ export default async function PricingPage() {
               {plan.key === "free" ? (
                 <Link
                   href="/auth/signup"
-                  className="mt-6 block w-full rounded-xl border border-cream-50/20 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-white/5"
+                  className="mt-6 block w-full rounded-xl border border-ink-950/20 px-4 py-2.5 text-center text-sm font-semibold text-ink-950 hover:bg-white/5"
                 >
                   Start free
                 </Link>
               ) : (
                 <Link
                   href={checkoutHref}
-                  className={`mt-6 block w-full rounded-xl px-4 py-2.5 text-center text-sm font-bold text-white shadow ${
+                  className={`mt-6 block w-full rounded-xl px-4 py-2.5 text-center text-sm font-bold text-ink-950 shadow ${
                     plan.key === "pro"
                       ? "bg-amber-500 hover:bg-amber-600"
                       : "bg-violet-600 hover:bg-violet-700"
@@ -282,7 +282,7 @@ export default async function PricingPage() {
           ))}
         </div>
 
-        <p className="mt-6 text-center text-xs text-cream-50/55">
+        <p className="mt-6 text-center text-xs text-ink-950/55">
           Payments processed securely by Stripe in AUD. Cancel anytime — no lock-in.
         </p>
 
@@ -304,9 +304,9 @@ export default async function PricingPage() {
                 d: "Examiner-style feedback after every clinical roleplay, aligned to the AMC Handbook, so each session tells you exactly what to fix.",
               },
             ].map((b) => (
-              <div key={b.t} className="rounded-xl border border-cream-50/10 bg-white/[0.02] p-4">
-                <h3 className="text-sm font-bold text-white">{b.t}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-cream-50/65">{b.d}</p>
+              <div key={b.t} className="rounded-xl border border-ink-950/10 bg-white/[0.02] p-4">
+                <h3 className="text-sm font-bold text-ink-950">{b.t}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-ink-950/65">{b.d}</p>
               </div>
             ))}
           </div>
@@ -315,11 +315,11 @@ export default async function PricingPage() {
         {/* FAQ */}
         <div className="mx-auto mt-20 max-w-3xl">
           <h2 className="font-display text-2xl font-bold sm:text-3xl">Pricing FAQ</h2>
-          <dl className="mt-6 divide-y divide-cream-50/10 border-y border-cream-50/10">
+          <dl className="mt-6 divide-y divide-ink-950/10 border-y border-ink-950/10">
             {FAQS.map((f) => (
               <div key={f.q} className="py-5">
-                <dt className="text-sm font-semibold text-white">{f.q}</dt>
-                <dd className="mt-2 text-sm leading-relaxed text-cream-50/65">{f.a}</dd>
+                <dt className="text-sm font-semibold text-ink-950">{f.q}</dt>
+                <dd className="mt-2 text-sm leading-relaxed text-ink-950/65">{f.a}</dd>
               </div>
             ))}
           </dl>
@@ -328,12 +328,12 @@ export default async function PricingPage() {
         {/* Closing CTA */}
         <div className="mx-auto mt-16 max-w-2xl rounded-2xl border border-saffron-500/30 bg-gradient-to-br from-saffron-500/10 to-transparent p-8 text-center">
           <h2 className="font-display text-2xl font-bold">Ready to pass the AMC?</h2>
-          <p className="mt-2 text-sm text-cream-50/65">
+          <p className="mt-2 text-sm text-ink-950/65">
             Start free today — upgrade to Pro the moment you want unlimited practice.
           </p>
           <Link
             href="/auth/signup"
-            className="mt-5 inline-block rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-white hover:bg-brand-500"
+            className="mt-5 inline-block rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-ink-950 hover:bg-brand-500"
           >
             Create your free account
           </Link>

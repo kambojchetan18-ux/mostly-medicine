@@ -119,14 +119,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
+      <p className="text-ink-950 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -144,17 +144,17 @@ export default function Page() {
             RMO Jobs · Updated May 2026
           </p>
           <h1
-            className="font-display font-bold text-white mb-5"
+            className="font-display font-bold text-ink-950 mb-5"
             style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
           >
             How IMGs Land Their First RMO Job in Australia: State-by-State Strategy for 2026
           </h1>
-          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
-            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-ink-950/65 text-base leading-relaxed mb-3">
+            By <span className="text-ink-950/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           Australian RMO recruitment runs state-by-state on overlapping cycles between May and September each year, with most positions starting the following February. IMGs need provisional or limited AHPRA registration before they can hold a contract, and Distribution Priority Area (DPA) restrictions push 482-visa IMGs toward regional and outer-metro hospitals. The realistic timeline from arrival in Australia to first contract is 3&ndash;6 months if your AMC, AHPRA and English are already complete.
         </blockquote>
 
@@ -270,8 +270,8 @@ is an AMC pass-graduate IMG currently completing her recency of practice in Guru
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Convention</th>
                 <th className="px-4 py-3 font-semibold">Australian hospital CV</th>
@@ -368,8 +368,8 @@ is an AMC pass-graduate IMG currently completing her recency of practice in Guru
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">PGY year</th>
                 <th className="px-4 py-3 font-semibold">NSW</th>
@@ -450,8 +450,8 @@ is an AMC pass-graduate IMG currently completing her recency of practice in Guru
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-cream-50/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
+              <p className="text-sm font-semibold text-ink-950 mb-2">{f.q}</p>
+              <p className="text-sm text-ink-950/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
             </div>
           ))}
         </div>
@@ -470,15 +470,15 @@ is an AMC pass-graduate IMG currently completing her recency of practice in Guru
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-cream-50/55 space-y-1">
-          <p><strong className="text-cream-50/65">Last reviewed:</strong> 7 May 2026</p>
-          <p><strong className="text-cream-50/65">Next review:</strong> 7 November 2026</p>
-          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-ink-950/55 space-y-1">
+          <p><strong className="text-ink-950/65">Last reviewed:</strong> 7 May 2026</p>
+          <p><strong className="text-ink-950/65">Next review:</strong> 7 November 2026</p>
+          <p><strong className="text-ink-950/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-ink-950/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
-          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
+          <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.medicalboard.gov.au/Registration-Standards.aspx" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA &mdash; Medical Board of Australia Registration Standards</a></li>
             <li><a href="https://www.doctorconnect.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Health and Aged Care &mdash; DoctorConnect, Distribution Priority Area map</a></li>

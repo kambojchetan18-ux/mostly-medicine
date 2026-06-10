@@ -154,19 +154,19 @@ export default function TasteClient() {
       {/* Patient header */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-cream-50/55">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-950/55">
             Patient
           </p>
           <p className="text-sm font-semibold text-ink-950">
-            {SAMPLE.patientName} <span className="font-normal text-cream-50/45">· {SAMPLE.patientAgeGender}</span>
+            {SAMPLE.patientName} <span className="font-normal text-ink-950/45">· {SAMPLE.patientAgeGender}</span>
           </p>
         </div>
-        <span className="hidden text-cream-50/80 sm:inline">·</span>
+        <span className="hidden text-ink-950/80 sm:inline">·</span>
         <div className="hidden sm:block">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-cream-50/55">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-950/55">
             Setting
           </p>
-          <p className="text-xs text-cream-50/40">{SAMPLE.setting}</p>
+          <p className="text-xs text-ink-950/40">{SAMPLE.setting}</p>
         </div>
         <span
           className={`ml-auto rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${
@@ -200,7 +200,7 @@ export default function TasteClient() {
             <div
               className={`max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                 m.role === "user"
-                  ? "rounded-br-sm bg-fuchsia-600 text-white"
+                  ? "rounded-br-sm bg-fuchsia-600 text-ink-950"
                   : "rounded-bl-sm border border-slate-200 bg-white text-ink-950"
               }`}
             >
@@ -252,14 +252,14 @@ export default function TasteClient() {
           <button
             type="submit"
             disabled={sending || !draft.trim()}
-            className="self-end rounded-xl bg-fuchsia-600 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-fuchsia-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="self-end rounded-xl bg-fuchsia-600 px-4 py-3 text-sm font-semibold text-ink-950 shadow hover:bg-fuchsia-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {sending ? "…" : "Send"}
           </button>
         </form>
       )}
 
-      <p className="text-center text-xs text-cream-50/55">
+      <p className="text-center text-xs text-ink-950/55">
         {sessionDone
           ? "Session complete — see your read below"
           : `${turnsRemaining} ${turnsRemaining === 1 ? "turn" : "turns"} left in your free taste`}
@@ -273,31 +273,31 @@ export default function TasteClient() {
           </p>
 
           {classifying ? (
-            <p className="mt-3 text-sm text-cream-50/45">
+            <p className="mt-3 text-sm text-ink-950/45">
               Reading your consultation…
             </p>
           ) : result ? (
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-slate-200 bg-white p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-cream-50/55">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-950/55">
                   Differentials explored
                 </p>
                 <p className="mt-1 text-2xl font-bold text-ink-950">
-                  {result.differentialsExplored} <span className="text-base font-normal text-cream-50/55">of 5</span>
+                  {result.differentialsExplored} <span className="text-base font-normal text-ink-950/55">of 5</span>
                 </p>
-                <p className="mt-1 text-xs text-cream-50/45">
+                <p className="mt-1 text-xs text-ink-950/45">
                   Pain character · risk factors · family history · prior symptoms ·
                   examination
                 </p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-cream-50/55">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-950/55">
                   Communication style
                 </p>
                 <p className="mt-1 text-2xl font-bold capitalize text-ink-950">
                   {result.style}
                 </p>
-                <p className="mt-1 text-xs text-cream-50/45">
+                <p className="mt-1 text-xs text-ink-950/45">
                   Inferred from how you opened, probed, and closed each turn.
                 </p>
               </div>
@@ -308,7 +308,7 @@ export default function TasteClient() {
             <p className="text-sm font-semibold text-ink-950">
               You just experienced 1 of 152 AMC Clinical scenarios.
             </p>
-            <p className="mt-1 text-sm text-cream-50/40">
+            <p className="mt-1 text-sm text-ink-950/40">
               Sign up free to save this score, get the full examiner feedback, and
               unlock the rest of the library — paediatrics, psychiatry, obstetrics,
               emergency, and 12 more specialties.
@@ -316,13 +316,13 @@ export default function TasteClient() {
             <div className="mt-4 flex flex-col gap-2 sm:flex-row">
               <Link
                 href="/auth/signup"
-                className="inline-flex items-center justify-center rounded-xl bg-fuchsia-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-fuchsia-700"
+                className="inline-flex items-center justify-center rounded-xl bg-fuchsia-600 px-5 py-3 text-sm font-semibold text-ink-950 shadow hover:bg-fuchsia-700"
               >
                 Sign up free → unlock 151 more scenarios
               </Link>
               <Link
                 href="/amc-clinical-stations-guide"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-cream-50/40 hover:bg-slate-50"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-ink-950/40 hover:bg-slate-50"
               >
                 Read about our methodology
               </Link>

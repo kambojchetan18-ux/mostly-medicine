@@ -100,7 +100,7 @@ export default function Page() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl bg-saffron-600 hover:bg-saffron-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl bg-saffron-600 hover:bg-saffron-700 px-6 py-3 text-sm font-bold text-ink-950 shadow-sm transition-colors"
             >
               Start studying free →
             </Link>

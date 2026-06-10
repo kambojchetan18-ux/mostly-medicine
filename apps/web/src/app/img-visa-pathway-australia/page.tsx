@@ -116,14 +116,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
+      <p className="text-ink-950 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -141,17 +141,17 @@ export default function Page() {
             IMG Visa Pathway · Updated May 2026
           </p>
           <h1
-            className="font-display font-bold text-white mb-5"
+            className="font-display font-bold text-ink-950 mb-5"
             style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
           >
             IMG Visa Pathway in Australia 2026: From Student or Graduate to Permanent Residency
           </h1>
-          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
-            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-ink-950/65 text-base leading-relaxed mb-3">
+            By <span className="text-ink-950/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           Most IMG doctors reach Australian PR through one of three stacks: (1) Australian medical graduate &rarr; 485 Temporary Graduate &rarr; 482 Skills in Demand &rarr; 186 Employer Nomination, (2) overseas IMG &rarr; direct 482 sponsored by an Australian hospital &rarr; 186, or (3) regional employer &rarr; DAMA &rarr; 186. Time-to-PR sits realistically at 4&ndash;6 years after general AHPRA registration. Skilled Independent (subclass 189) is technically possible but rare for doctors who already have a sponsoring employer.
         </blockquote>
 
@@ -275,8 +275,8 @@ completed AMC Part 1 and Part 2 in Australia and is currently doing recency of p
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Pathway</th>
                 <th className="px-4 py-3 font-semibold">Years to RMO start</th>
@@ -361,8 +361,8 @@ completed AMC Part 1 and Part 2 in Australia and is currently doing recency of p
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Item</th>
                 <th className="px-4 py-3 font-semibold">Approximate cost (A$)</th>
@@ -421,8 +421,8 @@ completed AMC Part 1 and Part 2 in Australia and is currently doing recency of p
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-cream-50/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
+              <p className="text-sm font-semibold text-ink-950 mb-2">{f.q}</p>
+              <p className="text-sm text-ink-950/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
             </div>
           ))}
         </div>
@@ -441,15 +441,15 @@ completed AMC Part 1 and Part 2 in Australia and is currently doing recency of p
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-cream-50/55 space-y-1">
-          <p><strong className="text-cream-50/65">Last reviewed:</strong> 8 May 2026</p>
-          <p><strong className="text-cream-50/65">Next review:</strong> 8 November 2026</p>
-          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-ink-950/55 space-y-1">
+          <p><strong className="text-ink-950/65">Last reviewed:</strong> 8 May 2026</p>
+          <p><strong className="text-ink-950/65">Next review:</strong> 8 November 2026</p>
+          <p><strong className="text-ink-950/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-ink-950/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
-          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
+          <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://immi.homeaffairs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Visa subclass pages (482, 485, 494, 491, 186, 189, 191)</a></li>
             <li><a href="https://immi.homeaffairs.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Department of Home Affairs &mdash; Designated Area Migration Agreements (DAMA)</a></li>

@@ -7,7 +7,7 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-slate-50 text-gray-900 antialiased;
+    @apply bg-cream-50 text-ink-950 antialiased;
   }
 
   /* Rich custom scrollbar — v3 saffron palette */

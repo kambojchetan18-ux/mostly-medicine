@@ -88,7 +88,7 @@ function LoginInner() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="mb-6">
-          <Link href="/" className="text-sm text-cream-50/65 hover:text-cream-50/45 transition">← Home</Link>
+          <Link href="/" className="text-sm text-ink-950/65 hover:text-ink-950/45 transition">← Home</Link>
           <h1 className="text-2xl font-bold text-gray-900 mt-3 mb-1">Welcome back</h1>
           <p className="text-gray-500 text-sm">Log in to Mostly Medicine</p>
         </div>
@@ -144,7 +144,7 @@ function LoginInner() {
           {error && <p className="text-red-600 text-sm">{error}</p>}
           {info  && <p className="text-green-600 text-sm">{info}</p>}
 
-          <button type="submit" disabled={loading} className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
+          <button type="submit" disabled={loading} className="w-full bg-brand-600 hover:bg-brand-700 text-ink-950 font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
             {loading ? "Logging in…" : "Log In"}
           </button>
         </form>

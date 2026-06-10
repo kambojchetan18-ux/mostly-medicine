@@ -117,14 +117,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-cream-50 text-base leading-relaxed">{children}</p>
+      <p className="text-ink-950 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -142,17 +142,17 @@ export default function Page() {
             AHPRA Registration · Updated May 2026
           </p>
           <h1
-            className="font-display font-bold text-white mb-5"
+            className="font-display font-bold text-ink-950 mb-5"
             style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
           >
             AHPRA Registration for International Medical Graduates: 2026 Step-by-Step Guide
           </h1>
-          <p className="text-cream-50/65 text-base leading-relaxed mb-3">
-            By <span className="text-cream-50/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-ink-950/65 text-base leading-relaxed mb-3">
+            By <span className="text-ink-950/90 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-cream-50 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
           Most IMGs need provisional registration first, via the Standard pathway or the Competent Authority pathway. Realistic timeline from submitting your EPIC verification request to receiving a registration number: 4–6 months. The bottleneck is almost never AHPRA processing — it is document completeness.
         </blockquote>
 
@@ -197,8 +197,8 @@ export default function Page() {
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Registration type</th>
                 <th className="px-4 py-3 font-semibold">Who holds it</th>
@@ -247,8 +247,8 @@ export default function Page() {
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Document</th>
                 <th className="px-4 py-3 font-semibold">Notes</th>
@@ -333,8 +333,8 @@ export default function Page() {
         </CitationHook>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Test</th>
                 <th className="px-4 py-3 font-semibold">Minimum overall</th>
@@ -399,8 +399,8 @@ export default function Page() {
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Fee item</th>
                 <th className="px-4 py-3 font-semibold">Amount (A$)</th>
@@ -435,7 +435,7 @@ export default function Page() {
           </table>
         </div>
 
-        <p className="text-xs text-cream-50/55">
+        <p className="text-xs text-ink-950/55">
           Source: AHPRA, <em>Registration fees for medical practitioners</em>, 2026 registration year (<a href="https://www.ahpra.gov.au/Registration/Registration-Fees" target="_blank" rel="noopener noreferrer">ahpra.gov.au</a>).
         </p>
 
@@ -452,8 +452,8 @@ export default function Page() {
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Phase</th>
                 <th className="px-4 py-3 font-semibold">Typical duration</th>
@@ -500,8 +500,8 @@ export default function Page() {
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-cream-50/90">
-            <thead className="bg-white/5 text-cream-50/80">
+          <table className="w-full text-sm text-left text-ink-950/90">
+            <thead className="bg-white/5 text-ink-950/80">
               <tr>
                 <th className="px-4 py-3 font-semibold">Error</th>
                 <th className="px-4 py-3 font-semibold">What happens</th>
@@ -585,23 +585,23 @@ export default function Page() {
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-white mb-2">{f.q}</p>
-              <p className="text-sm text-cream-50/80 leading-relaxed">{f.a}</p>
+              <p className="text-sm font-semibold text-ink-950 mb-2">{f.q}</p>
+              <p className="text-sm text-ink-950/80 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-cream-50/55 space-y-1">
-          <p><strong className="text-cream-50/65">Last reviewed:</strong> 3 May 2026</p>
-          <p><strong className="text-cream-50/65">Next review:</strong> 3 November 2026</p>
-          <p><strong className="text-cream-50/65">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-cream-50/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-ink-950/55 space-y-1">
+          <p><strong className="text-ink-950/65">Last reviewed:</strong> 3 May 2026</p>
+          <p><strong className="text-ink-950/65">Next review:</strong> 3 November 2026</p>
+          <p><strong className="text-ink-950/65">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-ink-950/65">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-cream-50/65">
-          <p className="font-semibold text-cream-50/80 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
+          <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.ahpra.gov.au/Registration/Registration-Fees" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AHPRA Registration Fees 2026</a></li>
             <li><a href="https://www.medicalboard.gov.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">Medical Board of Australia, English Language Skills Registration Standard</a></li>

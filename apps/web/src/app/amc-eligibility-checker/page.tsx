@@ -57,7 +57,7 @@ const webAppSchema = {
 
 export default function AmcEligibilityCheckerPage() {
   return (
-    <main className="min-h-screen bg-ink-950 overflow-x-hidden relative text-white">
+    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -79,18 +79,18 @@ export default function AmcEligibilityCheckerPage() {
       <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-7xl mx-auto">
         <Link href="/" className="font-display font-bold text-[1.15rem] tracking-tight">
           <span className="gradient-text">Mostly</span>
-          <span className="text-white"> Medicine</span>
+          <span className="text-ink-950"> Medicine</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link
             href="/auth/login"
-            className="hidden sm:inline text-cream-50/65 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
+            className="hidden sm:inline text-ink-950/65 hover:text-ink-950 px-4 py-2 text-sm transition-colors font-medium"
           >
             Log in
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
@@ -103,12 +103,12 @@ export default function AmcEligibilityCheckerPage() {
           6 quick questions · Personalised next steps
         </div>
         <h1
-          className="font-display font-bold text-white mb-4"
+          className="font-display font-bold text-ink-950 mb-4"
           style={{ fontSize: "clamp(2rem, 5.5vw, 4rem)", lineHeight: 1.05, letterSpacing: "-0.03em" }}
         >
           AMC Eligibility <span className="gradient-text">Checker</span>
         </h1>
-        <p className="text-cream-50/65 max-w-2xl mx-auto leading-relaxed text-base sm:text-lg">
+        <p className="text-ink-950/65 max-w-2xl mx-auto leading-relaxed text-base sm:text-lg">
           Find out in under a minute whether you&apos;re ready to sit AMC MCQ, AMC Handbook AI RolePlay, or apply for AHPRA general registration — and what to do next.
         </p>
         <Link
@@ -135,12 +135,12 @@ export default function AmcEligibilityCheckerPage() {
         </p>
       </section>
 
-      <footer className="relative z-10 border-t border-cream-50/10/80 py-8 text-center">
+      <footer className="relative z-10 border-t border-ink-950/10/80 py-8 text-center">
         <p className="font-display font-bold text-sm mb-1">
           <span className="gradient-text">Mostly Medicine</span>
-          <span className="text-cream-50/40"> · AMC Exam Preparation</span>
+          <span className="text-ink-950/40"> · AMC Exam Preparation</span>
         </p>
-        <p className="text-xs text-cream-50/40 mt-1">
+        <p className="text-xs text-ink-950/40 mt-1">
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>
