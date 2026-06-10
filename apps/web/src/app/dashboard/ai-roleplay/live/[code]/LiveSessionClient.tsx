@@ -875,7 +875,7 @@ export default function LiveSessionClient({
       <div className="mx-auto max-w-lg py-8">
         <h1 className="text-center text-xl font-bold text-gray-900">🎬 AMC Peer RolePlay — Waiting Room</h1>
         <p className="mt-1 text-center text-sm text-gray-600">
-          You'll play <span className="font-semibold capitalize text-brand-700">{myRole}</span>
+          You'll play <span className="font-semibold capitalize text-saffron-700">{myRole}</span>
           {isHost && <span className="ml-1 text-xs text-gray-400">(host)</span>}
         </p>
 
@@ -894,9 +894,9 @@ export default function LiveSessionClient({
         )}
 
         {/* Big invite code */}
-        <div className="mt-6 rounded-2xl border-2 border-brand-200 bg-gradient-to-br from-brand-50 to-pink-50 p-6 text-center shadow-sm">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Your invite code</p>
-          <p className="mt-2 font-mono text-4xl font-extrabold tracking-[0.3em] text-brand-700">{inviteCode}</p>
+        <div className="mt-6 rounded-2xl border-2 border-saffron-200 bg-gradient-to-br from-saffron-50 to-cream-50 p-6 text-center shadow-sm">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-700">Your invite code</p>
+          <p className="mt-2 font-mono text-4xl font-extrabold tracking-[0.3em] text-saffron-700">{inviteCode}</p>
           <p className="mt-3 break-all text-[11px] text-gray-500">{inviteUrl()}</p>
         </div>
 
@@ -934,7 +934,7 @@ export default function LiveSessionClient({
             <ol className="mt-2 space-y-2 pl-4 text-xs">
               <li>
                 <span className="font-semibold">1.</span> Send the invite link or code{" "}
-                <span className="font-mono font-bold text-brand-700">{inviteCode}</span> to your partner via
+                <span className="font-mono font-bold text-saffron-700">{inviteCode}</span> to your partner via
                 WhatsApp / message.
               </li>
               <li>
@@ -972,7 +972,7 @@ export default function LiveSessionClient({
             type="button"
             disabled={!guestJoined}
             onClick={() => advance("reading")}
-            className="mt-6 w-full rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-6 w-full rounded-xl bg-saffron-500 px-5 py-3 text-sm font-bold text-ink-950 shadow hover:bg-saffron-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {guestJoined ? "▶️ Start reading time (2 min)" : "Waiting for partner…"}
           </button>
@@ -991,13 +991,13 @@ export default function LiveSessionClient({
   if (status === "reading") {
     return (
       <div className="mx-auto max-w-3xl space-y-5">
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
+        <div className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Reading time</p>
-              <p className="mt-0.5 text-3xl font-bold tabular-nums text-brand-900">{fmt(readingLeft)}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-saffron-700">Reading time</p>
+              <p className="mt-0.5 text-3xl font-bold tabular-nums text-ink-950">{fmt(readingLeft)}</p>
             </div>
-            <span className="rounded-full border border-brand-200 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase text-brand-700">
+            <span className="rounded-full border border-saffron-200 bg-white px-2 py-0.5 text-[10px] font-semibold uppercase text-saffron-700">
               You: {myRole}
             </span>
           </div>
@@ -1013,7 +1013,7 @@ export default function LiveSessionClient({
           <button
             type="button"
             onClick={() => advance("roleplay")}
-            className="w-full rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-brand-700"
+            className="w-full rounded-xl bg-saffron-500 px-4 py-3 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400"
           >
             Skip to roleplay →
           </button>
@@ -1039,7 +1039,7 @@ export default function LiveSessionClient({
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <span
               className={`rounded-full border px-3 py-1 text-xs font-bold tabular-nums ${
-                roleplayLeft <= 60 ? "border-rose-300 bg-rose-50 text-rose-700" : "border-brand-200 bg-brand-50 text-brand-700"
+                roleplayLeft <= 60 ? "border-rose-300 bg-rose-50 text-rose-700" : "border-saffron-200 bg-saffron-50 text-saffron-700"
               }`}
             >
               {fmt(roleplayLeft)}
@@ -1211,7 +1211,7 @@ export default function LiveSessionClient({
                     setRemoteMuted(true);
                   }
                 }}
-                className="flex-1 min-w-[100px] accent-brand-600"
+                className="flex-1 min-w-[100px] accent-saffron-600"
               />
               <span className="w-10 text-right text-xs tabular-nums text-gray-500 shrink-0">
                 {Math.round((remoteMuted ? 0 : remoteVolume) * 100)}%
@@ -1231,7 +1231,7 @@ export default function LiveSessionClient({
                   <p key={t.id} className="leading-snug">
                     <span
                       className={`mr-1 font-semibold ${
-                        t.sender_role === "doctor" ? "text-brand-700" : "text-emerald-700"
+                        t.sender_role === "doctor" ? "text-saffron-700" : "text-emerald-700"
                       }`}
                     >
                       {t.sender_role === "doctor" ? "Dr:" : "Pt:"}
@@ -1280,7 +1280,7 @@ export default function LiveSessionClient({
               className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
                 stt.state === "recording"
                   ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
-                  : "bg-brand-600 text-white hover:bg-brand-700"
+                  : "bg-saffron-500 text-ink-950 hover:bg-saffron-400"
               }`}
             >
               {stt.state === "recording" ? "Pause mic" : "Start mic"}
@@ -1307,7 +1307,7 @@ export default function LiveSessionClient({
       <p className="text-sm text-gray-700">Session ended.</p>
       <Link
         href={`/dashboard/ai-roleplay/live/${inviteCode}/results`}
-        className="mt-4 inline-block rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+        className="mt-4 inline-block rounded-xl bg-saffron-500 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400"
       >
         View feedback →
       </Link>
@@ -1375,9 +1375,9 @@ function PatientBriefView({ brief }: { brief: LivePatientBrief | null }) {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-brand-200 bg-brand-50 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand-800">Volunteer naturally</p>
-        <ul className="mt-2 space-y-1 text-sm text-brand-900">
+      <div className="rounded-2xl border border-saffron-200 bg-saffron-50 p-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-saffron-800">Volunteer naturally</p>
+        <ul className="mt-2 space-y-1 text-sm text-ink-950">
           {brief.reveal.volunteer.map((v, i) => (
             <li key={i}>• {v}</li>
           ))}

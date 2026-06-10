@@ -81,12 +81,12 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
-      <header className="rounded-2xl bg-gradient-to-br from-fuchsia-600 to-brand-700 p-8 text-white shadow-lg">
-        <Link href="/dashboard/ai-roleplay" className="text-xs text-white/70 hover:text-white">
+      <header className="rounded-3xl border-2 border-saffron-400 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-8 shadow-[0_24px_48px_-24px_rgba(232,146,22,0.4)]">
+        <Link href="/dashboard/ai-roleplay" className="text-xs text-ink-900/75 hover:text-ink-950">
           ← Solo mode
         </Link>
-        <h1 className="mt-2 text-2xl font-bold">AMC Peer RolePlay</h1>
-        <p className="mt-1 text-sm text-white/80">
+        <h1 className="mt-2 text-2xl font-bold text-ink-950">AMC Peer RolePlay</h1>
+        <p className="mt-1 text-sm text-ink-900/75">
           Practice with a partner over video. One plays the doctor, one plays the patient. AI gives feedback after.
         </p>
       </header>
@@ -116,7 +116,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
                   onClick={() => setHostRole(r)}
                   className={`rounded-xl border px-3 py-2 text-sm font-medium capitalize transition ${
                     hostRole === r
-                      ? "border-brand-500 bg-brand-50 text-brand-700"
+                      ? "border-saffron-500 bg-saffron-50 text-saffron-700"
                       : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
                   }`}
                 >
@@ -147,7 +147,7 @@ export default function LiveLandingClient({ blueprints }: { blueprints: Blueprin
               type="button"
               disabled={pending}
               onClick={() => host(!blueprintId)}
-              className="flex-1 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:opacity-60"
+              className="flex-1 rounded-xl bg-saffron-500 px-4 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400 disabled:opacity-60"
             >
               {pending ? "Creating…" : "Create session"}
             </button>

@@ -122,7 +122,7 @@ export default function LandingClient({
       <div className="mx-auto max-w-3xl py-12 text-center">
         <h1 className="text-2xl font-bold text-gray-900">Clinical RolePlay</h1>
         <p className="mt-2 text-sm text-gray-600">
-          Please <Link href="/auth/login" className="text-brand-600 underline">log in</Link> to start a roleplay session.
+          Please <Link href="/auth/login" className="text-saffron-700 underline">log in</Link> to start a roleplay session.
         </p>
       </div>
     );
@@ -134,9 +134,11 @@ export default function LandingClient({
       <RoleplayModeTabs active="beyond" />
 
       {/* Hero */}
-      <section className="rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 p-8 text-white shadow-lg">
-        <h1 className="text-2xl font-bold sm:text-3xl">Clinical RolePlay</h1>
-        <p className="mt-2 max-w-2xl text-sm text-white/85 sm:text-base">
+      <section className="rounded-3xl border-2 border-saffron-400 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-6 sm:p-8 shadow-[0_24px_48px_-24px_rgba(232,146,22,0.4)]">
+        <h1 className="font-display text-2xl font-extrabold tracking-tight text-ink-950 sm:text-3xl">
+          Clinical RolePlay
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-ink-900/75 sm:text-base">
           Beyond Handbook — unlimited AI-generated cases. Original AMC-style practice cases inspired by broader
           clinical patterns. 2 minutes reading, 8 minutes interaction, structured feedback.
         </p>
@@ -145,7 +147,7 @@ export default function LandingClient({
             type="button"
             disabled={pending}
             onClick={() => generate({ random: true })}
-            className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 shadow hover:bg-brand-50 disabled:cursor-wait disabled:opacity-70"
+            className="inline-flex items-center gap-2 rounded-full bg-saffron-500 px-6 py-3 text-sm font-bold text-ink-950 shadow-[0_8px_24px_-8px_rgba(232,146,22,0.5)] transition-all hover:-translate-y-0.5 hover:bg-saffron-400 disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0"
           >
             {pending ? (
               <FunLoading
@@ -160,20 +162,8 @@ export default function LandingClient({
               "🎲 Random Case"
             )}
           </button>
-          <Link
-            href="/dashboard/ai-roleplay/live"
-            className="rounded-xl bg-gradient-to-r from-fuchsia-500 to-pink-500 px-4 py-2 text-sm font-bold text-white shadow hover:from-fuchsia-600 hover:to-pink-600"
-          >
-            🎥 AMC Peer RolePlay
-          </Link>
-          <Link
-            href="/dashboard/cat2"
-            className="rounded-xl border border-white/30 px-4 py-2 text-sm font-medium text-white/90 hover:bg-white/10"
-          >
-            AMC Handbook AI RolePlay →
-          </Link>
         </div>
-        {error && <p className="mt-3 text-sm text-rose-100">⚠️ {error}</p>}
+        {error && <p className="mt-3 text-sm text-red-600">⚠️ {error}</p>}
       </section>
 
       {/* Daily-limit upgrade banner — shown when /generate or /play returned a
@@ -213,7 +203,7 @@ export default function LandingClient({
             onClick={() => setDiffFilter(d)}
             className={`rounded-full border px-3 py-1 text-xs font-medium capitalize transition ${
               diffFilter === d
-                ? "border-brand-600 bg-brand-600 text-white"
+                ? "border-saffron-500 bg-saffron-500 text-ink-950"
                 : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
             }`}
           >
@@ -231,12 +221,12 @@ export default function LandingClient({
               <Link
                 key={r.id}
                 href={`/dashboard/ai-roleplay/${r.caseId}`}
-                className="rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-sm hover:border-brand-300"
+                className="rounded-xl border border-gray-200 bg-white p-3 text-sm shadow-sm hover:border-saffron-300"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-900">{r.candidateTask}</span>
                   {r.globalScore !== null && (
-                    <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700">
+                    <span className="rounded-full bg-saffron-100 px-2 py-0.5 text-xs font-semibold text-saffron-700">
                       {r.globalScore}/10
                     </span>
                   )}
@@ -268,7 +258,7 @@ export default function LandingClient({
                 type="button"
                 onClick={() => generate({ category })}
                 disabled={pending}
-                className="ml-auto text-xs font-medium text-brand-600 hover:text-brand-700 disabled:opacity-60"
+                className="ml-auto text-xs font-medium text-saffron-700 hover:text-saffron-800 disabled:opacity-60"
               >
                 Random in this category →
               </button>
@@ -280,10 +270,10 @@ export default function LandingClient({
                   type="button"
                   disabled={pending}
                   onClick={() => generate({ blueprintId: bp.id })}
-                  className="group rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow disabled:cursor-wait disabled:opacity-60"
+                  className="group rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-saffron-300 hover:shadow disabled:cursor-wait disabled:opacity-60"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="text-sm font-semibold text-gray-900 group-hover:text-brand-700">
+                    <h3 className="text-sm font-semibold text-gray-900 group-hover:text-saffron-700">
                       {bp.family_name}
                     </h3>
                     <span

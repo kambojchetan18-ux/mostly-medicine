@@ -60,11 +60,11 @@ export default function ReadingClient({
       </div>
 
       {/* Timer */}
-      <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
+      <div className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Reading time</p>
-            <p className="mt-0.5 text-3xl font-bold tabular-nums text-brand-900">
+            <p className="text-xs font-semibold uppercase tracking-wide text-saffron-700">Reading time</p>
+            <p className="mt-0.5 text-3xl font-bold tabular-nums text-ink-950">
               {mm}:{ss}
             </p>
           </div>
@@ -74,14 +74,14 @@ export default function ReadingClient({
               setAutoStart(false);
               window.location.href = `/dashboard/ai-roleplay/${caseId}/play`;
             }}
-            className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+            className="rounded-xl bg-saffron-500 px-5 py-2.5 text-sm font-bold text-ink-950 shadow hover:bg-saffron-400"
           >
             Start Roleplay →
           </button>
         </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-100">
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-saffron-100">
           <div
-            className="h-full bg-brand-600 transition-[width] duration-1000 ease-linear"
+            className="h-full bg-saffron-500 transition-[width] duration-1000 ease-linear"
             style={{ width: `${pct}%` }}
           />
         </div>

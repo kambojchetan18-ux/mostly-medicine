@@ -190,7 +190,7 @@ export default function ResultsClient({
             <p className="text-sm text-rose-600">⚠️ {error}</p>
           ) : (
             <>
-              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
+              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-saffron-200 border-t-saffron-600" />
               <div className="mt-4 flex justify-center">
                 <FunLoading
                   pool={[
@@ -227,9 +227,9 @@ export default function ResultsClient({
             const lowestAxis = lowest[0];
             const lowestScore = Math.round(lowest[1]);
             return (
-              <section className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-white p-5 shadow-sm md:p-6">
+              <section className="rounded-2xl border border-saffron-200 bg-gradient-to-br from-saffron-50 to-white p-5 shadow-sm md:p-6">
                 <header className="mb-4">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand-700">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-saffron-700">
                     AI Diagnostic Report
                   </p>
                   <h2 className="mt-0.5 text-lg font-semibold text-gray-900">
@@ -261,7 +261,7 @@ export default function ResultsClient({
                         </p>
                         <Link
                           href="/dashboard/billing"
-                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-3.5 py-2 text-xs font-semibold text-white shadow hover:bg-brand-700"
+                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-saffron-500 px-3.5 py-2 text-xs font-semibold text-ink-950 shadow hover:bg-saffron-400"
                         >
                           Upgrade to Pro — A$29/mo →
                         </Link>
@@ -343,9 +343,9 @@ export default function ResultsClient({
 
           {/* Differential review + retry */}
           {feedback.differentialReview && (
-            <section className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
-              <h2 className="text-sm font-semibold text-brand-900">🧠 Differential review</h2>
-              <p className="mt-2 text-sm text-brand-900">{feedback.differentialReview}</p>
+            <section className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
+              <h2 className="text-sm font-semibold text-ink-950">🧠 Differential review</h2>
+              <p className="mt-2 text-sm text-ink-950">{feedback.differentialReview}</p>
             </section>
           )}
 
@@ -363,7 +363,7 @@ export default function ResultsClient({
                 type="button"
                 disabled={pending}
                 onClick={() => regenerate({ blueprintId })}
-                className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:opacity-60"
+                className="rounded-xl bg-saffron-500 px-4 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400 disabled:opacity-60"
               >
                 🔁 Retry similar case
               </button>
@@ -372,7 +372,7 @@ export default function ResultsClient({
               type="button"
               disabled={pending}
               onClick={() => regenerate({ random: true })}
-              className="rounded-xl border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60"
+              className="rounded-xl border border-saffron-200 bg-white px-4 py-2.5 text-sm font-semibold text-saffron-700 hover:bg-saffron-50 disabled:opacity-60"
             >
               🎲 New random case
             </button>
@@ -438,7 +438,7 @@ export default function ResultsClient({
                       <div
                         className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-1.5 text-xs ${
                           m.role === "user"
-                            ? "rounded-br-sm bg-brand-600 text-white"
+                            ? "rounded-br-sm bg-ink-950 text-cream-50"
                             : "rounded-bl-sm border border-gray-200 bg-gray-50 text-gray-800"
                         }`}
                       >

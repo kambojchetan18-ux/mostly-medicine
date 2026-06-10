@@ -85,8 +85,8 @@ export default function UpgradeGate({ module, currentPlan }: Props) {
 
   return (
     <div className="mx-auto max-w-xl py-10">
-      <div className="rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-pink-50 p-8 text-center shadow-sm">
-        <span className="inline-block rounded-full bg-brand-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-brand-700">
+      <div className="rounded-2xl border border-saffron-200 bg-gradient-to-br from-saffron-50 to-cream-50 p-8 text-center shadow-sm">
+        <span className="inline-block rounded-full bg-saffron-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-saffron-700">
           Premium module
         </span>
         <h1 className="mt-4 text-xl font-bold text-gray-900">{c.title}</h1>
@@ -97,14 +97,14 @@ export default function UpgradeGate({ module, currentPlan }: Props) {
         <ul className="mt-5 space-y-2 text-left text-sm text-gray-700">
           {c.bullets.map((b) => (
             <li key={b} className="flex gap-2">
-              <span className="text-brand-500">✓</span>
+              <span className="text-saffron-500">✓</span>
               <span>{b}</span>
             </li>
           ))}
         </ul>
         <Link
           href="/dashboard/billing"
-          className="mt-6 inline-block rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+          className="mt-6 inline-block rounded-xl bg-saffron-500 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400"
         >
           View plans
         </Link>

@@ -41,14 +41,14 @@ export default function RandomCasePage() {
           <p className="text-sm text-rose-600">⚠️ {error}</p>
           <Link
             href="/dashboard/ai-roleplay"
-            className="mt-4 inline-block text-sm text-brand-600 underline"
+            className="mt-4 inline-block text-sm text-saffron-700 underline"
           >
             Back to AMC Clinical AI RolePlay
           </Link>
         </>
       ) : (
         <>
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-saffron-200 border-t-saffron-600" />
           <div className="mt-4 flex justify-center">
             <FunLoading
               pool={[

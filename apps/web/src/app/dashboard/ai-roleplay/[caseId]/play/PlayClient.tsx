@@ -333,7 +333,7 @@ export default function PlayClient({
             className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase ${
               lowTime
                 ? "border-rose-300 bg-rose-50 text-rose-700"
-                : "border-brand-200 bg-brand-50 text-brand-700"
+                : "border-saffron-200 bg-saffron-50 text-saffron-700"
             }`}
           >
             {mm}:{ss}
@@ -376,7 +376,7 @@ export default function PlayClient({
               <div
                 className={`max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                   m.role === "user"
-                    ? "rounded-br-sm bg-brand-600 text-white"
+                    ? "rounded-br-sm bg-ink-950 text-cream-50"
                     : "rounded-bl-sm border border-gray-200 bg-white text-gray-800"
                 }`}
               >
@@ -569,12 +569,12 @@ export default function PlayClient({
             rows={2}
             disabled={ended}
             placeholder={placeholderHint}
-            className="flex-1 min-w-0 resize-none rounded-xl border border-gray-300 bg-white px-3 py-2 text-base sm:text-sm shadow-sm focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-400 disabled:bg-gray-50"
+            className="flex-1 min-w-0 resize-none rounded-xl border border-gray-300 bg-white px-3 py-2 text-base sm:text-sm shadow-sm focus:border-saffron-400 focus:outline-none focus:ring-1 focus:ring-saffron-400 disabled:bg-gray-50"
           />
           <button
             type="submit"
             disabled={sending || ended || !draft.trim()}
-            className="self-end rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60 min-h-[44px]"
+            className="self-end rounded-xl bg-saffron-500 px-4 py-3 text-sm font-bold text-ink-950 shadow hover:bg-saffron-400 disabled:cursor-not-allowed disabled:opacity-60 min-h-[44px]"
           >
             {sending ? "…" : "Send"}
           </button>

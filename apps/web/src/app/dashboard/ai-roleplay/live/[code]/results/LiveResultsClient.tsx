@@ -74,9 +74,9 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
         </span>
       </div>
 
-      <header className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
-        <h1 className="text-base font-semibold text-brand-900">Live session feedback</h1>
-        <p className="mt-1 text-xs text-brand-700">
+      <header className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
+        <h1 className="text-base font-semibold text-ink-950">Live session feedback</h1>
+        <p className="mt-1 text-xs text-saffron-700">
           Doctor performance against the AMC rubric, plus an adherence score for the peer playing the patient. Code: <span className="font-mono">{inviteCode}</span>
         </p>
       </header>
@@ -87,7 +87,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
             <p className="text-sm text-rose-600">⚠️ {error}</p>
           ) : (
             <>
-              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
+              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-saffron-200 border-t-saffron-600" />
               <div className="mt-4 flex justify-center">
                 <FunLoading
                   pool={[
@@ -156,9 +156,9 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
           )}
 
           {feedback.differentialReview && (
-            <section className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
-              <h2 className="text-sm font-semibold text-brand-900">🧠 Differential review</h2>
-              <p className="mt-2 text-sm text-brand-900">{feedback.differentialReview}</p>
+            <section className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
+              <h2 className="text-sm font-semibold text-ink-950">🧠 Differential review</h2>
+              <p className="mt-2 text-sm text-ink-950">{feedback.differentialReview}</p>
             </section>
           )}
 
@@ -223,7 +223,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
           <div className="flex gap-3 pt-2">
             <Link
               href="/dashboard/ai-roleplay/live"
-              className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+              className="rounded-xl bg-saffron-500 px-4 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400"
             >
               New live session
             </Link>

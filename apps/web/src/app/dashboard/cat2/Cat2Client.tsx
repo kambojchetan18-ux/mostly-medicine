@@ -95,7 +95,7 @@ const difficultyColor: Record<string, string> = {
 };
 
 // ── Waveform bars component ───────────────────────────────────────────────────
-function WaveformBars({ active, color = "bg-brand-500" }: { active: boolean; color?: string }) {
+function WaveformBars({ active, color = "bg-saffron-500" }: { active: boolean; color?: string }) {
   if (!active) return null;
   return (
     <div className="flex items-end gap-0.5 h-5">
@@ -492,11 +492,11 @@ export default function Cat2Client() {
           </span>
         </div>
 
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
+        <div className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Reading time</p>
-              <p className="mt-0.5 text-3xl font-bold tabular-nums text-brand-900">{mm}:{ss}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-saffron-700">Reading time</p>
+              <p className="mt-0.5 text-3xl font-bold tabular-nums text-ink-950">{mm}:{ss}</p>
             </div>
             <button
               type="button"
@@ -505,14 +505,14 @@ export default function Cat2Client() {
                 setReadingScenarioId(null);
                 if (id !== null) void startScenario(id);
               }}
-              className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+              className="rounded-xl bg-saffron-500 px-5 py-2.5 text-sm font-bold text-ink-950 shadow hover:bg-saffron-400"
             >
               Start RolePlay →
             </button>
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-100">
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-saffron-100">
             <div
-              className="h-full bg-brand-600 transition-[width] duration-1000 ease-linear"
+              className="h-full bg-saffron-500 transition-[width] duration-1000 ease-linear"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -575,8 +575,8 @@ export default function Cat2Client() {
               onClick={() => setTimerMode(m)}
               className={`text-sm px-3 py-1.5 rounded-lg border transition font-medium ${
                 timerMode === m
-                  ? "bg-brand-600 text-white border-brand-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-brand-400"
+                  ? "bg-saffron-500 text-ink-950 border-saffron-500"
+                  : "bg-white text-gray-600 border-gray-200 hover:border-saffron-400"
               }`}
             >
               {m}
@@ -600,7 +600,7 @@ export default function Cat2Client() {
               <button
                 key={s.id}
                 onClick={() => enterReading(s.id)}
-                className="bg-white border border-gray-200 rounded-2xl p-5 text-left hover:shadow-md hover:border-brand-400 transition group"
+                className="bg-white border border-gray-200 rounded-2xl p-5 text-left hover:shadow-md hover:border-saffron-400 transition group"
               >
                 <div className="flex items-start gap-3 mb-3">
                   <PatientAvatar persona={persona} size={56} className="shrink-0" />
@@ -641,7 +641,7 @@ export default function Cat2Client() {
         </p>
         <div className="flex gap-1">
           {[0, 1, 2].map(i => (
-            <div key={i} className="w-2.5 h-2.5 bg-brand-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
+            <div key={i} className="w-2.5 h-2.5 bg-saffron-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
           ))}
         </div>
       </div>
@@ -669,7 +669,7 @@ export default function Cat2Client() {
           </button>
           <button
             onClick={() => enterReading(activeScenario)}
-            className="px-5 py-2.5 text-sm font-medium rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition"
+            className="px-5 py-2.5 text-sm font-medium rounded-lg bg-saffron-500 text-ink-950 hover:bg-saffron-400 transition"
           >
             Retry Scenario
           </button>
@@ -696,7 +696,7 @@ export default function Cat2Client() {
               <div className="text-3xl sm:text-4xl">{emoji}</div>
             )}
             {speaking && (
-              <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-500 rounded-full animate-ping" />
+              <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-saffron-500 rounded-full animate-ping" />
             )}
           </div>
           <div className="min-w-0 flex-1">
@@ -719,8 +719,8 @@ export default function Cat2Client() {
             </div>
             {speaking && (
               <div className="flex items-center gap-2 mt-1">
-                <WaveformBars active={speaking} color="bg-brand-400" />
-                <span className="text-xs text-brand-600 font-medium">Patient speaking…</span>
+                <WaveformBars active={speaking} color="bg-saffron-400" />
+                <span className="text-xs text-saffron-700 font-medium">Patient speaking…</span>
               </div>
             )}
           </div>
@@ -757,7 +757,7 @@ export default function Cat2Client() {
             <button
               onClick={() => { feedbackRequestedRef.current = true; requestExaminerFeedback(); }}
               disabled={loading}
-              className="text-xs text-white bg-brand-600 hover:bg-brand-700 px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
+              className="text-xs text-ink-950 bg-saffron-500 hover:bg-saffron-400 px-3 py-1.5 rounded-lg disabled:opacity-40 transition"
             >
               End &amp; Get Feedback
             </button>
@@ -774,7 +774,7 @@ export default function Cat2Client() {
 
       {/* Milestone banner */}
       {milestone && (
-        <div className="mb-2 px-4 py-2 bg-brand-50 border border-brand-200 rounded-xl text-sm text-brand-700 font-medium flex items-center gap-2 animate-pulse">
+        <div className="mb-2 px-4 py-2 bg-saffron-50 border border-saffron-200 rounded-xl text-sm text-saffron-700 font-medium flex items-center gap-2 animate-pulse">
           <span>📍</span>
           <span>{milestone}</span>
         </div>
@@ -796,7 +796,7 @@ export default function Cat2Client() {
             <div
               className={`max-w-[85%] sm:max-w-[78%] rounded-2xl px-4 py-2.5 text-sm break-words [overflow-wrap:anywhere] ${
                 m.role === "user"
-                  ? "bg-brand-600 text-white"
+                  ? "bg-ink-950 text-cream-50"
                   : "bg-gray-100 text-gray-800"
               }`}
             >
@@ -913,7 +913,7 @@ export default function Cat2Client() {
             className={`relative flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all disabled:opacity-40 ${
               isRecording
                 ? "bg-red-500 hover:bg-red-600 shadow-lg"
-                : "bg-brand-600 hover:bg-brand-700"
+                : "bg-saffron-500 hover:bg-saffron-400"
             }`}
           >
             {isRecording && (
@@ -958,7 +958,7 @@ export default function Cat2Client() {
             : "🎤 Listening… speak naturally"
           }
           readOnly={isRecording}
-          className={`flex-1 min-w-[140px] border rounded-xl px-4 py-3 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition ${
+          className={`flex-1 min-w-[140px] border rounded-xl px-4 py-3 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400 transition ${
             isRecording ? "bg-red-50 border-red-200 text-gray-500 cursor-not-allowed" : "border-gray-300"
           }`}
         />
@@ -968,7 +968,7 @@ export default function Cat2Client() {
           <button
             onClick={() => sendMessage(input)}
             disabled={loading || !input.trim()}
-            className="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl text-sm font-semibold transition disabled:opacity-40 min-h-[44px]"
+            className="bg-saffron-500 hover:bg-saffron-400 text-ink-950 px-5 py-3 rounded-xl text-sm font-semibold transition disabled:opacity-40 min-h-[44px]"
           >
             Send
           </button>
