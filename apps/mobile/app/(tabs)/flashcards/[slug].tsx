@@ -194,7 +194,7 @@ export default function FlashcardPlayerScreen() {
 
   const openBilling = () => {
     const url = `${API_URL || 'https://mostlymedicine.com'}/dashboard/billing`;
-    Linking.openURL(url).catch(() => {});
+    Linking.openURL(url).catch(console.warn);
   };
 
   const clozeParts = card ? parseCloze(card.front_md) : [];

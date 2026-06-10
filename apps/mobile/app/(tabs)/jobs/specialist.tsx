@@ -54,7 +54,7 @@ export default function SpecialistScreen() {
 
           <Text style={s.sectionLabel}>College Directory</Text>
           {COLLEGES.map((c) => (
-            <TouchableOpacity key={c.name} style={s.collegeCard} onPress={() => Linking.openURL(c.url)}>
+            <TouchableOpacity key={c.name} style={s.collegeCard} onPress={() => Linking.openURL(c.url).catch(console.warn)}>
               <View style={s.collegeBadge}>
                 <Text style={s.collegeBadgeText}>{c.name}</Text>
               </View>
