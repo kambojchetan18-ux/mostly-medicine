@@ -110,7 +110,7 @@ const faqSchema = {
 
 export default function AmcClinicalStationsGuidePage() {
   return (
-    <main className="min-h-screen bg-cream-50 text-ink-950">
+    <main className="min-h-screen bg-[#070714] text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -130,7 +130,7 @@ export default function AmcClinicalStationsGuidePage() {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold"
         >
           Start free
         </Link>
@@ -144,7 +144,7 @@ export default function AmcClinicalStationsGuidePage() {
           <h1 className="font-display font-bold mb-4">
             AMC Handbook AI RolePlay Clinical Stations: How to Attack Each Type
           </h1>
-          <p className="text-ink-900/70 text-lg leading-relaxed">
+          <p className="text-slate-400 text-lg leading-relaxed">
             A practical guide to the four AMC Handbook AI RolePlay station types — history,
             examination, counselling, and procedural — with structured
             approaches IMGs can drill before exam day.
@@ -412,7 +412,7 @@ export default function AmcClinicalStationsGuidePage() {
           <p>
             <Link
               href="/auth/signup"
-              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-ink-950 px-7 py-3.5 rounded-2xl font-bold no-underline"
+              className="inline-block mt-4 bg-brand-600 hover:bg-brand-500 text-white px-7 py-3.5 rounded-2xl font-bold no-underline"
             >
               Start practising free →
             </Link>
@@ -454,7 +454,7 @@ export default function AmcClinicalStationsGuidePage() {
           </p>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-ink-950/10 text-sm text-ink-900/60">
+        <footer className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
           <p>
             This guide is provided for educational purposes by Mostly Medicine.
             For official AMC examination information, refer to{" "}

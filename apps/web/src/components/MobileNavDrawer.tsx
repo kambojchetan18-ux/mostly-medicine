@@ -53,7 +53,7 @@ export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) 
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open navigation menu"
-        className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-white/5 border border-white/5 text-ink-900 hover:text-ink-950 hover:bg-white/10 active:scale-95 transition"
+        className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-white/5 border border-white/5 text-slate-200 hover:text-white hover:bg-white/10 active:scale-95 transition"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="4" y1="7" x2="20" y2="7" />
@@ -76,7 +76,7 @@ export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) 
         role="dialog"
         aria-modal="true"
         aria-label="Navigation"
-        className={`md:hidden fixed top-0 left-0 z-[70] h-full w-[82vw] max-w-[320px] bg-cream-50 border-r border-ink-950/10/70 py-5 px-3 overflow-y-auto transition-transform duration-300 ease-out flex flex-col ${
+        className={`md:hidden fixed top-0 left-0 z-[70] h-full w-[82vw] max-w-[320px] bg-slate-950 border-r border-slate-800/70 py-5 px-3 overflow-y-auto transition-transform duration-300 ease-out flex flex-col ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ paddingTop: "calc(1.25rem + env(safe-area-inset-top))" }}
@@ -85,18 +85,18 @@ export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) 
           <Link href="/dashboard" className="hover:opacity-80 transition-opacity" onClick={() => setOpen(false)}>
             <h1 className="font-display font-bold text-[1.1rem] leading-tight tracking-tight">
               <span className="gradient-text">Mostly</span>
-              <span className="text-ink-950"> Medicine</span>
+              <span className="text-white"> Medicine</span>
             </h1>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
-              <p className="text-[9px] text-ink-900/60 font-semibold tracking-widest uppercase">AMC Prep 2026</p>
+              <p className="text-[9px] text-slate-500 font-semibold tracking-widest uppercase">AMC Prep 2026</p>
             </div>
           </Link>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close navigation menu"
-            className="flex items-center justify-center w-11 h-11 rounded-lg text-ink-900/70 hover:text-ink-950 hover:bg-white/10 transition"
+            className="flex items-center justify-center w-11 h-11 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -106,12 +106,12 @@ export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) 
         </div>
 
         <nav className="flex-1 space-y-0.5">
-          <p className="px-2 text-[9px] font-bold text-ink-900/55 uppercase tracking-widest mb-2">Study</p>
+          <p className="px-2 text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-2">Study</p>
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl text-ink-900/80 ${item.hover} hover:bg-white/5 transition text-sm font-medium min-h-[44px]`}
+              className={`flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 ${item.hover} hover:bg-white/5 transition text-sm font-medium min-h-[44px]`}
             >
               <span className="text-[15px] shrink-0">{item.icon}</span>
               <span className="break-words">{item.label}</span>
@@ -119,13 +119,13 @@ export default function MobileNavDrawer({ navItems, jobNavItems, user }: Props) 
           ))}
 
           <div className="pt-5 pb-1.5">
-            <p className="px-2 text-[9px] font-bold text-ink-900/55 uppercase tracking-widest">🇦🇺 Australian Jobs</p>
+            <p className="px-2 text-[9px] font-bold text-slate-600 uppercase tracking-widest">🇦🇺 Australian Jobs</p>
           </div>
           {jobNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl text-ink-900/80 ${item.hover} hover:bg-white/5 transition text-sm font-medium min-h-[44px]`}
+              className={`flex items-center gap-3 px-3 py-3 rounded-xl text-slate-300 ${item.hover} hover:bg-white/5 transition text-sm font-medium min-h-[44px]`}
             >
               <span className="text-[15px] shrink-0">{item.icon}</span>
               <span className="break-words">{item.label}</span>

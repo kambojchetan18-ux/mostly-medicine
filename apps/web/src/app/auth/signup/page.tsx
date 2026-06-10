@@ -92,9 +92,9 @@ function SignupInner() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="mb-6">
-          <Link href="/" className="text-sm text-ink-900/70 hover:text-ink-900/55 transition">← Home</Link>
-          <h1 className="text-2xl font-bold text-ink-950 mt-3 mb-1">Create your account</h1>
-          <p className="text-ink-900/60 text-sm">Free forever — start preparing today</p>
+          <Link href="/" className="text-sm text-slate-400 hover:text-slate-600 transition">← Home</Link>
+          <h1 className="text-2xl font-bold text-gray-900 mt-3 mb-1">Create your account</h1>
+          <p className="text-gray-500 text-sm">Free forever — start preparing today</p>
         </div>
 
         {/* Google SSO */}
@@ -102,7 +102,7 @@ function SignupInner() {
           onClick={handleGoogle}
           disabled={googleLoading || !agreedToTerms}
           title={!agreedToTerms ? "Agree to the Terms of Use and Privacy Policy first" : undefined}
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg px-4 py-2.5 text-sm font-medium text-ink-900/85 hover:bg-gray-50 transition mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -120,21 +120,21 @@ function SignupInner() {
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-ink-900/85 mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
               className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink-900/85 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
               className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink-900/85 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
               <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 pr-10 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
-              <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-ink-900/70">
+              <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {showPassword
                     ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
@@ -153,7 +153,7 @@ function SignupInner() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink-900/85 mb-1">Confirm Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
             <input type={showPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required
               className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
             {confirmPassword.length > 0 && password !== confirmPassword && (
@@ -168,7 +168,7 @@ function SignupInner() {
               onChange={(e) => setAgreedToTerms(e.target.checked)}
               className="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
             />
-            <label htmlFor="agree-terms" className="text-sm text-ink-900/85 leading-tight">
+            <label htmlFor="agree-terms" className="text-sm text-gray-700 leading-tight">
               <span className="text-red-500 mr-0.5" aria-hidden="true">*</span>
               By checking this box you agree to the{" "}
               <Link href="/terms" target="_blank" className="text-brand-600 font-medium hover:underline">Terms of Use</Link>
@@ -178,12 +178,12 @@ function SignupInner() {
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button type="submit" disabled={loading || !agreedToTerms}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-ink-950 font-semibold py-2.5 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
             {loading ? "Creating account…" : "Sign Up Free"}
           </button>
         </form>
 
-        <p className="text-center text-sm text-ink-900/60 mt-4">
+        <p className="text-center text-sm text-gray-500 mt-4">
           Already have an account?{" "}
           <Link href="/auth/login" className="text-brand-600 font-medium hover:underline">Log in</Link>
         </p>

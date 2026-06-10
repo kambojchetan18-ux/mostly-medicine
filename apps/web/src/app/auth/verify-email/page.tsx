@@ -24,8 +24,8 @@ export default function VerifyEmailPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md text-center">
         <div className="text-5xl mb-4">📧</div>
-        <h1 className="text-2xl font-bold text-ink-950 mb-2">Check your email</h1>
-        <p className="text-ink-900/60 text-sm mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h1>
+        <p className="text-gray-500 text-sm mb-6">
           We sent a confirmation link to your email address. Click the link to activate your account and access all features.
         </p>
 
@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
             <button
               onClick={handleResend}
               disabled={loading}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-ink-950 font-semibold py-2.5 rounded-lg transition disabled:opacity-50 mb-3"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50 mb-3"
             >
               {loading ? "Sending…" : "Resend confirmation email"}
             </button>

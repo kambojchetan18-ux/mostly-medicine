@@ -233,7 +233,7 @@ const COLORS: Record<Verdict["status"], string> = {
   eligible: "from-saffron-900/60 to-saffron-950/40 border-saffron-700/50",
   almost: "from-violet-900/60 to-pink-950/40 border-violet-700/50",
   blocked: "from-rose-900/60 to-rose-950/40 border-rose-700/50",
-  info: "from-saffron-900/60 to-cream-50/40 border-saffron-800/40",
+  info: "from-saffron-900/60 to-slate-900/40 border-saffron-800/40",
 };
 
 const BADGE: Record<Verdict["status"], string> = {
@@ -277,16 +277,16 @@ export default function Wizard() {
   };
 
   return (
-    <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-cream-50/80 p-6 sm:p-10 backdrop-blur-sm">
+    <div className="rounded-3xl border border-violet-800/30 bg-gradient-to-br from-violet-950/60 via-saffron-950/40 to-slate-900/80 p-6 sm:p-10 backdrop-blur-sm">
       {/* Progress */}
       <div className="mb-7">
         <div className="flex justify-between items-center mb-2 text-xs">
-          <span className="text-ink-900/60 uppercase tracking-widest font-bold">
+          <span className="text-slate-500 uppercase tracking-widest font-bold">
             {done ? "Result" : `Step ${stepIdx + 1} of ${STEPS.length}`}
           </span>
           <span className="font-display font-bold gradient-text">{progress}%</span>
         </div>
-        <div className="h-1.5 bg-cream-100 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{
@@ -299,19 +299,19 @@ export default function Wizard() {
 
       {!done && step && (
         <div>
-          <h2 className="font-display font-bold text-ink-950 text-xl sm:text-2xl mb-2 leading-snug">
+          <h2 className="font-display font-bold text-white text-xl sm:text-2xl mb-2 leading-snug">
             {step.question}
           </h2>
-          {step.help && <p className="text-sm text-ink-900/70 mb-5">{step.help}</p>}
+          {step.help && <p className="text-sm text-slate-400 mb-5">{step.help}</p>}
           <div className="space-y-2.5">
             {step.options.map((opt) => (
               <button
                 key={opt.id}
                 onClick={() => choose(opt.id)}
-                className="w-full text-left px-5 py-4 rounded-2xl border border-ink-950/15 bg-cream-50/70 hover:bg-cream-100/80 hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all"
+                className="w-full text-left px-5 py-4 rounded-2xl border border-slate-700 bg-slate-900/70 hover:bg-slate-800/80 hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all"
               >
-                <p className="font-semibold text-ink-950 text-base">{opt.label}</p>
-                {opt.detail && <p className="text-xs text-ink-900/70 mt-1">{opt.detail}</p>}
+                <p className="font-semibold text-white text-base">{opt.label}</p>
+                {opt.detail && <p className="text-xs text-slate-400 mt-1">{opt.detail}</p>}
               </button>
             ))}
           </div>
@@ -320,13 +320,13 @@ export default function Wizard() {
             <button
               onClick={back}
               disabled={stepIdx === 0}
-              className="text-sm text-ink-900/70 hover:text-ink-950 disabled:text-ink-900/55 disabled:cursor-not-allowed font-medium transition-colors"
+              className="text-sm text-slate-400 hover:text-white disabled:text-slate-700 disabled:cursor-not-allowed font-medium transition-colors"
             >
               ← Back
             </button>
             <button
               onClick={restart}
-              className="text-xs text-ink-900/55 hover:text-ink-900/70 font-medium transition-colors"
+              className="text-xs text-slate-600 hover:text-slate-400 font-medium transition-colors"
             >
               Restart
             </button>
@@ -347,10 +347,10 @@ export default function Wizard() {
                 {verdict.status === "info" && "In progress"}
               </span>
             </div>
-            <h2 className="font-display font-bold text-ink-950 text-2xl sm:text-3xl mb-3">
+            <h2 className="font-display font-bold text-white text-2xl sm:text-3xl mb-3">
               {verdict.title}
             </h2>
-            <p className="text-ink-900/80 leading-relaxed">{verdict.summary}</p>
+            <p className="text-slate-300 leading-relaxed">{verdict.summary}</p>
           </div>
 
           <div className="mt-7">
@@ -359,8 +359,8 @@ export default function Wizard() {
             </p>
             <ul className="space-y-2.5">
               {verdict.next.map((n, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-ink-900/80">
-                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-brand-600 text-ink-950 text-xs font-bold flex items-center justify-center">
+                <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
+                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-brand-600 text-white text-xs font-bold flex items-center justify-center">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{n}</span>
@@ -372,7 +372,7 @@ export default function Wizard() {
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Link
               href="/auth/signup"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl font-display font-bold text-ink-950 transition-all hover:-translate-y-0.5"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl font-display font-bold text-white transition-all hover:-translate-y-0.5"
               style={{
                 background: "linear-gradient(135deg, #7c3aed, #db2777)",
                 boxShadow: "0 8px 30px rgba(124,58,237,0.35)",
@@ -382,7 +382,7 @@ export default function Wizard() {
             </Link>
             <button
               onClick={restart}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl font-semibold text-ink-900/80 border border-ink-950/15 hover:bg-white/5 hover:border-ink-950/20 transition-all"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl font-semibold text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all"
             >
               Restart wizard
             </button>

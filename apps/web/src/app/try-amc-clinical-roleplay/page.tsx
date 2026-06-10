@@ -59,7 +59,7 @@ const breadcrumbSchema = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-ink-950">
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
@@ -77,22 +77,22 @@ export default function Page() {
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
           Try the AMC Clinical Roleplay
         </h1>
-        <p className="mt-3 text-base leading-relaxed text-ink-900/55 sm:text-lg">
+        <p className="mt-3 text-base leading-relaxed text-slate-700 sm:text-lg">
           A 45-year-old man with chest pain has just walked into your GP clinic. Take
           his history in 5 turns, then see how the AMC examiner would read your
           consultation style. <strong>No login, no email, no credit card.</strong>
         </p>
-        <ul className="mt-4 grid gap-2 text-sm text-ink-900/55 sm:grid-cols-3">
+        <ul className="mt-4 grid gap-2 text-sm text-slate-700 sm:grid-cols-3">
           <li className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="font-semibold text-ink-950">1.</span> Read the
+            <span className="font-semibold text-slate-900">1.</span> Read the
             patient&apos;s opening line
           </li>
           <li className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="font-semibold text-ink-950">2.</span> Ask 5 questions
+            <span className="font-semibold text-slate-900">2.</span> Ask 5 questions
             of your choice
           </li>
           <li className="rounded-lg border border-slate-200 bg-white px-3 py-2">
-            <span className="font-semibold text-ink-950">3.</span> Get an instant
+            <span className="font-semibold text-slate-900">3.</span> Get an instant
             consultation-style read
           </li>
         </ul>
@@ -105,8 +105,8 @@ export default function Page() {
       {/* Quiet trust footer — keeps content open for LLM scrapers per llms.txt
           ethos. No client-side gating on the marketing copy. */}
       <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-10 text-sm text-ink-900/55">
-          <h2 className="text-base font-semibold text-ink-950">
+        <div className="mx-auto max-w-3xl px-4 py-10 text-sm text-slate-700">
+          <h2 className="text-base font-semibold text-slate-900">
             What is the AMC Clinical exam?
           </h2>
           <p className="mt-2 leading-relaxed">
@@ -120,19 +120,19 @@ export default function Page() {
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <Link
               href="/amc-cat2"
-              className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-ink-900/55 hover:bg-slate-50"
+              className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-50"
             >
               About AMC CAT 2 →
             </Link>
             <Link
               href="/amc-clinical-stations-guide"
-              className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-ink-900/55 hover:bg-slate-50"
+              className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-50"
             >
               Clinical stations guide →
             </Link>
             <Link
               href="/calgary-cambridge-consultation"
-              className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-ink-900/55 hover:bg-slate-50"
+              className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700 hover:bg-slate-50"
             >
               Calgary-Cambridge framework →
             </Link>

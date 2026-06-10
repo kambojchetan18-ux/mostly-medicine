@@ -26,16 +26,16 @@ export default function CalculatorTeaser() {
       </p>
 
       <p
-        className="font-display font-bold text-ink-950 leading-none tabular-nums bg-gradient-to-r from-brand-300 via-violet-300 to-pink-300 bg-clip-text text-transparent"
+        className="font-display font-bold text-white leading-none tabular-nums bg-gradient-to-r from-brand-300 via-violet-300 to-pink-300 bg-clip-text text-transparent"
         style={{ fontSize: "clamp(2rem, 5vw, 2.5rem)", letterSpacing: "-0.02em" }}
       >
         A$6,690
       </p>
 
-      <p className="mt-2 text-sm text-ink-900/80 leading-snug">
+      <p className="mt-2 text-sm text-slate-300 leading-snug">
         for the full AMC pathway
       </p>
-      <p className="mt-1 text-[11px] text-ink-900/60 leading-snug">
+      <p className="mt-1 text-[11px] text-slate-500 leading-snug">
         AMC CAT 1 + CAT 2 + IELTS + EPIC + AHPRA
       </p>
 

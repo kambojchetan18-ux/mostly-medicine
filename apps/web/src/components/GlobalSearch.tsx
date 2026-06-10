@@ -142,7 +142,7 @@ export default function GlobalSearch() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Search library topics, cases, notes..."
-            className="flex-1 text-sm text-ink-950 placeholder-gray-400 outline-none bg-transparent"
+            className="flex-1 text-sm text-gray-900 placeholder-gray-400 outline-none bg-transparent"
           />
           {loading && (
             <div className="w-4 h-4 border-2 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
@@ -165,7 +165,7 @@ export default function GlobalSearch() {
                     <button
                       key={r}
                       onClick={() => setQuery(r)}
-                      className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-ink-900/70 hover:bg-gray-50 rounded-lg transition"
+                      className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition"
                     >
                       <span className="text-gray-300">🕐</span> {r}
                     </button>
@@ -179,7 +179,7 @@ export default function GlobalSearch() {
             </div>
           ) : results.length === 0 && !loading ? (
             <div className="text-center py-10 text-gray-400">
-              <p className="text-sm">No results for <span className="font-medium text-ink-900/70">&ldquo;{query}&rdquo;</span></p>
+              <p className="text-sm">No results for <span className="font-medium text-gray-600">&ldquo;{query}&rdquo;</span></p>
             </div>
           ) : (
             <div className="p-2">
@@ -207,7 +207,7 @@ export default function GlobalSearch() {
                             {TYPE_LABELS[result.type]}
                           </span>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-ink-950 truncate">{result.title}</p>
+                            <p className="text-sm font-medium text-gray-900 truncate">{result.title}</p>
                             {result.snippet && (
                               <p className="text-xs text-gray-400 truncate mt-0.5">{result.snippet}</p>
                             )}

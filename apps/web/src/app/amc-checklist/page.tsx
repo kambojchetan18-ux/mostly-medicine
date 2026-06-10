@@ -23,7 +23,7 @@ const sections: Section[] = [
     title: "Eligibility & Application",
     tag: "STEP 1",
     tagColor: "text-violet-300 bg-violet-900/40 border-violet-700/40",
-    gradient: "from-violet-950/80 via-saffron-950/60 to-cream-50/80",
+    gradient: "from-violet-950/80 via-saffron-950/60 to-slate-900/80",
     border: "border-violet-800/30",
     items: [
       { id: "e1", text: "Confirm your primary medical degree is AMC-accepted", note: "Check the AMC Recognised Overseas Qualifications list" },
@@ -44,7 +44,7 @@ const sections: Section[] = [
     title: "AMC MCQ — Exam",
     tag: "STEP 2",
     tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
-    gradient: "from-saffron-950/80 via-violet-950/60 to-cream-50/80",
+    gradient: "from-saffron-950/80 via-violet-950/60 to-slate-900/80",
     border: "border-saffron-800/30",
     items: [
       { id: "c1a", text: "Read the AMC MCQ Examination Handbook (latest edition)", note: "Available free on amc.org.au" },
@@ -67,7 +67,7 @@ const sections: Section[] = [
     title: "AMC Handbook AI RolePlay — Clinical Exam",
     tag: "STEP 3",
     tagColor: "text-pink-300 bg-pink-900/40 border-pink-700/40",
-    gradient: "from-pink-950/80 via-rose-950/60 to-cream-50/80",
+    gradient: "from-pink-950/80 via-rose-950/60 to-slate-900/80",
     border: "border-pink-800/30",
     items: [
       { id: "c2a", text: "Read the AMC Handbook AI RolePlay Clinical Examination Handbook thoroughly" },
@@ -91,7 +91,7 @@ const sections: Section[] = [
     title: "After AMC — Registration & Jobs",
     tag: "STEP 4",
     tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
-    gradient: "from-saffron-950/80 to-cream-50/80",
+    gradient: "from-saffron-950/80 to-slate-900/80",
     border: "border-saffron-800/30",
     items: [
       { id: "r1", text: "Receive AMC Certificate (issued after passing both AMC MCQ and AMC Handbook AI RolePlay)" },
@@ -112,7 +112,7 @@ const sections: Section[] = [
     title: "English Language Requirements",
     tag: "REQUIREMENT",
     tagColor: "text-amber-300 bg-amber-900/40 border-amber-700/40",
-    gradient: "from-amber-950/70 to-cream-50/80",
+    gradient: "from-amber-950/70 to-slate-900/80",
     border: "border-amber-800/30",
     items: [
       { id: "en1", text: "Confirm whether you meet the English exemption criteria (primary degree taught in English, 5+ years practice in English-speaking country)", note: "See AHPRA English Language Skills Registration Standard" },
@@ -129,7 +129,7 @@ const sections: Section[] = [
     title: "Typical Timeline & Tips",
     tag: "PLANNING",
     tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
-    gradient: "from-saffron-950/70 to-cream-50/80",
+    gradient: "from-saffron-950/70 to-slate-900/80",
     border: "border-saffron-800/30",
     items: [
       { id: "t1", text: "MQA assessment: allow 3–6 months from submission to outcome" },
@@ -155,7 +155,7 @@ export default function AMCChecklistPage() {
   const pct = Math.round((totalChecked / totalItems) * 100);
 
   return (
-    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
+    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
 
       {/* Ambient blobs */}
       <div className="pointer-events-none select-none" aria-hidden>
@@ -168,18 +168,18 @@ export default function AMCChecklistPage() {
       <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 py-5 max-w-7xl mx-auto">
         <Link href="/" className="font-display font-bold text-[1.15rem] tracking-tight">
           <span className="gradient-text">Mostly</span>
-          <span className="text-ink-950"> Medicine</span>
+          <span className="text-white"> Medicine</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link
             href="/auth/login"
-            className="hidden sm:inline text-ink-900/70 hover:text-ink-950 px-4 py-2 text-sm transition-colors font-medium"
+            className="hidden sm:inline text-slate-400 hover:text-white px-4 py-2 text-sm transition-colors font-medium"
           >
             Log in
           </Link>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
+            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-glow-teal hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]"
           >
             Get started →
           </Link>
@@ -193,22 +193,22 @@ export default function AMCChecklistPage() {
           Complete IMG Guide · AMC 2026 Handbook Aligned · Free to use
         </div>
 
-        <h1 className="font-display font-bold text-ink-950 mb-5" style={{ fontSize: "clamp(2.2rem, 6vw, 4.5rem)", lineHeight: 1.05, letterSpacing: "-0.03em" }}>
+        <h1 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(2.2rem, 6vw, 4.5rem)", lineHeight: 1.05, letterSpacing: "-0.03em" }}>
           AMC Exam{" "}
           <span className="gradient-text">Checklist</span>
         </h1>
 
-        <p className="text-ink-900/70 max-w-2xl mx-auto mb-10 leading-relaxed" style={{ fontSize: "clamp(1rem, 2vw, 1.2rem)" }}>
+        <p className="text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed" style={{ fontSize: "clamp(1rem, 2vw, 1.2rem)" }}>
           Every step an International Medical Graduate needs to pass the AMC and gain Australian medical registration — from application to first day as an RMO.
         </p>
 
         {/* Progress bar */}
         <div className="max-w-md mx-auto">
           <div className="flex justify-between items-center mb-2 text-sm">
-            <span className="text-ink-900/70 font-medium">Your progress</span>
+            <span className="text-slate-400 font-medium">Your progress</span>
             <span className="font-display font-bold gradient-text">{totalChecked} / {totalItems} complete</span>
           </div>
-          <div className="h-2.5 bg-cream-100 rounded-full overflow-hidden">
+          <div className="h-2.5 bg-slate-800 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
@@ -217,7 +217,7 @@ export default function AMCChecklistPage() {
               }}
             />
           </div>
-          <p className="text-xs text-ink-900/55 mt-2">{pct}% of your AMC journey ticked off</p>
+          <p className="text-xs text-slate-600 mt-2">{pct}% of your AMC journey ticked off</p>
         </div>
       </section>
 
@@ -243,12 +243,12 @@ export default function AMCChecklistPage() {
                           {section.tag}
                         </span>
                       </div>
-                      <h2 className="font-display font-bold text-ink-950 text-xl">{section.title}</h2>
+                      <h2 className="font-display font-bold text-white text-xl">{section.title}</h2>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-display font-bold text-lg gradient-text">{sectionChecked}/{section.items.length}</p>
-                    <div className="w-20 h-1.5 bg-cream-100/60 rounded-full overflow-hidden mt-1">
+                    <div className="w-20 h-1.5 bg-slate-800/60 rounded-full overflow-hidden mt-1">
                       <div
                         className="h-full rounded-full transition-all duration-300"
                         style={{
@@ -274,11 +274,11 @@ export default function AMCChecklistPage() {
                         className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 ${
                           checked[item.id]
                             ? "border-brand-500 bg-brand-600"
-                            : "border-ink-950/15 bg-cream-100/50 group-hover:border-slate-400"
+                            : "border-slate-600 bg-slate-800/50 group-hover:border-slate-400"
                         }`}
                       >
                         {checked[item.id] && (
-                          <svg className="w-3 h-3 text-ink-950" viewBox="0 0 12 10" fill="none">
+                          <svg className="w-3 h-3 text-white" viewBox="0 0 12 10" fill="none">
                             <path d="M1 5l3.5 3.5L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         )}
@@ -286,11 +286,11 @@ export default function AMCChecklistPage() {
 
                       {/* Text */}
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm leading-snug transition-colors ${checked[item.id] ? "line-through text-ink-900/55" : "text-ink-900"}`}>
+                        <p className={`text-sm leading-snug transition-colors ${checked[item.id] ? "line-through text-slate-600" : "text-slate-200"}`}>
                           {item.text}
                         </p>
                         {item.note && (
-                          <p className="text-xs text-ink-900/60 mt-0.5 leading-snug">{item.note}</p>
+                          <p className="text-xs text-slate-500 mt-0.5 leading-snug">{item.note}</p>
                         )}
                       </div>
                     </button>
@@ -312,16 +312,16 @@ export default function AMCChecklistPage() {
           <div className="absolute inset-0 blur-3xl opacity-20 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, #7c3aed 0%, transparent 70%)" }} />
 
           <p className="text-5xl mb-5">🎓</p>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ink-950 mb-4">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-white mb-4">
             Ready to start preparing?
           </h2>
-          <p className="text-ink-900/70 mb-8 max-w-lg mx-auto text-base leading-relaxed">
+          <p className="text-slate-400 mb-8 max-w-lg mx-auto text-base leading-relaxed">
             Use Mostly Medicine to practice 4,400+ MCQs, run AI clinical roleplays, and get examiner-grade feedback — all in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth/signup"
-              className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-display font-bold text-lg text-ink-950 hover:opacity-90 transition-all hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-display font-bold text-lg text-white hover:opacity-90 transition-all hover:-translate-y-0.5"
               style={{
                 background: "linear-gradient(135deg, #7c3aed, #db2777)",
                 boxShadow: "0 8px 40px rgba(124,58,237,0.4)",
@@ -331,22 +331,22 @@ export default function AMCChecklistPage() {
             </Link>
             <Link
               href="/dashboard/cat1"
-              className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-ink-900/80 border border-ink-950/15 hover:bg-white/5 hover:border-ink-950/20 transition-all backdrop-blur-sm"
+              className="inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl font-semibold text-lg text-slate-300 border border-slate-700 hover:bg-white/5 hover:border-slate-500 transition-all backdrop-blur-sm"
             >
               Practice AMC MCQ questions →
             </Link>
           </div>
-          <p className="text-xs text-ink-900/55 mt-5">No credit card · Instant access · Cancel anytime</p>
+          <p className="text-xs text-slate-600 mt-5">No credit card · Instant access · Cancel anytime</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-ink-950/10/80 py-8 text-center">
+      <footer className="relative z-10 border-t border-slate-900/80 py-8 text-center">
         <p className="font-display font-bold text-sm mb-1">
           <span className="gradient-text">Mostly Medicine</span>
-          <span className="text-ink-900/55"> · AMC Exam Preparation</span>
+          <span className="text-slate-700"> · AMC Exam Preparation</span>
         </p>
-        <p className="text-xs text-ink-900/55 mt-1">
+        <p className="text-xs text-slate-700 mt-1">
           Built for IMGs · Powered by Claude AI · Aligned with AMC Handbook 2026
         </p>
       </footer>

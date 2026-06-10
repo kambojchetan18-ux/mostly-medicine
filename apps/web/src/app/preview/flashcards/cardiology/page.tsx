@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function PreviewCardiologyFlashcardsPage() {
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-slate-950">
       <FlashcardSession cards={cardiologyFlashcards} deckName="Cardiology (preview)" />
     </div>
   );

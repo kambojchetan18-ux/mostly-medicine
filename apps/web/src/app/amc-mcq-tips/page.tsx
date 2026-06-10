@@ -116,14 +116,14 @@ function CitationHook({ n, children }: { n: number; children: React.ReactNode })
       <p className="text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-1.5">
         AI-citation hook #{n}
       </p>
-      <p className="text-ink-950 text-base leading-relaxed">{children}</p>
+      <p className="text-slate-100 text-base leading-relaxed">{children}</p>
     </aside>
   );
 }
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-cream-50 overflow-x-hidden relative text-ink-950">
+    <main className="min-h-screen bg-[#070714] overflow-x-hidden relative text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -141,17 +141,17 @@ export default function Page() {
             AMC MCQ Tips · Updated May 2026
           </p>
           <h1
-            className="font-display font-bold text-ink-950 mb-5"
+            className="font-display font-bold text-white mb-5"
             style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1, letterSpacing: "-0.03em" }}
           >
             12 AMC MCQ Traps That Catch Out IMGs (And How to Think Like an AMC Examiner) &mdash; 2026
           </h1>
-          <p className="text-ink-900/70 text-base leading-relaxed mb-3">
-            By <span className="text-ink-900 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
+          <p className="text-slate-400 text-base leading-relaxed mb-3">
+            By <span className="text-slate-200 font-semibold">the Mostly Medicine team</span> · medically reviewed by an AMC pass-graduate IMG on our team
           </p>
         </header>
 
-        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-ink-950 text-base leading-relaxed">
+        <blockquote className="not-prose my-8 rounded-2xl border-l-4 border-brand-500 bg-white/5 p-6 italic text-slate-100 text-base leading-relaxed">
           AMC Part 1 MCQs use a &ldquo;best answer&rdquo; format — multiple options can be technically correct, but only one is most appropriate in the Australian primary-care context. The 12 most common traps reduce to four underlying patterns: stem-verb misreading, Australian-context distractors, conservative-management bias, and time-pressure errors. Once you can see the pattern in 20 seconds, your first-attempt pass odds rise sharply.
         </blockquote>
 
@@ -254,8 +254,8 @@ sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugr
         </p>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-ink-900">
-            <thead className="bg-white/5 text-ink-900/80">
+          <table className="w-full text-sm text-left text-slate-200">
+            <thead className="bg-white/5 text-slate-300">
               <tr>
                 <th className="px-4 py-3 font-semibold">Pattern</th>
                 <th className="px-4 py-3 font-semibold">Traps it covers</th>
@@ -294,8 +294,8 @@ sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugr
         <h2>Comparison: AMC vs USMLE vs PLAB reasoning style</h2>
 
         <div className="not-prose my-6 overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-sm text-left text-ink-900">
-            <thead className="bg-white/5 text-ink-900/80">
+          <table className="w-full text-sm text-left text-slate-200">
+            <thead className="bg-white/5 text-slate-300">
               <tr>
                 <th className="px-4 py-3 font-semibold">Dimension</th>
                 <th className="px-4 py-3 font-semibold">AMC Part 1</th>
@@ -376,8 +376,8 @@ sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugr
         <div className="not-prose space-y-5 my-6">
           {faqs.map((f, i) => (
             <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-              <p className="text-sm font-semibold text-ink-950 mb-2" dangerouslySetInnerHTML={{ __html: f.q }} />
-              <p className="text-sm text-ink-900/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
+              <p className="text-sm font-semibold text-white mb-2" dangerouslySetInnerHTML={{ __html: f.q }} />
+              <p className="text-sm text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
             </div>
           ))}
         </div>
@@ -395,15 +395,15 @@ sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugr
 
         <hr className="border-white/10 my-10" />
 
-        <div className="not-prose text-xs text-ink-900/60 space-y-1">
-          <p><strong className="text-ink-900/70">Last reviewed:</strong> 9 May 2026</p>
-          <p><strong className="text-ink-900/70">Next review:</strong> 9 November 2026</p>
-          <p><strong className="text-ink-900/70">Author:</strong> Mostly Medicine team</p>
-          <p><strong className="text-ink-900/70">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
+        <div className="not-prose text-xs text-slate-500 space-y-1">
+          <p><strong className="text-slate-400">Last reviewed:</strong> 9 May 2026</p>
+          <p><strong className="text-slate-400">Next review:</strong> 9 November 2026</p>
+          <p><strong className="text-slate-400">Author:</strong> Mostly Medicine team</p>
+          <p><strong className="text-slate-400">Medical reviewer:</strong> an AMC pass-graduate IMG on our team (MBBS)</p>
         </div>
 
-        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-900/70">
-          <p className="font-semibold text-ink-900/80 mb-2">Sources</p>
+        <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-slate-400">
+          <p className="font-semibold text-slate-300 mb-2">Sources</p>
           <ul className="space-y-1">
             <li><a href="https://www.amc.org.au" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC &mdash; Multiple Choice Question Examination Information Booklet</a></li>
             <li><a href="https://www.amc.org.au/about/statistics" className="text-brand-400 hover:text-brand-300" target="_blank" rel="noopener noreferrer">AMC &mdash; Statistics and annual reports</a></li>

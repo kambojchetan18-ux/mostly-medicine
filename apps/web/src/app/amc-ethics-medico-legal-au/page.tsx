@@ -73,7 +73,7 @@ const breadcrumbSchema = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-slate-50 text-ink-950">
+    <main className="min-h-screen bg-slate-50 text-gray-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
@@ -86,10 +86,10 @@ export default function Page() {
           <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-violet-700">
             AMC ethics &amp; medico-legal · Updated 8 June 2026
           </p>
-          <h1 className="mt-3 text-3xl sm:text-5xl font-bold tracking-tight text-ink-950 leading-[1.08]">
+          <h1 className="mt-3 text-3xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.08]">
             AMC Ethics &amp; Medico-Legal: AHPRA, VAD, Austroads — IMG Study Guide 2026
           </h1>
-          <p className="mt-5 text-base sm:text-lg leading-relaxed text-ink-900/85">
+          <p className="mt-5 text-base sm:text-lg leading-relaxed text-gray-700">
             Australian medical ethics is statute-driven and state-variable. AMC asks specific
             questions with specific right answers — Rogers v Whitaker (not Bolam) for consent,
             AHPRA s140 notifiable conduct, Voluntary Assisted Dying eligibility that differs by
@@ -99,7 +99,7 @@ export default function Page() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-xl bg-violet-600 hover:bg-violet-700 px-6 py-3 text-sm font-bold text-ink-950 shadow-sm transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl bg-violet-600 hover:bg-violet-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition-colors"
             >
               Start studying free →
             </Link>
@@ -110,13 +110,13 @@ export default function Page() {
               Open Ethics &amp; Law flashcards
             </Link>
           </div>
-          <p className="mt-6 text-sm text-ink-900/70">
-            By <span className="font-semibold text-ink-950">Mostly Medicine Editorial</span> · Reviewed by clinical-educator IMG team · Updated 8 June 2026
+          <p className="mt-6 text-sm text-gray-600">
+            By <span className="font-semibold text-gray-800">Mostly Medicine Editorial</span> · Reviewed by clinical-educator IMG team · Updated 8 June 2026
           </p>
         </div>
       </section>
 
-      <article className="mx-auto max-w-3xl px-6 sm:px-10 pt-12 pb-16 prose prose-slate prose-headings:font-display prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:tracking-tight prose-a:text-violet-700 hover:prose-a:text-violet-800 prose-strong:text-ink-950">
+      <article className="mx-auto max-w-3xl px-6 sm:px-10 pt-12 pb-16 prose prose-slate prose-headings:font-display prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-4 prose-h2:tracking-tight prose-a:text-violet-700 hover:prose-a:text-violet-800 prose-strong:text-gray-900">
 
         <p>
           Ethics and medico-legal scenarios are where AMC differentiates candidates who know
@@ -372,8 +372,8 @@ export default function Page() {
 
         <hr className="border-slate-200 my-10" />
 
-        <div className="not-prose rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-relaxed text-ink-900/85">
-          <p className="font-semibold text-ink-950 mb-2">Built by IMGs and IT professionals who walked the AMC pathway.</p>
+        <div className="not-prose rounded-2xl border border-slate-200 bg-white p-6 text-sm leading-relaxed text-gray-700">
+          <p className="font-semibold text-gray-900 mb-2">Built by IMGs and IT professionals who walked the AMC pathway.</p>
           <p>
             Mostly Medicine is an AMC exam-prep platform — not affiliated with the AMC, AHPRA, the
             Medical Board of Australia, Austroads, the OAIC, any state Voluntary Assisted Dying

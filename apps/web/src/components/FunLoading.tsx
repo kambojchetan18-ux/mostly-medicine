@@ -43,7 +43,7 @@ export default function FunLoading({ className, pool, intervalMs = 1500 }: Props
   }, [messages.length, intervalMs]);
 
   return (
-    <div className={className ?? "flex items-center gap-2 text-sm text-ink-900/70"}>
+    <div className={className ?? "flex items-center gap-2 text-sm text-gray-600"}>
       <div className="h-3 w-3 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
       <span>{messages[idx]}</span>
     </div>

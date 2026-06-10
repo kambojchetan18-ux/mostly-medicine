@@ -21,7 +21,7 @@ export default function VoiceControls({ muted, volume, setMuted, setVolume, ttsS
         title={muted ? "Unmute AI voice" : "Mute AI voice"}
         className={`rounded-lg border px-2 py-1 text-xs font-semibold transition ${
           muted
-            ? "border-gray-300 bg-gray-100 text-ink-900/60"
+            ? "border-gray-300 bg-gray-100 text-gray-500"
             : "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700 hover:bg-fuchsia-100"
         }`}
       >
