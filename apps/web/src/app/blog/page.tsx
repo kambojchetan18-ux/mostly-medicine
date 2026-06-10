@@ -134,8 +134,8 @@ const blogSchema = {
 };
 
 const CATEGORY_STYLES: Record<BlogPost["category"], string> = {
-  AMC: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
-  AHPRA: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+  AMC: "text-saffron-700 bg-saffron-100 border-saffron-300",
+  AHPRA: "text-saffron-700 bg-saffron-100 border-saffron-300",
   English: "text-amber-300 bg-amber-900/40 border-amber-700/40",
   OSCE: "text-violet-300 bg-violet-900/40 border-violet-700/40",
 };
@@ -162,7 +162,7 @@ export default function BlogIndexPage() {
       <PillarPageNav />
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pt-12 pb-8">
-        <p className="text-xs uppercase tracking-widest text-saffron-300 font-bold mb-3">
+        <p className="text-xs uppercase tracking-widest text-saffron-700 font-bold mb-3">
           Blog &middot; AMC + AHPRA + IMG Pathway
         </p>
         <h1
@@ -192,13 +192,13 @@ export default function BlogIndexPage() {
                 </span>
                 <span className="text-xs text-ink-950/55">{formatDate(post.publishedAt)}</span>
               </div>
-              <h2 className="font-display font-bold text-xl sm:text-2xl text-ink-950 mb-2 group-hover:text-saffron-200 transition-colors leading-tight">
+              <h2 className="font-display font-bold text-xl sm:text-2xl text-ink-950 mb-2 group-hover:text-saffron-800 transition-colors leading-tight">
                 {post.title}
               </h2>
               <p className="text-sm text-ink-950/65 leading-relaxed mb-3">
                 {post.description}
               </p>
-              <p className="text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">
+              <p className="text-xs font-semibold text-saffron-700 group-hover:text-saffron-800">
                 Read the article &rarr;
               </p>
             </Link>
@@ -207,8 +207,8 @@ export default function BlogIndexPage() {
       </section>
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20">
-        <div className="rounded-3xl border border-ink-950/10 bg-cream-50/40 p-7 sm:p-9 text-center">
-          <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-widest mb-3">
+        <div className="rounded-3xl border border-ink-950/10 bg-white p-7 sm:p-9 text-center">
+          <p className="text-[10px] font-bold text-saffron-700 uppercase tracking-widest mb-3">
             More on the way
           </p>
           <h2 className="font-display font-bold text-2xl text-ink-950 mb-3">
@@ -226,7 +226,7 @@ export default function BlogIndexPage() {
             </Link>
             <Link
               href="/ask-ai"
-              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-100/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-5 py-2.5 transition"
             >
               Try Ask AI (3 free questions)
             </Link>

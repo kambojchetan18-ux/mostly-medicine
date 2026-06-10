@@ -31,7 +31,7 @@ const MILESTONES: Milestone[] = [
     label: "Submit EPIC verification",
     detail: "Open ECFMG EPIC account, request primary-source verification of your medical degree. Allow 3–6 months.",
     emoji: "📨",
-    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-800/40",
+    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-300",
   },
   {
     id: "english-sit",
@@ -49,7 +49,7 @@ const MILESTONES: Milestone[] = [
     label: "MCQ foundation phase",
     detail: "Build core knowledge. Murtagh's General Practice + RACGP Red Book + 1,500+ MCQs across all systems.",
     emoji: "📚",
-    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-800/40",
+    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-300",
   },
   {
     id: "mcq-revision",
@@ -58,7 +58,7 @@ const MILESTONES: Milestone[] = [
     label: "MCQ revision phase",
     detail: "Target weak areas. Spaced repetition for high-yield facts. 1,500+ more MCQs.",
     emoji: "🔁",
-    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-800/40",
+    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-300",
   },
   {
     id: "mcq-mocks",
@@ -67,7 +67,7 @@ const MILESTONES: Milestone[] = [
     label: "Full mock exams",
     detail: "Sit at least 3 timed full-length 150-question mocks (3.5 hours) under exam conditions.",
     emoji: "⏱️",
-    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-800/40",
+    color: "from-saffron-900/40 to-saffron-950/30 border-saffron-300",
   },
   {
     id: "cat1-exam",
@@ -219,7 +219,7 @@ export default function Planner() {
                     <span className="text-2xl">{m.emoji}</span>
                     <h3 className="font-display font-bold text-ink-950 text-lg">{m.label}</h3>
                   </div>
-                  <p className={`text-sm font-mono ${past ? "text-ink-950/55 line-through" : "text-saffron-200"}`}>
+                  <p className={`text-sm font-mono ${past ? "text-ink-950/55 line-through" : "text-saffron-800"}`}>
                     {fmtDate(m.date)}
                   </p>
                 </div>

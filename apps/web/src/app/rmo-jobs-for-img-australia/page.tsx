@@ -116,7 +116,7 @@ const faqSchema = {
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-700 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -138,9 +138,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-700 hover:prose-a:text-saffron-700">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-700 font-bold mb-3">
             RMO Jobs · Updated May 2026
           </p>
           <h1
@@ -480,17 +480,17 @@ is an AMC pass-graduate IMG currently completing her recency of practice in Guru
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.medicalboard.gov.au/Registration-Standards.aspx" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA &mdash; Medical Board of Australia Registration Standards</a></li>
-            <li><a href="https://www.doctorconnect.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Department of Health and Aged Care &mdash; DoctorConnect, Distribution Priority Area map</a></li>
-            <li><a href="https://www.heti.nsw.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">HETI (Health Education and Training Institute), NSW Health</a></li>
-            <li><a href="https://www.pmcv.com.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Postgraduate Medical Council of Victoria (PMCV)</a></li>
-            <li><a href="https://www.health.qld.gov.au/employment" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Queensland Health, Medical Officers Recruitment</a></li>
-            <li><a href="https://www.wacountry.health.wa.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">WA Country Health Service</a></li>
-            <li><a href="https://www.sahealth.sa.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">SA Health Careers</a></li>
-            <li><a href="https://health.nt.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">NT Health, Medical Officer Recruitment</a></li>
-            <li><a href="https://www.racgp.org.au/education/imgs/rural-generalist" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">RACGP Rural Generalist Pathway</a></li>
-            <li><a href="https://www.asmof.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">ASMOF (Australian Salaried Medical Officers&apos; Federation) rate cards 2026</a></li>
-            <li><a href="https://www.ahpra.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA registration standards</a></li>
+            <li><a href="https://www.medicalboard.gov.au/Registration-Standards.aspx" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">AHPRA &mdash; Medical Board of Australia Registration Standards</a></li>
+            <li><a href="https://www.doctorconnect.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">Department of Health and Aged Care &mdash; DoctorConnect, Distribution Priority Area map</a></li>
+            <li><a href="https://www.heti.nsw.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">HETI (Health Education and Training Institute), NSW Health</a></li>
+            <li><a href="https://www.pmcv.com.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">Postgraduate Medical Council of Victoria (PMCV)</a></li>
+            <li><a href="https://www.health.qld.gov.au/employment" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">Queensland Health, Medical Officers Recruitment</a></li>
+            <li><a href="https://www.wacountry.health.wa.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">WA Country Health Service</a></li>
+            <li><a href="https://www.sahealth.sa.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">SA Health Careers</a></li>
+            <li><a href="https://health.nt.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">NT Health, Medical Officer Recruitment</a></li>
+            <li><a href="https://www.racgp.org.au/education/imgs/rural-generalist" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">RACGP Rural Generalist Pathway</a></li>
+            <li><a href="https://www.asmof.org.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">ASMOF (Australian Salaried Medical Officers&apos; Federation) rate cards 2026</a></li>
+            <li><a href="https://www.ahpra.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">AHPRA registration standards</a></li>
           </ul>
         </div>
       </article>

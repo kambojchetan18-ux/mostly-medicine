@@ -112,9 +112,9 @@ export default function AskAiPage() {
       </nav>
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pt-10 pb-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-saffron-700/40 bg-saffron-900/30 px-3 py-1 mb-5">
+        <div className="inline-flex items-center gap-2 rounded-full border border-saffron-300 bg-saffron-100 px-3 py-1 mb-5">
           <span className="inline-flex h-1.5 w-1.5 rounded-full bg-saffron-400 animate-pulse" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-saffron-300">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-saffron-700">
             Free · No signup · No credit card
           </span>
         </div>
@@ -139,21 +139,21 @@ export default function AskAiPage() {
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-16">
         <div className="grid sm:grid-cols-3 gap-3">
-          <div className="rounded-2xl border border-ink-950/10 bg-cream-50/60 p-5">
+          <div className="rounded-2xl border border-ink-950/10 bg-cream-100/60 p-5">
             <p className="text-xl mb-2">📚</p>
             <p className="text-sm font-bold text-ink-950 mb-1">Source-grounded</p>
             <p className="text-xs text-ink-950/65 leading-relaxed">
               Murtagh · RACGP · AMC Handbook · eTG · AMH. No hallucinated guidelines.
             </p>
           </div>
-          <div className="rounded-2xl border border-ink-950/10 bg-cream-50/60 p-5">
+          <div className="rounded-2xl border border-ink-950/10 bg-cream-100/60 p-5">
             <p className="text-xl mb-2">⚡</p>
             <p className="text-sm font-bold text-ink-950 mb-1">Claude Haiku 4.5</p>
             <p className="text-xs text-ink-950/65 leading-relaxed">
               Sub-second replies with prompt caching. Built for IMG prep, not generic chat.
             </p>
           </div>
-          <div className="rounded-2xl border border-ink-950/10 bg-cream-50/60 p-5">
+          <div className="rounded-2xl border border-ink-950/10 bg-cream-100/60 p-5">
             <p className="text-xl mb-2">🇦🇺</p>
             <p className="text-sm font-bold text-ink-950 mb-1">Australian context</p>
             <p className="text-xs text-ink-950/65 leading-relaxed">
@@ -164,8 +164,8 @@ export default function AskAiPage() {
       </section>
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20">
-        <div className="rounded-3xl border border-ink-950/10 bg-cream-50/40 p-7 sm:p-9 text-center">
-          <p className="text-[10px] font-bold text-saffron-400 uppercase tracking-widest mb-3">
+        <div className="rounded-3xl border border-ink-950/10 bg-white p-7 sm:p-9 text-center">
+          <p className="text-[10px] font-bold text-saffron-700 uppercase tracking-widest mb-3">
             Inside the dashboard
           </p>
           <h2 className="font-display font-bold text-2xl text-ink-950 mb-3">
@@ -185,7 +185,7 @@ export default function AskAiPage() {
             </Link>
             <Link
               href="/amc-fee-calculator"
-              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-5 py-2.5 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-100/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-5 py-2.5 transition"
             >
               See the AMC fee calculator
             </Link>

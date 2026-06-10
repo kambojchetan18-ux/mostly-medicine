@@ -43,7 +43,7 @@ const sections: Section[] = [
     emoji: "🧠",
     title: "AMC MCQ — Exam",
     tag: "STEP 2",
-    tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+    tagColor: "text-saffron-700 bg-saffron-100 border-saffron-300",
     gradient: "from-saffron-950/80 via-violet-950/60 to-cream-50/80",
     border: "border-saffron-800/30",
     items: [
@@ -90,7 +90,7 @@ const sections: Section[] = [
     emoji: "🏥",
     title: "After AMC — Registration & Jobs",
     tag: "STEP 4",
-    tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+    tagColor: "text-saffron-700 bg-saffron-100 border-saffron-300",
     gradient: "from-saffron-950/80 to-cream-50/80",
     border: "border-saffron-800/30",
     items: [
@@ -128,7 +128,7 @@ const sections: Section[] = [
     emoji: "📅",
     title: "Typical Timeline & Tips",
     tag: "PLANNING",
-    tagColor: "text-saffron-300 bg-saffron-900/40 border-saffron-700/40",
+    tagColor: "text-saffron-700 bg-saffron-100 border-saffron-300",
     gradient: "from-saffron-950/70 to-cream-50/80",
     border: "border-saffron-800/30",
     items: [
@@ -188,7 +188,7 @@ export default function AMCChecklistPage() {
 
       {/* Hero */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-14 pb-16 text-center">
-        <div className="inline-flex items-center gap-2.5 bg-saffron-900/30 border border-saffron-700/40 rounded-full px-5 py-2 text-xs text-saffron-300 font-semibold mb-8 backdrop-blur-sm">
+        <div className="inline-flex items-center gap-2.5 bg-saffron-100 border border-saffron-300 rounded-full px-5 py-2 text-xs text-saffron-700 font-semibold mb-8 backdrop-blur-sm">
           <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
           Complete IMG Guide · AMC 2026 Handbook Aligned · Free to use
         </div>

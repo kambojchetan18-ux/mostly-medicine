@@ -72,10 +72,10 @@ export default function AskAiTaste() {
   }
 
   return (
-    <div className="rounded-3xl border border-saffron-800/40 bg-cream-50/70 backdrop-blur p-5 sm:p-7 shadow-[0_0_60px_rgba(16,185,129,0.08)]">
+    <div className="rounded-3xl border border-saffron-300 bg-cream-50/70 backdrop-blur p-5 sm:p-7 shadow-[0_0_60px_rgba(16,185,129,0.08)]">
       <div className="flex items-center gap-2 mb-4">
         <span className="inline-flex h-2 w-2 rounded-full bg-saffron-400 animate-pulse" />
-        <p className="text-[11px] font-bold text-saffron-400 uppercase tracking-widest">Ask AI · Free taste · {MAX_TASTE_QUESTIONS - userTurns} of {MAX_TASTE_QUESTIONS} questions left</p>
+        <p className="text-[11px] font-bold text-saffron-700 uppercase tracking-widest">Ask AI · Free taste · {MAX_TASTE_QUESTIONS - userTurns} of {MAX_TASTE_QUESTIONS} questions left</p>
       </div>
 
       <div ref={scrollRef} className="max-h-[420px] overflow-y-auto space-y-4 pr-1">
@@ -91,7 +91,7 @@ export default function AskAiTaste() {
                   type="button"
                   onClick={() => ask(p)}
                   disabled={loading}
-                  className="text-left rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 hover:border-saffron-700 px-3 py-2.5 text-xs text-ink-950/80 transition disabled:opacity-50"
+                  className="text-left rounded-xl border border-ink-950/15 bg-cream-100/60 hover:bg-cream-50 hover:border-saffron-700 px-3 py-2.5 text-xs text-ink-950/80 transition disabled:opacity-50"
                 >
                   {p}
                 </button>
@@ -123,8 +123,8 @@ export default function AskAiTaste() {
       </div>
 
       {reachedLimit ? (
-        <div className="mt-5 rounded-2xl border border-saffron-700/40 bg-saffron-900/20 p-5">
-          <p className="text-sm font-semibold text-saffron-200 mb-1">
+        <div className="mt-5 rounded-2xl border border-saffron-300 bg-saffron-50 p-5">
+          <p className="text-sm font-semibold text-saffron-800 mb-1">
             You&apos;ve used your {MAX_TASTE_QUESTIONS} free questions ✨
           </p>
           <p className="text-xs text-ink-950/80 mb-4">
@@ -139,7 +139,7 @@ export default function AskAiTaste() {
             </Link>
             <Link
               href="/dashboard/ask-ai"
-              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-50/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-4 py-2 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-ink-950/15 bg-cream-100/60 hover:bg-cream-50 text-ink-950/90 font-semibold text-sm px-4 py-2 transition"
             >
               Already a member? Continue →
             </Link>

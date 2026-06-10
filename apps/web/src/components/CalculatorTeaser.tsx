@@ -20,7 +20,7 @@ export default function CalculatorTeaser() {
       className="not-prose my-7 w-full md:max-w-[280px] rounded-2xl border border-white/10 bg-gradient-to-br from-[#0d0d22] via-[#0a0a1c] to-[#10101e] p-5 shadow-[0_0_40px_rgba(20,184,166,0.08)] backdrop-blur-sm"
       aria-label="AMC pathway cost snapshot"
     >
-      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-2 flex items-center gap-2">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-700 mb-2 flex items-center gap-2">
         <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
         Cost calculator · live
       </p>
@@ -43,7 +43,7 @@ export default function CalculatorTeaser() {
         href="/amc-fee-calculator?source=pillar"
         aria-label="Open the AMC fee calculator and personalise your total"
         data-source="pillar-sidebar"
-        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-saffron-300 hover:text-saffron-200 transition-colors group"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-saffron-700 hover:text-saffron-800 transition-colors group"
       >
         Personalise
         <span className="group-hover:translate-x-0.5 transition-transform duration-150">→</span>

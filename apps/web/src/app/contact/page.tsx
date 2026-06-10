@@ -66,7 +66,7 @@ export default function ContactPage() {
       <PillarPageNav />
 
       <section className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pt-12 pb-16">
-        <p className="text-xs uppercase tracking-widest text-saffron-300 font-bold mb-3">
+        <p className="text-xs uppercase tracking-widest text-saffron-700 font-bold mb-3">
           Contact
         </p>
         <h1
@@ -83,21 +83,21 @@ export default function ContactPage() {
         <div className="grid sm:grid-cols-2 gap-4">
           <a
             href="mailto:info@mostlymedicine.com"
-            className="group rounded-2xl border border-saffron-800/40 bg-gradient-to-br from-saffron-950/60 to-cream-50/60 hover:border-saffron-500/60 p-6 transition-all"
+            className="group rounded-2xl border border-saffron-300 bg-gradient-to-br from-saffron-950/60 to-cream-50/60 hover:border-saffron-500/60 p-6 transition-all"
           >
-            <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-700 mb-2">
               Email
             </p>
             <p className="text-base font-semibold text-ink-950 mb-1">info@mostlymedicine.com</p>
             <p className="text-xs text-ink-950/65 leading-relaxed">
               We typically reply within one business day. For exam-prep help, include your AMC sitting date so we can prioritise.
             </p>
-            <p className="mt-4 text-xs font-semibold text-saffron-300 group-hover:text-saffron-200">
+            <p className="mt-4 text-xs font-semibold text-saffron-700 group-hover:text-saffron-800">
               Send an email →
             </p>
           </a>
 
-          <div className="rounded-2xl border border-ink-950/10 bg-cream-50/60 p-6">
+          <div className="rounded-2xl border border-ink-950/10 bg-cream-100/60 p-6">
             <p className="text-[10px] font-bold uppercase tracking-widest text-ink-950/55 mb-2">
               Based in
             </p>
@@ -109,7 +109,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <section className="mt-12 rounded-3xl border border-ink-950/10 bg-cream-50/40 p-7 sm:p-9">
+        <section className="mt-12 rounded-3xl border border-ink-950/10 bg-white p-7 sm:p-9">
           <h2 className="font-display font-bold text-xl text-ink-950 mb-3">
             Common questions before you write
           </h2>
@@ -117,7 +117,7 @@ export default function ContactPage() {
             <li>
               <span className="font-semibold text-ink-950">Account or billing issue?</span>{" "}
               Sign in and visit{" "}
-              <Link href="/dashboard/billing" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
+              <Link href="/dashboard/billing" className="text-saffron-700 hover:text-saffron-800 underline-offset-2 hover:underline">
                 /dashboard/billing
               </Link>{" "}
               — most subscription changes can be done there directly via Stripe.
@@ -125,7 +125,7 @@ export default function ContactPage() {
             <li>
               <span className="font-semibold text-ink-950">Question about AMC prep itself?</span>{" "}
               Try{" "}
-              <Link href="/ask-ai" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
+              <Link href="/ask-ai" className="text-saffron-700 hover:text-saffron-800 underline-offset-2 hover:underline">
                 Ask AI
               </Link>{" "}
               first — three free questions, no signup needed, grounded in Murtagh, RACGP and the AMC Handbook.
@@ -133,11 +133,11 @@ export default function ContactPage() {
             <li>
               <span className="font-semibold text-ink-950">Want to know what we offer?</span>{" "}
               The{" "}
-              <Link href="/amc" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
+              <Link href="/amc" className="text-saffron-700 hover:text-saffron-800 underline-offset-2 hover:underline">
                 AMC Exam Guide
               </Link>{" "}
               and{" "}
-              <Link href="/amc-fee-calculator" className="text-saffron-300 hover:text-saffron-200 underline-offset-2 hover:underline">
+              <Link href="/amc-fee-calculator" className="text-saffron-700 hover:text-saffron-800 underline-offset-2 hover:underline">
                 Fee Calculator
               </Link>{" "}
               cover the full pathway end-to-end.

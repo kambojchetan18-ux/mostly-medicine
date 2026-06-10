@@ -155,7 +155,7 @@ export default function Calculator() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-cream-50/60 border border-ink-950/10">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-cream-100/60 border border-ink-950/10">
           <div>
             <p className="font-semibold text-ink-950 text-sm">Include EPIC verification</p>
             <p className="text-xs text-ink-950/55">ECFMG credential check (USD 130).</p>
@@ -177,7 +177,7 @@ export default function Calculator() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-cream-50/60 border border-ink-950/10">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-cream-100/60 border border-ink-950/10">
           <div>
             <p className="font-semibold text-ink-950 text-sm">Include AHPRA registration</p>
             <p className="text-xs text-ink-950/55">Final step for medical practice.</p>

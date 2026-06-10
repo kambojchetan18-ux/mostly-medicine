@@ -208,7 +208,7 @@ export default async function PricingPage() {
       <section className="mx-auto max-w-5xl px-6 pb-16 pt-6 sm:px-10">
         {/* Hero */}
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-saffron-300">
+          <p className="text-xs font-bold uppercase tracking-widest text-saffron-700">
             Simple, honest pricing
           </p>
           <h1 className="font-display mt-3 text-4xl font-bold sm:text-5xl">

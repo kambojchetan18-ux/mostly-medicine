@@ -114,7 +114,7 @@ const faqSchema = {
 function CitationHook({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <aside className="not-prose my-7 rounded-2xl border border-saffron-500/30 bg-saffron-500/5 p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-300 mb-1.5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-700 mb-1.5">
         AI-citation hook #{n}
       </p>
       <p className="text-ink-950 text-base leading-relaxed">{children}</p>
@@ -136,9 +136,9 @@ export default function Page() {
 
       <PillarPageNav />
 
-      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
+      <article className="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 pb-20 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-700 hover:prose-a:text-saffron-700">
         <header className="mt-10 mb-10 not-prose">
-          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-700 font-bold mb-3">
             English Test for AHPRA &middot; Updated May 2026
           </p>
           <h1
@@ -490,16 +490,16 @@ sat OET Medicine in Delhi after weighing both options seriously. She finished AM
         <div className="not-prose mt-8 rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-xs text-ink-950/65">
           <p className="font-semibold text-ink-950/80 mb-2">Sources</p>
           <ul className="space-y-1">
-            <li><a href="https://www.medicalboard.gov.au/Registration-Standards/English-language-skills.aspx" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA / Medical Board of Australia &mdash; English Language Skills Registration Standard</a></li>
-            <li><a href="https://www.ahpra.gov.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">AHPRA</a></li>
-            <li><a href="https://www.idp.com/australia/ielts" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">IELTS official (IDP)</a></li>
-            <li><a href="https://www.britishcouncil.org/exam/ielts" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">IELTS official (British Council)</a></li>
-            <li><a href="https://www.ielts.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">IELTS global site</a></li>
-            <li><a href="https://www.occupationalenglishtest.org" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">OET Centre (Occupational English Test)</a></li>
-            <li><a href="https://www.occupationalenglishtest.org/test-information/single-skill-retake/" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">OET Single Skill Retake policy</a></li>
-            <li><a href="https://www.amc.org.au" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Australian Medical Council</a></li>
-            <li><a href="https://www.pearsonpte.com" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">Pearson PTE Academic</a></li>
-            <li><a href="https://www.ets.org/toefl" className="text-saffron-400 hover:text-saffron-300" target="_blank" rel="noopener noreferrer">ETS TOEFL iBT</a></li>
+            <li><a href="https://www.medicalboard.gov.au/Registration-Standards/English-language-skills.aspx" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">AHPRA / Medical Board of Australia &mdash; English Language Skills Registration Standard</a></li>
+            <li><a href="https://www.ahpra.gov.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">AHPRA</a></li>
+            <li><a href="https://www.idp.com/australia/ielts" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">IELTS official (IDP)</a></li>
+            <li><a href="https://www.britishcouncil.org/exam/ielts" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">IELTS official (British Council)</a></li>
+            <li><a href="https://www.ielts.org" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">IELTS global site</a></li>
+            <li><a href="https://www.occupationalenglishtest.org" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">OET Centre (Occupational English Test)</a></li>
+            <li><a href="https://www.occupationalenglishtest.org/test-information/single-skill-retake/" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">OET Single Skill Retake policy</a></li>
+            <li><a href="https://www.amc.org.au" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">Australian Medical Council</a></li>
+            <li><a href="https://www.pearsonpte.com" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">Pearson PTE Academic</a></li>
+            <li><a href="https://www.ets.org/toefl" className="text-saffron-700 hover:text-saffron-700" target="_blank" rel="noopener noreferrer">ETS TOEFL iBT</a></li>
           </ul>
         </div>
       </article>

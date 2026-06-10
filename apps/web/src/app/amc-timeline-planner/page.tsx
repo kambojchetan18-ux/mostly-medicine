@@ -98,7 +98,7 @@ export default function AmcTimelinePlannerPage() {
       </nav>
 
       <section className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 pt-12 pb-10 text-center">
-        <div className="inline-flex items-center gap-2.5 bg-saffron-900/30 border border-saffron-700/40 rounded-full px-5 py-2 text-xs text-saffron-300 font-semibold mb-6 backdrop-blur-sm">
+        <div className="inline-flex items-center gap-2.5 bg-saffron-100 border border-saffron-300 rounded-full px-5 py-2 text-xs text-saffron-700 font-semibold mb-6 backdrop-blur-sm">
           <span className="w-1.5 h-1.5 bg-saffron-400 rounded-full animate-pulse shrink-0" />
           Backwards plan · 11 milestones · 2026 ready
         </div>
@@ -113,7 +113,7 @@ export default function AmcTimelinePlannerPage() {
         </p>
         <Link
           href="/auth/signup"
-          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-saffron-300 hover:text-saffron-200"
+          className="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-saffron-700 hover:text-saffron-800"
         >
           Start prep with Mostly Medicine →
         </Link>

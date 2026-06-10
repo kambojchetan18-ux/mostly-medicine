@@ -45,46 +45,53 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
 function SampleQuestion({ q, index }: { q: MCQuestion; index: number }) {
   return (
-    <article className="not-prose mb-8 rounded-2xl border border-ink-950/10 bg-cream-50/40 p-6">
-      <div className="mb-3 flex items-center gap-3">
-        <span className="rounded-full bg-saffron-900/40 border border-saffron-700/40 text-saffron-300 text-xs font-bold uppercase tracking-widest px-3 py-1">
+    <article className="not-prose mb-8 rounded-2xl border border-ink-950/10 bg-white p-6 shadow-sm sm:p-7">
+      {/* Question header — distinct badge + meta row, much higher contrast
+          than the prior saffron-900/40 chip that was lost on cream. */}
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <span className="rounded-full border border-saffron-200 bg-saffron-100 px-3 py-1 text-xs font-bold uppercase tracking-widest text-saffron-800">
           Question {index + 1}
         </span>
-        <span className="text-xs uppercase tracking-widest text-ink-950/55">
-          {q.subtopic} · {q.difficulty}
+        <span className="text-xs uppercase tracking-widest text-ink-900/65">
+          {q.subtopic} · <strong className="text-ink-950">{q.difficulty}</strong>
         </span>
       </div>
-      <p className="text-ink-950 leading-relaxed mb-4">{q.stem}</p>
-      <ol className="space-y-2 mb-4">
+
+      {/* Stem — larger leading + base size for readability. */}
+      <p className="mb-5 text-[15px] leading-relaxed text-ink-950 sm:text-base">{q.stem}</p>
+
+      <ol className="mb-5 space-y-2">
         {q.options.map((opt) => {
           const isCorrect = opt.label === q.correctAnswer;
           return (
             <li
               key={opt.label}
-              className={`flex gap-3 rounded-lg border px-4 py-2 text-sm ${
+              className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm leading-relaxed transition-colors ${
                 isCorrect
-                  ? "border-saffron-700/40 bg-saffron-900/20 text-saffron-200"
-                  : "border-ink-950/10 bg-cream-50/40 text-ink-950/80"
+                  ? "border-saffron-400 bg-saffron-50 font-medium text-ink-950"
+                  : "border-ink-950/10 bg-cream-50 text-ink-950/85 hover:border-ink-950/20"
               }`}
             >
-              <span className="font-bold w-5 shrink-0">{opt.label}.</span>
-              <span>{opt.text}</span>
+              <span className="w-5 shrink-0 font-bold text-ink-950">{opt.label}.</span>
+              <span className="flex-1">{opt.text}</span>
               {isCorrect ? (
-                <span className="ml-auto text-xs uppercase tracking-widest text-saffron-300 shrink-0">
-                  Correct
+                <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full bg-saffron-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                  ✓ Correct
                 </span>
               ) : null}
             </li>
           );
         })}
       </ol>
-      <details className="group rounded-lg border border-ink-950/10 bg-cream-50/60 p-4">
-        <summary className="cursor-pointer list-none text-sm font-bold text-saffron-300 group-open:text-saffron-200">
+
+      <details className="group rounded-lg border border-ink-950/10 bg-cream-100/60 p-4 open:bg-cream-100">
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-bold text-saffron-700 group-open:text-saffron-800">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-saffron-600 text-xs text-white transition-transform group-open:rotate-45">
+            +
+          </span>
           Show explanation
         </summary>
-        <p className="mt-3 text-sm leading-relaxed text-ink-950/80">
-          {q.explanation}
-        </p>
+        <p className="mt-3 text-sm leading-relaxed text-ink-950/85">{q.explanation}</p>
       </details>
     </article>
   );
@@ -181,15 +188,15 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
         </Link>
         <Link
           href="/auth/signup"
-          className="bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-5 py-2.5 rounded-xl text-sm font-bold"
+          className="rounded-xl bg-saffron-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-saffron-500"
         >
           Start free
         </Link>
       </nav>
 
-      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose  prose-headings:font-display prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-a:text-saffron-400 hover:prose-a:text-saffron-300">
+      <article className="max-w-3xl mx-auto px-6 sm:px-10 pb-24 prose prose-headings:font-display prose-headings:text-ink-950 prose-h1:text-4xl sm:prose-h1:text-5xl prose-h2:text-2xl sm:prose-h2:text-3xl prose-p:text-ink-900/85 prose-strong:text-ink-950 prose-a:text-saffron-700 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline">
         <header className="mt-8 mb-12">
-          <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
+          <p className="text-xs uppercase tracking-widest text-saffron-700 font-bold mb-3">
             AMC MCQ · {spec.name}
           </p>
           <h1 className="font-display font-bold mb-4">
@@ -205,13 +212,13 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
           <div className="not-prose mt-6 flex gap-3">
             <Link
               href="/auth/signup"
-              className="bg-saffron-600 hover:bg-saffron-500 text-ink-950 px-6 py-3 rounded-xl text-sm font-bold no-underline"
+              className="rounded-xl bg-saffron-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-saffron-500 no-underline"
             >
               Unlock full {spec.short} bank
             </Link>
             <Link
               href="/amc-mcq"
-              className="border border-ink-950/15 hover:border-slate-500 text-ink-950/90 px-6 py-3 rounded-xl text-sm font-bold no-underline"
+              className="rounded-xl border border-ink-950/15 px-6 py-3 text-sm font-bold text-ink-950/90 transition hover:border-ink-950/40 hover:bg-cream-100/60 no-underline"
             >
               All specialties
             </Link>

@@ -233,14 +233,14 @@ const COLORS: Record<Verdict["status"], string> = {
   eligible: "from-saffron-900/60 to-saffron-950/40 border-saffron-700/50",
   almost: "from-violet-900/60 to-pink-950/40 border-violet-700/50",
   blocked: "from-rose-900/60 to-rose-950/40 border-rose-700/50",
-  info: "from-saffron-900/60 to-cream-50/40 border-saffron-800/40",
+  info: "from-saffron-900/60 to-cream-50/40 border-saffron-300",
 };
 
 const BADGE: Record<Verdict["status"], string> = {
-  eligible: "bg-saffron-900/60 text-saffron-200 border-saffron-700/50",
+  eligible: "bg-saffron-900/60 text-saffron-800 border-saffron-700/50",
   almost: "bg-violet-900/60 text-violet-200 border-violet-700/50",
   blocked: "bg-rose-900/60 text-rose-200 border-rose-700/50",
-  info: "bg-saffron-900/60 text-saffron-200 border-saffron-700/50",
+  info: "bg-saffron-900/60 text-saffron-800 border-saffron-700/50",
 };
 
 export default function Wizard() {
@@ -354,7 +354,7 @@ export default function Wizard() {
           </div>
 
           <div className="mt-7">
-            <p className="text-xs uppercase tracking-widest text-saffron-400 font-bold mb-3">
+            <p className="text-xs uppercase tracking-widest text-saffron-700 font-bold mb-3">
               Recommended next steps
             </p>
             <ul className="space-y-2.5">
