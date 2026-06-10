@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-// The hero leads with AMC Clinical (the moat), but the platform has three
-// other pillars that paying users care about. This section surfaces them
+// The hero leads with AMC Clinical (the moat), and AMC MCQ now has its own
+// SmartFeedback deep-dive section — this surfaces the remaining two pillars
 // without diluting the Clinical-first narrative. Placement: after CaseMap,
 // before BuiltForIMGs — so Clinical depth (AIExaminer + CaseMap) reads as
 // a unit, then we open the aperture to "and there's more".
@@ -19,20 +19,6 @@ interface Module {
 const MODULES: Module[] = [
   {
     numeral: "01",
-    tag: "AMC MCQ",
-    title: "4,400+ MCQs with smart explanations.",
-    blurb:
-      "Every wrong answer dissected — what the trap was, which AU guideline it tested, why the right answer wins.",
-    bullets: [
-      "24 specialties, AU-cited",
-      "Per-question AI rationale",
-      "FSRS-5 spaced repetition",
-    ],
-    href: "/amc-mcq",
-    cta: "Explore AMC MCQ",
-  },
-  {
-    numeral: "02",
     tag: "Ask AI",
     title: "Your AMC reference library, on tap.",
     blurb:
@@ -46,7 +32,7 @@ const MODULES: Module[] = [
     cta: "Try Ask AI",
   },
   {
-    numeral: "03",
+    numeral: "02",
     tag: "Flashcards",
     title: "21 specialty decks. FSRS-5 spaced recall.",
     blurb:
@@ -70,15 +56,15 @@ export default function MoreModules() {
             Beyond Clinical
           </p>
           <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-ink-950 sm:text-4xl">
-            Three more ways to prep.
+            Two more ways to prep.
           </h2>
           <p className="mt-3 text-base text-ink-900/70 sm:text-lg">
-            AMC Clinical is the moat. MCQs, Ask AI and flashcards are how you keep building between
+            AMC Clinical is the moat. Ask AI and flashcards are how you keep building between
             stations.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-5 lg:grid-cols-3">
+        <div className="mx-auto mt-14 grid max-w-4xl gap-5 sm:grid-cols-2">
           {MODULES.map((m) => (
             <article
               key={m.tag}

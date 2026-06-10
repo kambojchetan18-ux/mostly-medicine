@@ -20,6 +20,10 @@ const FAQS: { q: string; a: string }[] = [
     a: "Your transcript is graded by Claude Sonnet 4.6 against the AMC's 13-domain rubric (history, communication, diagnostic reasoning, etc.). Each domain is scored 0–10 with a quote-level rationale: \"Lost 1 mark on counselling because you didn't explain the likely diagnosis before time ran out.\" Weak-domain tracking persists across sessions.",
   },
   {
+    q: "How does MCQ SmartFeedback work?",
+    a: "When you answer one of the 4,300+ MCQs wrong, hit \"🤔 Why was I wrong?\" — SmartFeedback generates a personalised AI explanation that names the exact trap you fell into, the Australian guideline the question tested (RACGP, eTG, AMH or NHFA), and one clinical pearl for exam day. Explanations are cached, so re-reading them during revision is free. Included on the free tier (5 MCQs/day).",
+  },
+  {
     q: "Can I use it on my phone?",
     a: "Yes — the mobile app is in active testing (Android Play Store APK, iOS TestFlight). The voice OSCE works directly in mobile Safari and Chrome too if you don't want to install. AI deck generation and Anki import stay on web for v1.",
   },

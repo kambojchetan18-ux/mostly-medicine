@@ -4,13 +4,6 @@ import StreakHeatmap from "@/components/StreakHeatmap";
 
 const modules = [
   {
-    href:  "/dashboard/cat1",
-    emoji: "🧠",
-    tag:   "AMC Part 1",
-    title: "MCQ Practice",
-    desc:  "3 000+ MCQs with spaced repetition, weak-area targeting, and AI-powered explanations.",
-  },
-  {
     href:  "/dashboard/ai-roleplay/live",
     emoji: "🎥",
     tag:   "Live · 2-player",
@@ -97,36 +90,67 @@ export default async function DashboardHome() {
         <StreakHeatmap />
       </div>
 
-      {/* Featured hero — Clinical RolePlay, the core product */}
-      <div className="mb-4 sm:mb-5 rounded-3xl border-2 border-saffron-400 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-6 sm:p-8 shadow-[0_24px_48px_-24px_rgba(232,146,22,0.4)]">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-saffron-700 mb-2">
-          Core practice · voice OSCE
-        </p>
-        <h3 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-ink-950 mb-2">
-          Clinical RolePlay
-        </h3>
-        <p className="text-sm sm:text-base text-ink-900/75 max-w-2xl">
-          Talk to an AI patient in a timed station, then get examiner feedback scored against the 13-domain AMC rubric.
-        </p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Link
-            href="/dashboard/cat2"
-            className="inline-flex items-center gap-2 rounded-full bg-saffron-500 px-6 py-3.5 text-sm font-bold text-ink-950 shadow-[0_8px_24px_-8px_rgba(232,146,22,0.5)] transition-all hover:-translate-y-0.5 hover:bg-saffron-400"
-          >
-            Start a station →
-          </Link>
-          <Link
-            href="/dashboard/cat2"
-            className="inline-flex items-center rounded-full border border-ink-950/15 bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink-900/80 hover:border-saffron-400 hover:text-ink-950 transition"
-          >
-            Handbook · 151 cases
-          </Link>
-          <Link
-            href="/dashboard/ai-roleplay"
-            className="inline-flex items-center rounded-full border border-ink-950/15 bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink-900/80 hover:border-saffron-400 hover:text-ink-950 transition"
-          >
-            Beyond Handbook · unlimited
-          </Link>
+      {/* Featured heroes — Clinical RolePlay + MCQ Practice, the two core products */}
+      <div className="mb-4 sm:mb-5 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-3xl border-2 border-saffron-400 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-6 sm:p-8 shadow-[0_24px_48px_-24px_rgba(232,146,22,0.4)]">
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-saffron-700 mb-2">
+            Core practice · voice OSCE
+          </p>
+          <h3 className="font-display text-2xl font-extrabold tracking-tight text-ink-950 mb-2">
+            Clinical RolePlay
+          </h3>
+          <p className="text-sm text-ink-900/75">
+            Talk to an AI patient in a timed station, then get examiner feedback scored against the 13-domain AMC rubric.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              href="/dashboard/cat2"
+              className="inline-flex items-center gap-2 rounded-full bg-saffron-500 px-6 py-3.5 text-sm font-bold text-ink-950 shadow-[0_8px_24px_-8px_rgba(232,146,22,0.5)] transition-all hover:-translate-y-0.5 hover:bg-saffron-400"
+            >
+              Start a station →
+            </Link>
+            <Link
+              href="/dashboard/cat2"
+              className="inline-flex items-center rounded-full border border-ink-950/15 bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink-900/80 hover:border-saffron-400 hover:text-ink-950 transition"
+            >
+              Handbook · 151 cases
+            </Link>
+            <Link
+              href="/dashboard/ai-roleplay"
+              className="inline-flex items-center rounded-full border border-ink-950/15 bg-white/70 px-3 py-1.5 text-xs font-semibold text-ink-900/80 hover:border-saffron-400 hover:text-ink-950 transition"
+            >
+              Beyond Handbook · unlimited
+            </Link>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border-2 border-saffron-400 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-6 sm:p-8 shadow-[0_24px_48px_-24px_rgba(232,146,22,0.4)]">
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-wider text-saffron-700 mb-2">
+            Core practice · 4,300+ MCQs
+          </p>
+          <h3 className="font-display text-2xl font-extrabold tracking-tight text-ink-950 mb-2">
+            MCQ Practice
+          </h3>
+          <p className="text-sm text-ink-900/75">
+            Answer AMC-style MCQs across 15 specialties. Get one wrong and SmartFeedback dissects it — the exact trap, the AU guideline it tested, and a pearl you&apos;ll remember on exam day.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              href="/dashboard/cat1"
+              className="inline-flex items-center gap-2 rounded-full bg-saffron-500 px-6 py-3.5 text-sm font-bold text-ink-950 shadow-[0_8px_24px_-8px_rgba(232,146,22,0.5)] transition-all hover:-translate-y-0.5 hover:bg-saffron-400"
+            >
+              Start practising →
+            </Link>
+            <span className="rounded-full border border-saffron-300/60 bg-white px-3 py-1 text-xs text-ink-900/75">
+              SmartFeedback
+            </span>
+            <span className="rounded-full border border-saffron-300/60 bg-white px-3 py-1 text-xs text-ink-900/75">
+              Spaced repetition
+            </span>
+            <span className="rounded-full border border-saffron-300/60 bg-white px-3 py-1 text-xs text-ink-900/75">
+              15 specialties
+            </span>
+          </div>
         </div>
       </div>
 

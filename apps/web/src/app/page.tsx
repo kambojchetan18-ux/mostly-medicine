@@ -4,6 +4,7 @@ import TrustBand from "@/components/landing/v3/TrustBand";
 import ProblemFraming from "@/components/landing/v3/ProblemFraming";
 import HowItWorksV3 from "@/components/landing/v3/HowItWorksV3";
 import AIExaminer from "@/components/landing/v3/AIExaminer";
+import SmartFeedbackMCQ from "@/components/landing/v3/SmartFeedbackMCQ";
 import CaseMap from "@/components/landing/v3/CaseMap";
 import MoreModules from "@/components/landing/v3/MoreModules";
 import BuiltForIMGs from "@/components/landing/v3/BuiltForIMGs";
@@ -52,6 +53,14 @@ const faqSchema = {
     },
     {
       "@type": "Question",
+      name: "How does MCQ SmartFeedback work?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "When you answer one of the 4,300+ MCQs wrong, hit \"🤔 Why was I wrong?\" — SmartFeedback generates a personalised AI explanation that names the exact trap you fell into, the Australian guideline the question tested (RACGP, eTG, AMH or NHFA), and one clinical pearl for exam day. Explanations are cached, so re-reading them during revision is free. Included on the free tier (5 MCQs/day).",
+      },
+    },
+    {
+      "@type": "Question",
       name: "Can I use it on my phone?",
       acceptedAnswer: {
         "@type": "Answer",
@@ -92,6 +101,7 @@ export default function Home() {
       <ProblemFraming />
       <HowItWorksV3 />
       <AIExaminer />
+      <SmartFeedbackMCQ />
       <CaseMap />
       <MoreModules />
       <BuiltForIMGs />
