@@ -207,10 +207,17 @@ async function notify(newAlerts: Finding[]): Promise<void> {
   ]);
 }
 
+function timingSafeCompare(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get("authorization");
+  const auth = req.headers.get("authorization") ?? "";
   const secret = process.env.CRON_SECRET;
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!secret || !timingSafeCompare(auth, `Bearer ${secret}`)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -1,5 +1,5 @@
 // Billing helpers — get/create Stripe customer, sync subscription state.
-// Server-only.
+import "server-only";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { stripe, planForPriceId } from "./stripe";
 

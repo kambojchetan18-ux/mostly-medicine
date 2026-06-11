@@ -416,9 +416,7 @@ export default function Cat1DeckScreen() {
       setSelected(label);
       const isCorrect = label === current.correctAnswer;
       // Fire-and-forget — don't block UI.
-      persistAttempt(current, isCorrect).catch(() => {
-        /* ignore network errors */
-      });
+      persistAttempt(current, isCorrect).catch((e) => console.warn('[cat1]', e));
       // If they answered correctly, drop it from review-later
       if (isCorrect && reviewLater.has(current.id)) {
         const next = new Set(reviewLater);
