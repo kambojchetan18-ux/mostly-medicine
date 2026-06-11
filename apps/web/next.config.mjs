@@ -35,16 +35,18 @@ const nextConfig = {
     ];
   },
   async headers() {
-    // Baseline security headers applied to every response. A strict CSP is
-    // intentionally NOT shipped right before launch — Tailwind's hashing,
-    // Next.js inline runtime, and Stripe Elements all need careful nonce
-    // wiring that's risky to land overnight. The headers below are zero-risk
-    // and still close real attack surface (clickjacking, MIME sniffing,
-    // referrer leakage, downgrade, sensitive browser APIs).
+    // Baseline security headers applied to every response.
     return [
       {
         source: "/:path*",
         headers: [
+          // Content-Security-Policy — allow self, Supabase, Anthropic,
+          // and Stripe while blocking everything else.
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.stripe.com; frame-src 'self' https://js.stripe.com https://hooks.stripe.com;",
+          },
           // Block iframe embedding from any other origin → defeats
           // clickjacking attacks against /dashboard/billing + /auth/* forms.
           { key: "X-Frame-Options", value: "DENY" },
