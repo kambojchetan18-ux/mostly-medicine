@@ -23,7 +23,7 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import { execSync } from "child_process";
+import { execSync, execFileSync } from "child_process";
 
 const args = process.argv.slice(2);
 const flag = (n: string) => args.includes(`--${n}`);
@@ -139,7 +139,7 @@ function sh(cmd: string): string {
 }
 
 function pageCount(pdfPath: string): number {
-  const out = sh(`pdfinfo "${pdfPath}"`);
+  const out = execFileSync("pdfinfo", [pdfPath], { encoding: "utf-8" }).trim();
   const m = out.match(/Pages:\s+(\d+)/);
   return m ? parseInt(m[1], 10) : 0;
 }

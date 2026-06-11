@@ -32,12 +32,17 @@ export async function createClinicalRoleplay({
   const scenario = getScenario(scenarioId);
   if (!scenario) throw new Error(`Scenario ${scenarioId} not found`);
 
+  // Sanitize patientName to prevent prompt injection via newlines or excessive length.
+  const safeName = patientName
+    ? patientName.replace(/[\n\r]/g, " ").trim().slice(0, 100)
+    : null;
+
   const systemPrompt = `You are an AI simulating a patient for AMC MCAT (clinical examination) practice.
 
 STATION: ${scenario.mcatNumber} — ${scenario.title}
 SOURCE: AMC Handbook of Clinical Assessment — Condition ${scenario.mcatNumber}
 CATEGORY: ${scenario.category} (${scenario.subcategory})
-${patientName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${patientName}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
+${safeName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${safeName}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
 
 PATIENT PROFILE:
 - ${scenario.patientProfile}

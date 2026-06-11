@@ -84,7 +84,7 @@ export default function QuizScreen() {
   }
 
   if (phase === 'done') {
-    const accuracy = Math.round((totalCorrect / questions.length) * 100);
+    const accuracy = questions.length > 0 ? Math.round((totalCorrect / questions.length) * 100) : 0;
     const accColor = accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444';
     return (
       <View style={s.bg}>
