@@ -1,4 +1,5 @@
 // Server-side Stripe client. Singleton, no key on the client.
+import "server-only";
 import Stripe from "stripe";
 
 let _stripe: Stripe | null = null;

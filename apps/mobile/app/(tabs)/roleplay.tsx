@@ -181,6 +181,12 @@ export default function RoleplayScreen() {
       if (text) setInput((curr) => (curr ? `${curr} ${text}` : text).trim());
     } catch (e) {
       setVoiceError(e instanceof Error ? e.message : 'Transcription failed');
+      const staleRec = recordingRef.current;
+      recordingRef.current = null;
+      setIsRecording(false);
+      if (staleRec) {
+        staleRec.stopAndUnloadAsync().catch(() => {});
+      }
     } finally {
       transcribingRef.current = false;
       setIsTranscribing(false);
