@@ -33,11 +33,15 @@ export default function AskAiClient() {
     setInput("");
     setLoading(true);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+
     try {
       const res = await fetch("/api/library-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
+        signal: controller.signal,
       });
 
       if (!res.ok || !res.body) {
@@ -61,12 +65,22 @@ export default function AskAiClient() {
           return updated;
         });
       }
+
+      clearTimeout(timeout);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Request failed";
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: `Sorry — ${msg}. Please try again.` },
-      ]);
+      clearTimeout(timeout);
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Response timed out. Please try again." },
+        ]);
+      } else {
+        const msg = err instanceof Error ? err.message : "Request failed";
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: `Sorry — ${msg}. Please try again.` },
+        ]);
+      }
     } finally {
       setLoading(false);
     }

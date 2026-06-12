@@ -302,6 +302,7 @@ export default function FlashcardPlayerScreen() {
                   style={s.showAnswerBtn}
                   onPress={() => setRevealed(true)}
                   activeOpacity={0.85}
+                  accessibilityLabel="Show answer"
                 >
                   <Text style={s.showAnswerText}>Show answer</Text>
                 </TouchableOpacity>
