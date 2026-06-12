@@ -35,10 +35,13 @@ export default function MentorMessage({
     let cancelled = false;
     (async () => {
       try {
+        // Hard 10s cap — without it a hung request leaves the floating
+        // skeleton stuck on screen with no way to remove it.
         const res = await fetch("/api/mentor/message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ trigger, context }),
+          signal: AbortSignal.timeout(10_000),
         });
         if (!res.ok) {
           // 429 (rate limited) and 401 are both silent failures — the banner
@@ -84,6 +87,17 @@ export default function MentorMessage({
             <div className="h-2.5 w-3/4 rounded bg-saffron-100" />
             <div className="h-2.5 w-1/2 rounded bg-saffron-100" />
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              setVisible(false);
+              onDismiss?.();
+            }}
+            aria-label="Dismiss mentor message"
+            className="shrink-0 rounded p-0.5 text-saffron-700 transition hover:bg-saffron-100 hover:text-saffron-900"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       </div>
     );
