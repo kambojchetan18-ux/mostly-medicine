@@ -564,6 +564,7 @@ export default function RoleplayScreen() {
                 onPress={toggleRecording}
                 disabled={loading}
                 activeOpacity={0.7}
+                accessibilityLabel={isRecording ? 'Stop recording' : 'Start recording'}
               >
                 <Ionicons
                   name={isRecording ? 'stop' : 'mic'}

@@ -3,6 +3,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
 import { syncSubscriptionToProfile } from "@/lib/billing";
 import { features } from "@/config/features";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import type Stripe from "stripe";
 
 // Daily Stripe resync. If a webhook delivery is missed (Stripe outage,
@@ -26,11 +27,8 @@ function service() {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret || auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = verifyCronSecret(req);
+  if (denied) return denied;
 
   // Beta mode: no plan mutations from automated resync. Return a no-op so
   // the cron job stays green without touching user_profiles.

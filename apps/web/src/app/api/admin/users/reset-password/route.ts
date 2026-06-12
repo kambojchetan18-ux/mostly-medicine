@@ -41,6 +41,15 @@ export async function POST(req: NextRequest) {
   const email = target.user.email;
   if (!email) return NextResponse.json({ error: "Target user has no email" }, { status: 400 });
 
+  const { data: targetProfile } = await svc
+    .from("user_profiles")
+    .select("role")
+    .eq("id", userId)
+    .single();
+  if (targetProfile?.role === "admin" && userId !== user.id) {
+    return NextResponse.json({ error: "Refusing to reset another admin's password" }, { status: 403 });
+  }
+
   const redirectTo = "https://mostlymedicine.com/auth/reset-password";
 
   // generateLink with type=recovery triggers Supabase's recovery email template
@@ -58,6 +67,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: fallback.error.message }, { status: 500 });
     }
   }
+
+  await svc.from("admin_audit_log").insert({
+    admin_user_id: user.id,
+    action: "password_reset",
+    target_user_id: userId,
+  });
 
   return NextResponse.json({ ok: true });
 }

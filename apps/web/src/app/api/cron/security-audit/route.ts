@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 // Daily security audit cron. Runs four detection queries, inserts unseen
 // findings into public.security_alerts (deduped by fingerprint), and fans
@@ -24,12 +25,9 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 // Family / staff accounts that legitimately bypass billing.
-const PRIV_WHITELIST = new Set<string>([
-  "nikhil.kamboj83@gmail.com",
-  "amankamboj10@gmail.com",
-  "kamboj.chetan18@gmail.com",
-  "chetan.kamboj844@gmail.com",
-]);
+const PRIV_WHITELIST = new Set<string>(
+  (process.env.PRIV_WHITELIST_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)
+);
 
 function service() {
   return createServiceClient(
@@ -208,11 +206,8 @@ async function notify(newAlerts: Finding[]): Promise<void> {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret || auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = verifyCronSecret(req);
+  if (denied) return denied;
 
   const sb = service();
   const { data: runRow } = await sb
