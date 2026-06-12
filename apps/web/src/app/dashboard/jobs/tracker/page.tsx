@@ -31,7 +31,7 @@ const statusColors: Record<Status, string> = {
 const STATUSES: Status[] = ["Planning", "Applied", "Interview", "Offered", "Rejected", "Withdrawn"];
 
 const appTypeColors: Record<AppType, string> = {
-  RMO: "bg-brand-100 text-brand-700",
+  RMO: "bg-saffron-100 text-saffron-700",
   GP: "bg-emerald-100 text-emerald-700",
 };
 
@@ -113,7 +113,7 @@ export default function TrackerPage() {
             onClick={() => setTypeFilter(t)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
               typeFilter === t
-                ? "bg-brand-700 text-white"
+                ? "bg-saffron-500 text-ink-950"
                 : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -143,7 +143,7 @@ export default function TrackerPage() {
             setEditingId(null);
             setForm(emptyApp);
           }}
-          className="flex items-center gap-2 bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-800 transition-colors"
+          className="flex items-center gap-2 bg-saffron-500 text-ink-950 px-4 py-2 rounded-lg text-sm font-medium hover:bg-saffron-400 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add Application
@@ -152,7 +152,7 @@ export default function TrackerPage() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white rounded-xl border-2 border-brand-300 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border-2 border-saffron-300 p-6 shadow-sm">
           <h3 className="font-bold text-gray-900 mb-4">
             {editingId ? "Edit Application" : "New Application"}
           </h3>
@@ -166,7 +166,7 @@ export default function TrackerPage() {
                   appType: e.target.value as AppType,
                   role: e.target.value === "GP" ? "General Practitioner (GP)" : "Resident Medical Officer (RMO)",
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               >
                 <option value="RMO">RMO (Resident Medical Officer)</option>
                 <option value="GP">GP (General Practitioner)</option>
@@ -179,7 +179,7 @@ export default function TrackerPage() {
                 value={form.hospital}
                 onChange={(e) => setForm({ ...form, hospital: e.target.value })}
                 placeholder="e.g. Royal Darwin Hospital"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
             <div>
@@ -187,7 +187,7 @@ export default function TrackerPage() {
               <select
                 value={form.state}
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               >
                 {["WA", "NT", "QLD", "NSW", "VIC", "SA", "TAS", "ACT"].map((s) => (
                   <option key={s}>{s}</option>
@@ -200,7 +200,7 @@ export default function TrackerPage() {
                 type="text"
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
             <div>
@@ -209,7 +209,7 @@ export default function TrackerPage() {
                 type="date"
                 value={form.appliedDate}
                 onChange={(e) => setForm({ ...form, appliedDate: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
             <div>
@@ -217,7 +217,7 @@ export default function TrackerPage() {
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value as Status })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               >
                 {STATUSES.map((s) => <option key={s}>{s}</option>)}
               </select>
@@ -229,7 +229,7 @@ export default function TrackerPage() {
                 value={form.salary}
                 onChange={(e) => setForm({ ...form, salary: e.target.value })}
                 placeholder="e.g. AUD $85,000"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
             <div>
@@ -238,7 +238,7 @@ export default function TrackerPage() {
                 type="text"
                 value={form.contactName}
                 onChange={(e) => setForm({ ...form, contactName: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
             <div>
@@ -247,7 +247,7 @@ export default function TrackerPage() {
                 type="email"
                 value={form.contactEmail}
                 onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
             <div>
@@ -257,7 +257,7 @@ export default function TrackerPage() {
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 placeholder="Any notes about this application"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
               />
             </div>
           </div>
@@ -308,7 +308,7 @@ export default function TrackerPage() {
                     {app.salary && <span className="text-green-600 font-medium">{app.salary}</span>}
                     {app.contactName && <span>Contact: {app.contactName}</span>}
                     {app.contactEmail && (
-                      <a href={`mailto:${app.contactEmail}`} className="text-brand-600 hover:underline">
+                      <a href={`mailto:${app.contactEmail}`} className="text-saffron-700 hover:underline">
                         {app.contactEmail}
                       </a>
                     )}
@@ -320,7 +320,7 @@ export default function TrackerPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(app)}
-                    className="p-2 text-gray-400 hover:text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
+                    className="p-2 text-gray-400 hover:text-saffron-700 hover:bg-saffron-50 rounded-lg transition-colors"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>

@@ -120,7 +120,7 @@ export default async function UserLibraryDeckPage(props: {
         <p>No cards found in &ldquo;{deckName}&rdquo;.</p>
         <a
           href="/dashboard/flashcards"
-          className="mt-4 inline-block text-sm font-semibold text-brand-700 hover:underline"
+          className="mt-4 inline-block text-sm font-semibold text-saffron-700 hover:underline"
         >
           ← Back to flashcards
         </a>

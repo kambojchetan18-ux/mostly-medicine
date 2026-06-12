@@ -413,7 +413,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
 
       {/* ── Brand gradient header ─────────────────────────────────── */}
-      <header className="relative overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-brand-500 via-violet-600 to-pink-500 p-6 text-white shadow-lg sm:p-8">
+      <header className="relative overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-saffron-500 via-violet-600 to-pink-500 p-6 text-white shadow-lg sm:p-8">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-pink-300/20 blur-3xl" />
 
@@ -465,7 +465,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
               <p className="text-xs font-semibold text-gray-700">
                 {session.correctCount} / {session.questionsAnswered}
               </p>
-              <p className="mt-0.5 text-[11px] text-gray-500">correct</p>
+              <p className="mt-0.5 text-xs text-gray-500">correct</p>
             </div>
           </div>
         </StatCard>
@@ -474,7 +474,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
           <p className="text-2xl font-bold tabular-nums text-gray-900">
             {fmtMMSS(session.durationSeconds)}
           </p>
-          <p className="mt-0.5 text-[11px] text-gray-500">
+          <p className="mt-0.5 text-xs text-gray-500">
             mm:ss across {session.questionsAnswered} q&apos;s
           </p>
         </StatCard>
@@ -483,7 +483,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
           <p className="text-2xl font-bold tabular-nums text-gray-900">
             {fmtPerQ(session.durationSeconds, session.questionsAnswered)}
           </p>
-          <p className="mt-0.5 text-[11px] text-gray-500">
+          <p className="mt-0.5 text-xs text-gray-500">
             AMC pace target ≈ 1:30 / q
           </p>
         </StatCard>
@@ -492,7 +492,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
           {percentile == null ? (
             <>
               <p className="text-2xl font-bold tabular-nums text-gray-900">—</p>
-              <p className="mt-0.5 text-[11px] text-gray-500">
+              <p className="mt-0.5 text-xs text-gray-500">
                 {percentileSentence}
               </p>
             </>
@@ -501,7 +501,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
               <p className="text-2xl font-bold tabular-nums text-gray-900">
                 {ordinal(Math.round(percentile))}
               </p>
-              <p className="mt-0.5 text-[11px] text-gray-500">
+              <p className="mt-0.5 text-xs text-gray-500">
                 {percentileSentence}
               </p>
               <PercentileBar pct={percentile} />
@@ -514,7 +514,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
       <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-gray-900">Question map</h2>
-          <p className="text-[11px] text-gray-500">
+          <p className="text-xs text-gray-500">
             Tap any tile to jump to its learning points.
           </p>
         </div>
@@ -588,7 +588,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
           <h2 className="text-sm font-bold text-gray-900">
             Learning points · examiner-style notes
           </h2>
-          <p className="text-[11px] text-gray-500">{orderedQuestions.length} questions</p>
+          <p className="text-xs text-gray-500">{orderedQuestions.length} questions</p>
         </div>
 
         {orderedQuestions.map((q) => (
@@ -659,7 +659,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
                 </span>
               )}
             </h2>
-            <p className="text-[11px] text-gray-500">{data.review.length} questions</p>
+            <p className="text-xs text-gray-500">{data.review.length} questions</p>
           </div>
 
           {wrong > 0 && (
@@ -788,7 +788,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
                             Make flashcards
                           </button>
                           {status === "error" && fc?.errorMsg && (
-                            <span className="text-[11px] text-rose-600">{fc.errorMsg}</span>
+                            <span className="text-xs text-rose-600">{fc.errorMsg}</span>
                           )}
                         </div>
                       );
@@ -819,7 +819,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
                             {drafts.length === 1 ? "" : "s"}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[11px] text-gray-500">
+                            <span className="text-xs text-gray-500">
                               {keptCount} keeping
                             </span>
                             <button
@@ -855,7 +855,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
                                     {d.front_md}
                                   </p>
                                   {d.back_md && (
-                                    <p className="mt-1 text-[11px] text-gray-600 whitespace-pre-wrap leading-relaxed">
+                                    <p className="mt-1 text-xs text-gray-600 whitespace-pre-wrap leading-relaxed">
                                       {d.back_md}
                                     </p>
                                   )}
@@ -888,7 +888,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
                         </ul>
 
                         {fc?.errorMsg && (
-                          <p className="mt-2 text-[11px] text-rose-600">{fc.errorMsg}</p>
+                          <p className="mt-2 text-xs text-rose-600">{fc.errorMsg}</p>
                         )}
                       </div>
                     );
@@ -904,7 +904,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Link
           href="/dashboard/cat1"
-          className="flex items-center justify-center rounded-xl bg-gradient-to-r from-brand-500 via-violet-600 to-pink-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:shadow-lg"
+          className="flex items-center justify-center rounded-xl bg-gradient-to-r from-saffron-500 via-violet-600 to-pink-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:shadow-lg"
         >
           New recall session
         </Link>
@@ -922,7 +922,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
         </button>
       </section>
 
-      <p className="pb-4 text-center text-[10px] text-gray-400">
+      <p className="pb-4 text-center text-xs text-gray-400">
         Mostly Medicine · AMC-aligned recall · keep showing up.
       </p>
     </div>

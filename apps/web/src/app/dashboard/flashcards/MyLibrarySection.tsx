@@ -61,7 +61,7 @@ export default function MyLibrarySection() {
             <Link
               key={d.slug}
               href={`/dashboard/flashcards/library/${d.slug}`}
-              className="block rounded-2xl border border-gray-200 bg-white p-4 transition hover:border-brand-400 hover:shadow-sm"
+              className="block rounded-2xl border border-gray-200 bg-white p-4 transition hover:border-saffron-400 hover:shadow-sm"
             >
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="truncate text-base font-bold text-gray-900">{d.deckName}</h3>

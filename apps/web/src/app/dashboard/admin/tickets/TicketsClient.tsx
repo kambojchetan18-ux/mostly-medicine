@@ -98,7 +98,7 @@ export default function TicketsClient({ initialTickets }: { initialTickets: Admi
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search subject, body, email…"
-          className="ml-auto rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 w-64"
+          className="ml-auto rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-saffron-500 w-64"
         />
       </div>
 
@@ -127,9 +127,9 @@ export default function TicketsClient({ initialTickets }: { initialTickets: Admi
                   <p className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">{t.body}</p>
                 </div>
                 {t.aiResponse && (
-                  <div className="rounded-xl border border-brand-200 bg-brand-50 p-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-brand-700">AI auto-reply</p>
-                    <p className="mt-1 text-sm text-brand-900 whitespace-pre-wrap">{t.aiResponse}</p>
+                  <div className="rounded-xl border border-saffron-200 bg-saffron-50 p-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-saffron-700">AI auto-reply</p>
+                    <p className="mt-1 text-sm text-ink-950 whitespace-pre-wrap">{t.aiResponse}</p>
                   </div>
                 )}
                 <div className="flex items-center justify-end gap-2">

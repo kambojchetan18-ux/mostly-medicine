@@ -426,8 +426,8 @@ export default function ReferencePage() {
             onClick={() => setActiveBook(b.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition ${
               activeBook === b.id
-                ? "bg-brand-600 text-white border-brand-600"
-                : "bg-white text-gray-700 border-gray-200 hover:border-brand-400 hover:bg-brand-50"
+                ? "bg-saffron-500 text-ink-950 border-saffron-400"
+                : "bg-white text-gray-700 border-gray-200 hover:border-saffron-400 hover:bg-saffron-50"
             }`}
           >
             <span>{b.icon}</span>

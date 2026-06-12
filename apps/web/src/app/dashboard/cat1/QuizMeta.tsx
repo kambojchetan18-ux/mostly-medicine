@@ -97,7 +97,7 @@ export default function QuizMeta({ questionId, current }: QuizMetaProps) {
   }
 
   return (
-    <aside className="space-y-3 md:sticky md:top-4 md:max-h-[calc(100vh-2rem)] md:overflow-auto">
+    <aside className="space-y-3 md:sticky md:top-4 md:max-h-[calc(100dvh-2rem)] md:overflow-auto">
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 space-y-2">
         <textarea
           value={note}
@@ -111,7 +111,7 @@ export default function QuizMeta({ questionId, current }: QuizMetaProps) {
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-3 flex items-center gap-3">
-        <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-brand-100 text-brand-700 text-xs font-bold">
+        <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-saffron-100 text-saffron-700 text-xs font-bold">
           ⏱
         </span>
         <div className="leading-tight">
@@ -141,8 +141,8 @@ export default function QuizMeta({ questionId, current }: QuizMetaProps) {
                 onClick={() => toggleFeedback(label)}
                 className={`text-[11px] px-2.5 py-1 rounded-full border transition ${
                   active
-                    ? "bg-brand-600 border-brand-600 text-white"
-                    : "bg-white border-gray-300 text-gray-700 hover:border-brand-400 hover:text-brand-700"
+                    ? "bg-saffron-500 border-saffron-400 text-ink-950"
+                    : "bg-white border-gray-300 text-gray-700 hover:border-saffron-400 hover:text-saffron-700"
                 }`}
               >
                 {label}

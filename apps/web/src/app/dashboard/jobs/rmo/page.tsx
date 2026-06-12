@@ -28,7 +28,7 @@ export default function RMOPoolsPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <MapPin className="w-6 h-6 text-brand-700" />
+          <MapPin className="w-6 h-6 text-saffron-700" />
           Australian RMO Job Pools
         </h1>
         <p className="text-gray-500 mt-1 text-sm">
@@ -58,7 +58,7 @@ export default function RMOPoolsPage() {
               {sortedStates.map((state) => (
                 <tr key={state.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900">
-                    <a href={`#${state.id}`} className="hover:text-brand-700">
+                    <a href={`#${state.id}`} className="hover:text-saffron-700">
                       {state.shortName} — {state.name}
                     </a>
                   </td>
@@ -82,7 +82,7 @@ export default function RMOPoolsPage() {
                       href={state.applicationUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-brand-700 hover:text-brand-800 flex items-center gap-1"
+                      className="text-saffron-700 hover:text-ink-950 flex items-center gap-1"
                     >
                       Apply <ExternalLink className="w-3 h-3" />
                     </a>
@@ -120,7 +120,7 @@ export default function RMOPoolsPage() {
               href={state.applicationUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-800 transition-colors"
+              className="flex items-center gap-2 bg-saffron-500 text-ink-950 px-4 py-2 rounded-lg text-sm font-medium hover:bg-saffron-400 transition-colors"
             >
               Apply Now <ExternalLink className="w-4 h-4" />
             </a>
@@ -196,7 +196,7 @@ export default function RMOPoolsPage() {
                       href={pool.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-2 text-xs text-brand-700 hover:text-brand-800"
+                      className="inline-flex items-center gap-1 mt-2 text-xs text-saffron-700 hover:text-ink-950"
                     >
                       Visit <ExternalLink className="w-3 h-3" />
                     </a>
@@ -211,7 +211,7 @@ export default function RMOPoolsPage() {
             <ul className="space-y-1.5">
               {state.tips.map((tip, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                  <span className="text-brand-600 mt-0.5 flex-shrink-0">•</span>
+                  <span className="text-saffron-700 mt-0.5 flex-shrink-0">•</span>
                   {tip}
                 </li>
               ))}

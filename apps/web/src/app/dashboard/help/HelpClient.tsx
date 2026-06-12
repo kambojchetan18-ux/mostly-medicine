@@ -135,7 +135,7 @@ export default function HelpClient({ initialTickets }: { initialTickets: HelpTic
           onChange={(e) => setSubject(e.target.value)}
           placeholder="Subject (e.g. ‘Mic not working on Android’)"
           maxLength={200}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
         />
         <textarea
           value={body}
@@ -143,7 +143,7 @@ export default function HelpClient({ initialTickets }: { initialTickets: HelpTic
           placeholder="What's going on? Steps to reproduce, expected behaviour, screenshots welcome."
           rows={5}
           maxLength={4000}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
         />
         {error && <p className="text-xs text-rose-600">⚠️ {error}</p>}
         <div className="flex items-center justify-between">
@@ -151,7 +151,7 @@ export default function HelpClient({ initialTickets }: { initialTickets: HelpTic
           <button
             onClick={submit}
             disabled={submitting}
-            className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-brand-700 disabled:opacity-60"
+            className="rounded-xl bg-saffron-500 px-4 py-2 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400 disabled:opacity-60"
           >
             {submitting ? "Sending…" : "Send"}
           </button>
@@ -185,9 +185,9 @@ export default function HelpClient({ initialTickets }: { initialTickets: HelpTic
                       <p className="mt-1 text-sm text-gray-800 whitespace-pre-wrap">{t.body}</p>
                     </div>
                     {t.ai_response ? (
-                      <div className="rounded-xl border border-brand-200 bg-brand-50 p-3">
-                        <p className="text-[10px] font-semibold uppercase tracking-wide text-brand-700">AI assistant replied</p>
-                        <p className="mt-1 text-sm text-brand-900 whitespace-pre-wrap">{t.ai_response}</p>
+                      <div className="rounded-xl border border-saffron-200 bg-saffron-50 p-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-wide text-saffron-700">AI assistant replied</p>
+                        <p className="mt-1 text-sm text-ink-950 whitespace-pre-wrap">{t.ai_response}</p>
                         {t.status === "escalated" && (
                           <p className="mt-2 text-[11px] italic text-rose-700">A human admin has also been notified — expect a follow-up within 24 hours.</p>
                         )}

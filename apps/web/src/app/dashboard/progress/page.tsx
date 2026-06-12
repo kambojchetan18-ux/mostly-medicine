@@ -76,7 +76,7 @@ export default async function ProgressPage() {
         <p className="text-gray-500 text-sm mb-6">Complete an AMC MCQ quiz to start tracking your progress and weak areas.</p>
         <Link
           href="/dashboard/cat1"
-          className="inline-block bg-brand-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-brand-700 transition text-sm"
+          className="inline-block bg-saffron-500 text-ink-950 font-semibold px-6 py-2.5 rounded-xl hover:bg-saffron-400 transition text-sm"
         >
           Start Practising →
         </Link>
@@ -94,7 +94,7 @@ export default async function ProgressPage() {
       {/* Top stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
-          <p className="text-3xl font-bold text-brand-600 mb-1">{totalAttempted}</p>
+          <p className="text-3xl font-bold text-saffron-700 mb-1">{totalAttempted}</p>
           <p className="text-xs text-gray-500">Questions Attempted</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
@@ -132,16 +132,16 @@ export default async function ProgressPage() {
 
       {/* Due cards CTA */}
       {dueCount > 0 && (
-        <div className="bg-brand-50 border border-brand-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+        <div className="bg-saffron-50 border border-saffron-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
           <div>
-            <p className="font-semibold text-brand-800 text-sm">
+            <p className="font-semibold text-ink-950 text-sm">
               🧠 {dueCount} question{dueCount > 1 ? "s" : ""} due for review
             </p>
-            <p className="text-xs text-brand-600 mt-0.5">Spaced repetition keeps your memory sharp</p>
+            <p className="text-xs text-saffron-700 mt-0.5">Spaced repetition keeps your memory sharp</p>
           </div>
           <Link
             href="/dashboard/cat1"
-            className="bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-brand-700 transition whitespace-nowrap"
+            className="bg-saffron-500 text-ink-950 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-saffron-400 transition whitespace-nowrap"
           >
             Review Now →
           </Link>
@@ -180,7 +180,7 @@ export default async function ProgressPage() {
       <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <p className="font-semibold text-gray-800 text-sm">All Topics</p>
-          <Link href="/dashboard/cat1" className="text-xs text-brand-600 hover:text-brand-700 font-medium">
+          <Link href="/dashboard/cat1" className="text-xs text-saffron-700 hover:text-saffron-600 font-medium">
             Practice →
           </Link>
         </div>
@@ -201,7 +201,7 @@ export default async function ProgressPage() {
                   <div className="flex items-center gap-3 shrink-0 ml-2">
                     <span className="text-xs text-gray-400">{t.total_correct}/{t.total_attempted}</span>
                     <span className={`text-sm font-bold ${accuracyColor(accuracy)}`}>{accuracy}%</span>
-                    <span className="text-brand-600 text-xs">→</span>
+                    <span className="text-saffron-700 text-xs">→</span>
                   </div>
                 </div>
                 <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">

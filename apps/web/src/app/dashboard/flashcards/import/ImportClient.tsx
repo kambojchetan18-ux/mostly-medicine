@@ -89,7 +89,7 @@ export function ImportClient() {
         className={[
           "rounded-2xl border-2 border-dashed p-10 text-center transition",
           dragOver
-            ? "border-brand-500 bg-brand-500/5"
+            ? "border-saffron-400 bg-saffron-500/5"
             : "border-white/15 bg-white hover:border-white/30",
           busy ? "opacity-75" : "",
         ].join(" ")}
@@ -119,7 +119,7 @@ export function ImportClient() {
       {busy && (
         <div className="mt-5 rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-700">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-brand-500" />
+            <span className="h-2 w-2 animate-pulse rounded-full bg-saffron-500" />
             {status}
           </div>
         </div>

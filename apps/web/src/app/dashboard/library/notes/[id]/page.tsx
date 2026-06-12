@@ -24,7 +24,7 @@ export default async function NoteReadingPage({ params }: { params: Promise<{ id
       <div className="flex items-center justify-between mb-6">
         <Link
           href="/dashboard/library"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-brand-600 transition"
+          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-saffron-700 transition"
         >
           ← Back to Library
         </Link>
@@ -40,9 +40,9 @@ export default async function NoteReadingPage({ params }: { params: Promise<{ id
       </div>
 
       {note.ai_summary && (
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-4 mb-6">
-          <p className="text-xs font-semibold text-brand-700 mb-1">AI Summary</p>
-          <p className="text-sm text-brand-800">{note.ai_summary}</p>
+        <div className="bg-saffron-50 border border-saffron-200 rounded-xl p-4 mb-6">
+          <p className="text-xs font-semibold text-saffron-700 mb-1">AI Summary</p>
+          <p className="text-sm text-ink-950">{note.ai_summary}</p>
         </div>
       )}
 

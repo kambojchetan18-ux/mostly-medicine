@@ -584,25 +584,25 @@ export default function Cat1Client({
         </div>
 
         {/* Timer card */}
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
+        <div className="rounded-2xl border border-saffron-200 bg-saffron-50 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">Reading time</p>
-              <p className="mt-0.5 text-3xl font-bold tabular-nums text-brand-900">
+              <p className="text-xs font-semibold uppercase tracking-wide text-saffron-700">Reading time</p>
+              <p className="mt-0.5 text-3xl font-bold tabular-nums text-ink-950">
                 {mm}:{ss}
               </p>
             </div>
             <button
               type="button"
               onClick={() => runQuiz(pendingTopic, pendingCount, pendingMock)}
-              className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+              className="rounded-xl bg-saffron-500 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400"
             >
               Start MCQ Quiz →
             </button>
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-100">
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-saffron-100">
             <div
-              className="h-full bg-brand-600 transition-[width] duration-1000 ease-linear"
+              className="h-full bg-saffron-500 transition-[width] duration-1000 ease-linear"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -634,7 +634,7 @@ export default function Cat1Client({
   if (mode === "loading") {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <div className="w-8 h-8 border-3 border-brand-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-3 border-saffron-400 border-t-transparent rounded-full animate-spin" />
         <p className="text-sm text-gray-500">Loading questions…</p>
       </div>
     );
@@ -652,7 +652,7 @@ export default function Cat1Client({
         <div className="flex gap-3 mb-8 flex-wrap">
           <button
             onClick={() => startQuiz(null, 20)}
-            className="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition"
+            className="bg-saffron-500 hover:bg-saffron-400 text-ink-950 font-semibold px-5 py-2.5 rounded-lg text-sm transition"
           >
             ⚡ Quick Quiz (20 random)
           </button>
@@ -679,7 +679,7 @@ export default function Cat1Client({
           )}
           <a
             href="/dashboard/progress"
-            className="border border-brand-300 text-brand-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-brand-50 transition"
+            className="border border-saffron-300 text-saffron-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-saffron-50 transition"
           >
             📊 My Progress
           </a>
@@ -709,9 +709,9 @@ export default function Cat1Client({
               <button
                 key={topic}
                 onClick={() => startQuiz(topic, sessionCount)}
-                className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-brand-400 hover:bg-brand-50 transition group"
+                className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-saffron-400 hover:bg-saffron-50 transition group"
               >
-                <p className="font-medium text-gray-800 text-sm group-hover:text-brand-700">{topic}</p>
+                <p className="font-medium text-gray-800 text-sm group-hover:text-saffron-700">{topic}</p>
                 <p className="text-xs text-gray-400 mt-1">
                   {total
                     ? isPro
@@ -753,7 +753,7 @@ export default function Cat1Client({
         </div>
 
         <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-5 text-center">
-          <p className="text-5xl font-bold text-brand-600 mb-1">{score}/{answers.length}</p>
+          <p className="text-5xl font-bold text-saffron-700 mb-1">{score}/{answers.length}</p>
           <p className="text-gray-500 text-sm">{pct}% correct</p>
           <p className="text-xs mt-2 text-gray-400">
             {pct >= 80 ? "Excellent! Keep going." : pct >= 60 ? "Good effort. Review the topics below." : "Keep practising — focus on weak areas."}
@@ -787,7 +787,7 @@ export default function Cat1Client({
         <div className="flex gap-3">
           <button
             onClick={() => startQuiz(selectedTopic)}
-            className="flex-1 bg-brand-600 text-white font-semibold py-2.5 rounded-xl hover:bg-brand-700 transition text-sm"
+            className="flex-1 bg-saffron-500 text-ink-950 font-semibold py-2.5 rounded-xl hover:bg-saffron-400 transition text-sm"
           >
             Retry
           </button>
@@ -799,7 +799,7 @@ export default function Cat1Client({
           </button>
           <a
             href="/dashboard/progress"
-            className="flex-1 border border-brand-300 text-brand-700 font-semibold py-2.5 rounded-xl hover:bg-brand-50 transition text-sm text-center"
+            className="flex-1 border border-saffron-300 text-saffron-700 font-semibold py-2.5 rounded-xl hover:bg-saffron-50 transition text-sm text-center"
           >
             View Progress
           </a>
@@ -826,7 +826,7 @@ export default function Cat1Client({
     {limitReached && !isPro && features.paidTiersEnabled && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="max-w-md w-full rounded-3xl bg-white shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-br from-brand-600 via-violet-600 to-pink-500 px-6 pt-7 pb-5 text-white">
+          <div className="bg-gradient-to-br from-saffron-500 via-violet-600 to-pink-500 px-6 pt-7 pb-5 text-white">
             <p className="text-[10px] font-bold tracking-widest uppercase opacity-80">Daily limit reached</p>
             <h2 className="mt-1 text-2xl font-bold leading-tight">
               You smashed your {limitReached.dailyLimit} free MCQs today 🎯
@@ -886,7 +886,7 @@ export default function Cat1Client({
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-gray-500">
           Question {current + 1 + resumedAlreadyDone} of {questions.length + resumedAlreadyDone}
-          {selectedTopic && <span className="ml-2 text-brand-600 font-medium">· {selectedTopic}</span>}
+          {selectedTopic && <span className="ml-2 text-saffron-700 font-medium">· {selectedTopic}</span>}
           {isMockSession && (
             <span className="ml-2 text-rose-600 font-semibold text-xs uppercase tracking-wider">
               · Mock Exam · no Previous
@@ -903,7 +903,7 @@ export default function Cat1Client({
             <button
               type="button"
               onClick={toggleNav}
-              className="hidden lg:inline-flex items-center gap-1 text-xs text-gray-500 hover:text-brand-700"
+              className="hidden lg:inline-flex items-center gap-1 text-xs text-gray-500 hover:text-saffron-700"
               title={navOpen ? "Hide question navigator" : "Show question navigator"}
             >
               {navOpen ? "⇤ Hide nav" : "⇥ Show nav"}
@@ -924,7 +924,7 @@ export default function Cat1Client({
             const a = answers[idx];
             const isCur = idx === current;
             const cls = isCur
-              ? "bg-brand-600 text-white"
+              ? "bg-saffron-500 text-ink-950"
               : !a
                 ? "bg-white border border-gray-200 text-gray-700"
                 : a.correct
@@ -949,7 +949,7 @@ export default function Cat1Client({
 
       <div className="h-1.5 bg-gray-100 rounded-full mb-5 overflow-hidden">
         <div
-          className="h-1.5 bg-brand-500 rounded-full transition-all duration-300"
+          className="h-1.5 bg-saffron-500 rounded-full transition-all duration-300"
           style={{ width: `${(current / questions.length) * 100}%` }}
         />
       </div>
@@ -974,13 +974,13 @@ export default function Cat1Client({
           // that's the strict AMC pattern. Only the "selected" highlight
           // applies. Answers come at the end via the results page.
           const showReveal = revealed && !isMockSession;
-          let style = "bg-white border border-gray-200 text-gray-700 hover:border-brand-400 hover:bg-brand-50";
+          let style = "bg-white border border-gray-200 text-gray-700 hover:border-saffron-400 hover:bg-saffron-50";
           if (showReveal) {
             if (opt.label === q.correctAnswer) style = "bg-green-50 border-green-500 text-green-800";
             else if (opt.label === selected) style = "bg-red-50 border-red-400 text-red-800";
             else style = "bg-white border border-gray-100 text-gray-300";
           } else if (opt.label === selected) {
-            style = "bg-brand-50 border-brand-500 text-brand-800";
+            style = "bg-saffron-50 border-saffron-400 text-ink-950";
           }
           const isYourPick = opt.label === selected;
           const isCorrectOpt = opt.label === q.correctAnswer;
@@ -988,7 +988,7 @@ export default function Cat1Client({
             <button
               key={opt.label}
               onClick={() => handleSelect(opt.label)}
-              className={`w-full text-left rounded-xl px-4 py-3 text-sm transition border flex items-center gap-2 ${style}`}
+              className={`w-full min-h-[44px] text-left rounded-xl px-4 py-3 text-sm transition border flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron-500 focus-visible:ring-offset-2 ${style}`}
             >
               <span className="font-bold">{opt.label}.</span>
               <span className="flex-1">{opt.text}</span>
@@ -1027,7 +1027,7 @@ export default function Cat1Client({
               <button
                 onClick={fetchSmartExplanation}
                 disabled={smartLoading}
-                className="mt-3 mr-3 text-xs font-semibold text-brand-600 hover:text-brand-800 underline disabled:opacity-50"
+                className="mt-3 mr-3 text-xs font-semibold text-saffron-700 hover:text-ink-950 underline disabled:opacity-50"
               >
                 {smartLoading ? "Thinking…" : "🤔 Why was I wrong?"}
               </button>
@@ -1037,15 +1037,15 @@ export default function Cat1Client({
               <button
                 onClick={fetchDetailedExplanation}
                 disabled={detailLoading}
-                className="mt-3 text-xs font-semibold text-brand-600 hover:text-brand-800 underline disabled:opacity-50"
+                className="mt-3 text-xs font-semibold text-saffron-700 hover:text-ink-950 underline disabled:opacity-50"
               >
                 {detailLoading ? "Loading detailed explanation…" : "🔍 Explain in detail (why each option is right/wrong)"}
               </button>
             )}
 
             {smartLoading && !smartExplanation && (
-              <div className="mt-3 bg-white border border-brand-200 rounded-lg p-3">
-                <p className="text-xs font-semibold text-brand-700 uppercase tracking-wide mb-2">Smart Explanation</p>
+              <div className="mt-3 bg-white border border-saffron-200 rounded-lg p-3">
+                <p className="text-xs font-semibold text-saffron-700 uppercase tracking-wide mb-2">Smart Explanation</p>
                 <div className="space-y-2 animate-pulse">
                   <div className="h-2.5 bg-gray-200 rounded w-11/12" />
                   <div className="h-2.5 bg-gray-200 rounded w-10/12" />
@@ -1064,8 +1064,8 @@ export default function Cat1Client({
             )}
 
             {smartExplanation && (
-              <div className="mt-3 bg-white border border-brand-200 rounded-lg p-3">
-                <p className="text-xs font-semibold text-brand-700 uppercase tracking-wide mb-2">Smart Explanation</p>
+              <div className="mt-3 bg-white border border-saffron-200 rounded-lg p-3">
+                <p className="text-xs font-semibold text-saffron-700 uppercase tracking-wide mb-2">Smart Explanation</p>
                 <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{smartExplanation}</p>
               </div>
             )}
@@ -1092,7 +1092,7 @@ export default function Cat1Client({
         {current > 0 && !isMockSession && (
           <button
             onClick={handlePrev}
-            className="border border-gray-300 text-gray-700 font-semibold py-2.5 px-4 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap"
+            className="min-h-[44px] border border-gray-300 text-gray-700 font-semibold py-2.5 px-4 rounded-xl hover:bg-gray-50 transition text-sm whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron-500 focus-visible:ring-offset-2"
           >
             ← Previous
           </button>
@@ -1103,7 +1103,7 @@ export default function Cat1Client({
           <button
             onClick={handleNext}
             disabled={!selected || submitting}
-            className="flex-1 bg-brand-600 text-white font-semibold py-2.5 rounded-xl hover:bg-brand-700 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+            className="flex-1 min-h-[44px] bg-saffron-500 text-ink-950 font-semibold py-2.5 rounded-xl hover:bg-saffron-400 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron-500 focus-visible:ring-offset-2"
           >
             {current + 1 >= questions.length ? "Submit & See Results →" : "Next →"}
           </button>
@@ -1111,14 +1111,14 @@ export default function Cat1Client({
           <button
             onClick={handleReveal}
             disabled={!selected}
-            className="flex-1 bg-brand-600 text-white font-semibold py-2.5 rounded-xl hover:bg-brand-700 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+            className="flex-1 min-h-[44px] bg-saffron-500 text-ink-950 font-semibold py-2.5 rounded-xl hover:bg-saffron-400 transition disabled:opacity-40 disabled:cursor-not-allowed text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron-500 focus-visible:ring-offset-2"
           >
             Check Answer
           </button>
         ) : (
           <button
             onClick={handleNext}
-            className="flex-1 bg-brand-600 text-white font-semibold py-2.5 rounded-xl hover:bg-brand-700 transition text-sm"
+            className="flex-1 min-h-[44px] bg-saffron-500 text-ink-950 font-semibold py-2.5 rounded-xl hover:bg-saffron-400 transition text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron-500 focus-visible:ring-offset-2"
           >
             {current + 1 >= questions.length ? "See Results →" : "Next →"}
           </button>

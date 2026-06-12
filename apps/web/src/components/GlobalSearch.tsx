@@ -145,7 +145,7 @@ export default function GlobalSearch() {
             className="flex-1 text-sm text-gray-900 placeholder-gray-400 outline-none bg-transparent"
           />
           {loading && (
-            <div className="w-4 h-4 border-2 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-saffron-200 border-t-saffron-600 rounded-full animate-spin" />
           )}
           <kbd className="hidden sm:inline text-xs text-gray-400 border border-gray-200 rounded px-1.5 py-0.5">
             esc

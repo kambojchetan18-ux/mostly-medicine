@@ -138,7 +138,7 @@ export default function UsersAdminClient({ initialUsers, currentUserId }: Props)
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(0); }}
           placeholder="Search by email or name..."
-          className="w-full max-w-sm border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="w-full max-w-sm border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
         />
         <span className="text-xs text-gray-400">{filtered.length} match{filtered.length === 1 ? "" : "es"}</span>
       </div>

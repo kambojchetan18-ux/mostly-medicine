@@ -275,7 +275,7 @@ export default function AnalyticsClient({ data }: { data: AnalyticsPayload }) {
         <div className="mt-4 flex h-32 items-end gap-1.5">
           {dailySignups.map((d) => {
             const h = (d.count / maxDailySignup) * 100;
-            const tone = d.count === 0 ? "bg-gray-100" : "bg-brand-500";
+            const tone = d.count === 0 ? "bg-gray-100" : "bg-saffron-500";
             return (
               <div key={d.date} className="flex flex-1 flex-col items-center gap-1" title={`${d.date} — ${d.count} signups`}>
                 <div className="flex w-full flex-1 items-end">
@@ -486,7 +486,7 @@ export default function AnalyticsClient({ data }: { data: AnalyticsPayload }) {
         <div className="mt-4 flex h-24 items-end gap-1">
           {dauTimeline.map((d) => {
             const h = (d.count / maxDau) * 100;
-            const tone = d.count === 0 ? "bg-gray-100" : "bg-brand-500";
+            const tone = d.count === 0 ? "bg-gray-100" : "bg-saffron-500";
             return (
               <div key={d.date} className="flex flex-1 flex-col items-center" title={`${d.date} — ${d.count} active`}>
                 <div className="flex w-full flex-1 items-end">
@@ -541,7 +541,7 @@ export default function AnalyticsClient({ data }: { data: AnalyticsPayload }) {
           {hourly.buckets.map((b) => {
             const h = (b.count / maxHourly) * 100;
             const isPeak = b.hour === hourly.peakHour && b.count > 0;
-            const tone = b.count === 0 ? "bg-gray-100" : isPeak ? "bg-emerald-500" : "bg-brand-300";
+            const tone = b.count === 0 ? "bg-gray-100" : isPeak ? "bg-emerald-500" : "bg-saffron-300";
             return (
               <div key={b.hour} className="flex flex-1 flex-col items-center gap-1" title={`${String(b.hour).padStart(2, "0")}:00 UTC — ${b.count} attempts`}>
                 <div className="flex w-full flex-1 items-end">
@@ -568,12 +568,12 @@ export default function AnalyticsClient({ data }: { data: AnalyticsPayload }) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search name or email…"
-              className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-saffron-500"
             />
             <select
               value={filterPlan}
               onChange={(e) => setFilterPlan(e.target.value as typeof filterPlan)}
-              className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-saffron-500"
             >
               <option value="all">All plans</option>
               <option value="free">Free</option>

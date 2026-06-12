@@ -683,7 +683,7 @@ export default function Cat2Client() {
   const isRecording = recState === "recording";
 
   return (
-    <div className="flex flex-col h-[calc(100vh-9rem)] sm:h-[calc(100vh-8rem)] max-w-3xl mx-auto">
+    <div className="flex flex-col h-[calc(100dvh-9rem)] sm:h-[calc(100dvh-8rem)] max-w-3xl mx-auto">
 
       {/* Patient header — wraps to two rows on mobile so the timer + actions
           drop below the patient identity instead of overflowing the line. */}

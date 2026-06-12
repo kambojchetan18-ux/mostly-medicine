@@ -26,8 +26,8 @@ export default function GPPathwayPage() {
           RMO vs GP — Which is Right for You?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-white rounded-xl border border-brand-200 p-5">
-            <h3 className="font-bold text-brand-700 text-lg mb-4">RMO (Plan A)</h3>
+          <div className="bg-white rounded-xl border border-saffron-200 p-5">
+            <h3 className="font-bold text-saffron-700 text-lg mb-4">RMO (Plan A)</h3>
             <div className="mb-4">
               <p className="text-xs font-semibold text-green-600 uppercase mb-2">Pros</p>
               <ul className="space-y-2">

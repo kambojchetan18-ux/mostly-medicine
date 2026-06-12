@@ -84,15 +84,15 @@ export default async function ActionPlanPage() {
 
       {/* ── NO CV: CTA ─────────────────────────────────────────────────────────── */}
       {!hasCv && (
-        <div className="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-8 text-white text-center space-y-4">
+        <div className="bg-gradient-to-r from-saffron-500 to-saffron-600 rounded-2xl p-8 text-ink-950 text-center space-y-4">
           <div className="text-4xl">📋</div>
           <h2 className="text-xl font-bold">No profile found</h2>
-          <p className="text-brand-100 max-w-md mx-auto">
+          <p className="text-ink-950/80 max-w-md mx-auto">
             Upload your CV and Claude will analyse your qualifications, exam status, and visa — then build a personalised, prioritised action plan just for you.
           </p>
           <Link
             href="/dashboard/profile"
-            className="inline-flex items-center gap-2 bg-white text-brand-700 font-semibold px-6 py-3 rounded-xl hover:bg-brand-50 transition"
+            className="inline-flex items-center gap-2 bg-white text-saffron-700 font-semibold px-6 py-3 rounded-xl hover:bg-saffron-50 transition"
           >
             <Upload className="w-4 h-4" /> Upload CV Free
           </Link>
@@ -131,7 +131,7 @@ export default async function ActionPlanPage() {
                       {step.link.startsWith("/") ? (
                         <Link
                           href={step.link}
-                          className="inline-flex items-center gap-2 mt-4 bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-800 transition-colors"
+                          className="inline-flex items-center gap-2 mt-4 bg-saffron-500 text-ink-950 px-4 py-2 rounded-lg text-sm font-medium hover:bg-saffron-400 transition-colors"
                         >
                           {step.linkText} <CheckCircle className="w-3.5 h-3.5" />
                         </Link>
@@ -140,7 +140,7 @@ export default async function ActionPlanPage() {
                           href={step.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 mt-4 bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-800 transition-colors"
+                          className="inline-flex items-center gap-2 mt-4 bg-saffron-500 text-ink-950 px-4 py-2 rounded-lg text-sm font-medium hover:bg-saffron-400 transition-colors"
                         >
                           {step.linkText} <ExternalLink className="w-3.5 h-3.5" />
                         </a>
@@ -167,7 +167,7 @@ export default async function ActionPlanPage() {
           <div className="space-y-3">
             {ahpraSteps.map((s) => (
               <div key={s.num} className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-7 h-7 rounded-full bg-saffron-100 text-saffron-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
                   {s.num}
                 </div>
                 <p className="text-sm text-gray-700 pt-1">{s.text}</p>
@@ -231,10 +231,10 @@ export default async function ActionPlanPage() {
               href={agency.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-gray-200 rounded-lg p-4 hover:border-brand-300 hover:bg-brand-50 transition-colors"
+              className="border border-gray-200 rounded-lg p-4 hover:border-saffron-400 hover:bg-saffron-50 transition-colors"
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="font-medium text-brand-700">{agency.name}</span>
+                <span className="font-medium text-saffron-700">{agency.name}</span>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
               </div>
               <p className="text-xs text-gray-600">{agency.note}</p>

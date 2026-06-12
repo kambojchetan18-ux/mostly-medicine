@@ -121,7 +121,7 @@ export default function FlashcardsHubPage() {
           <Link
             key={d.slug}
             href={`/dashboard/flashcards/${d.slug}`}
-            className="block rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-brand-500/40 hover:bg-gray-50"
+            className="block rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-saffron-400/40 hover:bg-gray-50"
           >
             <div className="flex items-baseline justify-between">
               <h2 className="text-xl font-bold text-gray-900">{d.name}</h2>

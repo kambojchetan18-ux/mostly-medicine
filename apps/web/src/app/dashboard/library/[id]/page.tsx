@@ -30,7 +30,7 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
       {/* Back link */}
       <Link
         href="/dashboard/library"
-        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-brand-600 mb-6 transition"
+        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-saffron-700 mb-6 transition"
       >
         ← Back to Library
       </Link>
@@ -56,7 +56,7 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
           {topic.amc_exam_type?.map((type: string) => {
             const label = type === "CAT 1" ? "AMC MCQ" : type === "CAT 2" ? "AMC Handbook AI RolePlay" : type;
             return (
-              <span key={type} className="text-xs px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 font-medium">
+              <span key={type} className="text-xs px-2.5 py-1 rounded-full bg-saffron-50 text-saffron-700 font-medium">
                 {label}
               </span>
             );
@@ -70,7 +70,7 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
         {/* Overview */}
         <section className="bg-white border border-gray-200 rounded-xl p-6">
           <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <span className="text-brand-600">📋</span> Overview
+            <span className="text-saffron-700">📋</span> Overview
           </h2>
           <p className="text-sm text-gray-700 leading-relaxed">{content.overview}</p>
         </section>
@@ -79,12 +79,12 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
         {content.key_points?.length > 0 && (
           <section className="bg-white border border-gray-200 rounded-xl p-6">
             <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-brand-600">⭐</span> Key Points
+              <span className="text-saffron-700">⭐</span> Key Points
             </h2>
             <ul className="space-y-2">
               {content.key_points.map((point, i) => (
                 <li key={i} className="flex gap-2 text-sm text-gray-700">
-                  <span className="text-brand-400 mt-0.5 shrink-0">•</span>
+                  <span className="text-saffron-400 mt-0.5 shrink-0">•</span>
                   <span className="leading-relaxed">{point}</span>
                 </li>
               ))}
@@ -111,11 +111,11 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
 
         {/* AMC Relevance */}
         {content.amc_relevance && (
-          <section className="bg-brand-50 border border-brand-200 rounded-xl p-6">
-            <h2 className="text-base font-semibold text-brand-800 mb-3 flex items-center gap-2">
+          <section className="bg-saffron-50 border border-saffron-200 rounded-xl p-6">
+            <h2 className="text-base font-semibold text-ink-950 mb-3 flex items-center gap-2">
               <span>🎯</span> AMC Exam Relevance
             </h2>
-            <p className="text-sm text-brand-700 leading-relaxed">{content.amc_relevance}</p>
+            <p className="text-sm text-saffron-700 leading-relaxed">{content.amc_relevance}</p>
           </section>
         )}
 

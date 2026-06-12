@@ -121,7 +121,7 @@ export default function AdminPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-24">
-      <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-saffron-400 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -144,7 +144,7 @@ export default function AdminPage() {
         <div className="flex gap-2">
           <Link
             href="/dashboard/admin/analytics"
-            className="text-sm font-semibold px-3 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700"
+            className="text-sm font-semibold px-3 py-2 rounded-lg bg-saffron-500 text-ink-950 hover:bg-saffron-400"
           >
             📊 Analytics
           </Link>
@@ -183,7 +183,7 @@ export default function AdminPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name or email…"
-            className="w-full max-w-sm border border-gray-200 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full max-w-sm border border-gray-200 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-saffron-500"
           />
 
           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
@@ -222,7 +222,7 @@ export default function AdminPage() {
                         value={u.plan}
                         disabled={saving === u.id}
                         onChange={e => updateUser(u.id, "plan", e.target.value)}
-                        className="border border-gray-200 rounded-lg px-2 py-1 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50"
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-saffron-500 disabled:opacity-50"
                       >
                         <option value="free">Free</option>
                         <option value="pro">Pro</option>
@@ -234,7 +234,7 @@ export default function AdminPage() {
                         value={u.role}
                         disabled={saving === u.id}
                         onChange={e => updateUser(u.id, "role", e.target.value)}
-                        className="border border-gray-200 rounded-lg px-2 py-1 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50"
+                        className="border border-gray-200 rounded-lg px-2 py-1 text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-saffron-500 disabled:opacity-50"
                       >
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
@@ -299,7 +299,7 @@ export default function AdminPage() {
                           <button
                             onClick={() => togglePermission(plan, mod, !enabled)}
                             disabled={saving === toggleKey}
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? "bg-brand-600" : limitOrphaned ? "bg-amber-400" : "bg-gray-300"}`}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50 ${enabled ? "bg-saffron-500" : limitOrphaned ? "bg-amber-400" : "bg-gray-300"}`}
                             title={limitOrphaned ? "Limit set but module is off — toggle on to enforce" : undefined}
                           >
                             <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${enabled ? "translate-x-4" : "translate-x-0.5"}`} />
@@ -317,7 +317,7 @@ export default function AdminPage() {
                                 if (v !== limit) updateLimit(plan, mod, v);
                               }}
                               disabled={!enabled || saving === limitKey}
-                              className="w-20 border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40 disabled:bg-gray-50"
+                              className="w-20 border border-gray-200 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-saffron-500 disabled:opacity-40 disabled:bg-gray-50"
                             />
                             <span className="text-xs text-gray-400">per day</span>
                             {limitOrphaned && (

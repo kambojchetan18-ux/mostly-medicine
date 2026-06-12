@@ -100,7 +100,7 @@ export default function ProfilePage() {
         <div className="text-6xl">🎉</div>
         <h2 className="text-2xl font-bold text-gray-900">Profile saved!</h2>
         <p className="text-gray-500">Your jobs portal and pathway plan are now personalised for you.</p>
-        <a href="/dashboard/jobs" className="inline-block mt-4 px-6 py-3 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700 transition">
+        <a href="/dashboard/jobs" className="inline-block mt-4 px-6 py-3 bg-saffron-500 text-ink-950 rounded-xl font-semibold hover:bg-saffron-400 transition">
           View My Jobs Dashboard →
         </a>
       </div>
@@ -111,7 +111,7 @@ export default function ProfilePage() {
   if (step === "processing") {
     return (
       <div className="max-w-xl mx-auto py-24 text-center space-y-6">
-        <Loader2 className="w-12 h-12 text-brand-600 animate-spin mx-auto" />
+        <Loader2 className="w-12 h-12 text-saffron-700 animate-spin mx-auto" />
         <h2 className="text-xl font-bold text-gray-800">Analysing your CV…</h2>
         <p className="text-sm text-gray-500">Claude is reading your CV and mapping your readiness for Australian practice.</p>
       </div>
@@ -139,9 +139,9 @@ export default function ProfilePage() {
         {computed && (
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
             <div className="flex items-center gap-4 mb-3">
-              <span className="text-4xl font-bold text-brand-700">{computed.score}%</span>
+              <span className="text-4xl font-bold text-saffron-700">{computed.score}%</span>
               <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-3 bg-brand-600 rounded-full transition-all" style={{ width: `${computed.score}%` }} />
+                <div className="h-3 bg-saffron-500 rounded-full transition-all" style={{ width: `${computed.score}%` }} />
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -164,7 +164,7 @@ export default function ProfilePage() {
               <input
                 value={profile.name ?? ""}
                 onChange={e => setProfile(p => ({ ...p, name: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
               />
             </div>
             <div>
@@ -172,7 +172,7 @@ export default function ProfilePage() {
               <input
                 value={profile.degree_country ?? ""}
                 onChange={e => setProfile(p => ({ ...p, degree_country: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
               />
             </div>
             <div>
@@ -181,7 +181,7 @@ export default function ProfilePage() {
                 type="number"
                 value={profile.graduation_year ?? ""}
                 onChange={e => setProfile(p => ({ ...p, graduation_year: parseInt(e.target.value) || null }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
               />
             </div>
             <div>
@@ -190,7 +190,7 @@ export default function ProfilePage() {
                 type="number"
                 value={profile.years_experience ?? ""}
                 onChange={e => setProfile(p => ({ ...p, years_experience: parseInt(e.target.value) || null }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
               />
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function ProfilePage() {
                 <select
                   value={(profile as Record<string, string>)[field] ?? ""}
                   onChange={e => setProfile(p => ({ ...p, [field]: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500 bg-white"
                 >
                   {STATUS_OPTIONS[field].map(([val, label]) => (
                     <option key={val} value={val}>{label}</option>
@@ -220,7 +220,7 @@ export default function ProfilePage() {
               value={(profile.specialties ?? []).join(", ")}
               onChange={e => setProfile(p => ({ ...p, specialties: e.target.value.split(",").map(s => s.trim()).filter(Boolean) }))}
               placeholder="e.g. General Medicine, Emergency, Paediatrics"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
             />
           </div>
 
@@ -231,7 +231,7 @@ export default function ProfilePage() {
               value={(profile.location_preference ?? []).join(", ")}
               onChange={e => setProfile(p => ({ ...p, location_preference: e.target.value.split(",").map(s => s.trim().toUpperCase()).filter(Boolean) }))}
               placeholder="e.g. NSW, VIC, NT"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500"
             />
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function ProfilePage() {
           <button
             onClick={saveProfile}
             disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 bg-saffron-500 hover:bg-saffron-400 text-ink-950 px-6 py-2.5 rounded-xl text-sm font-semibold transition disabled:opacity-50"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
             Save Profile
@@ -291,7 +291,7 @@ export default function ProfilePage() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-3 text-sm font-medium transition ${activeTab === tab ? "text-brand-700 border-b-2 border-brand-600 bg-brand-50/50" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-3 text-sm font-medium transition ${activeTab === tab ? "text-saffron-700 border-b-2 border-saffron-400 bg-saffron-50/50" : "text-gray-500 hover:text-gray-700"}`}
             >
               {label}
             </button>
@@ -305,7 +305,7 @@ export default function ProfilePage() {
               onDragLeave={() => setDragging(false)}
               onDrop={onDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${dragging ? "border-brand-500 bg-brand-50" : "border-gray-200 hover:border-brand-400 hover:bg-gray-50"}`}
+              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${dragging ? "border-saffron-400 bg-saffron-50" : "border-gray-200 hover:border-saffron-400 hover:bg-gray-50"}`}
             >
               <Upload className="w-10 h-10 text-gray-400 mx-auto mb-3" />
               <p className="font-semibold text-gray-700">Drop your CV here</p>
@@ -325,12 +325,12 @@ export default function ProfilePage() {
                 onChange={e => setPasteText(e.target.value)}
                 placeholder="Paste your full CV text here…"
                 rows={12}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-500 resize-none"
               />
               <button
                 onClick={handlePaste}
                 disabled={!pasteText.trim()}
-                className="w-full flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-sm font-semibold transition disabled:opacity-40"
+                className="w-full flex items-center justify-center gap-2 bg-saffron-500 hover:bg-saffron-400 text-ink-950 py-3 rounded-xl text-sm font-semibold transition disabled:opacity-40"
               >
                 <FileText className="w-4 h-4" /> Analyse CV
               </button>

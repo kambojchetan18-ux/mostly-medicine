@@ -144,7 +144,7 @@ export default async function SpecialistPathwayPage() {
         </div>
         <Link
           href="/dashboard/profile"
-          className="flex items-center gap-2 text-sm px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium transition"
+          className="flex items-center gap-2 text-sm px-4 py-2 bg-saffron-500 hover:bg-saffron-400 text-ink-950 rounded-xl font-medium transition"
         >
           <Upload className="w-4 h-4" />
           {profile ? "Update CV" : "Upload CV"}
@@ -204,7 +204,7 @@ export default async function SpecialistPathwayPage() {
               <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
                 <div>
                   <p className="font-semibold text-gray-900">{college.specialty}</p>
-                  <p className="text-sm text-brand-700 font-medium mt-0.5">{college.college}</p>
+                  <p className="text-sm text-saffron-700 font-medium mt-0.5">{college.college}</p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <span className="text-xs bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full font-medium">
@@ -214,7 +214,7 @@ export default async function SpecialistPathwayPage() {
                     href={college.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-brand-600 hover:text-brand-800 font-medium"
+                    className="flex items-center gap-1 text-xs text-saffron-700 hover:text-ink-950 font-medium"
                   >
                     OTS Assessment <ExternalLink className="w-3 h-3" />
                   </a>
@@ -237,12 +237,12 @@ export default async function SpecialistPathwayPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <p className="font-semibold text-sm text-gray-900 mb-1">OET — Recommended</p>
             <p className="text-xs text-gray-600">Medical-specific test. Minimum: B in all four components (listening, reading, writing, speaking). Results valid 2 years.</p>
-            <a href="https://www.occupationalenglishtest.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-brand-600 hover:underline mt-2 inline-block">occupationalenglishtest.com →</a>
+            <a href="https://www.occupationalenglishtest.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-saffron-700 hover:underline mt-2 inline-block">occupationalenglishtest.com →</a>
           </div>
           <div className="border border-gray-200 rounded-lg p-4">
             <p className="font-semibold text-sm text-gray-900 mb-1">IELTS Academic</p>
             <p className="text-xs text-gray-600">Minimum: 7.0 in all four bands. Academic version only — General Training not accepted. Results valid 2 years.</p>
-            <a href="https://www.ielts.org/" target="_blank" rel="noopener noreferrer" className="text-xs text-brand-600 hover:underline mt-2 inline-block">ielts.org →</a>
+            <a href="https://www.ielts.org/" target="_blank" rel="noopener noreferrer" className="text-xs text-saffron-700 hover:underline mt-2 inline-block">ielts.org →</a>
           </div>
         </div>
       </section>

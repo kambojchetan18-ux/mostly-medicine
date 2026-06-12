@@ -137,8 +137,8 @@ export default function BillingClient({ subscription, prices, mode, flash, mockR
 
       {/* Free Mock Exam preview → upgrade pitch with their actual score. */}
       {mockResult && subscription.plan === "free" && (
-        <div className="rounded-3xl border-2 border-brand-300 bg-gradient-to-br from-brand-50 via-violet-50 to-pink-50 p-6 shadow-sm">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-brand-700">
+        <div className="rounded-3xl border-2 border-saffron-300 bg-gradient-to-br from-saffron-50 via-cream-50 to-cream-50 p-6 shadow-sm">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-saffron-700">
             Mock Exam preview complete
           </p>
           <h2 className="mt-1 text-2xl font-bold text-gray-900">
@@ -163,13 +163,13 @@ export default function BillingClient({ subscription, prices, mode, flash, mockR
               onClick={() => {
                 document.getElementById("billing-plans")?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
-              className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700"
+              className="inline-flex items-center justify-center rounded-xl bg-saffron-500 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow hover:bg-saffron-400"
             >
               See plans ↓
             </button>
             <a
               href={`/dashboard/cat1/results/${mockResult.sessionId}`}
-              className="text-xs font-semibold text-brand-700 underline"
+              className="text-xs font-semibold text-saffron-700 underline"
             >
               View my sample results →
             </a>
@@ -275,7 +275,7 @@ export default function BillingClient({ subscription, prices, mode, flash, mockR
             onClick={() => setCadence(c)}
             className={`rounded-full border px-4 py-1.5 text-xs font-semibold capitalize transition ${
               cadence === c
-                ? "border-brand-600 bg-brand-600 text-white"
+                ? "border-saffron-400 bg-saffron-500 text-ink-950"
                 : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
             }`}
           >

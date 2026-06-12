@@ -43,7 +43,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 const SOURCE_COLORS: Record<string, string> = {
   eTG: "bg-blue-100 text-blue-700",
   Oxford: "bg-purple-100 text-purple-700",
-  AMC: "bg-brand-100 text-brand-700",
+  AMC: "bg-saffron-100 text-saffron-700",
 };
 
 // Display labels for AMC exam types (DB values stay as "CAT 1" / "CAT 2")
@@ -148,13 +148,13 @@ export default function LibraryClient({
             onClick={() => setActiveTab(tab)}
             className={`shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 text-sm font-medium rounded-t-lg transition min-h-[44px] ${
               activeTab === tab
-                ? "bg-white border border-b-white border-gray-200 text-brand-700 -mb-px"
+                ? "bg-white border border-b-white border-gray-200 text-saffron-700 -mb-px"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
             {tab}
             {tab === "My Notes" && notes.length > 0 && (
-              <span className="ml-1.5 text-xs bg-brand-100 text-brand-600 px-1.5 py-0.5 rounded-full">
+              <span className="ml-1.5 text-xs bg-saffron-100 text-saffron-700 px-1.5 py-0.5 rounded-full">
                 {notes.length}
               </span>
             )}
@@ -168,7 +168,7 @@ export default function LibraryClient({
             <div className="text-center py-16 text-gray-400">
               <div className="text-4xl mb-3">🔒</div>
               <p className="font-medium text-gray-600">Log in to use My Notes</p>
-              <Link href="/auth/login" className="mt-3 inline-block text-sm text-brand-600 hover:underline">
+              <Link href="/auth/login" className="mt-3 inline-block text-sm text-saffron-700 hover:underline">
                 Log in →
               </Link>
             </div>
@@ -182,8 +182,8 @@ export default function LibraryClient({
                 onClick={() => fileInputRef.current?.click()}
                 className={`mb-6 border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition ${
                   dragOver
-                    ? "border-brand-400 bg-brand-50"
-                    : "border-gray-200 hover:border-brand-300 hover:bg-gray-50"
+                    ? "border-saffron-400 bg-saffron-50"
+                    : "border-gray-200 hover:border-saffron-400 hover:bg-gray-50"
                 }`}
               >
                 <input
@@ -194,8 +194,8 @@ export default function LibraryClient({
                   className="hidden"
                 />
                 {uploading ? (
-                  <div className="flex flex-col items-center gap-2 text-brand-600">
-                    <div className="w-6 h-6 border-2 border-brand-300 border-t-brand-600 rounded-full animate-spin" />
+                  <div className="flex flex-col items-center gap-2 text-saffron-700">
+                    <div className="w-6 h-6 border-2 border-saffron-300 border-t-saffron-600 rounded-full animate-spin" />
                     <p className="text-sm font-medium">Uploading & analysing...</p>
                   </div>
                 ) : (
@@ -253,7 +253,7 @@ export default function LibraryClient({
                         </Link>
                         <Link
                           href={`/dashboard/library/notes/${note.id}`}
-                          className="flex-1 text-center text-xs font-medium px-3 py-1.5 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-100 transition"
+                          className="flex-1 text-center text-xs font-medium px-3 py-1.5 rounded-lg bg-saffron-50 text-saffron-700 hover:bg-saffron-100 transition"
                         >
                           ✨ Ask AI
                         </Link>
@@ -277,7 +277,7 @@ export default function LibraryClient({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search topics..."
-                  className="mt-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="mt-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
                 />
               </div>
 
@@ -289,7 +289,7 @@ export default function LibraryClient({
                       key={s}
                       onClick={() => setSelectedSystem(s)}
                       className={`w-full text-left px-2 py-1.5 text-sm rounded-lg transition ${
-                        selectedSystem === s ? "bg-brand-50 text-brand-700 font-medium" : "text-gray-600 hover:bg-gray-100"
+                        selectedSystem === s ? "bg-saffron-50 text-saffron-700 font-medium" : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {s}
@@ -306,7 +306,7 @@ export default function LibraryClient({
                       key={type}
                       onClick={() => setSelectedExamType(type)}
                       className={`w-full text-left px-2 py-1.5 text-sm rounded-lg transition ${
-                        selectedExamType === type ? "bg-brand-50 text-brand-700 font-medium" : "text-gray-600 hover:bg-gray-100"
+                        selectedExamType === type ? "bg-saffron-50 text-saffron-700 font-medium" : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
                       {EXAM_TYPE_LABELS[type] ?? type}
@@ -324,7 +324,7 @@ export default function LibraryClient({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search topics..."
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-saffron-500"
               />
             </div>
 
@@ -354,12 +354,12 @@ export default function LibraryClient({
                     <div className="flex items-center justify-between">
                       <div className="flex gap-1">
                         {topic.amc_exam_type?.map((type) => (
-                          <span key={type} className="text-xs px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 font-medium">
+                          <span key={type} className="text-xs px-1.5 py-0.5 rounded bg-saffron-50 text-saffron-700 font-medium">
                             {EXAM_TYPE_LABELS[type] ?? type}
                           </span>
                         ))}
                       </div>
-                      <Link href={`/dashboard/library/${topic.id}`} className="text-xs font-medium text-brand-600 hover:text-brand-700 transition">
+                      <Link href={`/dashboard/library/${topic.id}`} className="text-xs font-medium text-saffron-700 hover:text-saffron-700 transition">
                         Read →
                       </Link>
                     </div>

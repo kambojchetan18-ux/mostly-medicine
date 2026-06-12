@@ -54,7 +54,7 @@ function statusFor(idx: number, current: number, answer?: AnswerSnapshot): {
   text: string;
 } {
   if (idx === current) {
-    return { bg: "bg-brand-600", ring: "ring-2 ring-brand-300 ring-offset-1", icon: null, text: "text-white" };
+    return { bg: "bg-saffron-500", ring: "ring-2 ring-saffron-300 ring-offset-1", icon: null, text: "text-ink-950" };
   }
   if (!answer) {
     return { bg: "bg-white border border-gray-200", ring: "", icon: null, text: "text-gray-700" };
@@ -79,7 +79,7 @@ export default function QuizNavigator({
   const absoluteTotal = total + resumedAlreadyDone;
 
   return (
-    <aside className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4 md:sticky md:top-4 md:max-h-[calc(100vh-2rem)] md:overflow-auto">
+    <aside className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4 md:sticky md:top-4 md:max-h-[calc(100dvh-2rem)] md:overflow-auto">
       <div className="flex items-center gap-3 mb-4">
         <ScoreRing pct={pct} answered={answered} />
         <div className="leading-tight">
@@ -96,7 +96,7 @@ export default function QuizNavigator({
         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
           On Question
         </p>
-        <p className="text-2xl font-bold text-brand-700 tabular-nums">
+        <p className="text-2xl font-bold text-saffron-700 tabular-nums">
           {absoluteCurrent}
           <span className="text-sm font-normal text-gray-400"> / {absoluteTotal}</span>
         </p>

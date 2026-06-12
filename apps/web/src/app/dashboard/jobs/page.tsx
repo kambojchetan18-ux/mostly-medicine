@@ -6,11 +6,11 @@ import { computeReadiness, PATHWAY_LABELS, type IMGProfile } from "@/lib/imgProf
 const navCards = [
   {
     href:       "/dashboard/jobs/rmo",
-    icon:       <MapPin className="w-6 h-6 text-brand-700" />,
+    icon:       <MapPin className="w-6 h-6 text-saffron-700" />,
     title:      "RMO Job Pools",
     desc:       "6 states sorted by IMG demand — WA, NT, QLD, NSW, VIC, SA",
     badge:      "Plan A",
-    badgeColor: "bg-brand-100 text-brand-700",
+    badgeColor: "bg-saffron-100 text-saffron-700",
     salary:     "$75K–$105K",
   },
   {
@@ -92,7 +92,7 @@ export default async function JobsPage() {
         </div>
         <Link
           href="/dashboard/profile"
-          className="flex items-center gap-2 text-sm px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium transition"
+          className="flex items-center gap-2 text-sm px-4 py-2 bg-saffron-500 hover:bg-saffron-400 text-ink-950 rounded-xl font-medium transition"
         >
           <Upload className="w-4 h-4" />
           {profile ? "Update CV" : "Upload CV"}
@@ -114,9 +114,9 @@ export default async function JobsPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Your Readiness Score</p>
                 <div className="flex items-center gap-3">
-                  <span className="text-4xl font-bold text-brand-700">{computed.score}%</span>
+                  <span className="text-4xl font-bold text-saffron-700">{computed.score}%</span>
                   <div className="w-32 h-3 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-3 bg-brand-600 rounded-full" style={{ width: `${computed.score}%` }} />
+                    <div className="h-3 bg-saffron-500 rounded-full" style={{ width: `${computed.score}%` }} />
                   </div>
                 </div>
                 {computed.blockers.length > 0 && (
@@ -171,14 +171,14 @@ export default async function JobsPage() {
         /* ── WITHOUT PROFILE: Generic IMG guide + CTA ─────────────────────── */
         <>
           {/* Upload CTA */}
-          <div className="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-6 text-white flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-saffron-500 to-saffron-600 rounded-2xl p-6 text-ink-950 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="font-bold text-lg">See your personalised pathway</p>
-              <p className="text-brand-100 text-sm mt-0.5">Upload your CV and get your Australian readiness score in 30 seconds.</p>
+              <p className="text-ink-950/80 text-sm mt-0.5">Upload your CV and get your Australian readiness score in 30 seconds.</p>
             </div>
             <Link
               href="/dashboard/profile"
-              className="flex items-center gap-2 bg-white text-brand-700 font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-brand-50 transition shrink-0"
+              className="flex items-center gap-2 bg-white text-saffron-700 font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-saffron-50 transition shrink-0"
             >
               <Upload className="w-4 h-4" /> Upload CV Free
             </Link>
@@ -193,7 +193,7 @@ export default async function JobsPage() {
             <div className="divide-y divide-gray-100">
               {AMC_STEPS.map((s) => (
                 <div key={s.step} className="flex items-start gap-4 px-5 py-4">
-                  <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 font-bold text-sm flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-full bg-saffron-100 text-saffron-700 font-bold text-sm flex items-center justify-center shrink-0 mt-0.5">
                     {s.step}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -228,10 +228,10 @@ export default async function JobsPage() {
             <Link
               key={card.href}
               href={card.href}
-              className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:border-brand-300 hover:shadow-md transition-all group"
+              className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:border-saffron-400 hover:shadow-md transition-all group"
             >
               <div className="flex items-start gap-3 mb-3">
-                <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-brand-50 transition-colors">
+                <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-saffron-50 transition-colors">
                   {card.icon}
                 </div>
                 <div className="flex-1">
