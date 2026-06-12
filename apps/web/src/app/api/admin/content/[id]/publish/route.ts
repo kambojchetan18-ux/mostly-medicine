@@ -31,7 +31,10 @@ async function postToLinkedIn(caption: string, hashtags: string[]) {
     }),
   });
 
-  if (!res.ok) throw new Error(`LinkedIn error: ${await res.text()}`);
+  if (!res.ok) {
+    console.error("[publish] LinkedIn error:", res.status, await res.text().catch(() => ""));
+    throw new Error("LinkedIn API error");
+  }
   return await res.json();
 }
 
@@ -53,7 +56,10 @@ async function postToInstagram(caption: string, hashtags: string[]) {
       body: JSON.stringify({ image_url: imageUrl, caption: fullCaption, access_token: token }),
     }
   );
-  if (!createRes.ok) throw new Error(`Instagram media create failed: ${await createRes.text()}`);
+  if (!createRes.ok) {
+    console.error("[publish] Instagram media create error:", createRes.status, await createRes.text().catch(() => ""));
+    throw new Error("Instagram media create failed");
+  }
   const { id: creationId } = await createRes.json();
 
   const publishRes = await fetch(
@@ -64,7 +70,10 @@ async function postToInstagram(caption: string, hashtags: string[]) {
       body: JSON.stringify({ creation_id: creationId, access_token: token }),
     }
   );
-  if (!publishRes.ok) throw new Error(`Instagram publish failed: ${await publishRes.text()}`);
+  if (!publishRes.ok) {
+    console.error("[publish] Instagram publish error:", publishRes.status, await publishRes.text().catch(() => ""));
+    throw new Error("Instagram publish failed");
+  }
   return await publishRes.json();
 }
 

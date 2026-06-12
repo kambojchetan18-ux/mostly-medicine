@@ -42,10 +42,15 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     return { allowed: true };
   }
 
-  const windowExpired = Date.now() - new Date(data.first_attempt_at).getTime() > WINDOW_MS;
+  const windowStart = new Date(data.first_attempt_at).getTime();
+  const windowExpired = Date.now() - windowStart > WINDOW_MS;
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: Math.max(0, windowStart + WINDOW_MS - Date.now()) };
   }
 
   return { allowed: true };

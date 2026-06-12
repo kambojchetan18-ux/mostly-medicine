@@ -152,11 +152,12 @@ export default function FlashcardPlayerScreen() {
     setSubmitting(true);
     try {
       const token = await getToken();
+      if (!token) return;
       const res = await fetch(`${API_URL}/api/flashcards/review`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ cardId: card.id, rating }),
       });

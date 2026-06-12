@@ -116,7 +116,9 @@ export function pickModel(useCase: LlmUseCase): ModelChoice {
 let _anthropic: Anthropic | null = null;
 function anthropicClient(): Anthropic {
   if (!_anthropic) {
-    _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const key = process.env.ANTHROPIC_API_KEY;
+    if (!key) throw new Error("ANTHROPIC_API_KEY not configured");
+    _anthropic = new Anthropic({ apiKey: key });
   }
   return _anthropic;
 }
@@ -132,7 +134,7 @@ interface OpenAIChatResponse {
 function isOpenAIChatResponse(value: unknown): value is OpenAIChatResponse {
   if (!value || typeof value !== "object") return false;
   const choices = (value as { choices?: unknown }).choices;
-  return choices === undefined || Array.isArray(choices);
+  return Array.isArray(choices);
 }
 
 async function callOpenAICompatible(args: {
