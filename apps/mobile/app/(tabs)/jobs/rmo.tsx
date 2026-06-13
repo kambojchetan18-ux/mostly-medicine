@@ -136,7 +136,7 @@ export default function RMOScreen() {
                   <Text style={s.tipText}>{tip}</Text>
                 </View>
               ))}
-              <TouchableOpacity style={[s.applyBtn, { borderColor: p.color }]} onPress={() => Linking.openURL(p.applyUrl)}>
+              <TouchableOpacity style={[s.applyBtn, { borderColor: p.color }]} onPress={() => Linking.openURL(p.applyUrl).catch(() => {})}>
                 <Text style={[s.applyBtnText, { color: p.color }]}>{p.applyLabel}</Text>
                 <Ionicons name="open-outline" size={14} color={p.color} />
               </TouchableOpacity>

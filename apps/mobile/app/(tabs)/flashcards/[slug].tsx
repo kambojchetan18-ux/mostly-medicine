@@ -192,7 +192,7 @@ export default function FlashcardPlayerScreen() {
 
   const openBilling = () => {
     const url = `${API_URL || 'https://mostlymedicine.com'}/dashboard/billing`;
-    Linking.openURL(url).catch(() => {});
+    Linking.openURL(url).catch((e) => console.warn('[flashcards] open URL failed:', e));
   };
 
   const clozeParts = card ? parseCloze(card.front_md) : [];

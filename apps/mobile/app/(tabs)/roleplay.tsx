@@ -95,7 +95,7 @@ export default function RoleplayScreen() {
       const rec = recordingRef.current;
       recordingRef.current = null;
       if (rec) {
-        rec.stopAndUnloadAsync().catch(() => {});
+        rec.stopAndUnloadAsync().catch((e) => console.warn('[roleplay] cleanup error:', e));
       }
       if (timerRef.current) {
         clearInterval(timerRef.current);
