@@ -3,7 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, recordFailedAttempt } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const { email, password, name } = await req.json();
+  const body = await req.json();
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const password = body.password;
+  const name = typeof body.name === "string" ? body.name.trim() : "";
 
   if (!email || !password || !name) {
     return NextResponse.json({ error: "All fields are required" }, { status: 400 });

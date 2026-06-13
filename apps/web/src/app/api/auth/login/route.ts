@@ -3,14 +3,16 @@ import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, recordFailedAttempt, clearAttempts } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const { email, password } = await req.json();
+  const body = await req.json();
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const password = body.password;
 
   if (!email || !password) {
     return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
   }
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const key = `${ip}:${email.toLowerCase()}`;
+  const key = `${ip}:${email}`;
 
   const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {

@@ -46,6 +46,16 @@ export async function POST(req: NextRequest) {
   try {
     const { scenarioId, messages, requestFeedback, patientName } = await req.json();
 
+    if (scenarioId != null && (typeof scenarioId !== "number" || !Number.isInteger(scenarioId) || scenarioId < 0)) {
+      return NextResponse.json({ error: "Invalid scenarioId" }, { status: 400 });
+    }
+    if (patientName != null && (typeof patientName !== "string" || patientName.length > 200)) {
+      return NextResponse.json({ error: "Invalid patientName" }, { status: 400 });
+    }
+    if (!Array.isArray(messages)) {
+      return NextResponse.json({ error: "messages must be an array" }, { status: 400 });
+    }
+
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
         { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },
@@ -121,6 +131,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[roleplay API error]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "An internal error occurred" }, { status: 500 });
   }
 }

@@ -62,7 +62,11 @@ export async function middleware(request: NextRequest) {
   if (!user && pathname.startsWith("/dashboard")) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
-    url.searchParams.set("next", pathname + (request.nextUrl.search ?? ""));
+    const nextPath = pathname + (request.nextUrl.search ?? "");
+    // Only allow relative paths to prevent open redirect attacks
+    if (nextPath.startsWith("/") && !nextPath.startsWith("//")) {
+      url.searchParams.set("next", nextPath);
+    }
     return NextResponse.redirect(url);
   }
 
