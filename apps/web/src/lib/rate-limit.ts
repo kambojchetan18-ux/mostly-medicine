@@ -20,9 +20,13 @@ export function clientKey(req: NextRequest, prefix: string, userId?: string | nu
   return `${prefix}:ip:${ip}`;
 }
 
-export async function checkRateLimit(key: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+export async function checkRateLimit(
+  key: string,
+  opts?: { maxAttempts?: number; windowMs?: number }
+): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const maxAttempts = opts?.maxAttempts ?? MAX_ATTEMPTS;
+  const windowMs = opts?.windowMs ?? WINDOW_MS;
   const supabase = serviceClient();
-  const now = new Date();
 
   const { data } = await supabase
     .from("rate_limit_attempts")
@@ -37,15 +41,19 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     if (Date.now() < lockedUntil) {
       return { allowed: false, retryAfterMs: lockedUntil - Date.now() };
     }
-    // Lockout expired — clean up
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
   }
 
-  const windowExpired = Date.now() - new Date(data.first_attempt_at).getTime() > WINDOW_MS;
+  const windowExpired = Date.now() - new Date(data.first_attempt_at).getTime() > windowMs;
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if ((data.count ?? 0) >= maxAttempts) {
+    const windowStart = new Date(data.first_attempt_at).getTime();
+    return { allowed: false, retryAfterMs: Math.max(0, windowStart + windowMs - Date.now()) };
   }
 
   return { allowed: true };

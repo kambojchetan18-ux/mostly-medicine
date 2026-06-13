@@ -564,6 +564,8 @@ export default function RoleplayScreen() {
                 onPress={toggleRecording}
                 disabled={loading}
                 activeOpacity={0.7}
+                accessibilityLabel={isRecording ? 'Stop recording' : 'Start recording'}
+                accessibilityRole="button"
               >
                 <Ionicons
                   name={isRecording ? 'stop' : 'mic'}
@@ -596,6 +598,8 @@ export default function RoleplayScreen() {
               style={[s.sendBtn, !canSend && s.sendBtnDisabled]}
               onPress={() => sendMessage(input)}
               disabled={!canSend}
+              accessibilityLabel="Send message"
+              accessibilityRole="button"
             >
               <Ionicons name="send" size={18} color="#fff" />
             </TouchableOpacity>

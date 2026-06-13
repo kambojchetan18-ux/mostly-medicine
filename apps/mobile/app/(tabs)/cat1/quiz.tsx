@@ -187,7 +187,7 @@ export default function QuizScreen() {
                   {isCorrect ? '✓ Correct' : '✗ Incorrect'}
                 </Text>
                 <Text style={s.explanationText}>{q.explanation}</Text>
-                <TouchableOpacity style={s.nextBtn} onPress={next}>
+                <TouchableOpacity style={s.nextBtn} onPress={next} accessibilityLabel={index + 1 >= questions.length ? 'See results' : 'Next question'} accessibilityRole="button">
                   <Text style={s.nextBtnText}>
                     {index + 1 >= questions.length ? 'See Results' : 'Next Question'}
                   </Text>

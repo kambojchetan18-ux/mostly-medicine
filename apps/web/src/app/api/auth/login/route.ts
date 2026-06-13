@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const key = `${ip}:${email}`;
 
+  // Per-IP+email rate limit (5 attempts / 15 min window)
   const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {
     const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
@@ -23,10 +24,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Account-level rate limit — 50 attempts/day per email regardless of IP
+  const accountKey = `login-daily:${email}`;
+  const dailyCheck = await checkRateLimit(accountKey, { maxAttempts: 50, windowMs: 24 * 60 * 60 * 1000 });
+  if (!dailyCheck.allowed) {
+    return NextResponse.json(
+      { error: "This account has been temporarily locked due to too many login attempts today. Please try again tomorrow or reset your password." },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    await recordFailedAttempt(accountKey);
     const { locked, attemptsLeft } = await recordFailedAttempt(key);
     if (locked) {
       return NextResponse.json(

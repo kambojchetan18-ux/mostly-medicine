@@ -150,6 +150,7 @@ async function callOpenAICompatible(args: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${args.apiKey}`,
     },
+    signal: AbortSignal.timeout(30_000),
     body: JSON.stringify({
       model: args.model,
       max_tokens: args.maxTokens,

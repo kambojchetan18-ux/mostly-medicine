@@ -3,8 +3,20 @@ import { Stack } from 'expo-router';
 import { useRouter, useSegments } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import type { Session } from '@supabase/supabase-js';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Linking } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+const ALLOWED_DEEP_LINK_PATHS = new Set([
+  '/(tabs)',
+  '/(tabs)/cat1',
+  '/(tabs)/cat2',
+  '/(tabs)/roleplay',
+  '/(tabs)/progress',
+  '/(tabs)/library',
+  '/(tabs)/jobs',
+  '/auth/login',
+  '/auth/signup',
+]);
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -21,6 +33,24 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       setSession(s);
     });
     return () => subscription.unsubscribe();
+  }, []);
+
+  // Validate incoming deep links against known routes
+  useEffect(() => {
+    const handleDeepLink = (event: { url: string }) => {
+      try {
+        const url = new URL(event.url);
+        const path = url.pathname || '/';
+        if (!ALLOWED_DEEP_LINK_PATHS.has(path) && !path.startsWith('/(tabs)/')) {
+          console.warn('[deep-link] blocked unknown path:', path);
+          return;
+        }
+      } catch {
+        console.warn('[deep-link] invalid URL:', event.url);
+      }
+    };
+    const sub = Linking.addEventListener('url', handleDeepLink);
+    return () => sub.remove();
   }, []);
 
   useEffect(() => {

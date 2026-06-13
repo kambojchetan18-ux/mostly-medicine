@@ -74,6 +74,7 @@ export async function GET() {
       },
       body: JSON.stringify({ ttl: TTL_SECONDS }),
       cache: "no-store",
+      signal: AbortSignal.timeout(5_000),
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
