@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { checkOrigin } from "@/lib/origin-check";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,8 @@ function generateTempPassword(): string {
 // Bypasses email entirely — useful when SMTP is broken or a user is locked
 // out and waiting on WhatsApp/SMS hand-off.
 export async function POST(req: NextRequest) {
+  if (!checkOrigin(req)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -46,7 +49,7 @@ export async function POST(req: NextRequest) {
     .select("role")
     .eq("id", user.id)
     .single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!profile || profile.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   let body: { userId?: string };
   try {
@@ -79,6 +82,15 @@ export async function POST(req: NextRequest) {
   if (updErr) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  await svc.from("admin_audit_log").insert({
+    admin_id: user.id,
+    action: "set_password",
+    target_id: userId,
+    details: { target_email: target.user.email },
+    ip,
+  }).then(() => {}, (err: unknown) => console.error("[audit]", err));
 
   return NextResponse.json({
     ok: true,

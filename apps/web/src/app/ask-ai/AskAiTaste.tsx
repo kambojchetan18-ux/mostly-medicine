@@ -48,6 +48,7 @@ export default function AskAiTaste() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
+        signal: AbortSignal.timeout(30_000),
       });
       const data = await res.json();
 

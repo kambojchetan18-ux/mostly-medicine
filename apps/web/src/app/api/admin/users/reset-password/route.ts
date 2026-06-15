@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { checkOrigin } from "@/lib/origin-check";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,8 @@ function service() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!checkOrigin(req)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +25,7 @@ export async function POST(req: NextRequest) {
     .select("role")
     .eq("id", user.id)
     .single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!profile || profile.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   let body: { userId?: string };
   try {
@@ -41,7 +44,7 @@ export async function POST(req: NextRequest) {
   const email = target.user.email;
   if (!email) return NextResponse.json({ error: "Target user has no email" }, { status: 400 });
 
-  const redirectTo = "https://mostlymedicine.com/auth/reset-password";
+  const redirectTo = "https://www.mostlymedicine.com/auth/reset-password";
 
   // generateLink with type=recovery triggers Supabase's recovery email template
   // (when SMTP is configured) and also returns the link itself.
@@ -58,6 +61,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: fallback.error.message }, { status: 500 });
     }
   }
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  await svc.from("admin_audit_log").insert({
+    admin_id: user.id,
+    action: "reset_password",
+    target_id: userId,
+    details: { target_email: email },
+    ip,
+  }).then(() => {}, (err: unknown) => console.error("[audit]", err));
 
   return NextResponse.json({ ok: true });
 }

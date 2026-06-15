@@ -185,6 +185,7 @@ export default function PlayClient({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content }),
+          signal: AbortSignal.timeout(60_000),
         });
         if (!res.ok || !res.body) {
           let msg = "AI error";

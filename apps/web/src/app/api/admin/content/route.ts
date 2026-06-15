@@ -18,7 +18,7 @@ async function requireAdmin() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Unauthorized", status: 401, supabase: null };
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return { error: "Forbidden", status: 403, supabase: null };
+  if (!profile || profile.role !== "admin") return { error: "Forbidden", status: 403, supabase: null };
   return { error: null, status: 200, supabase };
 }
 

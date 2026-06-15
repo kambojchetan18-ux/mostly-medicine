@@ -97,10 +97,10 @@ export default function QuizScreen() {
             <Text style={s.scoreSub}>{totalCorrect} / {questions.length} correct</Text>
           </View>
           <View style={{ flexDirection: 'row', gap: 12, marginTop: 24 }}>
-            <TouchableOpacity style={s.btnSecondary} onPress={() => router.back()}>
+            <TouchableOpacity style={s.btnSecondary} onPress={() => router.back()} accessibilityLabel="Go back">
               <Text style={s.btnSecondaryText}>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={s.btnPrimary} onPress={() => {
+            <TouchableOpacity style={s.btnPrimary} accessibilityLabel="Try again" onPress={() => {
               const pool = topic ? allQuestions.filter((q) => q.topic === topic) : allQuestions;
               setQuestions(shuffle(pool).slice(0, QUIZ_SIZE));
               setIndex(0); setSelected(null); setAttempts([]); setPhase('quiz');
@@ -160,6 +160,7 @@ export default function QuizScreen() {
                     style={[s.optionCard, { backgroundColor: bg, borderColor: border }]}
                     onPress={() => handleSelect(opt.label)}
                     activeOpacity={selected !== null ? 1 : 0.7}
+                    accessibilityLabel={`Answer ${opt.label}: ${opt.text}`}
                   >
                     <View style={[s.optionLabel, { borderColor: border }]}>
                       <Text style={[s.optionLabelText, { color: textColor }]}>{opt.label}</Text>
@@ -183,7 +184,11 @@ export default function QuizScreen() {
                   {isCorrect ? '✓ Correct' : '✗ Incorrect'}
                 </Text>
                 <Text style={s.explanationText}>{q.explanation}</Text>
-                <TouchableOpacity style={s.nextBtn} onPress={next}>
+                <TouchableOpacity
+                  style={s.nextBtn}
+                  onPress={next}
+                  accessibilityLabel={index + 1 >= questions.length ? 'See Results' : 'Next Question'}
+                >
                   <Text style={s.nextBtnText}>
                     {index + 1 >= questions.length ? 'See Results' : 'Next Question'}
                   </Text>

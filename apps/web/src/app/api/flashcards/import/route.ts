@@ -166,7 +166,26 @@ export async function POST(req: NextRequest) {
       if (typeof url !== "string" || !/^https?:\/\//.test(url)) {
         return NextResponse.json({ error: "Missing or invalid url" }, { status: 400 });
       }
-      const res = await fetch(url);
+      // SSRF guard: block private/internal IPs and localhost
+      let parsed: URL;
+      try { parsed = new URL(url); } catch { return NextResponse.json({ error: "Invalid URL" }, { status: 400 }); }
+      const host = parsed.hostname.toLowerCase();
+      if (
+        host === "localhost" ||
+        host === "127.0.0.1" ||
+        host === "0.0.0.0" ||
+        host === "[::1]" ||
+        host.endsWith(".local") ||
+        host.endsWith(".internal") ||
+        host.startsWith("10.") ||
+        host.startsWith("192.168.") ||
+        /^172\.(1[6-9]|2\d|3[01])\./.test(host) ||
+        host === "169.254.169.254" ||
+        host.startsWith("169.254.")
+      ) {
+        return NextResponse.json({ error: "URL not allowed" }, { status: 400 });
+      }
+      const res = await fetch(url, { signal: AbortSignal.timeout(30_000) });
       if (!res.ok) {
         return NextResponse.json({ error: `Fetch failed: ${res.status}` }, { status: 400 });
       }

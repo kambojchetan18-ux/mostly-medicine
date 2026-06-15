@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { checkOrigin } from "@/lib/origin-check";
 
 async function assertAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const { data } = await supabase.from("user_profiles").select("role").eq("id", userId).single();
-  return data?.role === "admin";
+  return data !== null && data.role === "admin";
 }
 
 export async function GET() {
@@ -24,6 +25,7 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  if (!checkOrigin(req)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
