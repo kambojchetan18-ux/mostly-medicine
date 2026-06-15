@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { useRouter, useSegments } from 'expo-router';
+import * as Linking from 'expo-linking';
 import { supabase } from '@/lib/supabase';
+import { isDeepLinkAllowed } from '@/lib/deep-link-validator';
 import type { Session } from '@supabase/supabase-js';
 import { View, ActivityIndicator } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -41,7 +43,31 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function useDeepLinkGuard() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const subscription = Linking.addEventListener('url', (event: { url: string }) => {
+      if (!isDeepLinkAllowed(event.url)) {
+        console.warn('[deep-link] blocked:', event.url);
+        router.replace('/(tabs)');
+      }
+    });
+
+    Linking.getInitialURL().then((url) => {
+      if (url && !isDeepLinkAllowed(url)) {
+        console.warn('[deep-link] blocked initial URL:', url);
+        router.replace('/(tabs)');
+      }
+    });
+
+    return () => subscription.remove();
+  }, [router]);
+}
+
 export default function RootLayout() {
+  useDeepLinkGuard();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthGate>

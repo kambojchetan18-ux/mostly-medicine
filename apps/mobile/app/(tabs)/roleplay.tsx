@@ -154,9 +154,12 @@ export default function RoleplayScreen() {
   }, [isRecording, pulseAnim]);
 
   async function uploadAudio(uri: string) {
+    // Atomic claim: only the first caller proceeds
     if (transcribingRef.current) return;
     transcribingRef.current = true;
     setIsTranscribing(true);
+    let released = false;
+    const release = () => { if (!released) { released = true; transcribingRef.current = false; setIsTranscribing(false); } };
     try {
       const token = await getToken();
       if (!token) {
@@ -181,7 +184,6 @@ export default function RoleplayScreen() {
       if (text) setInput((curr) => (curr ? `${curr} ${text}` : text).trim());
     } catch (e) {
       setVoiceError(e instanceof Error ? e.message : 'Transcription failed');
-      // Ensure any lingering recording is stopped and unloaded on error
       const rec = recordingRef.current;
       if (rec) {
         recordingRef.current = null;
@@ -189,16 +191,15 @@ export default function RoleplayScreen() {
         try { await rec.stopAndUnloadAsync(); } catch { /* already stopped */ }
       }
     } finally {
-      transcribingRef.current = false;
-      setIsTranscribing(false);
+      release();
     }
   }
 
   async function toggleRecording() {
     setVoiceError(null);
-    // Already recording → stop, unload, upload
-    if (recordingRef.current) {
-      const rec = recordingRef.current;
+    // Already recording → atomically claim ref, stop, unload, upload
+    const rec = recordingRef.current;
+    if (rec) {
       recordingRef.current = null;
       setIsRecording(false);
       try {
