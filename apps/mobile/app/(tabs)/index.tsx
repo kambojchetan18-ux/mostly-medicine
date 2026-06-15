@@ -29,6 +29,8 @@ export default function HomeScreen() {
   const [userName, setUserName] = useState('Doctor');
   const [stats, setStats] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -42,25 +44,31 @@ export default function HomeScreen() {
       const name = user.user_metadata?.full_name?.split(' ')[0] ?? 'Doctor';
       setUserName(name);
 
-      const [attemptsRes, streakRes, dueRes] = await Promise.all([
-        supabase.from('attempts').select('is_correct').eq('user_id', user.id),
-        supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
-        supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
-          .eq('user_id', user.id).lte('due', new Date().toISOString()),
-      ]);
-      if (cancelled) return;
+      try {
+        const [attemptsRes, streakRes, dueRes] = await Promise.all([
+          supabase.from('attempts').select('is_correct').eq('user_id', user.id),
+          supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
+          supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
+            .eq('user_id', user.id).lte('due', new Date().toISOString()),
+        ]);
+        if (cancelled) return;
 
-      const attempts = attemptsRes.data ?? [];
-      const total = attempts.length;
-      const correct = attempts.filter((a) => a.is_correct).length;
-      const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+        const attempts = attemptsRes.data ?? [];
+        const total = attempts.length;
+        const correct = attempts.filter((a) => a.is_correct).length;
+        const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
 
-      setStats([
-        { label: 'Questions Done', value: total, color: '#7c3aed' },
-        { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
-        { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
-        { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
-      ]);
+        setStats([
+          { label: 'Questions Done', value: total, color: '#7c3aed' },
+          { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
+          { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
+          { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
+        ]);
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Failed to load stats');
+        }
+      }
       setLoading(false);
     }
     // Defer until first frame is on-screen so the home tab paints quickly.
@@ -69,7 +77,7 @@ export default function HomeScreen() {
       cancelled = true;
       handle.cancel?.();
     };
-  }, []);
+  }, [retryCount]);
 
   const handleLogout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -92,7 +100,15 @@ export default function HomeScreen() {
           </View>
 
           {/* Stats */}
-          {!loading && stats.length > 0 && (
+          {!loading && error && (
+            <View style={styles.errorBox}>
+              <Text style={styles.errorText}>Could not load stats: {error}</Text>
+              <TouchableOpacity onPress={() => { setError(null); setLoading(true); setRetryCount((c) => c + 1); }}>
+                <Text style={styles.errorRetry}>Tap to retry</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {!loading && !error && stats.length > 0 && (
             <View style={styles.statsGrid}>
               {stats.map((s) => (
                 <View key={s.label} style={styles.statCard}>
@@ -160,6 +176,9 @@ const styles = StyleSheet.create({
   moduleIcon: { width: 44, height: 44, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
   moduleLabel: { fontSize: 14, fontWeight: '700', color: '#f1f5f9', marginBottom: 4 },
   moduleSub: { fontSize: 11, color: '#64748b', lineHeight: 15 },
+  errorBox: { marginHorizontal: 16, marginBottom: 16, backgroundColor: '#450a0a', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: '#7f1d1d' },
+  errorText: { fontSize: 13, color: '#fca5a5', lineHeight: 18 },
+  errorRetry: { fontSize: 13, color: '#f87171', fontWeight: '700', marginTop: 8 },
   comingSoon: { marginTop: 8, backgroundColor: '#0f172a', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, alignSelf: 'flex-start' },
   comingSoonText: { fontSize: 10, color: '#475569', fontWeight: '600' },
 });

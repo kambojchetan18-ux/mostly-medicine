@@ -24,9 +24,20 @@ export default function AskAiClient() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
+  const abortRef = useRef<AbortController | null>(null);
+
   async function ask(text: string) {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
+
+    // Abort any in-flight request before starting a new one
+    abortRef.current?.abort();
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    // 30-second timeout to prevent hanging connections
+    const timeout = setTimeout(() => controller.abort(), 30_000);
 
     const next: Message[] = [...messages, { role: "user", content: trimmed }];
     setMessages(next);
@@ -38,6 +49,7 @@ export default function AskAiClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
+        signal: controller.signal,
       });
 
       if (!res.ok || !res.body) {
@@ -62,12 +74,21 @@ export default function AskAiClient() {
         });
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Request failed";
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: `Sorry — ${msg}. Please try again.` },
-      ]);
+      if (controller.signal.aborted) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Sorry — the request timed out. Please try again." },
+        ]);
+      } else {
+        const msg = err instanceof Error ? err.message : "Request failed";
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: `Sorry — ${msg}. Please try again.` },
+        ]);
+      }
     } finally {
+      clearTimeout(timeout);
+      abortRef.current = null;
       setLoading(false);
     }
   }

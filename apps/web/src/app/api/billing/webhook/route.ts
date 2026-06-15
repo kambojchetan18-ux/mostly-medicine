@@ -3,6 +3,7 @@ import { stripe, assertStripeConfig } from "@/lib/stripe";
 import { syncSubscriptionToProfile } from "@/lib/billing";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { features } from "@/config/features";
+import { getRequestId } from "@/lib/request-id";
 import type Stripe from "stripe";
 
 // Stripe webhook receiver — keeps user_profiles in sync with subscription
@@ -27,17 +28,18 @@ function service() {
 }
 
 export async function POST(req: NextRequest) {
+  const requestId = getRequestId();
   try {
     assertStripeConfig();
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/webhook] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error(`[billing/webhook] rid=${requestId} config`, msg);
+    return NextResponse.json({ error: msg }, { status: 500, headers: { "X-Request-Id": requestId } });
   }
   const sig = req.headers.get("stripe-signature");
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!sig || !secret) {
-    return NextResponse.json({ error: "Missing signature/secret" }, { status: 400 });
+    return NextResponse.json({ error: "Missing signature/secret" }, { status: 400, headers: { "X-Request-Id": requestId } });
   }
 
   const raw = await req.text();
@@ -46,7 +48,8 @@ export async function POST(req: NextRequest) {
     event = stripe().webhooks.constructEvent(raw, sig, secret);
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Bad signature";
-    return NextResponse.json({ error: msg }, { status: 400 });
+    console.warn(`[billing/webhook] rid=${requestId} bad signature`);
+    return NextResponse.json({ error: msg }, { status: 400, headers: { "X-Request-Id": requestId } });
   }
 
   // Idempotency — atomically claim this event id. Two concurrent webhook
@@ -68,14 +71,16 @@ export async function POST(req: NextRequest) {
     .select("id");
 
   if (!claimed || claimed.length === 0) {
-    return NextResponse.json({ ok: true, replay: true });
+    console.info(`[billing/webhook] rid=${requestId} replay event=${event.id}`);
+    return NextResponse.json({ ok: true, replay: true }, { headers: { "X-Request-Id": requestId } });
   }
 
   // Beta mode: record the event in billing_events for audit (already done by
   // the upsert above) but do NOT mutate user_profiles. Stripe will still
   // retry on non-2xx, so return 200 to keep the queue clean.
   if (!features.paidTiersEnabled) {
-    return NextResponse.json({ ok: true, beta: true });
+    console.info(`[billing/webhook] rid=${requestId} beta-mode skip event=${event.id} type=${event.type}`);
+    return NextResponse.json({ ok: true, beta: true }, { headers: { "X-Request-Id": requestId } });
   }
 
   try {
@@ -157,10 +162,11 @@ export async function POST(req: NextRequest) {
         break;
     }
   } catch (err) {
-    console.error("[billing/webhook]", event.type, err);
+    console.error(`[billing/webhook] rid=${requestId}`, event.type, err);
     // Return 500 so Stripe retries.
-    return NextResponse.json({ error: "Handler failed" }, { status: 500 });
+    return NextResponse.json({ error: "Handler failed" }, { status: 500, headers: { "X-Request-Id": requestId } });
   }
 
-  return NextResponse.json({ ok: true });
+  console.info(`[billing/webhook] rid=${requestId} processed event=${event.id} type=${event.type}`);
+  return NextResponse.json({ ok: true }, { headers: { "X-Request-Id": requestId } });
 }

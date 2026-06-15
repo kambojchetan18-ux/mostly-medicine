@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, recordFailedAttempt } from "@/lib/rate-limit";
+import { getRequestId } from "@/lib/request-id";
 
 export async function POST(req: NextRequest) {
+  const requestId = getRequestId();
   let body: { email?: string; password?: string; name?: string };
-  try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400, headers: { "X-Request-Id": requestId } }); }
   const { email, password, name } = body;
 
   if (!email || !password || !name) {
-    return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    return NextResponse.json({ error: "All fields are required" }, { status: 400, headers: { "X-Request-Id": requestId } });
   }
 
   // Rate limit by IP — max 5 signup attempts per 15 min
@@ -17,9 +19,10 @@ export async function POST(req: NextRequest) {
   const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {
     const minutesLeft = Math.ceil((retryAfterMs ?? 0) / 60000);
+    console.warn(`[auth/signup] rid=${requestId} rate limit hit ip=${ip}`);
     return NextResponse.json(
       { error: `Too many signup attempts. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
-      { status: 429 }
+      { status: 429, headers: { "X-Request-Id": requestId } }
     );
   }
 
@@ -32,8 +35,10 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     await recordFailedAttempt(key);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.warn(`[auth/signup] rid=${requestId} failed: ${error.message}`);
+    return NextResponse.json({ error: error.message }, { status: 400, headers: { "X-Request-Id": requestId } });
   }
 
-  return NextResponse.json({ success: true });
+  console.info(`[auth/signup] rid=${requestId} success email=${email}`);
+  return NextResponse.json({ success: true }, { headers: { "X-Request-Id": requestId } });
 }

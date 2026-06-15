@@ -44,6 +44,7 @@ export default function LibraryChat({ topicTitle, topicContent }: Props) {
           topicTitle,
           topicContent,
         }),
+        signal: AbortSignal.timeout(30_000),
       });
 
       if (!res.ok || !res.body) throw new Error("Request failed");

@@ -277,6 +277,7 @@ function McqCard({
                   onPress={() => onSelect(opt.label)}
                   activeOpacity={selected !== null ? 1 : 0.7}
                   disabled={selected !== null}
+                  accessibilityLabel={`Answer ${opt.label}: ${opt.text}`}
                 >
                   <View style={[styles.optionLabel, { borderColor: border }]}>
                     <Text style={[styles.optionLabelText, { color: textColor }]}>{opt.label}</Text>
@@ -599,6 +600,7 @@ export default function Cat1DeckScreen() {
               style={[styles.actionBtn, styles.btnReview]}
               onPress={() => onButton('left')}
               activeOpacity={0.7}
+              accessibilityLabel="Mark for review"
             >
               <Ionicons name="close" size={26} color="#f87171" />
             </TouchableOpacity>
@@ -606,6 +608,7 @@ export default function Cat1DeckScreen() {
               style={[styles.actionBtn, styles.btnRetry]}
               onPress={onResetReview}
               activeOpacity={0.7}
+              accessibilityLabel="Skip and review later"
             >
               <Ionicons name="refresh" size={22} color="#a78bfa" />
             </TouchableOpacity>
@@ -616,6 +619,7 @@ export default function Cat1DeckScreen() {
                 onButton('right');
               }}
               activeOpacity={selected === null ? 1 : 0.7}
+              accessibilityLabel="Mark as correct"
             >
               <Ionicons
                 name="checkmark"
