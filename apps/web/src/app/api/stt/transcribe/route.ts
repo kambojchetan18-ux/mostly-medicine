@@ -135,6 +135,7 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}` },
       body: groqForm,
+      signal: AbortSignal.timeout(15_000),
     });
   } catch (err) {
     console.error("[stt/transcribe] groq fetch failed", err);

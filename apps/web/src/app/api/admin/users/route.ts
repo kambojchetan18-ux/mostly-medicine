@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { checkOrigin } from "@/lib/origin-check";
 
 // Service-role client used to mutate user_profiles columns that
 // authenticated users no longer have column-level UPDATE on (role, plan,
@@ -21,7 +22,7 @@ export async function GET() {
 
   // Check admin
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!profile || profile.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { data, error } = await supabase
     .from("user_profiles")
@@ -36,14 +37,18 @@ const ALLOWED_PLANS = new Set(["free", "pro", "enterprise"]);
 const ALLOWED_ROLES = new Set(["user", "admin"]);
 
 export async function PATCH(req: NextRequest) {
+  if (!checkOrigin(req)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { data: profile } = await supabase.from("user_profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!profile || profile.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { userId, plan, role } = await req.json();
+  let body: { userId?: string; plan?: string; role?: string };
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
+  const { userId, plan, role } = body;
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
   // Whitelist values — refusing arbitrary strings prevents an admin (or a
@@ -87,5 +92,15 @@ export async function PATCH(req: NextRequest) {
   const svc = serviceClient();
   const { error } = await svc.from("user_profiles").update(updates).eq("id", userId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  await svc.from("admin_audit_log").insert({
+    admin_id: user.id,
+    action: "update_user",
+    target_id: userId,
+    details: { plan, role },
+    ip,
+  }).then(() => {}, (err: unknown) => console.error("[audit]", err));
+
   return NextResponse.json({ success: true });
 }

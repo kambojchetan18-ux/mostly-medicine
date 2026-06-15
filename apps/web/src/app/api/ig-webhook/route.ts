@@ -136,7 +136,7 @@ async function sendPrivateReply(commentId: string, text: string): Promise<void> 
     console.error("[ig-webhook] IG_PAGE_ACCESS_TOKEN missing");
     return;
   }
-  const endpoint = `https://graph.facebook.com/v19.0/me/messages?access_token=${encodeURIComponent(token)}`;
+  const endpoint = "https://graph.facebook.com/v19.0/me/messages";
   const body = {
     recipient: { comment_id: commentId },
     message: { text },
@@ -144,8 +144,12 @@ async function sendPrivateReply(commentId: string, text: string): Promise<void> 
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
       const errText = await res.text();

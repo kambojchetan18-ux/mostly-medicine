@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { checkOrigin } from "@/lib/origin-check";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,8 @@ function service() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!checkOrigin(req)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +25,7 @@ export async function POST(req: NextRequest) {
     .select("role")
     .eq("id", user.id)
     .single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!profile || profile.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   let body: { userId?: string };
   try {
@@ -54,10 +57,20 @@ export async function POST(req: NextRequest) {
 
   // auth.users delete cascades to user_profiles, attempts, sr_cards, img_profiles,
   // smart_explanations, etc. via ON DELETE CASCADE FKs in the migrations.
+  const { data: targetUser } = await svc.auth.admin.getUserById(userId);
   const { error: delErr } = await svc.auth.admin.deleteUser(userId);
   if (delErr) {
     return NextResponse.json({ error: delErr.message }, { status: 500 });
   }
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  await svc.from("admin_audit_log").insert({
+    admin_id: user.id,
+    action: "delete_user",
+    target_id: userId,
+    details: { target_email: targetUser?.user?.email ?? null },
+    ip,
+  }).then(() => {}, (err: unknown) => console.error("[audit]", err));
 
   return NextResponse.json({ ok: true });
 }

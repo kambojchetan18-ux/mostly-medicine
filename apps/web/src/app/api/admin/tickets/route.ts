@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { checkOrigin } from "@/lib/origin-check";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ function service() {
 }
 
 export async function PATCH(req: NextRequest) {
+  if (!checkOrigin(req)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +24,7 @@ export async function PATCH(req: NextRequest) {
     .select("role")
     .eq("id", user.id)
     .single();
-  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!profile || profile.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   let body: { id?: string; status?: string };
   try {
