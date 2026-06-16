@@ -17,7 +17,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.64",
     "@anthropic-ai/sdk": "^0.32.0",
-    "@dicebear/avataaars": "^9.2.2",
+    "@dicebear/avataaars": "9.2.2",
     "@dicebear/core": "9.2.2",
     "@dicebear/personas": "9.2.2",
     "@mostly-medicine/ai": "workspace:*",

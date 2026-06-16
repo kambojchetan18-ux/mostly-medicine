@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { checkRateLimit, recordFailedAttempt, clearAttempts } from "@/lib/rate-limit";
+import { checkRateLimit, recordFailedAttempt, clearAttempts, checkEmailDailyLimit, recordEmailAttempt } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -21,11 +21,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const emailLimit = await checkEmailDailyLimit(email);
+  if (!emailLimit.allowed) {
+    const hoursLeft = Math.ceil((emailLimit.retryAfterMs ?? 0) / 3600000);
+    return NextResponse.json(
+      { error: `This account has been temporarily locked due to too many failed attempts. Try again in ${hoursLeft} hour${hoursLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     const { locked, attemptsLeft } = await recordFailedAttempt(key);
+    await recordEmailAttempt(email);
     if (locked) {
       return NextResponse.json(
         { error: "Too many failed attempts. Your account is locked for 15 minutes." },

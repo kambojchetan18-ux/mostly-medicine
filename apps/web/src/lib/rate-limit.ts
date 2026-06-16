@@ -48,6 +48,10 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
     return { allowed: true };
   }
 
+  if (data.count >= MAX_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: WINDOW_MS - (Date.now() - new Date(data.first_attempt_at).getTime()) };
+  }
+
   return { allowed: true };
 }
 
@@ -85,6 +89,53 @@ export async function recordFailedAttempt(key: string): Promise<{ locked: boolea
 export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
+}
+
+const EMAIL_DAILY_MAX = 50;
+const EMAIL_DAILY_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+export async function checkEmailDailyLimit(email: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const key = `email-daily:${email.toLowerCase()}`;
+  const supabase = serviceClient();
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (!data) return { allowed: true };
+
+  const windowExpired = Date.now() - new Date(data.first_attempt_at).getTime() > EMAIL_DAILY_WINDOW_MS;
+  if (windowExpired) {
+    await supabase.from("rate_limit_attempts").delete().eq("key", key);
+    return { allowed: true };
+  }
+
+  if (data.count >= EMAIL_DAILY_MAX) {
+    const retryAfterMs = EMAIL_DAILY_WINDOW_MS - (Date.now() - new Date(data.first_attempt_at).getTime());
+    return { allowed: false, retryAfterMs };
+  }
+
+  return { allowed: true };
+}
+
+export async function recordEmailAttempt(email: string): Promise<void> {
+  const key = `email-daily:${email.toLowerCase()}`;
+  const supabase = serviceClient();
+  const now = new Date().toISOString();
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  await supabase.from("rate_limit_attempts").upsert({
+    key,
+    count: (data?.count ?? 0) + 1,
+    first_attempt_at: data?.first_attempt_at ?? now,
+    locked_until: null,
+    updated_at: now,
+  });
 }
 
 // Per-IP / per-user "calls in a rolling window" limiter for AI endpoints.

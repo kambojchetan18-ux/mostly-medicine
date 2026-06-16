@@ -119,19 +119,30 @@ export async function POST(req: NextRequest) {
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
     const extracted = JSON.parse(jsonStr);
 
+    const ALLOWED_FIELDS = new Set([
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification"
+    ]);
+    const sanitized: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(extracted)) {
+      if (ALLOWED_FIELDS.has(k)) sanitized[k] = v;
+    }
+
     // Upsert into Supabase
     const { error: dbError } = await supabase
       .from("img_profiles")
       .upsert({
         id: user.id,
-        ...extracted,
+        ...sanitized,
         cv_text: cvText ? cvText.slice(0, 20000) : null,
         updated_at: new Date().toISOString(),
       });
 
     if (dbError) throw new Error(dbError.message);
 
-    return NextResponse.json({ profile: extracted });
+    return NextResponse.json({ profile: sanitized });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[cv/analyse]", message);

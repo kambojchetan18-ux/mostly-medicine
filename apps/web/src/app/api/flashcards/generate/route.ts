@@ -176,10 +176,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const text =
-    res.content.find((b) => b.type === "text")?.type === "text"
-      ? (res.content[0] as { type: "text"; text: string }).text
-      : "";
+  const textBlock = res.content.find((b) => b.type === "text");
+  const text = textBlock && textBlock.type === "text" ? (textBlock as { type: "text"; text: string }).text : "";
 
   // The model is instructed to return strict JSON, but defensive parsing
   // in case it wraps the payload in ``` blocks anyway.

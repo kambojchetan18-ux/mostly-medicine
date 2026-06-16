@@ -88,6 +88,7 @@ export default function RoleplayScreen() {
   const recordingRef = useRef<Audio.Recording | null>(null);
   const transcribingRef = useRef(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const milestoneTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Cleanup any in-flight recording / timer / TTS on unmount ────────────────
   useEffect(() => {
@@ -100,6 +101,10 @@ export default function RoleplayScreen() {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
+      }
+      if (milestoneTimerRef.current) {
+        clearTimeout(milestoneTimerRef.current);
+        milestoneTimerRef.current = null;
       }
       // Stop the patient TTS so it doesn't keep speaking after we unmount.
       Speech.stop();
@@ -269,7 +274,11 @@ export default function RoleplayScreen() {
         if (elapsed === MILESTONES[i].time && !shownMilestonesRef.current.has(i)) {
           shownMilestonesRef.current.add(i);
           setMilestone(MILESTONES[i].label);
-          setTimeout(() => setMilestone(null), 4000);
+          if (milestoneTimerRef.current) clearTimeout(milestoneTimerRef.current);
+          milestoneTimerRef.current = setTimeout(() => {
+            milestoneTimerRef.current = null;
+            setMilestone(null);
+          }, 4000);
         }
       }
       setTimeLeft((prev) => {
@@ -560,9 +569,9 @@ export default function RoleplayScreen() {
             {/* Mic button */}
             <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
               <TouchableOpacity
-                style={[s.micBtn, isRecording && s.micBtnActive]}
+                style={[s.micBtn, isRecording && s.micBtnActive, (loading || isTranscribing) && { opacity: 0.4 }]}
                 onPress={toggleRecording}
-                disabled={loading}
+                disabled={loading || isTranscribing}
                 activeOpacity={0.7}
               >
                 <Ionicons
