@@ -73,6 +73,15 @@ SUPABASE_DB_PASSWORD=xxx supabase db push  # push migrations to remote
 # Preview). If missing, the route returns 503 and the live transcript stays
 # blank — handy as a kill-switch.
 
+# Outstand MCP — Claude Code integration (project-level, .mcp.json)
+#   OUTSTAND_API_KEY                      # ost_... (from https://outstand.so account settings)
+#
+# .mcp.json at the repo root registers an HTTP MCP server at
+# https://mcp.outstand.so/mcp authenticated via Bearer ${OUTSTAND_API_KEY}.
+# Export the key in your shell or .env.local before launching Claude Code —
+# the .mcp.json itself never holds the secret. To opt in, run /mcp inside
+# Claude Code and approve the project-scoped server on first prompt.
+
 # AI Clinical RolePlay — offline content build (run once, or after adding PDFs)
 # 1) Drop new PDFs into roleplays/source-pdfs/ (gitignored)
 # 2) Ingest each PDF into acrp_sources (metadata only, never the PDF text)
