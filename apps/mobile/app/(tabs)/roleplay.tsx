@@ -101,8 +101,7 @@ export default function RoleplayScreen() {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-      // Stop the patient TTS so it doesn't keep speaking after we unmount.
-      Speech.stop();
+      try { Speech.stop(); } catch { /* may throw if Speech is in bad state */ }
       // Stop & null the pulse loop in case the screen unmounts while recording.
       pulseLoop.current?.stop();
       pulseLoop.current = null;

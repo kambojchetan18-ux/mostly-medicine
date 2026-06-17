@@ -1,3 +1,4 @@
+import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import type { NextRequest } from "next/server";
 
@@ -46,6 +47,11 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if (data.count >= MAX_ATTEMPTS) {
+    const windowEnd = new Date(data.first_attempt_at).getTime() + WINDOW_MS;
+    return { allowed: false, retryAfterMs: Math.max(0, windowEnd - Date.now()) };
   }
 
   return { allowed: true };

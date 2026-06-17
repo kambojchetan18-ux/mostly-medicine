@@ -17,6 +17,10 @@ export default function SignupScreen() {
 
   async function handleSignup() {
     if (!name || !email || !password) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      Alert.alert('Invalid email', 'Please enter a valid email address');
+      return;
+    }
     if (password.length < 8) { Alert.alert('Password too short', 'Minimum 8 characters'); return; }
     setLoading(true);
     const { error } = await supabase.auth.signUp({

@@ -4,6 +4,17 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { z } from "zod";
+
+const bodySchema = z.object({
+  scenarioId: z.number().int().nonnegative(),
+  messages: z.array(z.object({
+    role: z.string(),
+    content: z.string().max(10000),
+  })).max(200),
+  requestFeedback: z.boolean().optional(),
+  patientName: z.string().max(60).optional(),
+});
 
 export async function POST(req: NextRequest) {
   let user = null;
@@ -44,7 +55,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { scenarioId, messages, requestFeedback, patientName } = await req.json();
+    let rawBody: unknown;
+    try {
+      rawBody = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const parsed = bodySchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.issues }, { status: 400 });
+    }
+    const { scenarioId, messages, requestFeedback, patientName } = parsed.data;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(

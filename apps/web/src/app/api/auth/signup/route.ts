@@ -3,14 +3,28 @@ import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, recordFailedAttempt } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const { email, password, name } = await req.json();
+  let body: { email?: string; password?: string; name?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { email, password, name } = body;
 
   if (!email || !password || !name) {
     return NextResponse.json({ error: "All fields are required" }, { status: 400 });
   }
 
+  if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+  }
+
+  if (typeof password !== "string" || password.length < 8) {
+    return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
+  }
+
   // Rate limit by IP — max 5 signup attempts per 15 min
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   const key = `signup:${ip}`;
   const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {

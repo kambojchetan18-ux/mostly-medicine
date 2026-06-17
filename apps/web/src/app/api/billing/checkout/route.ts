@@ -34,9 +34,12 @@ export async function POST(req: NextRequest) {
   if (!body.priceId) return NextResponse.json({ error: "priceId required" }, { status: 400 });
 
   // Whitelist `next` to internal /dashboard paths only — guards against
-  // open-redirect via Stripe success_url. Anything that doesn't match the
-  // whitelist falls back to /dashboard/billing.
-  const safeNext = typeof body.next === "string" && /^\/dashboard\/[a-z0-9/_-]*$/i.test(body.next)
+  // open-redirect via Stripe success_url. Reject path traversal (..),
+  // encoded dots, and anything outside /dashboard/.
+  const safeNext = typeof body.next === "string"
+    && /^\/dashboard\/[a-z0-9/_-]*$/i.test(body.next)
+    && !body.next.includes("..")
+    && !body.next.includes("%")
     ? body.next
     : null;
 
@@ -101,7 +104,9 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : "Checkout session failed";
     console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
     return NextResponse.json(
-      { error: `Stripe checkout failed: ${msg}` },
+      { error: process.env.NODE_ENV === "production"
+          ? "Checkout failed. Please try again."
+          : `Stripe checkout failed: ${msg}` },
       { status: 502 }
     );
   }
