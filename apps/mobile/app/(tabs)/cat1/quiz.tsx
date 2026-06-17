@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 export default function QuizScreen() {
@@ -84,7 +89,7 @@ export default function QuizScreen() {
   }
 
   if (phase === 'done') {
-    const accuracy = Math.round((totalCorrect / questions.length) * 100);
+    const accuracy = questions.length > 0 ? Math.round((totalCorrect / questions.length) * 100) : 0;
     const accColor = accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444';
     return (
       <View style={s.bg}>

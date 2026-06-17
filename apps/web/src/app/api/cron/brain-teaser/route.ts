@@ -263,8 +263,12 @@ export async function GET(
   try {
     const secret = process.env.CRON_SECRET;
     if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
+      const auth = req.headers.get("authorization") ?? "";
+      const expected = `Bearer ${secret}`;
+      const a = Buffer.from(auth);
+      const b = Buffer.from(expected);
+      const match = a.length === b.length && require("node:crypto").timingSafeEqual(a, b);
+      if (!match) {
         return NextResponse.json<BrainTeaserErr>(
           { ok: false, error: "Unauthorized" },
           { status: 401 }

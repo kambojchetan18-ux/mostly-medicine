@@ -52,6 +52,9 @@ export async function POST(req: NextRequest) {
   }
 
   const [year, mon] = month.split("-").map(Number);
+  if (year < 2020 || year > 2100 || mon < 1 || mon > 12) {
+    return NextResponse.json({ error: "Month out of valid range" }, { status: 400 });
+  }
   const lastDay = new Date(year, mon, 0).getDate();
 
   if (!regenerate) {

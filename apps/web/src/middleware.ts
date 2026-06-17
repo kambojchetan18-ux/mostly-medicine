@@ -11,6 +11,14 @@ const PUBLIC_API_ROUTES = [
   // Diagnostic — returns env-var presence flags only (never values). Safe to
   // expose so support can confirm Vercel env-var bake without admin login.
   "/api/health",
+  // Cron routes authenticate via CRON_SECRET Bearer token, not Supabase session.
+  "/api/cron/",
+  // Instagram webhook authenticates via HMAC x-hub-signature-256.
+  "/api/ig-webhook",
+  // TURN credentials route handles its own auth.
+  "/api/turn-credentials",
+  // STT transcribe handles its own session auth.
+  "/api/stt/",
 ];
 
 export async function middleware(request: NextRequest) {
@@ -103,6 +111,9 @@ export async function middleware(request: NextRequest) {
     url.search = "";
     return NextResponse.redirect(url);
   }
+
+  supabaseResponse.headers.set("X-Frame-Options", "SAMEORIGIN");
+  supabaseResponse.headers.set("X-Content-Type-Options", "nosniff");
 
   return supabaseResponse;
 }
