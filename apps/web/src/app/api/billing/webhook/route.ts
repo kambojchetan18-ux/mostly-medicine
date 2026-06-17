@@ -162,5 +162,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }
 
+  await sb
+    .from("billing_events")
+    .update({ processed_at: new Date().toISOString() })
+    .eq("id", event.id);
+
   return NextResponse.json({ ok: true });
 }

@@ -42,7 +42,7 @@ export default function HomeScreen() {
       const name = user.user_metadata?.full_name?.split(' ')[0] ?? 'Doctor';
       setUserName(name);
 
-      const [attemptsRes, streakRes, dueRes] = await Promise.all([
+      const [attemptsResult, streakResult, dueResult] = await Promise.allSettled([
         supabase.from('attempts').select('is_correct').eq('user_id', user.id),
         supabase.from('study_streaks').select('*').eq('user_id', user.id).maybeSingle(),
         supabase.from('sr_cards').select('question_id', { count: 'exact', head: true })
@@ -50,7 +50,11 @@ export default function HomeScreen() {
       ]);
       if (cancelled) return;
 
-      const attempts = attemptsRes.data ?? [];
+      const attemptsRes = attemptsResult.status === 'fulfilled' ? attemptsResult.value : null;
+      const streakRes = streakResult.status === 'fulfilled' ? streakResult.value : null;
+      const dueRes = dueResult.status === 'fulfilled' ? dueResult.value : null;
+
+      const attempts = attemptsRes?.data ?? [];
       const total = attempts.length;
       const correct = attempts.filter((a) => a.is_correct).length;
       const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
@@ -58,8 +62,8 @@ export default function HomeScreen() {
       setStats([
         { label: 'Questions Done', value: total, color: '#7c3aed' },
         { label: 'Accuracy', value: `${accuracy}%`, color: accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444' },
-        { label: 'Day Streak', value: `${streakRes.data?.current_streak ?? 0}🔥`, color: '#f97316' },
-        { label: 'Due Today', value: dueRes.count ?? 0, color: '#3b82f6' },
+        { label: 'Day Streak', value: `${streakRes?.data?.current_streak ?? 0}🔥`, color: '#f97316' },
+        { label: 'Due Today', value: dueRes?.count ?? 0, color: '#3b82f6' },
       ]);
       setLoading(false);
     }

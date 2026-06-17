@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { logAdminAction } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,14 @@ export async function POST(req: NextRequest) {
   if (updErr) {
     return NextResponse.json({ error: updErr.message }, { status: 500 });
   }
+
+  await logAdminAction({
+    adminUserId: user.id,
+    action: "user_set_password",
+    targetUserId: userId,
+    details: { email: target.user.email ?? null },
+    ipAddress: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+  });
 
   return NextResponse.json({
     ok: true,

@@ -49,7 +49,8 @@ async function loadReviewLater(): Promise<Set<string>> {
     if (!raw) return new Set();
     const arr = JSON.parse(raw);
     return new Set(Array.isArray(arr) ? arr : []);
-  } catch {
+  } catch (e) {
+    console.warn('[Cat1Deck] loadReviewLater failed', e);
     return new Set();
   }
 }
@@ -57,8 +58,8 @@ async function loadReviewLater(): Promise<Set<string>> {
 async function saveReviewLater(set: Set<string>): Promise<void> {
   try {
     await AsyncStorage.setItem(REVIEW_LATER_KEY, JSON.stringify([...set]));
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.warn('[Cat1Deck] saveReviewLater failed', e);
   }
 }
 
@@ -375,7 +376,8 @@ export default function Cat1DeckScreen() {
               .maybeSingle<{ current_streak: number | null }>();
             if (!cancelled) setStreak(ss?.current_streak ?? 0);
           }
-        } catch {
+        } catch (e) {
+          console.warn('[Cat1Deck] streak fetch failed', e);
           if (!cancelled) setStreak(0);
         }
       }
@@ -416,9 +418,9 @@ export default function Cat1DeckScreen() {
       setSelected(label);
       const isCorrect = label === current.correctAnswer;
       // Fire-and-forget — don't block UI.
-      persistAttempt(current, isCorrect).catch(() => {
-        /* ignore network errors */
-      });
+      persistAttempt(current, isCorrect).catch((e) =>
+        console.warn('[Cat1Deck] persistAttempt failed', e),
+      );
       // If they answered correctly, drop it from review-later
       if (isCorrect && reviewLater.has(current.id)) {
         const next = new Set(reviewLater);

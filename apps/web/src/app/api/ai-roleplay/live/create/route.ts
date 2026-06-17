@@ -176,32 +176,52 @@ export async function POST(req: NextRequest) {
 
   const brief = buildPatientBrief(variantForBrief);
 
-  // Create live session with unique invite code
-  let inviteCode = generateInviteCode();
-  for (let i = 0; i < 4; i++) {
-    const { count } = await service
-      .from("acrp_live_sessions")
-      .select("id", { count: "exact", head: true })
-      .eq("invite_code", inviteCode);
-    if (!count) break;
-    inviteCode = generateInviteCode();
-  }
+  // Create live session with unique invite code.
+  // Retry up to 3 times on unique constraint violations (race condition between
+  // check-then-insert when two hosts generate the same code simultaneously).
+  let sess: { id: string; invite_code: string } | null = null;
+  let lastSessErr: { message?: string; code?: string } | null = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    let inviteCode = generateInviteCode();
+    // Pre-check for collisions (best-effort, not authoritative)
+    for (let i = 0; i < 4; i++) {
+      const { count } = await service
+        .from("acrp_live_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("invite_code", inviteCode);
+      if (!count) break;
+      inviteCode = generateInviteCode();
+    }
 
-  const { data: sess, error: sessErr } = await service
-    .from("acrp_live_sessions")
-    .insert({
-      invite_code: inviteCode,
-      host_user_id: user.id,
-      case_id: caseId,
-      host_role: hostRole,
-      status: "waiting",
-      patient_brief: brief,
-    })
-    .select("id, invite_code")
-    .single();
-  if (sessErr || !sess) {
-    console.error("[live/create] session save failed", sessErr);
-    return NextResponse.json({ error: sessErr?.message ?? "Save failed" }, { status: 500 });
+    const { data: sessData, error: sessErr } = await service
+      .from("acrp_live_sessions")
+      .insert({
+        invite_code: inviteCode,
+        host_user_id: user.id,
+        case_id: caseId,
+        host_role: hostRole,
+        status: "waiting",
+        patient_brief: brief,
+      })
+      .select("id, invite_code")
+      .single();
+
+    if (!sessErr && sessData) {
+      sess = sessData;
+      break;
+    }
+
+    lastSessErr = sessErr;
+    // 23505 = unique_violation — retry with a new code
+    if (sessErr && sessErr.code === "23505") {
+      continue;
+    }
+    // Non-unique error — don't retry
+    break;
+  }
+  if (!sess) {
+    console.error("[live/create] session save failed after retries", lastSessErr);
+    return NextResponse.json({ error: lastSessErr?.message ?? "Save failed" }, { status: 500 });
   }
 
   return NextResponse.json({ sessionId: sess.id, inviteCode: sess.invite_code, hostRole });

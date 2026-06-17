@@ -58,9 +58,9 @@ function parseCloze(front: string): ClozePart[] {
   return parts;
 }
 
-async function getToken(): Promise<string> {
+async function getToken(): Promise<string | null> {
   const { data: { session } } = await supabase.auth.getSession();
-  return session?.access_token ?? '';
+  return session?.access_token ?? null;
 }
 
 export default function FlashcardPlayerScreen() {
@@ -72,6 +72,7 @@ export default function FlashcardPlayerScreen() {
   const [ratingsByIndex, setRatingsByIndex] = useState<Record<number, Rating>>({});
   const [limitInfo, setLimitInfo] = useState<LimitInfo | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const cards = deck?.cards ?? [];
   const card = cards[index];
@@ -152,11 +153,12 @@ export default function FlashcardPlayerScreen() {
     setSubmitting(true);
     try {
       const token = await getToken();
+      if (!token) { setError('Not authenticated'); return; }
       const res = await fetch(`${API_URL}/api/flashcards/review`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ cardId: card.id, rating }),
       });
@@ -192,7 +194,7 @@ export default function FlashcardPlayerScreen() {
 
   const openBilling = () => {
     const url = `${API_URL || 'https://mostlymedicine.com'}/dashboard/billing`;
-    Linking.openURL(url).catch(() => {});
+    Linking.openURL(url).catch(console.warn);
   };
 
   const clozeParts = card ? parseCloze(card.front_md) : [];
