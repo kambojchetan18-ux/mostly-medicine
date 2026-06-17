@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendBranded, newUnsubToken } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/email-templates";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 // Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
 // (the founder's inbox). Used to verify Resend + brandedShell render correctly
@@ -9,13 +10,8 @@ import { buildWelcomeEmail } from "@/lib/email-templates";
 export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  }
+  const denied = verifyCronSecret(req);
+  if (denied) return denied;
 
   // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
   const url = new URL(req.url);
