@@ -10,8 +10,8 @@ import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { supabase } from '@/lib/supabase';
-import { scenarios } from '@mostly-medicine/ai';
-import type { Scenario } from '@mostly-medicine/ai';
+import { scenariosMeta } from '@mostly-medicine/ai';
+import type { ScenarioMetaMeta } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
@@ -65,7 +65,7 @@ async function requestMicPermission(): Promise<boolean> {
 }
 
 export default function RoleplayScreen() {
-  const [scenario, setScenario] = useState<Scenario | null>(null);
+  const [scenario, setScenarioMeta] = useState<ScenarioMeta | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -354,11 +354,11 @@ export default function RoleplayScreen() {
     }
   }, [timeLeft, scenario, messages.length, loading, getFeedback]);
 
-  function startScenario(sc: Scenario) {
+  function startScenarioMeta(sc: ScenarioMeta) {
     feedbackRequestedRef.current = false;
     setFeedback(null);
     setMessages([{ role: 'assistant', content: sc.openingStatement }]);
-    setScenario(sc);
+    setScenarioMeta(sc);
     setInput('');
     setVoiceError(null);
     startTimer();
@@ -370,7 +370,7 @@ export default function RoleplayScreen() {
     if (recordingRef.current) await abortRecording();
     stopSpeaking();
     stopTimer();
-    setScenario(null);
+    setScenarioMeta(null);
     setMessages([]);
     setFeedback(null);
     setTimeLeft(0);
@@ -380,7 +380,7 @@ export default function RoleplayScreen() {
     feedbackRequestedRef.current = false;
   }
 
-  // ── Scenario list ────────────────────────────────────────────────────────────
+  // ── ScenarioMeta list ────────────────────────────────────────────────────────────
   if (!scenario) {
     return (
       <View style={s.bg}>
@@ -396,12 +396,12 @@ export default function RoleplayScreen() {
           </View>
           <View style={s.infoBox}>
             <Text style={s.infoText}>
-              🎙️ Speak to the AI patient using your voice, or type. Scenarios from AMC Handbook of Clinical Assessment. Get scored feedback at the end.
+              🎙️ Speak to the AI patient using your voice, or type. ScenarioMetas from AMC Handbook of Clinical Assessment. Get scored feedback at the end.
             </Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 10 }}>
-            {scenarios.map((sc) => (
-              <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenario(sc)} activeOpacity={0.7}>
+            {scenariosMeta.map((sc) => (
+              <TouchableOpacity key={sc.id} style={s.scenarioCard} onPress={() => startScenarioMeta(sc)} activeOpacity={0.7}>
                 <View style={s.scenarioTop}>
                   <Text style={s.scenarioEmoji}>{getEmoji(sc.patientProfile)}</Text>
                   <View style={{ flex: 1 }}>
@@ -464,9 +464,9 @@ export default function RoleplayScreen() {
             </View>
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 16 }}>
               <TouchableOpacity style={s.btnSecondary} onPress={endSession}>
-                <Text style={s.btnSecondaryText}>All Scenarios</Text>
+                <Text style={s.btnSecondaryText}>All ScenarioMetas</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={s.btnPrimary} onPress={() => startScenario(scenario)}>
+              <TouchableOpacity style={s.btnPrimary} onPress={() => startScenarioMeta(scenario)}>
                 <Text style={s.btnPrimaryText}>Retry</Text>
               </TouchableOpacity>
             </View>
