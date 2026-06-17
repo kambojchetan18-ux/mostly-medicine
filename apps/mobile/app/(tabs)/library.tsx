@@ -51,7 +51,7 @@ export default function LibraryScreen() {
     <View style={s.bg}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={s.header}>
-          <TouchableOpacity onPress={() => router.back()} style={s.back}>
+          <TouchableOpacity onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={s.back}>
             <Ionicons name="arrow-back" size={22} color="#94a3b8" />
           </TouchableOpacity>
           <View>

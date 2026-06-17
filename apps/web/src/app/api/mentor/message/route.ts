@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runChat } from "@mostly-medicine/ai";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 const MENTOR_SYSTEM_PROMPT = `You are a warm, encouraging AMC exam mentor speaking to an IMG (international medical graduate) preparing for Australian medical registration. Keep the message under 25 words. Tone: empathetic, never patronising, never preachy. Address them as 'doctor'. End with a forward-looking nudge, not a platitude.`;
 
@@ -23,10 +24,6 @@ const VALID_TRIGGERS: Trigger[] = [
   "roleplay_complete",
 ];
 
-// In-memory rate limit: 1 mentor message per user per 5 minutes.
-// Resets on cold start by design — acceptable for an anti-churn nudge.
-const RATE_WINDOW_MS = 5 * 60 * 1000;
-const lastMessageAt = new Map<string, number>();
 
 function buildUserPrompt(trigger: Trigger, context: MentorContext): string {
   switch (trigger) {
@@ -82,19 +79,12 @@ export async function POST(req: NextRequest) {
         : undefined,
   };
 
-  // 1 message per user per 5 min. We key on user id; cold start resets it
-  // — acceptable for an anti-churn nudge that should never spam.
-  const now = Date.now();
-  const last = lastMessageAt.get(user.id) ?? 0;
-  if (now - last < RATE_WINDOW_MS) {
+  const rlKey = clientKey(req, "mentor", user.id);
+  const rl = await aiRateLimit(rlKey, { max: 12, windowMs: 5 * 60 * 1000 });
+  if (!rl.allowed) {
     return NextResponse.json(
       { error: "rate_limited" },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(Math.ceil((RATE_WINDOW_MS - (now - last)) / 1000)),
-        },
-      }
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 0) / 1000)) } }
     );
   }
 
@@ -115,14 +105,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Only mark rate window after a successful generation, so a 5xx doesn't
-    // block the next attempt.
-    lastMessageAt.set(user.id, now);
-
     return NextResponse.json({ message });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("[mentor message error]", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[mentor message error]", err);
+    return NextResponse.json({ error: "Mentor service temporarily unavailable" }, { status: 500 });
   }
 }

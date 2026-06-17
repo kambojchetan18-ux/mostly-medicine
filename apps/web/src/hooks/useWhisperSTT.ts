@@ -690,6 +690,7 @@ export function useWhisperSTT(
       } catch {
         /* ignore */
       }
+      teardownSilenceDetection();
       if (ownsStreamRef.current) {
         streamRef.current?.getTracks().forEach((t) => t.stop());
       }
@@ -697,7 +698,7 @@ export function useWhisperSTT(
       streamRef.current = null;
       ownsStreamRef.current = false;
     };
-  }, []);
+  }, [teardownSilenceDetection]);
 
   return {
     state,

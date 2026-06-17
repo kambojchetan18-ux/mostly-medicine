@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { notifyAdminOfTicket } from "@/lib/notify";
 import { features } from "@/config/features";
+import { aiRateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,14 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(`feedback:${user.id}`, { max: 5, windowMs: 60 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many feedback submissions. Please try again later." },
+      { status: 429 }
+    );
+  }
 
   let payload: SubmitBody;
   try {

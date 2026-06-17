@@ -284,9 +284,9 @@ export default function RoleplayScreen() {
   }
 
   // ── API ─────────────────────────────────────────────────────────────────────
-  async function getToken() {
+  async function getToken(): Promise<string | null> {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? '';
+    return session?.access_token ?? null;
   }
 
   const sendMessage = useCallback(async (text: string) => {
@@ -300,6 +300,10 @@ export default function RoleplayScreen() {
     setLoading(true);
     try {
       const token = await getToken();
+      if (!token) {
+        setMessages([...newMsgs, { role: 'assistant', content: '[Not signed in — please log in and try again]' }]);
+        return;
+      }
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -324,6 +328,10 @@ export default function RoleplayScreen() {
     setFetchingFeedback(true);
     try {
       const token = await getToken();
+      if (!token) {
+        setFeedback('Not signed in — please log in to receive feedback.');
+        return;
+      }
       const res = await fetch(`${API_URL}/api/ai/roleplay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -358,8 +366,8 @@ export default function RoleplayScreen() {
     setTimeout(() => speakPatient(sc.openingStatement, sc.patientProfile), 600);
   }
 
-  function endSession() {
-    if (recordingRef.current) abortRecording();
+  async function endSession() {
+    if (recordingRef.current) await abortRecording();
     stopSpeaking();
     stopTimer();
     setScenario(null);

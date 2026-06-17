@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 export default function QuizScreen() {
@@ -24,6 +29,7 @@ export default function QuizScreen() {
   const [attempts, setAttempts] = useState<AttemptRecord[]>([]);
   const [saving, setSaving] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const transitioningRef = useRef(false);
 
   useEffect(() => {
     const pool = topic
@@ -43,6 +49,9 @@ export default function QuizScreen() {
   }
 
   function next() {
+    if (transitioningRef.current) return;
+    transitioningRef.current = true;
+
     const newAttempts = [...attempts, {
       question_id: q.id,
       is_correct: selected === q.correctAnswer,
@@ -53,6 +62,7 @@ export default function QuizScreen() {
     if (index + 1 >= questions.length) {
       saveAttempts(newAttempts);
       setPhase('done');
+      setTimeout(() => { transitioningRef.current = false; }, 300);
     } else {
       Animated.sequence([
         Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: true }),
@@ -61,6 +71,7 @@ export default function QuizScreen() {
       setIndex(index + 1);
       setSelected(null);
       setPhase('quiz');
+      setTimeout(() => { transitioningRef.current = false; }, 300);
     }
   }
 

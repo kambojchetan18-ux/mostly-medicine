@@ -401,6 +401,7 @@ export default function Cat1Client({
       // Free user hit their daily quota. Show the upgrade modal — don't
       // advance to the next question; the user is gated until tomorrow OR
       // they upgrade to Pro.
+      setSubmitting(false);
       setLimitReached(result.limitReached);
       return;
     }

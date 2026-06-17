@@ -53,8 +53,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  const messages = (body.messages ?? []).slice(-10);
-  // Server-side hard cap on user turns to back the client-side limit.
+  const messages = (body.messages ?? []).slice(-10).map((m: Msg) => ({
+    role: m.role,
+    content: typeof m.content === "string" ? m.content.slice(0, 2000) : "",
+  }));
   const userTurns = messages.filter((m) => m.role === "user").length;
   if (userTurns > 3) {
     return NextResponse.json(
@@ -74,8 +76,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ reply: result.text.trim(), remaining: Math.max(0, 3 - userTurns) });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[ask-ai-taste]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[ask-ai-taste]", err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: "AI service temporarily unavailable" }, { status: 500 });
   }
 }
