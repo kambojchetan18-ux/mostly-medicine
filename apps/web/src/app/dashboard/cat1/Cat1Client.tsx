@@ -402,6 +402,7 @@ export default function Cat1Client({
       // advance to the next question; the user is gated until tomorrow OR
       // they upgrade to Pro.
       setLimitReached(result.limitReached);
+      setSubmitting(false);
       return;
     }
 

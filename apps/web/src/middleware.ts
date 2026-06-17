@@ -11,6 +11,17 @@ const PUBLIC_API_ROUTES = [
   // Diagnostic — returns env-var presence flags only (never values). Safe to
   // expose so support can confirm Vercel env-var bake without admin login.
   "/api/health",
+  // Public taste routes — no auth, IP-rate-limited.
+  "/api/try-roleplay",
+  "/api/ask-ai-taste",
+  // PWA install tracking — anonymous installs are valid.
+  "/api/track/pwa-install",
+  // Email unsubscribe — token-based, no cookie session.
+  "/api/email/unsubscribe",
+  // Cron routes use CRON_SECRET bearer auth, not cookie sessions.
+  "/api/cron/",
+  // Health keepalive uses CRON_SECRET, not cookie auth.
+  "/api/health-keepalive",
 ];
 
 export async function middleware(request: NextRequest) {
