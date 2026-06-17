@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { logAdminAction } from "@/lib/audit-log";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: fallback.error.message }, { status: 500 });
     }
   }
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  await logAdminAction({
+    adminId: user.id,
+    action: "reset_password",
+    targetId: userId,
+    details: { targetEmail: email },
+    ip,
+  });
 
   return NextResponse.json({ ok: true });
 }

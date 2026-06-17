@@ -16,12 +16,14 @@ export default function SignupScreen() {
   const [done, setDone] = useState(false);
 
   async function handleSignup() {
-    if (!name || !email || !password) return;
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedName || !trimmedEmail || !password) return;
     if (password.length < 8) { Alert.alert('Password too short', 'Minimum 8 characters'); return; }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { full_name: name } },
+      email: trimmedEmail, password,
+      options: { data: { full_name: trimmedName } },
     });
     setLoading(false);
     if (error) Alert.alert('Signup failed', error.message);

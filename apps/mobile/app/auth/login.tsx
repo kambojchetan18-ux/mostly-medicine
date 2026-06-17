@@ -14,9 +14,10 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
-    if (!email || !password) return;
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail || !password) return;
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
     setLoading(false);
     if (error) Alert.alert('Login failed', error.message);
   }

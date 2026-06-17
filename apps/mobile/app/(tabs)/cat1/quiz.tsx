@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 export default function QuizScreen() {
@@ -67,14 +72,13 @@ export default function QuizScreen() {
   async function saveAttempts(records: AttemptRecord[]) {
     setSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      await supabase.from('attempts').insert(
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) return;
+      const { error } = await supabase.from('attempts').insert(
         records.map((r) => ({ ...r, user_id: user.id }))
       );
+      if (error) console.warn('[quiz] save failed:', error.message);
     } finally {
-      // Always clear "Saving…" — was previously stuck on for unauthed users
-      // and on insert errors.
       setSaving(false);
     }
   }
@@ -183,7 +187,7 @@ export default function QuizScreen() {
                   {isCorrect ? '✓ Correct' : '✗ Incorrect'}
                 </Text>
                 <Text style={s.explanationText}>{q.explanation}</Text>
-                <TouchableOpacity style={s.nextBtn} onPress={next}>
+                <TouchableOpacity style={s.nextBtn} onPress={next} accessibilityLabel={index + 1 >= questions.length ? 'See results' : 'Next question'} accessibilityRole="button">
                   <Text style={s.nextBtnText}>
                     {index + 1 >= questions.length ? 'See Results' : 'Next Question'}
                   </Text>

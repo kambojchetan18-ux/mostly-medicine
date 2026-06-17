@@ -71,6 +71,21 @@ const nextConfig = {
           // Defense-in-depth XSS hint for legacy Safari. Modern browsers
           // ignore it safely; setting "0" disables the buggy auditor.
           { key: "X-XSS-Protection", value: "0" },
+          // Permissive CSP — tighten over time as nonce wiring is added.
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.groq.com https://js.stripe.com",
+              "frame-src 'self' https://js.stripe.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join("; "),
+          },
         ],
       },
     ];

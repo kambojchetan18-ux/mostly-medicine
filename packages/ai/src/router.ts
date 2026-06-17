@@ -150,6 +150,7 @@ async function callOpenAICompatible(args: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${args.apiKey}`,
     },
+    signal: AbortSignal.timeout(30_000),
     body: JSON.stringify({
       model: args.model,
       max_tokens: args.maxTokens,
@@ -163,7 +164,9 @@ async function callOpenAICompatible(args: {
 
   if (!res.ok) {
     const errText = await res.text().catch(() => "<no body>");
-    throw new Error(`OpenAI-compatible call failed ${res.status}: ${errText.slice(0, 300)}`);
+    // Redact anything that looks like a key/token in error responses
+    const safeErr = errText.slice(0, 300).replace(/(?:sk|gsk|pk|key|token|bearer)[_\-]?\w{8,}/gi, "[REDACTED]");
+    throw new Error(`OpenAI-compatible call failed ${res.status}: ${safeErr}`);
   }
 
   const data: unknown = await res.json();

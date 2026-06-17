@@ -95,7 +95,7 @@ export default function RoleplayScreen() {
       const rec = recordingRef.current;
       recordingRef.current = null;
       if (rec) {
-        rec.stopAndUnloadAsync().catch(() => {});
+        rec.stopAndUnloadAsync().catch((e) => console.warn('[roleplay] cleanup error:', e));
       }
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -284,9 +284,9 @@ export default function RoleplayScreen() {
   }
 
   // ── API ─────────────────────────────────────────────────────────────────────
-  async function getToken() {
+  async function getToken(): Promise<string | null> {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? '';
+    return session?.access_token ?? null;
   }
 
   const sendMessage = useCallback(async (text: string) => {
@@ -564,6 +564,8 @@ export default function RoleplayScreen() {
                 onPress={toggleRecording}
                 disabled={loading}
                 activeOpacity={0.7}
+                accessibilityLabel={isRecording ? 'Stop recording' : 'Start recording'}
+                accessibilityRole="button"
               >
                 <Ionicons
                   name={isRecording ? 'stop' : 'mic'}
@@ -596,6 +598,8 @@ export default function RoleplayScreen() {
               style={[s.sendBtn, !canSend && s.sendBtnDisabled]}
               onPress={() => sendMessage(input)}
               disabled={!canSend}
+              accessibilityLabel="Send message"
+              accessibilityRole="button"
             >
               <Ionicons name="send" size={18} color="#fff" />
             </TouchableOpacity>

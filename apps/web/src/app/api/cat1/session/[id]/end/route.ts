@@ -109,7 +109,7 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
   // or failing AI call. Empty learning_points are populated below in a
   // bounded follow-up; if that step also fails the user still gets a valid
   // results page.
-  await supabase
+  const { error: updateError } = await supabase
     .from("mcq_sessions")
     .update({
       status: "completed",
@@ -122,6 +122,10 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
       learning_points: [],
     })
     .eq("id", id);
+  if (updateError) {
+    console.error("[cat1/session/end] update failed:", updateError.message);
+    return NextResponse.json({ error: "Failed to complete session" }, { status: 500 });
+  }
 
   // Best-effort AI learning points — bounded to 8s so we never starve the
   // route's overall budget on a Vercel cold start. Falls back silently.
@@ -196,17 +200,30 @@ ${items
   return parseLearningPoints(text);
 }
 
+function isValidLearningPoint(val: unknown): val is LearningPoint {
+  if (!val || typeof val !== "object") return false;
+  const obj = val as Record<string, unknown>;
+  return (
+    typeof obj.questionId === "string" &&
+    typeof obj.isCorrect === "boolean" &&
+    Array.isArray(obj.points) &&
+    obj.points.every((p) => typeof p === "string")
+  );
+}
+
 function parseLearningPoints(text: string): LearningPoint[] {
   const trimmed = text.trim().replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
   try {
     const parsed = JSON.parse(trimmed);
-    return Array.isArray(parsed) ? parsed : [];
+    if (Array.isArray(parsed)) return parsed.filter(isValidLearningPoint);
+    return [];
   } catch {
     const match = trimmed.match(/\[[\s\S]*\]/);
     if (match) {
       try {
         const parsed = JSON.parse(match[0]);
-        return Array.isArray(parsed) ? parsed : [];
+        if (Array.isArray(parsed)) return parsed.filter(isValidLearningPoint);
+        return [];
       } catch {
         return [];
       }
