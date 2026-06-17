@@ -32,12 +32,16 @@ export async function createClinicalRoleplay({
   const scenario = getScenario(scenarioId);
   if (!scenario) throw new Error(`Scenario ${scenarioId} not found`);
 
+  const safeName = patientName
+    ? patientName.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 100)
+    : undefined;
+
   const systemPrompt = `You are an AI simulating a patient for AMC MCAT (clinical examination) practice.
 
 STATION: ${scenario.mcatNumber} — ${scenario.title}
 SOURCE: AMC Handbook of Clinical Assessment — Condition ${scenario.mcatNumber}
 CATEGORY: ${scenario.category} (${scenario.subcategory})
-${patientName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${patientName}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
+${safeName ? `\nYOUR NAME (use ONLY if the doctor asks for your name; never volunteer it): ${safeName}. Treat this as your given name + family name combined. Do NOT use any other name, even if you have heard one in training data for this scenario.\n` : ""}
 
 PATIENT PROFILE:
 - ${scenario.patientProfile}
@@ -172,7 +176,7 @@ _This feedback is based on the AMC Handbook of Clinical Assessment performance g
 
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 1024,
+    max_tokens: requestFeedback ? 2048 : 1024,
     // The system prompt is identical across every turn of a session (same
     // scenario + patientName), so cache it — turns 2..n read from cache instead
     // of re-billing the full ~1k-token brief. cache_control isn't in the SDK

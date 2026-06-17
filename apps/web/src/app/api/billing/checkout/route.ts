@@ -13,9 +13,8 @@ export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/checkout] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/checkout] config", err);
+    return NextResponse.json({ error: "Billing service temporarily unavailable" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -66,10 +65,9 @@ export async function POST(req: NextRequest) {
       });
       return NextResponse.json({ url: portal.url, alreadySubscribed: true });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Portal session failed";
-      console.error("[billing/checkout] portal-redirect", msg);
+      console.error("[billing/checkout] portal-redirect", err);
       return NextResponse.json(
-        { error: `You already have an active subscription. To manage it, activate the Stripe portal at https://dashboard.stripe.com/settings/billing/portal (one-time setup).` },
+        { error: "Billing service temporarily unavailable" },
         { status: 502 }
       );
     }
@@ -95,14 +93,10 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    // Surface a clean error instead of letting Next.js return an empty 500
-    // that crashes the client's res.json() with "Unexpected end of JSON
-    // input" — the diagnostic chain we hit on 2026-05-01 + 2026-05-02.
-    const msg = err instanceof Error ? err.message : "Checkout session failed";
-    console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
+    console.error("[billing/checkout] session-create", err);
     return NextResponse.json(
-      { error: `Stripe checkout failed: ${msg}` },
-      { status: 502 }
+      { error: "Billing service temporarily unavailable" },
+      { status: 500 }
     );
   }
 }

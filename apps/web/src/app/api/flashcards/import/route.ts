@@ -54,6 +54,24 @@ type ParsedNote = {
   referenced: string[];
 };
 
+function isUrlAllowed(urlStr: string): boolean {
+  try {
+    const parsed = new URL(urlStr);
+    const hostname = parsed.hostname.toLowerCase();
+    if (hostname === "localhost" || hostname === "[::1]") return false;
+    if (/^127\./.test(hostname)) return false;
+    if (/^10\./.test(hostname)) return false;
+    if (/^172\.(1[6-9]|2\d|3[01])\./.test(hostname)) return false;
+    if (/^192\.168\./.test(hostname)) return false;
+    if (/^169\.254\./.test(hostname)) return false;
+    if (hostname.endsWith(".internal") || hostname.endsWith(".local")) return false;
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const CLOZE_RE = /\{\{c\d+::[^}]+\}\}/;
 // Matches src="foo.png" / src='foo.png' / [sound:audio.mp3].
 const SRC_RE   = /(?:src\s*=\s*["']([^"']+)["'])|(?:\[sound:([^\]]+)\])/gi;
@@ -165,6 +183,9 @@ export async function POST(req: NextRequest) {
       const url: unknown = body?.url;
       if (typeof url !== "string" || !/^https?:\/\//.test(url)) {
         return NextResponse.json({ error: "Missing or invalid url" }, { status: 400 });
+      }
+      if (!isUrlAllowed(url)) {
+        return NextResponse.json({ error: "URL not allowed" }, { status: 400 });
       }
       const res = await fetch(url);
       if (!res.ok) {

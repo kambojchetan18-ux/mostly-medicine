@@ -3,8 +3,6 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
-const client = new Anthropic();
-
 const SYSTEM = `You are an expert at parsing International Medical Graduate (IMG) CVs for Australian medical registration purposes.
 
 Extract the following fields and return ONLY valid JSON — no explanation, no markdown:
@@ -68,6 +66,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
     }
 
+    const client = new Anthropic();
     let response;
 
     // cache_control on the static SYSTEM prompt — every CV is parsed against

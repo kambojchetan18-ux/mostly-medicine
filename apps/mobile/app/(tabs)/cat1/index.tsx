@@ -65,7 +65,7 @@ async function saveReviewLater(set: Set<string>): Promise<void> {
 // Mirrors POST /api/cat1/attempt — but uses direct Supabase writes because the
 // web API requires SSR cookie auth that mobile doesn't have. Logic here matches
 // the existing apps/mobile/app/(tabs)/cat1/quiz.tsx pattern.
-async function persistAttempt(q: MCQuestion, isCorrect: boolean) {
+async function persistAttempt(q: MCQuestion, isCorrect: boolean, selectedLabel: string) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -75,7 +75,7 @@ async function persistAttempt(q: MCQuestion, isCorrect: boolean) {
   await supabase.from('attempts').insert({
     user_id: user.id,
     question_id: q.id,
-    selected_answer: isCorrect ? 'correct' : 'wrong',
+    selected_answer: selectedLabel,
     is_correct: isCorrect,
   });
 
@@ -416,7 +416,7 @@ export default function Cat1DeckScreen() {
       setSelected(label);
       const isCorrect = label === current.correctAnswer;
       // Fire-and-forget — don't block UI.
-      persistAttempt(current, isCorrect).catch(() => {
+      persistAttempt(current, isCorrect, label).catch(() => {
         /* ignore network errors */
       });
       // If they answered correctly, drop it from review-later

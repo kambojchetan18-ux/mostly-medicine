@@ -1,16 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { checkRateLimit, recordFailedAttempt, clearAttempts } from "@/lib/rate-limit";
+import { checkRateLimit, recordFailedAttempt, clearAttempts, aiRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
-  const { email, password } = await req.json();
+  let body: { email?: string; password?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { email, password } = body;
 
   if (!email || !password) {
     return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
   }
 
+  const normEmail = email.toLowerCase();
+
+  const dailyCap = await aiRateLimit(`login-daily:${normEmail}`, { max: 50, windowMs: 24 * 60 * 60_000 });
+  if (!dailyCap.allowed) {
+    return NextResponse.json(
+      { error: "Too many login attempts today. Please try again tomorrow." },
+      { status: 429 }
+    );
+  }
+
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const key = `${ip}:${email.toLowerCase()}`;
+  const key = `${ip}:${normEmail}`;
 
   const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {

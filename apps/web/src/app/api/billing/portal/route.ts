@@ -12,9 +12,8 @@ export async function POST(req: NextRequest) {
   try {
     assertStripeConfig();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Stripe misconfigured";
-    console.error("[billing/portal] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error("[billing/portal] config", err);
+    return NextResponse.json({ error: "Billing service temporarily unavailable" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -40,15 +39,10 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    // Most common live-mode failure: Stripe Customer Portal hasn't been
-    // configured at https://dashboard.stripe.com/settings/billing/portal.
-    // Surface a clean message instead of letting Next.js return an empty
-    // 500 that crashes the client's res.json().
-    const msg = err instanceof Error ? err.message : "Portal session failed";
-    console.error("[billing/portal] stripe", msg);
+    console.error("[billing/portal] stripe", err);
     return NextResponse.json(
-      { error: `Stripe portal not available: ${msg}. If this is a fresh live-mode account, activate the portal at https://dashboard.stripe.com/settings/billing/portal.` },
-      { status: 502 }
+      { error: "Billing service temporarily unavailable" },
+      { status: 500 }
     );
   }
 }

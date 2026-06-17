@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { NOTE_SUMMARY_SYSTEM } from "@/lib/prompts";
+import { aiRateLimit } from "@/lib/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
@@ -49,7 +50,12 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(`notes-upload:${user.id}`, { max: 10, windowMs: 60 * 60 * 1000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many uploads. Please try again later." }, { status: 429 });
   }
 
   const formData = await req.formData();

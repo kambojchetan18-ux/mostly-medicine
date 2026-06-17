@@ -33,7 +33,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages, topicTitle, topicContent } = await req.json();
+  const body = await req.json();
+  const rawMessages = Array.isArray(body.messages) ? body.messages.slice(-20) : [];
+  const messages = rawMessages.map((m: { role: string; content: string }) => ({
+    role: m.role,
+    content: typeof m.content === "string" ? m.content.slice(0, 4000) : "",
+  }));
+  const topicTitle = typeof body.topicTitle === "string" ? body.topicTitle.slice(0, 200) : undefined;
+  const topicContent = typeof body.topicContent === "string" ? body.topicContent.slice(0, 8000) : undefined;
 
   const systemPrompt =
     topicTitle && topicContent
