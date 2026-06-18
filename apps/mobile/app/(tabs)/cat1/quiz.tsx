@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 export default function QuizScreen() {
@@ -69,12 +74,15 @@ export default function QuizScreen() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      await supabase.from('attempts').insert(
+      const { error } = await supabase.from('attempts').insert(
         records.map((r) => ({ ...r, user_id: user.id }))
       );
+      if (error) {
+        console.error('[Quiz] Attempt save failed:', error.message);
+      }
+    } catch (e) {
+      console.error('[Quiz] Save error:', e);
     } finally {
-      // Always clear "Saving…" — was previously stuck on for unauthed users
-      // and on insert errors.
       setSaving(false);
     }
   }

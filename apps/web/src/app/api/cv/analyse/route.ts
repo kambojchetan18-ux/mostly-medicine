@@ -117,7 +117,18 @@ export async function POST(req: NextRequest) {
 
     // Strip any accidental markdown fences
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
-    const extracted = JSON.parse(jsonStr);
+    const rawExtracted = JSON.parse(jsonStr);
+
+    const ALLOWED_FIELDS = new Set([
+      "name", "degree_country", "graduation_year", "years_experience",
+      "specialties", "amc_cat1", "amc_cat2", "ahpra_status", "visa_type",
+      "english_test", "certifications", "location_preference", "doctor_type",
+      "specialist_qualification",
+    ]);
+    const extracted: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(rawExtracted)) {
+      if (ALLOWED_FIELDS.has(k)) extracted[k] = v;
+    }
 
     // Upsert into Supabase
     const { error: dbError } = await supabase

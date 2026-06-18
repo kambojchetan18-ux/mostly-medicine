@@ -17,12 +17,21 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
+  // Recipient: ?to=email override restricted to whitelisted addresses only.
+  // Without this restriction, the endpoint is an open email relay when
+  // CRON_SECRET is unset or leaked.
   const url = new URL(req.url);
-  const to =
-    url.searchParams.get("to") ??
-    process.env.ALERT_EMAIL ??
-    "kamboj.chetan18@gmail.com";
+  const ALLOWED_TEST_RECIPIENTS = new Set(
+    (process.env.PRIV_WHITELIST_EMAILS ?? "kamboj.chetan18@gmail.com")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean)
+  );
+  const toParam = url.searchParams.get("to")?.trim().toLowerCase();
+  if (toParam && !ALLOWED_TEST_RECIPIENTS.has(toParam)) {
+    return NextResponse.json({ error: "Recipient not in whitelist" }, { status: 403 });
+  }
+  const to = toParam ?? process.env.ALERT_EMAIL ?? "kamboj.chetan18@gmail.com";
 
   const origin = req.headers.get("origin") ?? new URL(req.url).origin;
   const token = newUnsubToken();
