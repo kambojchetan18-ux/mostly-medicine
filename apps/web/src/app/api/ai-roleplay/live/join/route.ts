@@ -20,7 +20,9 @@ export async function POST(req: NextRequest) {
     body = {};
   }
   const code = body.inviteCode?.trim().toUpperCase();
-  if (!code) return NextResponse.json({ error: "inviteCode required" }, { status: 400 });
+  if (!code || code.length > 12 || !/^[A-Z0-9]+$/.test(code)) {
+    return NextResponse.json({ error: "Invalid invite code format" }, { status: 400 });
+  }
 
   // Use service role for the initial lookup — RLS only lets participants SELECT,
   // so a brand-new guest can't see the row otherwise.

@@ -68,6 +68,15 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
+
+  // Validate file magic bytes to prevent MIME spoofing
+  const magic = buffer.slice(0, 4).toString("hex");
+  if (file.type === "application/pdf" && !magic.startsWith("25504446")) {
+    return NextResponse.json({ error: "Invalid PDF file" }, { status: 400 });
+  }
+  if (file.type.includes("wordprocessingml") && !magic.startsWith("504b0304")) {
+    return NextResponse.json({ error: "Invalid DOCX file" }, { status: 400 });
+  }
   // Sanitize the filename so the storage key never breaks RLS path matching
   // (auth.uid() = (storage.foldername(name))[1]). Slashes/odd chars are removed.
   const safeName = file.name.replace(/[^\w.\-]+/g, "_").slice(0, 120);

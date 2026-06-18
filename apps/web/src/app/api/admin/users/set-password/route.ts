@@ -63,6 +63,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: lookupErr?.message ?? "User not found" }, { status: 404 });
   }
 
+  // Block self-password-change via this admin endpoint — admins should use
+  // the normal password-reset flow for themselves.
+  if (userId === user.id) {
+    return NextResponse.json({ error: "Cannot change your own password via admin endpoint" }, { status: 403 });
+  }
+
   // Refuse to overwrite another admin's password — this route is for unblocking
   // regular users in onboarding emergencies, not for privilege-takeover.
   const { data: targetProfile } = await svc
@@ -70,8 +76,8 @@ export async function POST(req: NextRequest) {
     .select("role")
     .eq("id", userId)
     .single();
-  if (targetProfile?.role === "admin" && userId !== user.id) {
-    return NextResponse.json({ error: "Refusing to set another admin's password" }, { status: 403 });
+  if (targetProfile?.role === "admin") {
+    return NextResponse.json({ error: "Cannot set another admin's password" }, { status: 403 });
   }
 
   const password = generateTempPassword();

@@ -15,6 +15,9 @@ import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+if (!API_URL) {
+  console.error('[RolePlay] EXPO_PUBLIC_API_URL not set — API calls will fail');
+}
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -188,6 +191,7 @@ export default function RoleplayScreen() {
   }
 
   async function toggleRecording() {
+    if (transcribingRef.current) return;
     setVoiceError(null);
     // Already recording → stop, unload, upload
     if (recordingRef.current) {

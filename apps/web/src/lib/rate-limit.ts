@@ -3,6 +3,8 @@ import type { NextRequest } from "next/server";
 
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const MAX_ATTEMPTS = 5;
+const DAILY_MAX_ATTEMPTS = 50;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function serviceClient() {
   return createClient(
@@ -22,15 +24,14 @@ export function clientKey(req: NextRequest, prefix: string, userId?: string | nu
 
 export async function checkRateLimit(key: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
   const supabase = serviceClient();
-  const now = new Date();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("rate_limit_attempts")
     .select("count, first_attempt_at, locked_until")
     .eq("key", key)
     .single();
 
-  if (!data) return { allowed: true };
+  if (error || !data) return { allowed: true };
 
   if (data.locked_until) {
     const lockedUntil = new Date(data.locked_until).getTime();
@@ -46,6 +47,11 @@ export async function checkRateLimit(key: string): Promise<{ allowed: boolean; r
   if (windowExpired) {
     await supabase.from("rate_limit_attempts").delete().eq("key", key);
     return { allowed: true };
+  }
+
+  if (data.count >= MAX_ATTEMPTS) {
+    const windowEnd = new Date(data.first_attempt_at).getTime() + WINDOW_MS;
+    return { allowed: false, retryAfterMs: Math.max(0, windowEnd - Date.now()) };
   }
 
   return { allowed: true };
@@ -85,6 +91,55 @@ export async function recordFailedAttempt(key: string): Promise<{ locked: boolea
 export async function clearAttempts(key: string): Promise<void> {
   const supabase = serviceClient();
   await supabase.from("rate_limit_attempts").delete().eq("key", key);
+}
+
+export async function checkDailyEmailLimit(email: string): Promise<{ allowed: boolean; retryAfterMs?: number }> {
+  const key = `daily:${email.toLowerCase()}`;
+  const supabase = serviceClient();
+  const { data, error } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  if (error || !data) return { allowed: true };
+
+  const windowExpired = Date.now() - new Date(data.first_attempt_at).getTime() > DAY_MS;
+  if (windowExpired) {
+    await supabase.from("rate_limit_attempts").delete().eq("key", key);
+    return { allowed: true };
+  }
+
+  if (data.count >= DAILY_MAX_ATTEMPTS) {
+    const windowEnd = new Date(data.first_attempt_at).getTime() + DAY_MS;
+    return { allowed: false, retryAfterMs: Math.max(0, windowEnd - Date.now()) };
+  }
+
+  return { allowed: true };
+}
+
+export async function recordDailyEmailAttempt(email: string): Promise<void> {
+  const key = `daily:${email.toLowerCase()}`;
+  const supabase = serviceClient();
+  const now = new Date().toISOString();
+
+  const { data } = await supabase
+    .from("rate_limit_attempts")
+    .select("count, first_attempt_at")
+    .eq("key", key)
+    .single();
+
+  const windowExpired = data?.first_attempt_at
+    ? Date.now() - new Date(data.first_attempt_at).getTime() > DAY_MS
+    : false;
+
+  await supabase.from("rate_limit_attempts").upsert({
+    key,
+    count: windowExpired ? 1 : (data?.count ?? 0) + 1,
+    first_attempt_at: windowExpired ? now : (data?.first_attempt_at ?? now),
+    locked_until: null,
+    updated_at: now,
+  });
 }
 
 // Per-IP / per-user "calls in a rolling window" limiter for AI endpoints.

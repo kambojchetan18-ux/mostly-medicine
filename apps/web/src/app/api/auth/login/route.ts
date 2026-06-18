@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { checkRateLimit, recordFailedAttempt, clearAttempts } from "@/lib/rate-limit";
+import { checkRateLimit, recordFailedAttempt, clearAttempts, checkDailyEmailLimit, recordDailyEmailAttempt } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -9,8 +9,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
   }
 
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const dailyCheck = await checkDailyEmailLimit(normalizedEmail);
+  if (!dailyCheck.allowed) {
+    return NextResponse.json(
+      { error: "Too many login attempts for this account today. Please try again tomorrow or reset your password." },
+      { status: 429 }
+    );
+  }
+
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const key = `${ip}:${email.toLowerCase()}`;
+  const key = `${ip}:${normalizedEmail}`;
 
   const { allowed, retryAfterMs } = await checkRateLimit(key);
   if (!allowed) {
@@ -25,6 +35,7 @@ export async function POST(req: NextRequest) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    await recordDailyEmailAttempt(normalizedEmail);
     const { locked, attemptsLeft } = await recordFailedAttempt(key);
     if (locked) {
       return NextResponse.json(
