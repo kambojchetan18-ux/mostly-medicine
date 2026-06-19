@@ -153,7 +153,6 @@ export async function POST(req: NextRequest) {
       {
         error: "Transcription upstream error",
         upstreamStatus: groqRes.status,
-        upstreamBody: detail.slice(0, 400),
       },
       { status: 502 }
     );
