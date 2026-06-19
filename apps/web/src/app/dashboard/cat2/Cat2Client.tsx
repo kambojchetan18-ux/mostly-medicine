@@ -362,6 +362,18 @@ export default function Cat2Client() {
     }
   }
 
+  // Clean up the consultation timer interval on unmount. Without this,
+  // navigating away mid-session leaks a setInterval that keeps ticking
+  // (and calling setTimeLeft) on the unmounted component.
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+
   // Auto-request feedback when timer reaches 0
   const feedbackRequestedRef = useRef(false);
   useEffect(() => {

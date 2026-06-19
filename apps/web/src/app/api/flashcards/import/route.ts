@@ -54,6 +54,26 @@ type ParsedNote = {
   referenced: string[];
 };
 
+/**
+ * Block SSRF: reject URLs that resolve to private / loopback addresses.
+ * Called before any fetch() that uses a user-supplied URL.
+ */
+function isPrivateUrl(urlStr: string): boolean {
+  try {
+    const url = new URL(urlStr);
+    const hostname = url.hostname;
+    if (['localhost', '127.0.0.1', '0.0.0.0', '::1', ''].includes(hostname)) return true;
+    if (hostname.endsWith('.local') || hostname.endsWith('.internal')) return true;
+    const parts = hostname.split('.').map(Number);
+    if (parts[0] === 10) return true;
+    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+    if (parts[0] === 192 && parts[1] === 168) return true;
+    if (parts[0] === 169 && parts[1] === 254) return true;
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return true;
+    return false;
+  } catch { return true; }
+}
+
 const CLOZE_RE = /\{\{c\d+::[^}]+\}\}/;
 // Matches src="foo.png" / src='foo.png' / [sound:audio.mp3].
 const SRC_RE   = /(?:src\s*=\s*["']([^"']+)["'])|(?:\[sound:([^\]]+)\])/gi;
@@ -165,6 +185,9 @@ export async function POST(req: NextRequest) {
       const url: unknown = body?.url;
       if (typeof url !== "string" || !/^https?:\/\//.test(url)) {
         return NextResponse.json({ error: "Missing or invalid url" }, { status: 400 });
+      }
+      if (isPrivateUrl(url)) {
+        return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
       }
       const res = await fetch(url);
       if (!res.ok) {

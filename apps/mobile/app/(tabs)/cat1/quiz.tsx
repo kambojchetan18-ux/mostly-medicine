@@ -12,7 +12,12 @@ type AttemptRecord = { question_id: string; is_correct: boolean; selected_answer
 const QUIZ_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 export default function QuizScreen() {
@@ -84,7 +89,7 @@ export default function QuizScreen() {
   }
 
   if (phase === 'done') {
-    const accuracy = Math.round((totalCorrect / questions.length) * 100);
+    const accuracy = questions.length > 0 ? Math.round((totalCorrect / questions.length) * 100) : 0;
     const accColor = accuracy >= 75 ? '#10b981' : accuracy >= 55 ? '#f59e0b' : '#ef4444';
     return (
       <View style={s.bg}>
@@ -125,7 +130,7 @@ export default function QuizScreen() {
           <View style={{ flex: 1, marginHorizontal: 12 }}>
             <Text style={s.headerTopic} numberOfLines={1}>{topic ?? 'Quick Quiz'}</Text>
             <View style={s.progressBarBg}>
-              <View style={[s.progressBarFill, { width: `${((index) / questions.length) * 100}%` }]} />
+              <View style={[s.progressBarFill, { width: `${questions.length > 0 ? ((index) / questions.length) * 100 : 0}%` }]} />
             </View>
           </View>
           <Text style={s.counter}>{index + 1}/{questions.length}</Text>

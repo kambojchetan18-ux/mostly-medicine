@@ -10,25 +10,16 @@ export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = req.headers.get("authorization");
+  if (!secret || auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
   const url = new URL(req.url);
-  const to =
-    url.searchParams.get("to") ??
-    process.env.ALERT_EMAIL ??
-    "kamboj.chetan18@gmail.com";
+  const to = process.env.ALERT_EMAIL ?? "kamboj.chetan18@gmail.com";
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_APP_URL || "https://mostlymedicine.com";
   const token = newUnsubToken();
-  // Optional ?from= override so we can quickly test domain verification
-  // status without redeploying. Format: "Display Name <local@domain>".
-  const fromOverride = url.searchParams.get("from");
   // For a one-off test we don't bother persisting the unsub token — the
   // unsubscribe route just renders an "expired link" page if clicked, which
   // is fine for the test recipient.
@@ -116,7 +107,6 @@ export async function GET(req: NextRequest) {
     bodyHtml: payload.bodyHtml,
     unsubscribeUrl,
     preheader: payload.preheader,
-    from: fromOverride ?? undefined,
   });
 
   return NextResponse.json({

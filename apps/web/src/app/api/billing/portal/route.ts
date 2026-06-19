@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Stripe misconfigured";
     console.error("[billing/portal] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: "Configuration error" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No subscription on file" }, { status: 404 });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_APP_URL || "https://mostlymedicine.com";
   try {
     const session = await stripe().billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : "Portal session failed";
     console.error("[billing/portal] stripe", msg);
     return NextResponse.json(
-      { error: `Stripe portal not available: ${msg}. If this is a fresh live-mode account, activate the portal at https://dashboard.stripe.com/settings/billing/portal.` },
+      { error: "Portal request failed" },
       { status: 502 }
     );
   }

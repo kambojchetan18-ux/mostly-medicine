@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Host advances the session into reading or roleplay phase. Guests can also
 // trigger a transition once both are present — the order is enforced by the
@@ -17,6 +18,14 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "ai-live-start", user.id));
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60000) / 1000)) } }
+    );
+  }
 
   let body: { to?: string };
   try {

@@ -46,6 +46,24 @@ export async function POST(req: NextRequest) {
   try {
     const { scenarioId, messages, requestFeedback, patientName } = await req.json();
 
+    if (!Array.isArray(messages)) {
+      return NextResponse.json({ error: "messages must be an array" }, { status: 400 });
+    }
+    if (messages.length > 50) {
+      return NextResponse.json({ error: "Too many messages (max 50)" }, { status: 400 });
+    }
+    for (const msg of messages) {
+      if (msg.role !== "user" && msg.role !== "assistant") {
+        return NextResponse.json({ error: "Invalid message role" }, { status: 400 });
+      }
+      if (typeof msg.content !== "string" || msg.content.length > 5000) {
+        return NextResponse.json({ error: "Invalid message content" }, { status: 400 });
+      }
+    }
+    if (patientName !== undefined && (typeof patientName !== "string" || patientName.length > 200)) {
+      return NextResponse.json({ error: "Invalid patientName" }, { status: 400 });
+    }
+
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
         { error: "AI service not configured. Please add ANTHROPIC_API_KEY." },

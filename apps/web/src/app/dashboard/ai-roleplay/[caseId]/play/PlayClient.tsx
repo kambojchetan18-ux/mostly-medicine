@@ -67,6 +67,18 @@ export default function PlayClient({
   const [voiceMode, setVoiceMode] = useState(true);
   const [micMuted, setMicMuted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clean up navigation timeout on unmount — if the user navigates away
+  // before the 4.5 s delay fires, we don't want a stale router.push().
+  useEffect(() => {
+    return () => {
+      if (navTimerRef.current) {
+        clearTimeout(navTimerRef.current);
+        navTimerRef.current = null;
+      }
+    };
+  }, []);
 
   // Voice — STT in, TTS out. The hook auto-fires its callback on stop/silence
   // with the final transcript; we send it straight to the API. The keepalive
@@ -277,7 +289,8 @@ export default function PlayClient({
     }
     // Brief pause so the in-flow mentor nudge (rendered when `ended` flips
     // true) has a chance to land before we push to the results page.
-    setTimeout(() => {
+    navTimerRef.current = setTimeout(() => {
+      navTimerRef.current = null;
       router.push(`/dashboard/ai-roleplay/results/${sessionId}`);
     }, 4500);
   }

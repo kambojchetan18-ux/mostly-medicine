@@ -4,6 +4,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { checkModulePermission } from "@/lib/permissions";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
 import { buildPatientBrief, generateInviteCode } from "@/lib/ai-roleplay/patient-brief";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
 
 interface Body {
@@ -20,6 +21,14 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "ai-live-create", user.id));
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60000) / 1000)) } }
+    );
+  }
 
   const perm = await checkModulePermission(supabase, "acrp_live");
   if (!perm.allowed) return NextResponse.json({ error: "upgrade_required", plan: perm.plan }, { status: 403 });

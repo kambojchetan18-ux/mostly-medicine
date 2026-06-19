@@ -50,21 +50,12 @@ export async function GET() {
   const keyId = process.env.CLOUDFLARE_TURN_KEY_ID;
   const apiToken = process.env.CLOUDFLARE_TURN_API_TOKEN;
   if (!keyId || !apiToken) {
-    // Tell the user EXACTLY which env var the runtime is missing so we
-    // don't go in circles. List every CLOUDFLARE_ key the runtime DOES see
-    // so a typo (extra space, wrong word) is obvious.
-    const seen = Object.keys(process.env)
-      .filter((k) => k.startsWith("CLOUDFLARE_"))
-      .sort();
+    console.error("[turn-credentials] missing env", {
+      hasKeyId: !!keyId,
+      hasApiToken: !!apiToken,
+    });
     return NextResponse.json(
-      {
-        error: "TURN not configured",
-        missing: {
-          CLOUDFLARE_TURN_KEY_ID: !keyId,
-          CLOUDFLARE_TURN_API_TOKEN: !apiToken,
-        },
-        cloudflareKeysSeen: seen,
-      },
+      { error: "TURN credentials not configured" },
       { status: 503 }
     );
   }
@@ -89,7 +80,7 @@ export async function GET() {
       // Surface the actual upstream message so the diagnostic pill can show
       // a meaningful hint instead of an opaque 502.
       return NextResponse.json(
-        { error: `Cloudflare ${res.status}: ${body.slice(0, 160)}` },
+        { error: "TURN credential request failed" },
         { status: 502 }
       );
     }

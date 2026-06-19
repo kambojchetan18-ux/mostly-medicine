@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -8,6 +9,14 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "ai-sess-start", user.id));
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60000) / 1000)) } }
+    );
+  }
 
   let body: { caseId?: string };
   try {

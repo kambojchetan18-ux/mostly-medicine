@@ -51,6 +51,7 @@ export default function GlobalSearch() {
   const [recent, setRecent] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Open on cmd+k / ctrl+k
   useEffect(() => {
@@ -80,14 +81,23 @@ export default function GlobalSearch() {
   // Debounced search
   const search = useCallback(async (q: string) => {
     if (q.length < 2) { setResults([]); return; }
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     setLoading(true);
     try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`, {
+        signal: controller.signal,
+      });
+      if (controller.signal.aborted) return;
       const data = await res.json();
       setResults(data.results ?? []);
       setActiveIndex(0);
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      throw err;
     } finally {
-      setLoading(false);
+      if (!controller.signal.aborted) setLoading(false);
     }
   }, []);
 
