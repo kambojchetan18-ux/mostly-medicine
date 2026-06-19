@@ -80,7 +80,7 @@ export async function GET() {
       // Surface the actual upstream message so the diagnostic pill can show
       // a meaningful hint instead of an opaque 502.
       return NextResponse.json(
-        { error: `Cloudflare ${res.status}: ${body.slice(0, 160)}` },
+        { error: "TURN credential request failed" },
         { status: 502 }
       );
     }
