@@ -696,6 +696,12 @@ export default function LiveSessionClient({
 
     return () => {
       cancelled = true;
+      // Clear any pending STT flush timer so a late-firing debounce doesn't
+      // try to POST after the component has unmounted.
+      if (flushTimerRef.current) {
+        clearTimeout(flushTimerRef.current);
+        flushTimerRef.current = null;
+      }
       void stt.stopRecording();
       pcRef.current?.close();
       pcRef.current = null;

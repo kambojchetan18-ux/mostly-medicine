@@ -168,7 +168,7 @@ export default function ProgressScreen() {
                       <Text style={s.topicName}>{r.topic}</Text>
                       <Text style={s.topicSub}>{r.done}/{r.total} attempts{acc !== null ? ` · ${acc}% accuracy` : ''}</Text>
                       <View style={s.barBg}>
-                        <View style={[s.barFill, { width: `${Math.min(100, Math.round((r.done / r.total) * 100))}%` }]} />
+                        <View style={[s.barFill, { width: `${r.total > 0 ? Math.min(100, Math.round((r.done / r.total) * 100)) : 0}%` }]} />
                       </View>
                     </View>
                     <View style={[s.badge, { backgroundColor: STATUS_BG[status] }]}>

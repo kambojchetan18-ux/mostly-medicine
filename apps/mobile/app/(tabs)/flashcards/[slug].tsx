@@ -13,7 +13,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { DECK_BY_SLUG } from '@/lib/flashcard-decks';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://www.mostlymedicine.com';
 
 type Rating = 'again' | 'hard' | 'good' | 'easy';
 
@@ -59,6 +59,8 @@ function parseCloze(front: string): ClozePart[] {
 }
 
 async function getToken(): Promise<string> {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return '';
   const { data: { session } } = await supabase.auth.getSession();
   return session?.access_token ?? '';
 }

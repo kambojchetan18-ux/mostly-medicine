@@ -4,16 +4,25 @@ import { scoreSession } from "@/lib/ai-roleplay/scoring";
 import type { CaseVariant, SessionFeedback } from "@/lib/ai-roleplay/types";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 
 // Idempotent: if feedback already exists, return it.
 // Scores the doctor's transcript using the existing solo scoring engine.
-export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = await aiRateLimit(clientKey(req, "ai-live-fb", user.id));
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60000) / 1000)) } }
+    );
+  }
   if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "AI not configured" }, { status: 503 });
 
   const { data: session } = await supabase

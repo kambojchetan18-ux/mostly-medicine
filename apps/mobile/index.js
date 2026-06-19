@@ -8,4 +8,8 @@ if (typeof WeakRef === 'undefined') {
   };
 }
 
+if (typeof globalThis.FinalizationRegistry === 'undefined') {
+  globalThis.FinalizationRegistry = class { register() {} unregister() {} };
+}
+
 require('expo-router/entry');

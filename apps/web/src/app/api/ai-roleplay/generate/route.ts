@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { generateCase, randomSeed } from "@/lib/ai-roleplay/generator";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { aiRateLimit, clientKey } from "@/lib/rate-limit";
 import type { ClinicalBlueprint, Difficulty } from "@/lib/ai-roleplay/types";
 
 interface GenerateRequest {
@@ -25,6 +26,14 @@ export async function POST(req: NextRequest) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rl = await aiRateLimit(clientKey(req, "ai-gen", auth.user.id));
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.retryAfterMs ?? 60000) / 1000)) } }
+    );
   }
 
   // Plan + daily-quota gate. Free users hitting this API directly must be

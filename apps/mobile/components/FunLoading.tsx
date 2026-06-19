@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -22,7 +22,14 @@ type FunLoadingProps = {
 };
 
 export default function FunLoading({ pool, style }: FunLoadingProps) {
-  const messages = pool && pool.length > 0 ? pool : DEFAULT_POOL;
+  // Stabilise the messages array so the interval isn't cleared/recreated when
+  // callers pass an inline array literal (new reference every render).
+  const poolKey = pool ? JSON.stringify(pool) : '';
+  const messages = useMemo(
+    () => (pool && pool.length > 0 ? pool : DEFAULT_POOL),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [poolKey],
+  );
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {

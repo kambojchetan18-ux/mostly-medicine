@@ -57,10 +57,10 @@ export default async function ProgressPage() {
   const overallAccuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
 
   const weakTopics = topics
-    .filter((t) => t.total_attempted >= 5 && t.total_correct / t.total_attempted < 0.6)
+    .filter((t) => t.total_attempted >= 5 && (t.total_correct / t.total_attempted) < 0.6)
     .map((t) => ({
       topic: t.topic,
-      accuracy: Math.round((t.total_correct / t.total_attempted) * 100),
+      accuracy: t.total_attempted > 0 ? Math.round((t.total_correct / t.total_attempted) * 100) : 0,
       attempted: t.total_attempted,
     }))
     .sort((a, b) => a.accuracy - b.accuracy);
@@ -186,7 +186,7 @@ export default async function ProgressPage() {
         </div>
         <div className="divide-y divide-gray-50">
           {topics.map((t) => {
-            const accuracy = Math.round((t.total_correct / t.total_attempted) * 100);
+            const accuracy = t.total_attempted > 0 ? Math.round((t.total_correct / t.total_attempted) * 100) : 0;
             return (
               <Link
                 key={t.topic}

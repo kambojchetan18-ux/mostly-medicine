@@ -14,7 +14,7 @@ import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://www.mostlymedicine.com';
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -87,11 +87,13 @@ export default function RoleplayScreen() {
   const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
   const recordingRef = useRef<Audio.Recording | null>(null);
   const transcribingRef = useRef(false);
+  const isMountedRef = useRef(true);
   const [isTranscribing, setIsTranscribing] = useState(false);
 
   // ── Cleanup any in-flight recording / timer / TTS on unmount ────────────────
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
       const rec = recordingRef.current;
       recordingRef.current = null;
       if (rec) {
@@ -111,7 +113,7 @@ export default function RoleplayScreen() {
 
   // ── TTS ──────────────────────────────────────────────────────────────────────
   const speakPatient = useCallback((text: string, profile: string) => {
-    if (isMuted) return;
+    if (isMuted || !isMountedRef.current) return;
     Speech.stop();
     const isFemale = /female|woman/i.test(profile);
     Speech.speak(text, {
@@ -207,6 +209,16 @@ export default function RoleplayScreen() {
         } catch { /* ignore */ }
         if (uri) await uploadAudio(uri);
       } catch (e) {
+        // Best-effort cleanup if stopAndUnloadAsync threw
+        try { await rec.stopAndUnloadAsync(); } catch { /* already failed */ }
+        // Reset audio mode even on error so TTS doesn't stay muted
+        try {
+          await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            playsInSilentModeIOS: true,
+            staysActiveInBackground: false,
+          });
+        } catch { /* ignore */ }
         setVoiceError(e instanceof Error ? e.message : 'Could not stop recording');
       }
       return;
@@ -285,6 +297,8 @@ export default function RoleplayScreen() {
 
   // ── API ─────────────────────────────────────────────────────────────────────
   async function getToken() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) return '';
     const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token ?? '';
   }
@@ -307,13 +321,15 @@ export default function RoleplayScreen() {
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
+      if (!isMountedRef.current) return;
       setMessages([...newMsgs, { role: 'assistant', content: data.reply }]);
       speakPatient(data.reply, scenario?.patientProfile ?? '');
     } catch (e) {
+      if (!isMountedRef.current) return;
       const msg = e instanceof Error ? e.message : 'Error';
       setMessages([...newMsgs, { role: 'assistant', content: `[${msg}]` }]);
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) setLoading(false);
     }
   }, [loading, messages, scenario, speakPatient]);
 
@@ -331,11 +347,13 @@ export default function RoleplayScreen() {
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'Server error');
+      if (!isMountedRef.current) return;
       setFeedback(data.reply);
     } catch (e) {
+      if (!isMountedRef.current) return;
       setFeedback(`Could not retrieve feedback: ${e instanceof Error ? e.message : 'Error'}`);
     } finally {
-      setFetchingFeedback(false);
+      if (isMountedRef.current) setFetchingFeedback(false);
     }
   }, [loading, messages, scenario]);
 
