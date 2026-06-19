@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Stripe misconfigured";
     console.error("[billing/checkout] config", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: "Configuration error" }, { status: 500 });
   }
   const supabase = await createClient();
   const {
@@ -58,11 +58,11 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const originForPortal = process.env.NEXT_PUBLIC_APP_URL || "https://mostlymedicine.com";
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
-        return_url: `${origin}/dashboard/billing`,
+        return_url: `${originForPortal}/dashboard/billing`,
       });
       return NextResponse.json({ url: portal.url, alreadySubscribed: true });
     } catch (err) {
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_APP_URL || "https://mostlymedicine.com";
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : "Checkout session failed";
     console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
     return NextResponse.json(
-      { error: `Stripe checkout failed: ${msg}` },
+      { error: "Checkout failed" },
       { status: 502 }
     );
   }

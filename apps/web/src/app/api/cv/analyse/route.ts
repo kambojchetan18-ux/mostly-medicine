@@ -119,12 +119,27 @@ export async function POST(req: NextRequest) {
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
     const extracted = JSON.parse(jsonStr);
 
-    // Upsert into Supabase
+    const ALLOWED_FIELDS = [
+      "full_name", "preferred_name", "phone", "date_of_birth",
+      "nationality", "country_of_primary_degree", "primary_degree",
+      "year_of_graduation", "registration_status", "ahpra_number",
+      "current_visa", "visa_expiry", "australian_state",
+      "preferred_specialties", "work_experience_years",
+      "english_test_type", "english_test_score",
+      "amc_cat1_status", "amc_cat2_status",
+      "bio", "linkedin_url",
+      "smoking_status", "alcohol_status",
+    ];
+    const sanitized: Record<string, unknown> = {};
+    for (const key of ALLOWED_FIELDS) {
+      if (key in extracted) sanitized[key] = extracted[key];
+    }
+
     const { error: dbError } = await supabase
       .from("img_profiles")
       .upsert({
         id: user.id,
-        ...extracted,
+        ...sanitized,
         cv_text: cvText ? cvText.slice(0, 20000) : null,
         updated_at: new Date().toISOString(),
       });
@@ -135,6 +150,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[cv/analyse]", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: "Analysis failed" }, { status: 500 });
   }
 }

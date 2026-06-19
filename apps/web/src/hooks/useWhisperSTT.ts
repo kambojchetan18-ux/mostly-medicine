@@ -358,6 +358,7 @@ export function useWhisperSTT(
   // Are we still in "user wants to record" state? Used by the chunk loop.
   const wantRecordingRef = useRef(false);
   const chunkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Spin up ONE recorder for ONE chunk, stop it after CHUNK_MS, upload the
   // complete WebM blob, then if the user still wants to record, recurse.
@@ -420,7 +421,8 @@ export function useWhisperSTT(
       if (wantRecordingRef.current && streamRef.current) {
         const waitMs = Math.max(0, nextAllowedAtRef.current - Date.now());
         if (waitMs > 0) {
-          setTimeout(() => {
+          retryTimerRef.current = setTimeout(() => {
+            retryTimerRef.current = null;
             if (wantRecordingRef.current && streamRef.current) {
               startChunkLoop(streamRef.current, mime);
             }
@@ -690,6 +692,11 @@ export function useWhisperSTT(
       } catch {
         /* ignore */
       }
+      if (retryTimerRef.current) {
+        clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
+      teardownSilenceDetection();
       if (ownsStreamRef.current) {
         streamRef.current?.getTracks().forEach((t) => t.stop());
       }
@@ -697,7 +704,7 @@ export function useWhisperSTT(
       streamRef.current = null;
       ownsStreamRef.current = false;
     };
-  }, []);
+  }, [teardownSilenceDetection]);
 
   return {
     state,

@@ -26,11 +26,9 @@ interface ProfileRow {
 export async function GET(req: NextRequest) {
   // Auth gate
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = req.headers.get("authorization");
+  if (!secret || auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(req.url);
@@ -75,7 +73,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = process.env.NEXT_PUBLIC_APP_URL || "https://mostlymedicine.com";
   let sent = 0;
   let failed = 0;
   const errors: { email: string | null; error: string }[] = [];
