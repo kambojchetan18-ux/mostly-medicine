@@ -210,7 +210,7 @@ export default function RMOPoolsPage() {
             <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Tips for IMGs</p>
             <ul className="space-y-1.5">
               {state.tips.map((tip, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                <li key={`tip-${tip.slice(0, 30)}-${i}`} className="flex items-start gap-2 text-sm text-gray-700">
                   <span className="text-saffron-700 mt-0.5 flex-shrink-0">•</span>
                   {tip}
                 </li>

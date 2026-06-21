@@ -377,7 +377,7 @@ export default function ContentStudioPage() {
                           <label className="block text-xs font-semibold text-gray-500 mb-1.5">Slides ({post.slides.length})</label>
                           <div className="space-y-2">
                             {post.slides.map((s, i) => (
-                              <div key={i} className="bg-gray-50 rounded-xl px-3 py-2.5">
+                              <div key={`slide-${s.title.slice(0, 25)}-${i}`} className="bg-gray-50 rounded-xl px-3 py-2.5">
                                 <p className="text-xs font-semibold text-gray-700">{i + 1}. {s.title}</p>
                                 <p className="text-xs text-gray-500 mt-0.5">{s.body}</p>
                               </div>

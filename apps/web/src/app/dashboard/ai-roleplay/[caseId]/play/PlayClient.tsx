@@ -67,6 +67,7 @@ export default function PlayClient({
   const [voiceMode, setVoiceMode] = useState(true);
   const [micMuted, setMicMuted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const handleEndRef = useRef<() => void>(() => {});
 
   // Voice — STT in, TTS out. The hook auto-fires its callback on stop/silence
   // with the final transcript; we send it straight to the API. The keepalive
@@ -136,12 +137,11 @@ export default function PlayClient({
   useEffect(() => {
     if (ended) return;
     if (secondsLeft <= 0) {
-      handleEnd();
+      handleEndRef.current();
       return;
     }
     const t = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secondsLeft, ended]);
 
   // Autoscroll on new message
@@ -281,6 +281,7 @@ export default function PlayClient({
       router.push(`/dashboard/ai-roleplay/results/${sessionId}`);
     }, 4500);
   }
+  handleEndRef.current = handleEnd;
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4">

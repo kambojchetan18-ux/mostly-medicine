@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { Alert, View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -68,13 +68,21 @@ export default function QuizScreen() {
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      await supabase.from('attempts').insert(
+      if (!user) {
+        Alert.alert('Not signed in', 'Sign in to save your quiz results.');
+        return;
+      }
+      const { error } = await supabase.from('attempts').insert(
         records.map((r) => ({ ...r, user_id: user.id }))
       );
+      if (error) {
+        console.error('[quiz] save failed:', error.message);
+        Alert.alert('Save failed', 'Your results could not be saved. Please try again.');
+      }
+    } catch (err) {
+      console.error('[quiz] save error:', err);
+      Alert.alert('Save failed', 'Your results could not be saved. Please try again.');
     } finally {
-      // Always clear "Saving…" — was previously stuck on for unauthed users
-      // and on insert errors.
       setSaving(false);
     }
   }

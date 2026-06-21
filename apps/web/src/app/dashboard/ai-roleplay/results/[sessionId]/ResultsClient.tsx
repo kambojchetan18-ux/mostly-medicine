@@ -286,7 +286,7 @@ export default function ResultsClient({
               <h2 className="text-sm font-semibold text-emerald-900">✅ Strengths</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-emerald-900">
                 {feedback.strengths.map((s, i) => (
-                  <li key={i} className="flex gap-2">
+                  <li key={`strength-${s.slice(0, 30)}-${i}`} className="flex gap-2">
                     <span aria-hidden>•</span>
                     <span>{s}</span>
                   </li>
@@ -301,7 +301,7 @@ export default function ResultsClient({
               <h2 className="text-sm font-semibold text-amber-900">❓ Questions you missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-amber-900">
                 {feedback.missedQuestions.map((q, i) => (
-                  <li key={i} className="flex gap-2">
+                  <li key={`missed-q-${q.slice(0, 30)}-${i}`} className="flex gap-2">
                     <span aria-hidden>•</span>
                     <span>{q}</span>
                   </li>
@@ -316,7 +316,7 @@ export default function ResultsClient({
               <h2 className="text-sm font-semibold text-rose-900">🚩 Red flags missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-rose-900">
                 {feedback.missedRedFlags.map((r, i) => (
-                  <li key={i} className="flex gap-2">
+                  <li key={`red-flag-${r.slice(0, 30)}-${i}`} className="flex gap-2">
                     <span aria-hidden>•</span>
                     <span>{r}</span>
                   </li>
@@ -331,7 +331,7 @@ export default function ResultsClient({
               <h2 className="text-sm font-semibold text-gray-900">💬 Suggested phrasing</h2>
               <div className="mt-3 space-y-3">
                 {feedback.suggestedPhrasing.map((p, i) => (
-                  <div key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                  <div key={`phrasing-${p.original.slice(0, 20)}-${i}`} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
                     <p className="text-xs text-gray-500 line-through">{p.original}</p>
                     <p className="mt-1 text-sm font-medium text-gray-900">→ {p.better}</p>
                     <p className="mt-1 text-xs italic text-gray-500">{p.reason}</p>

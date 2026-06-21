@@ -626,7 +626,7 @@ export default function ResultsClient({ data }: { data: ResultsPayload }) {
               <ul className="mt-3 space-y-2">
                 {q.points.map((p, i) => (
                   <li
-                    key={i}
+                    key={`point-${p.slice(0, 30)}-${i}`}
                     className="flex gap-2 rounded-xl bg-violet-50/50 px-3 py-2 text-sm text-gray-800"
                   >
                     <span aria-hidden className="shrink-0 leading-relaxed">💡</span>

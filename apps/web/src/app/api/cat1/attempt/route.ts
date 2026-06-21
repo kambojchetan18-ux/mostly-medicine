@@ -5,6 +5,7 @@ import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { allQuestions } from "@mostly-medicine/content";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
@@ -35,8 +36,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { questionId, correct, topic, sessionId, selected } = await req.json();
-  if (!questionId || correct === undefined || !topic) {
+  const { questionId, correct: clientCorrect, topic, sessionId, selected } = await req.json();
+  if (!questionId || clientCorrect === undefined || !topic) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
   // Selected option letter (A–E). Optional for backwards-compat with older
@@ -45,6 +46,15 @@ export async function POST(req: NextRequest) {
   // logout+login.
   const selectedLabel: string | null =
     typeof selected === "string" && /^[A-E]$/.test(selected) ? selected : null;
+
+  // Server-side answer verification: look up the question and compare the
+  // selected answer against the actual correct answer. This prevents cheating
+  // by sending a forged `correct` boolean from the client.
+  const question = allQuestions.find((q) => q.id === questionId);
+  const correct =
+    question && selectedLabel
+      ? selectedLabel === question.correctAnswer
+      : clientCorrect;
 
   const rating = correct ? Rating.Good : Rating.Again;
 

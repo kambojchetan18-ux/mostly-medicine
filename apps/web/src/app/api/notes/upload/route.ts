@@ -94,8 +94,8 @@ export async function POST(req: NextRequest) {
     const extracted = await extractText(buffer, file.type);
     extractedText = extracted.text;
     pageCount = extracted.pageCount;
-  } catch {
-    // Text extraction failed — continue without text
+  } catch (err) {
+    console.error("[notes/upload] text extraction failed:", err);
   }
 
   // Generate AI summary

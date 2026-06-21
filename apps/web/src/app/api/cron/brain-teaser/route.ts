@@ -261,15 +261,13 @@ export async function GET(
   req: NextRequest
 ): Promise<NextResponse<BrainTeaserOk | BrainTeaserErr>> {
   try {
+    const auth = req.headers.get("authorization");
     const secret = process.env.CRON_SECRET;
-    if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
-        return NextResponse.json<BrainTeaserErr>(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
-      }
+    if (!secret || auth !== `Bearer ${secret}`) {
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
