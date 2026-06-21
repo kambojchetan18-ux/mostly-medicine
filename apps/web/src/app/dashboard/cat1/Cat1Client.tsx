@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { MCQuestion } from "@mostly-medicine/content";
@@ -183,6 +183,8 @@ export default function Cat1Client({
       .catch(() => {});
   }, []);
 
+  const startQuizRef = useRef<(topic: string | null, count?: number, mock?: boolean) => void>(() => {});
+
   // Auto-start a topic when arriving from /dashboard/progress (or any deep
   // link) with ?topic=<name>. Pro users get the exact topic pool size from
   // the server-seeded topicCounts; free users always get 20.
@@ -192,8 +194,7 @@ export default function Cat1Client({
     if (mode !== "menu") return;
     const total = topicCounts[t];
     const count = isPro ? (total && total > 0 ? total : 2000) : 20;
-    startQuiz(t, count);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    startQuizRef.current(t, count);
   }, [searchParams, isPro, mode, topicCounts]);
 
   // Step 1: menu → reading. Sets up the pending request and starts the 2-min timer.
@@ -204,6 +205,7 @@ export default function Cat1Client({
     setReadingSecondsLeft(READING_SECONDS);
     setMode("reading");
   }
+  startQuizRef.current = startQuiz;
 
   // Step 2: reading → loading → quiz.
   // Practice modes resume an existing active session by reloading the SAME
