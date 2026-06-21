@@ -83,7 +83,7 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
             </h2>
             <ul className="space-y-2">
               {content.key_points.map((point, i) => (
-                <li key={i} className="flex gap-2 text-sm text-gray-700">
+                <li key={`key-point-${point.slice(0, 30)}-${i}`} className="flex gap-2 text-sm text-gray-700">
                   <span className="text-saffron-400 mt-0.5 shrink-0">•</span>
                   <span className="leading-relaxed">{point}</span>
                 </li>
@@ -100,7 +100,7 @@ export default async function TopicDetailPage({ params }: { params: Promise<{ id
             </h2>
             <ul className="space-y-1.5">
               {content.red_flags.map((flag, i) => (
-                <li key={i} className="flex gap-2 text-sm text-red-700">
+                <li key={`red-flag-${flag.slice(0, 30)}-${i}`} className="flex gap-2 text-sm text-red-700">
                   <span className="shrink-0 mt-0.5">•</span>
                   <span>{flag}</span>
                 </li>

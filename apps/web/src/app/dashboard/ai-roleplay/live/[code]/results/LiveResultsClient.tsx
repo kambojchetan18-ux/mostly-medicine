@@ -112,7 +112,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
               <h2 className="text-sm font-semibold text-emerald-900">✅ Strengths</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-emerald-900">
                 {feedback.strengths.map((s, i) => (
-                  <li key={i}>• {s}</li>
+                  <li key={`strength-${s.slice(0, 30)}-${i}`}>• {s}</li>
                 ))}
               </ul>
             </section>
@@ -123,7 +123,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
               <h2 className="text-sm font-semibold text-amber-900">❓ Questions missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-amber-900">
                 {feedback.missedQuestions.map((q, i) => (
-                  <li key={i}>• {q}</li>
+                  <li key={`missed-q-${q.slice(0, 30)}-${i}`}>• {q}</li>
                 ))}
               </ul>
             </section>
@@ -134,7 +134,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
               <h2 className="text-sm font-semibold text-rose-900">🚩 Red flags missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-rose-900">
                 {feedback.missedRedFlags.map((r, i) => (
-                  <li key={i}>• {r}</li>
+                  <li key={`red-flag-${r.slice(0, 30)}-${i}`}>• {r}</li>
                 ))}
               </ul>
             </section>
@@ -145,7 +145,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
               <h2 className="text-sm font-semibold text-gray-900">💬 Better phrasing</h2>
               <div className="mt-3 space-y-3">
                 {feedback.suggestedPhrasing.map((p, i) => (
-                  <div key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                  <div key={`phrasing-${p.original.slice(0, 20)}-${i}`} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
                     <p className="text-xs text-gray-500 line-through">{p.original}</p>
                     <p className="mt-1 text-sm font-medium text-gray-900">→ {p.better}</p>
                     <p className="mt-1 text-xs italic text-gray-500">{p.reason}</p>
@@ -201,7 +201,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
                     <p className="text-xs font-semibold">Information revealed unprompted (adherence violations)</p>
                     <ul className="mt-1 space-y-1 text-xs">
                       {pf.leakedInformation.map((item, i) => (
-                        <li key={i}>• {item}</li>
+                        <li key={`leaked-${item.slice(0, 30)}-${i}`}>• {item}</li>
                       ))}
                     </ul>
                   </div>
@@ -211,7 +211,7 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
                     <p className="text-xs font-semibold">Patient-rule breaks</p>
                     <ul className="mt-1 space-y-1 text-xs">
                       {pf.brokeRules.map((item, i) => (
-                        <li key={i}>• {item}</li>
+                        <li key={`broke-rule-${item.slice(0, 30)}-${i}`}>• {item}</li>
                       ))}
                     </ul>
                   </div>
