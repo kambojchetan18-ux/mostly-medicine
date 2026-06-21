@@ -100,11 +100,11 @@ export default function RoleplayDiagnosticRadar({
         ))}
 
         {/* Spokes */}
-        {axes.map((_, i) => {
+        {axes.map((axis, i) => {
           const p = point(i, 100);
           return (
             <line
-              key={i}
+              key={`spoke-${axis}`}
               x1={cx}
               y1={cy}
               x2={p.x}

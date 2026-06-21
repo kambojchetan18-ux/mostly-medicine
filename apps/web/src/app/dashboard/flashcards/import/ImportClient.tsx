@@ -139,7 +139,7 @@ export function ImportClient() {
               </summary>
               <ul className="mt-2 list-disc space-y-1 pl-5">
                 {result.errors.slice(0, 20).map((er, i) => (
-                  <li key={i}>{er}</li>
+                  <li key={`err-${er.slice(0, 30)}-${i}`}>{er}</li>
                 ))}
               </ul>
             </details>

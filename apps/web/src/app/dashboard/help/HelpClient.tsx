@@ -208,7 +208,7 @@ export default function HelpClient({ initialTickets }: { initialTickets: HelpTic
         <h2 className="text-sm font-bold text-gray-900 mb-3">Frequently asked</h2>
         <ul className="divide-y divide-gray-100">
           {FAQS.map((f, i) => (
-            <li key={i} className="py-2.5">
+            <li key={`faq-${f.q.slice(0, 30)}-${i}`} className="py-2.5">
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 className="w-full text-left flex items-center justify-between gap-3"
