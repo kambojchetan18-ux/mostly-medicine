@@ -107,7 +107,7 @@ export default function AskAiClient() {
             </div>
           ) : (
             messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={`${m.role}-${i}-${m.content?.slice(0, 20)}`} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                     m.role === "user"
