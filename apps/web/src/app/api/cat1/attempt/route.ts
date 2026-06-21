@@ -5,6 +5,7 @@ import { createEmptyCard, fsrs, generatorParameters, Rating } from "ts-fsrs";
 import { bumpStreak } from "@/lib/streaks";
 import { awardXp, XP_POINTS } from "@/lib/xp";
 import { enforceDailyLimit } from "@/lib/permissions";
+import { allQuestions } from "@mostly-medicine/content";
 
 const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
@@ -35,16 +36,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { questionId, correct, topic, sessionId, selected } = await req.json();
-  if (!questionId || correct === undefined || !topic) {
+  const { questionId, correct: clientCorrect, topic, sessionId, selected } = await req.json();
+  if (!questionId || clientCorrect === undefined || !topic) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
-  // Selected option letter (A–E). Optional for backwards-compat with older
-  // clients but newer Cat1Client sends it so we can re-render the picked
-  // answer when the user navigates back via Previous / nav grid after a
-  // logout+login.
   const selectedLabel: string | null =
     typeof selected === "string" && /^[A-E]$/.test(selected) ? selected : null;
+
+  const question = allQuestions.find((q) => q.id === questionId);
+  const correct =
+    question && selectedLabel
+      ? selectedLabel === question.correctAnswer
+      : clientCorrect;
 
   const rating = correct ? Rating.Good : Rating.Again;
 
