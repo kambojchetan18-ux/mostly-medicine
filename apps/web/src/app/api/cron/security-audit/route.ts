@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // Daily security audit cron. Runs four detection queries, inserts unseen
 // findings into public.security_alerts (deduped by fingerprint), and fans
@@ -208,10 +209,9 @@ async function notify(newAlerts: Finding[]): Promise<void> {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret || auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const cronAuth = verifyCronAuth(req);
+  if (!cronAuth.ok) {
+    return NextResponse.json({ error: cronAuth.status === 503 ? "CRON_SECRET not configured" : "Unauthorized" }, { status: cronAuth.status });
   }
 
   const sb = service();

@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : "Portal session failed";
     console.error("[billing/portal] stripe", msg);
     return NextResponse.json(
-      { error: `Stripe portal not available: ${msg}. If this is a fresh live-mode account, activate the portal at https://dashboard.stripe.com/settings/billing/portal.` },
+      { error: "Billing portal is temporarily unavailable. Please try again later." },
       { status: 502 }
     );
   }

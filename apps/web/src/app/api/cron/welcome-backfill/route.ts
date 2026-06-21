@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { sendBranded, newUnsubToken } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/email-templates";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // One-shot backfill — sends the warm welcome email to every existing user
 // who never got one. Idempotent: filters on welcome_email_sent_at IS NULL,
@@ -24,13 +25,9 @@ interface ProfileRow {
 }
 
 export async function GET(req: NextRequest) {
-  // Auth gate
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const cronAuth = verifyCronAuth(req);
+  if (!cronAuth.ok) {
+    return NextResponse.json({ error: cronAuth.status === 503 ? "CRON_SECRET not configured" : "Unauthorized" }, { status: cronAuth.status });
   }
 
   const url = new URL(req.url);
