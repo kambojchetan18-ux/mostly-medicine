@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import Link from "next/link";
 import type {Flashcard} from "@mostly-medicine/content";
 
@@ -91,6 +91,8 @@ export function FlashcardSession({cards, deckName}: Props) {
     return c;
   }, [ratingsByIndex]);
 
+  const handleRateRef = useRef<(rating: Rating) => void>(() => {});
+
   const handleRate = async (rating: Rating) => {
     if (limitInfo) return; // hard-block once the cap is hit
     // Optimistically advance — we'll roll back on a 429.
@@ -135,6 +137,8 @@ export function FlashcardSession({cards, deckName}: Props) {
     }
   };
 
+  handleRateRef.current = handleRate;
+
   // Keyboard shortcuts: Space reveals the answer; 1/2/3/4 rate
   // Again/Hard/Good/Easy once revealed. Mirrors the Anki default bindings
   // so AnKing-trained users feel at home.
@@ -153,15 +157,12 @@ export function FlashcardSession({cards, deckName}: Props) {
       const r = map[e.key];
       if (r) {
         e.preventDefault();
-        handleRate(r);
+        handleRateRef.current(r);
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // handleRate intentionally not in deps — it closes over `index` which
-    // changes every card but the listener body always reads current state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [revealed, index, isLast, card?.id]);
+  }, [revealed]);
 
   if (!card) {
     return (

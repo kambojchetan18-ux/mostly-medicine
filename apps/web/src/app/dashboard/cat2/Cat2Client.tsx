@@ -144,6 +144,8 @@ export default function Cat2Client() {
   const shownMilestonesRef = useRef<Set<number>>(new Set());
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const startScenarioRef = useRef<(id: number) => void>(() => {});
+  const requestExaminerFeedbackRef = useRef<() => void>(() => {});
 
   // Speech synthesis must come before sendMessage (sendMessage calls speak/stopSpeaking)
   const {
@@ -301,12 +303,11 @@ export default function Cat2Client() {
     if (readingSecondsLeft <= 0) {
       const id = readingScenarioId;
       setReadingScenarioId(null);
-      void startScenario(id);
+      void startScenarioRef.current(id);
       return;
     }
     const t = setTimeout(() => setReadingSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readingScenarioId, readingSecondsLeft]);
 
   function formatTime(sec: number) {
@@ -367,10 +368,11 @@ export default function Cat2Client() {
   useEffect(() => {
     if (timeLeft === 0 && activeScenario !== null && messages.length > 1 && !feedbackRequestedRef.current && !loading) {
       feedbackRequestedRef.current = true;
-      requestExaminerFeedback();
+      requestExaminerFeedbackRef.current();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, activeScenario, messages.length]);
+  }, [timeLeft, activeScenario, messages.length, loading]);
+
+  startScenarioRef.current = startScenario;
 
   async function requestExaminerFeedback() {
     if (loading || messages.length <= 1) return;
@@ -393,6 +395,8 @@ export default function Cat2Client() {
       setLoading(false);
     }
   }
+
+  requestExaminerFeedbackRef.current = requestExaminerFeedback;
 
   function handleMicButton() {
     if (micMuted) return;
