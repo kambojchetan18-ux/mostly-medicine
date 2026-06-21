@@ -83,7 +83,7 @@ export default function TranscriptDemo() {
         {/* Transcript turns */}
         <div className="mt-4 flex min-h-[260px] flex-col gap-3 sm:min-h-[300px]">
           {TURNS.slice(0, visibleCount).map((turn, i) => (
-            <TurnBubble key={i} turn={turn} fresh={i === visibleCount - 1} />
+            <TurnBubble key={`turn-${turn.who}-${turn.text.slice(0, 30)}-${i}`} turn={turn} fresh={i === visibleCount - 1} />
           ))}
         </div>
 

@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendBranded, newUnsubToken } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/email-templates";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
-// Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
-// (the founder's inbox). Used to verify Resend + brandedShell render correctly
-// before the DeepSeek balance is topped up. Auth: optional CRON_SECRET
-// bearer; open if unset.
 export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = verifyCronAuth(req);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.status === 503 ? "CRON_SECRET not configured" : "Unauthorized" }, { status: auth.status });
   }
 
   // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.

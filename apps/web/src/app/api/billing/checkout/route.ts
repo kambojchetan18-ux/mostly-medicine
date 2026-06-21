@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       const msg = err instanceof Error ? err.message : "Portal session failed";
       console.error("[billing/checkout] portal-redirect", msg);
       return NextResponse.json(
-        { error: `You already have an active subscription. To manage it, activate the Stripe portal at https://dashboard.stripe.com/settings/billing/portal (one-time setup).` },
+        { error: "You already have an active subscription. Please visit your billing page to manage it." },
         { status: 502 }
       );
     }
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : "Checkout session failed";
     console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
     return NextResponse.json(
-      { error: `Stripe checkout failed: ${msg}` },
+      { error: "Payment processing failed. Please try again." },
       { status: 502 }
     );
   }

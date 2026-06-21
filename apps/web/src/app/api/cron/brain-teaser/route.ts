@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { runChat } from "@mostly-medicine/ai";
 import { sendBranded, newUnsubToken } from "@/lib/email";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // Daily AMC Brain Teaser email cron.
 //
@@ -261,15 +262,12 @@ export async function GET(
   req: NextRequest
 ): Promise<NextResponse<BrainTeaserOk | BrainTeaserErr>> {
   try {
-    const secret = process.env.CRON_SECRET;
-    if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
-        return NextResponse.json<BrainTeaserErr>(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
-      }
+    const cronAuth = verifyCronAuth(req);
+    if (!cronAuth.ok) {
+      return NextResponse.json<BrainTeaserErr>(
+        { ok: false, error: cronAuth.status === 503 ? "CRON_SECRET not configured" : "Unauthorized" },
+        { status: cronAuth.status }
+      );
     }
 
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {

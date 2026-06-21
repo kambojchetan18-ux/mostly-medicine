@@ -362,28 +362,30 @@ export default function LiveSessionClient({
     return () => clearInterval(t);
   }, [status, sessionId, supabase]);
 
+  // Stable refs so countdown effects don't re-fire when closures change.
+  const advanceRef = useRef<(to: string) => void>(() => {});
+  const handleEndRef = useRef<() => void>(() => {});
+
   // ─── Reading-phase countdown ─────────────────────────────────────────
   useEffect(() => {
     if (status !== "reading") return;
     if (readingLeft <= 0) {
-      if (isHost) advance("roleplay");
+      if (isHost) advanceRef.current("roleplay");
       return;
     }
     const t = setTimeout(() => setReadingLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, readingLeft]);
+  }, [status, readingLeft, isHost]);
 
   // ─── Roleplay-phase countdown ────────────────────────────────────────
   useEffect(() => {
     if (status !== "roleplay") return;
     if (roleplayLeft <= 0) {
-      handleEnd();
+      handleEndRef.current();
       return;
     }
     const t = setTimeout(() => setRoleplayLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, roleplayLeft]);
 
   // ─── WebRTC: get media + signalling, only during roleplay ────────────
@@ -780,6 +782,8 @@ export default function LiveSessionClient({
     await advance("completed");
     router.push(`/dashboard/ai-roleplay/live/${inviteCode}/results`);
   }
+  advanceRef.current = advance;
+  handleEndRef.current = handleEnd;
 
   // ─── 10s "no remote video" hard-fail timer ───────────────────────────
   // If we enter roleplay and 10 s pass without ever receiving a remote

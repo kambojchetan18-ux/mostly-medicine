@@ -70,8 +70,7 @@ export default function QuizMeta({ questionId, current }: QuizMetaProps) {
     setNote(readLocal<string>(notesKey(questionId), ""));
     setFeedback(readLocal<string[]>(feedbackKey(questionId), []));
     setFeedbackSent(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current]);
+  }, [current, questionId]);
 
   // Tick the clock once per second.
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { runChat } from "@mostly-medicine/ai";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // Daily LinkedIn auto-post.
 //
@@ -56,13 +57,9 @@ interface SocialPost {
 }
 
 export async function GET(req: NextRequest) {
-  // Auth gate
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const cronAuth = verifyCronAuth(req);
+  if (!cronAuth.ok) {
+    return NextResponse.json({ error: cronAuth.status === 503 ? "CRON_SECRET not configured" : "Unauthorized" }, { status: cronAuth.status });
   }
 
   const accessToken = process.env.LINKEDIN_ACCESS_TOKEN;

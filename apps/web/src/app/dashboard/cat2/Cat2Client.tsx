@@ -783,7 +783,7 @@ export default function Cat2Client() {
       {/* Chat messages */}
       <div className="flex-1 bg-white border border-gray-200 rounded-2xl p-4 overflow-y-auto space-y-3 mb-3">
         {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+          <div key={`msg-${m.role}-${m.content.slice(0, 30)}-${i}`} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             {m.role === "assistant" && (
               <div className="mr-2 self-end mb-1 shrink-0">
                 {activePersona ? (
