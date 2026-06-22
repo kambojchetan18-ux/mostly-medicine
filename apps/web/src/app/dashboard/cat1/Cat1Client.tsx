@@ -920,7 +920,7 @@ export default function Cat1Client({
       {!isMockSession && navOpen && (
       <div className="lg:hidden mb-3 -mx-2 px-2 overflow-x-auto">
         <div className="flex gap-1.5 w-max">
-          {questions.map((_, idx) => {
+          {questions.map((q, idx) => {
             const a = answers[idx];
             const isCur = idx === current;
             const cls = isCur
@@ -932,7 +932,7 @@ export default function Cat1Client({
                   : "bg-rose-100 border border-rose-300 text-rose-700";
             return (
               <button
-                key={idx}
+                key={q.id}
                 type="button"
                 onClick={() => handleJumpTo(idx)}
                 className={`h-8 min-w-8 px-2 rounded-md text-xs font-semibold transition shrink-0 ${cls}`}

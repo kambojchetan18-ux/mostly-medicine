@@ -14,7 +14,7 @@ import { scenarios } from '@mostly-medicine/ai';
 import type { Scenario } from '@mostly-medicine/ai';
 import FunLoading from '@/components/FunLoading';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://www.mostlymedicine.com';
 
 const DIFF_COLOR: Record<string, string> = {
   Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444',
@@ -284,9 +284,17 @@ export default function RoleplayScreen() {
   }
 
   // ── API ─────────────────────────────────────────────────────────────────────
-  async function getToken() {
+  async function getToken(): Promise<string> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? '';
+    if (!session?.access_token) {
+      await supabase.auth.refreshSession();
+      const { data: refreshed } = await supabase.auth.getSession();
+      if (!refreshed.session?.access_token) throw new Error('Session expired');
+      return refreshed.session.access_token;
+    }
+    return session.access_token;
   }
 
   const sendMessage = useCallback(async (text: string) => {
@@ -522,7 +530,7 @@ export default function RoleplayScreen() {
           {/* Messages */}
           <ScrollView ref={scrollRef} style={{ flex: 1 }} contentContainerStyle={{ padding: 14, gap: 10 }} showsVerticalScrollIndicator={false}>
             {messages.map((m, i) => (
-              <View key={i} style={[s.msgRow, m.role === 'user' ? s.msgRowUser : s.msgRowAI]}>
+              <View key={`${m.role}-${i}`} style={[s.msgRow, m.role === 'user' ? s.msgRowUser : s.msgRowAI]}>
                 {m.role === 'assistant' && <Text style={s.msgEmoji}>{emoji}</Text>}
                 <View style={[s.bubble, m.role === 'user' ? s.bubbleUser : s.bubbleAI]}>
                   {m.role === 'assistant' && <Text style={s.bubbleLabel}>Patient</Text>}

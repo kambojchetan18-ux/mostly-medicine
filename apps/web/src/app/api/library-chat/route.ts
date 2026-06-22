@@ -33,7 +33,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { messages, topicTitle, topicContent } = await req.json();
+  let messages: unknown, topicTitle: unknown, topicContent: unknown;
+  try {
+    ({ messages, topicTitle, topicContent } = await req.json());
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
   const systemPrompt =
     topicTitle && topicContent

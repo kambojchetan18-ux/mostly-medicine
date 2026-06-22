@@ -77,7 +77,7 @@ export default function GPScreen() {
                 <Text style={s.stepTitle}>{st.title}</Text>
                 <Text style={s.stepBody}>{st.body}</Text>
                 {st.url && (
-                  <TouchableOpacity style={s.linkBtn} onPress={() => Linking.openURL(st.url!)}>
+                  <TouchableOpacity style={s.linkBtn} onPress={() => Linking.openURL(st.url!).catch(() => {})}>
                     <Ionicons name="open-outline" size={13} color="#a78bfa" />
                     <Text style={s.linkBtnText}>{st.urlLabel}</Text>
                   </TouchableOpacity>
@@ -88,13 +88,13 @@ export default function GPScreen() {
 
           <Text style={s.sectionLabel}>ACRRM (Rural Generalist)</Text>
           <View style={s.acrrm}>
-            {ACRRM_STEPS.map((t, i) => (
-              <View key={i} style={s.tipRow}>
+            {ACRRM_STEPS.map((t) => (
+              <View key={t} style={s.tipRow}>
                 <Text style={s.tipDot}>•</Text>
                 <Text style={s.tipText}>{t}</Text>
               </View>
             ))}
-            <TouchableOpacity style={s.linkBtn} onPress={() => Linking.openURL('https://www.acrrm.org.au/international-graduates/')}>
+            <TouchableOpacity style={s.linkBtn} onPress={() => Linking.openURL('https://www.acrrm.org.au/international-graduates/').catch(() => {})}>
               <Ionicons name="open-outline" size={13} color="#a78bfa" />
               <Text style={s.linkBtnText}>ACRRM IMG Pathway</Text>
             </TouchableOpacity>

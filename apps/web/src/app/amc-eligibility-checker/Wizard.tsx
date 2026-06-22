@@ -359,7 +359,7 @@ export default function Wizard() {
             </p>
             <ul className="space-y-2.5">
               {verdict.next.map((n, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-ink-950/80">
+                <li key={n} className="flex items-start gap-3 text-sm text-ink-950/80">
                   <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-saffron-600 text-ink-950 text-xs font-bold flex items-center justify-center">
                     {i + 1}
                   </span>

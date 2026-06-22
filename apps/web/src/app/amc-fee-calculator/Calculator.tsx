@@ -244,8 +244,8 @@ export default function Calculator() {
         </p>
 
         <div className="mt-6 pt-6 border-t border-ink-950/10/80 space-y-3">
-          {breakdown.map((item, i) => (
-            <div key={i} className="flex items-start justify-between gap-3 text-sm">
+          {breakdown.map((item) => (
+            <div key={item.label} className="flex items-start justify-between gap-3 text-sm">
               <div className="min-w-0">
                 <p className="text-ink-950/90 font-medium">{item.label}</p>
                 {item.detail && (

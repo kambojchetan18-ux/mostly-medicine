@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     ["active", "trialing", "past_due", "incomplete"].includes(s.status)
   );
   if (activeSub) {
-    const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+    const origin = "https://www.mostlymedicine.com";
     try {
       const portal = await stripe().billingPortal.sessions.create({
         customer: customerId,
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = "https://www.mostlymedicine.com";
   try {
     const session = await stripe().checkout.sessions.create({
       mode: "subscription",
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : "Checkout session failed";
     console.error("[billing/checkout] session-create", msg, "priceId=", body.priceId);
     return NextResponse.json(
-      { error: `Stripe checkout failed: ${msg}` },
+      { error: "Checkout temporarily unavailable. Please try again." },
       { status: 502 }
     );
   }

@@ -163,10 +163,18 @@ export async function POST(req: NextRequest) {
     } else {
       const body = await req.json().catch(() => null);
       const url: unknown = body?.url;
-      if (typeof url !== "string" || !/^https?:\/\//.test(url)) {
-        return NextResponse.json({ error: "Missing or invalid url" }, { status: 400 });
+      if (typeof url !== "string" || !/^https:\/\//.test(url)) {
+        return NextResponse.json({ error: "URL must use HTTPS" }, { status: 400 });
       }
-      const res = await fetch(url);
+      let parsed: URL;
+      try { parsed = new URL(url); } catch { return NextResponse.json({ error: "Invalid URL" }, { status: 400 }); }
+      const hostname = parsed.hostname.toLowerCase();
+      const blocked = /^(localhost|127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|0\.|169\.254\.|::1|fc|fd|fe80)/i.test(hostname)
+        || hostname === "[::1]" || hostname.endsWith(".internal") || hostname.endsWith(".local");
+      if (blocked) {
+        return NextResponse.json({ error: "URL not allowed" }, { status: 403 });
+      }
+      const res = await fetch(url, { signal: AbortSignal.timeout(30_000) });
       if (!res.ok) {
         return NextResponse.json({ error: `Fetch failed: ${res.status}` }, { status: 400 });
       }

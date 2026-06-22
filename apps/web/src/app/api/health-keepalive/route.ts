@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
 // Daily keepalive ping. Hits the database with a single tiny read so the
 // Supabase free-tier project does not auto-pause after 7 days of inactivity.
@@ -30,16 +31,8 @@ type KeepaliveErr = {
 
 export async function GET(req: NextRequest): Promise<NextResponse<KeepaliveOk | KeepaliveErr>> {
   try {
-    const secret = process.env.CRON_SECRET;
-    if (secret) {
-      const auth = req.headers.get("authorization");
-      if (auth !== `Bearer ${secret}`) {
-        return NextResponse.json<KeepaliveErr>(
-          { ok: false, error: "Unauthorized" },
-          { status: 401 }
-        );
-      }
-    }
+    const authErr = verifyCronAuth(req);
+    if (authErr) return authErr;
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

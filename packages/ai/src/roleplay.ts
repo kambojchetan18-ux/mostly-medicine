@@ -23,14 +23,19 @@ interface RoleplayInput {
   patientName?: string;
 }
 
+function sanitizeName(raw: string): string {
+  return raw.replace(/[^a-zA-Z\s'\-]/g, "").trim().slice(0, 80);
+}
+
 export async function createClinicalRoleplay({
   scenarioId,
   messages,
   requestFeedback = false,
-  patientName,
+  patientName: rawName,
 }: RoleplayInput): Promise<string> {
   const scenario = getScenario(scenarioId);
   if (!scenario) throw new Error(`Scenario ${scenarioId} not found`);
+  const patientName = rawName ? sanitizeName(rawName) || undefined : undefined;
 
   const systemPrompt = `You are an AI simulating a patient for AMC MCAT (clinical examination) practice.
 

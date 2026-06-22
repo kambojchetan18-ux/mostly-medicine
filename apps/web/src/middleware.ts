@@ -68,7 +68,7 @@ export async function middleware(request: NextRequest) {
 
   // Not logged in → 401 for protected API routes
   if (!user && pathname.startsWith("/api/")) {
-    const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+    const isPublic = PUBLIC_API_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
     if (!isPublic) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     if (pathname.startsWith("/api/")) {
-      const isPublic = PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route));
+      const isPublic = PUBLIC_API_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"));
       if (!isPublic) {
         return NextResponse.json({ error: "Email not confirmed" }, { status: 403 });
       }

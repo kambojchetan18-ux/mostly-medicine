@@ -111,8 +111,8 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
             <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
               <h2 className="text-sm font-semibold text-emerald-900">✅ Strengths</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-emerald-900">
-                {feedback.strengths.map((s, i) => (
-                  <li key={i}>• {s}</li>
+                {feedback.strengths.map((s) => (
+                  <li key={s}>• {s}</li>
                 ))}
               </ul>
             </section>
@@ -122,8 +122,8 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
             <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
               <h2 className="text-sm font-semibold text-amber-900">❓ Questions missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-amber-900">
-                {feedback.missedQuestions.map((q, i) => (
-                  <li key={i}>• {q}</li>
+                {feedback.missedQuestions.map((q) => (
+                  <li key={q}>• {q}</li>
                 ))}
               </ul>
             </section>
@@ -133,8 +133,8 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
             <section className="rounded-2xl border border-rose-200 bg-rose-50 p-5">
               <h2 className="text-sm font-semibold text-rose-900">🚩 Red flags missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-rose-900">
-                {feedback.missedRedFlags.map((r, i) => (
-                  <li key={i}>• {r}</li>
+                {feedback.missedRedFlags.map((r) => (
+                  <li key={r}>• {r}</li>
                 ))}
               </ul>
             </section>
@@ -144,8 +144,8 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
             <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
               <h2 className="text-sm font-semibold text-gray-900">💬 Better phrasing</h2>
               <div className="mt-3 space-y-3">
-                {feedback.suggestedPhrasing.map((p, i) => (
-                  <div key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                {feedback.suggestedPhrasing.map((p) => (
+                  <div key={p.original} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
                     <p className="text-xs text-gray-500 line-through">{p.original}</p>
                     <p className="mt-1 text-sm font-medium text-gray-900">→ {p.better}</p>
                     <p className="mt-1 text-xs italic text-gray-500">{p.reason}</p>
@@ -200,8 +200,8 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
                   <div className="mt-3">
                     <p className="text-xs font-semibold">Information revealed unprompted (adherence violations)</p>
                     <ul className="mt-1 space-y-1 text-xs">
-                      {pf.leakedInformation.map((item, i) => (
-                        <li key={i}>• {item}</li>
+                      {pf.leakedInformation.map((item) => (
+                        <li key={item}>• {item}</li>
                       ))}
                     </ul>
                   </div>
@@ -210,8 +210,8 @@ export default function LiveResultsClient({ sessionId, inviteCode, myRole, initi
                   <div className="mt-3">
                     <p className="text-xs font-semibold">Patient-rule breaks</p>
                     <ul className="mt-1 space-y-1 text-xs">
-                      {pf.brokeRules.map((item, i) => (
-                        <li key={i}>• {item}</li>
+                      {pf.brokeRules.map((item) => (
+                        <li key={item}>• {item}</li>
                       ))}
                     </ul>
                   </div>

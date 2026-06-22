@@ -51,9 +51,9 @@ export default function FaqV3() {
         </div>
 
         <div className="mt-12 space-y-3">
-          {FAQS.map((f, i) => (
+          {FAQS.map((f) => (
             <details
-              key={i}
+              key={f.q}
               className="group rounded-2xl border border-ink-950/10 bg-cream-50 px-5 py-4 transition open:bg-cream-100/40 open:shadow-sm"
             >
               <summary className="flex cursor-pointer items-start justify-between gap-4 font-display text-base font-bold text-ink-950 marker:hidden">

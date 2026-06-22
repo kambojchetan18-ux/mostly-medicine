@@ -285,8 +285,8 @@ export default function ResultsClient({
             <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
               <h2 className="text-sm font-semibold text-emerald-900">✅ Strengths</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-emerald-900">
-                {feedback.strengths.map((s, i) => (
-                  <li key={i} className="flex gap-2">
+                {feedback.strengths.map((s) => (
+                  <li key={s} className="flex gap-2">
                     <span aria-hidden>•</span>
                     <span>{s}</span>
                   </li>
@@ -300,8 +300,8 @@ export default function ResultsClient({
             <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
               <h2 className="text-sm font-semibold text-amber-900">❓ Questions you missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-amber-900">
-                {feedback.missedQuestions.map((q, i) => (
-                  <li key={i} className="flex gap-2">
+                {feedback.missedQuestions.map((q) => (
+                  <li key={q} className="flex gap-2">
                     <span aria-hidden>•</span>
                     <span>{q}</span>
                   </li>
@@ -315,8 +315,8 @@ export default function ResultsClient({
             <section className="rounded-2xl border border-rose-200 bg-rose-50 p-5">
               <h2 className="text-sm font-semibold text-rose-900">🚩 Red flags missed</h2>
               <ul className="mt-3 space-y-1.5 text-sm text-rose-900">
-                {feedback.missedRedFlags.map((r, i) => (
-                  <li key={i} className="flex gap-2">
+                {feedback.missedRedFlags.map((r) => (
+                  <li key={r} className="flex gap-2">
                     <span aria-hidden>•</span>
                     <span>{r}</span>
                   </li>
@@ -330,8 +330,8 @@ export default function ResultsClient({
             <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
               <h2 className="text-sm font-semibold text-gray-900">💬 Suggested phrasing</h2>
               <div className="mt-3 space-y-3">
-                {feedback.suggestedPhrasing.map((p, i) => (
-                  <div key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                {feedback.suggestedPhrasing.map((p) => (
+                  <div key={p.original} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
                     <p className="text-xs text-gray-500 line-through">{p.original}</p>
                     <p className="mt-1 text-sm font-medium text-gray-900">→ {p.better}</p>
                     <p className="mt-1 text-xs italic text-gray-500">{p.reason}</p>

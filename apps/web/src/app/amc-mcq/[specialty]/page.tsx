@@ -227,8 +227,8 @@ export default function SpecialtyMcqPage({ params }: PageProps) {
 
         <section>
           <h2>Why {spec.name} matters in AMC MCQ</h2>
-          {spec.intro.map((para, idx) => (
-            <p key={idx}>{para}</p>
+          {spec.intro.map((para) => (
+            <p key={para}>{para}</p>
           ))}
         </section>
 

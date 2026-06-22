@@ -13,7 +13,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { DECK_BY_SLUG } from '@/lib/flashcard-decks';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://www.mostlymedicine.com';
 
 type Rating = 'again' | 'hard' | 'good' | 'easy';
 
@@ -277,11 +277,11 @@ export default function FlashcardPlayerScreen() {
               <Text style={s.frontText}>
                 {clozeParts.map((p, i) =>
                   p.kind === 'text' ? (
-                    <Text key={i}>{p.value}</Text>
+                    <Text key={`${p.kind}-${i}`}>{p.value}</Text>
                   ) : revealed ? (
-                    <Text key={i} style={s.clozeRevealed}>{p.value}</Text>
+                    <Text key={`${p.kind}-${i}`} style={s.clozeRevealed}>{p.value}</Text>
                   ) : (
-                    <Text key={i} style={s.clozeHidden}>  [ … ]  </Text>
+                    <Text key={`${p.kind}-${i}`} style={s.clozeHidden}>  [ … ]  </Text>
                   ),
                 )}
               </Text>

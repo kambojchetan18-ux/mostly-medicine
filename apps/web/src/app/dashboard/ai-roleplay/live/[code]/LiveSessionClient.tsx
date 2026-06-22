@@ -1378,8 +1378,8 @@ function PatientBriefView({ brief }: { brief: LivePatientBrief | null }) {
       <div className="rounded-2xl border border-saffron-200 bg-saffron-50 p-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-saffron-800">Volunteer naturally</p>
         <ul className="mt-2 space-y-1 text-sm text-ink-950">
-          {brief.reveal.volunteer.map((v, i) => (
-            <li key={i}>• {v}</li>
+          {brief.reveal.volunteer.map((v) => (
+            <li key={v}>• {v}</li>
           ))}
         </ul>
       </div>
@@ -1387,8 +1387,8 @@ function PatientBriefView({ brief }: { brief: LivePatientBrief | null }) {
       <div className="rounded-2xl border border-gray-200 bg-white p-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Reveal only when asked</p>
         <ul className="mt-2 space-y-2 text-sm">
-          {brief.reveal.onlyWhenAsked.map((c, i) => (
-            <li key={i}>
+          {brief.reveal.onlyWhenAsked.map((c) => (
+            <li key={c.trigger}>
               <span className="text-xs italic text-gray-500">If asked about: {c.trigger}</span>
               <p className="text-gray-900">→ {c.reveal}</p>
             </li>
@@ -1400,8 +1400,8 @@ function PatientBriefView({ brief }: { brief: LivePatientBrief | null }) {
         <div className="rounded-2xl border border-gray-200 bg-white p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Distractors (true but misleading)</p>
           <ul className="mt-2 space-y-2 text-sm">
-            {brief.reveal.distractors.map((c, i) => (
-              <li key={i}>
+            {brief.reveal.distractors.map((c) => (
+              <li key={c.trigger}>
                 <span className="text-xs italic text-gray-500">If asked about: {c.trigger}</span>
                 <p className="text-gray-900">→ {c.reveal}</p>
               </li>
@@ -1413,8 +1413,8 @@ function PatientBriefView({ brief }: { brief: LivePatientBrief | null }) {
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
         <p className="font-semibold">House rules</p>
         <ul className="mt-1 list-disc pl-4 space-y-0.5">
-          {brief.rules.map((r, i) => (
-            <li key={i}>{r}</li>
+          {brief.rules.map((r) => (
+            <li key={r}>{r}</li>
           ))}
         </ul>
       </div>
