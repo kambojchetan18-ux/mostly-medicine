@@ -219,8 +219,8 @@ export default function RmoPools() {
               'Vaccination evidence (Hep B, MMR, Varicella, COVID-19, Influenza)',
               'Work rights / visa documentation (subclass 485, 482, PR, or citizenship)',
               'Two referees briefed and available — current or recent clinical supervisors',
-            ].map((item, idx) => (
-              <li key={idx} className="flex gap-3 text-gray-700">
+            ].map((item) => (
+              <li key={item} className="flex gap-3 text-gray-700">
                 <input type="checkbox" className="mt-1" />
                 <span>{item}</span>
               </li>

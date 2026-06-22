@@ -374,8 +374,8 @@ sat AMC Part 1 first-attempt and is now completing recency of practice in Gurugr
 
         <h2>FAQ</h2>
         <div className="not-prose space-y-5 my-6">
-          {faqs.map((f, i) => (
-            <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          {faqs.map((f) => (
+            <div key={f.q} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
               <p className="text-sm font-semibold text-ink-950 mb-2" dangerouslySetInnerHTML={{ __html: f.q }} />
               <p className="text-sm text-ink-950/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: f.a }} />
             </div>

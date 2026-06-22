@@ -41,7 +41,7 @@ export default function SpecialistScreen() {
 
           <Text style={s.sectionLabel}>OTS Assessment Steps</Text>
           {STEPS.map((st, i) => (
-            <View key={i} style={s.stepCard}>
+            <View key={st.title} style={s.stepCard}>
               <View style={s.stepNum}>
                 <Text style={s.stepNumText}>{i + 1}</Text>
               </View>

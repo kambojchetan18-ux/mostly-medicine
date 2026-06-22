@@ -88,8 +88,8 @@ export default function GPScreen() {
 
           <Text style={s.sectionLabel}>ACRRM (Rural Generalist)</Text>
           <View style={s.acrrm}>
-            {ACRRM_STEPS.map((t, i) => (
-              <View key={i} style={s.tipRow}>
+            {ACRRM_STEPS.map((t) => (
+              <View key={t} style={s.tipRow}>
                 <Text style={s.tipDot}>•</Text>
                 <Text style={s.tipText}>{t}</Text>
               </View>

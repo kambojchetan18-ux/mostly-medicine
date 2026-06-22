@@ -530,7 +530,7 @@ export default function RoleplayScreen() {
           {/* Messages */}
           <ScrollView ref={scrollRef} style={{ flex: 1 }} contentContainerStyle={{ padding: 14, gap: 10 }} showsVerticalScrollIndicator={false}>
             {messages.map((m, i) => (
-              <View key={i} style={[s.msgRow, m.role === 'user' ? s.msgRowUser : s.msgRowAI]}>
+              <View key={`${m.role}-${i}`} style={[s.msgRow, m.role === 'user' ? s.msgRowUser : s.msgRowAI]}>
                 {m.role === 'assistant' && <Text style={s.msgEmoji}>{emoji}</Text>}
                 <View style={[s.bubble, m.role === 'user' ? s.bubbleUser : s.bubbleAI]}>
                   {m.role === 'assistant' && <Text style={s.bubbleLabel}>Patient</Text>}

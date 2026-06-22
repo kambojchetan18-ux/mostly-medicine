@@ -277,11 +277,11 @@ export default function FlashcardPlayerScreen() {
               <Text style={s.frontText}>
                 {clozeParts.map((p, i) =>
                   p.kind === 'text' ? (
-                    <Text key={i}>{p.value}</Text>
+                    <Text key={`${p.kind}-${i}`}>{p.value}</Text>
                   ) : revealed ? (
-                    <Text key={i} style={s.clozeRevealed}>{p.value}</Text>
+                    <Text key={`${p.kind}-${i}`} style={s.clozeRevealed}>{p.value}</Text>
                   ) : (
-                    <Text key={i} style={s.clozeHidden}>  [ … ]  </Text>
+                    <Text key={`${p.kind}-${i}`} style={s.clozeHidden}>  [ … ]  </Text>
                   ),
                 )}
               </Text>

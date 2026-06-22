@@ -130,8 +130,8 @@ export default function RMOScreen() {
                 <Ionicons name="calendar-outline" size={14} color="#64748b" />
                 <Text style={s.whenText}>{p.when}</Text>
               </View>
-              {p.tips.map((tip, i) => (
-                <View key={i} style={s.tipRow}>
+              {p.tips.map((tip) => (
+                <View key={tip} style={s.tipRow}>
                   <Text style={s.tipDot}>•</Text>
                   <Text style={s.tipText}>{tip}</Text>
                 </View>

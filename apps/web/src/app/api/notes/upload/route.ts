@@ -13,10 +13,10 @@ async function extractText(buffer: Buffer, mimeType: string): Promise<{ text: st
 
   if (mimeType === "application/pdf") {
     const pdfParseModule = await import("pdf-parse");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pdfParse: (b: Buffer) => Promise<{ text: string; numpages: number }> =
-      ((pdfParseModule as any).default ?? pdfParseModule) as any;
-    const result = await pdfParse(buffer);
+    const pdfParse = (
+      pdfParseModule as { default?: typeof import("pdf-parse") }
+    ).default ?? pdfParseModule;
+    const result = await (pdfParse as (b: Buffer) => Promise<{ text: string; numpages: number }>)(buffer);
     return { text: result.text, pageCount: result.numpages };
   }
 

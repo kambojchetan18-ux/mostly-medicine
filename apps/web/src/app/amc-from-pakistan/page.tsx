@@ -373,8 +373,8 @@ is an Indian-trained AMC pass-graduate currently completing recency in Gurugram 
 
         <h2>FAQ</h2>
         <div className="not-prose space-y-5 my-6">
-          {faqs.map((f, i) => (
-            <div key={i} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+          {faqs.map((f) => (
+            <div key={f.q} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
               <p className="text-sm font-semibold text-ink-950 mb-2">{f.q}</p>
               <p className="text-sm text-ink-950/80 leading-relaxed">{f.a}</p>
             </div>

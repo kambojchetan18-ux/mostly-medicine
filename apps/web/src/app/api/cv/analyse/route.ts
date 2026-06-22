@@ -117,7 +117,12 @@ export async function POST(req: NextRequest) {
 
     // Strip any accidental markdown fences
     const jsonStr = raw.text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
-    const extracted = JSON.parse(jsonStr);
+    let extracted: Record<string, unknown>;
+    try {
+      extracted = JSON.parse(jsonStr);
+    } catch {
+      throw new Error("AI returned invalid JSON — please retry");
+    }
 
     // Upsert into Supabase
     const { error: dbError } = await supabase
