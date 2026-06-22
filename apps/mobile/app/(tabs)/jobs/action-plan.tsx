@@ -112,7 +112,7 @@ export default function ActionPlanScreen() {
               <Text style={{ fontSize: 48, marginBottom: 16 }}>📋</Text>
               <Text style={s.noProfileTitle}>Set Up Your Profile</Text>
               <Text style={s.noProfileSub}>Upload your CV on the website to get a personalised step-by-step action plan tailored to your background.</Text>
-              <TouchableOpacity style={s.ctaBtn} onPress={() => Linking.openURL('https://mostlymedicine.com/dashboard/jobs/action-plan')}>
+              <TouchableOpacity style={s.ctaBtn} onPress={() => Linking.openURL('https://mostlymedicine.com/dashboard/jobs/action-plan').catch(() => {})}>
                 <Text style={s.ctaBtnText}>Set Up on Website</Text>
                 <Ionicons name="open-outline" size={16} color="#fff" />
               </TouchableOpacity>
@@ -136,7 +136,7 @@ export default function ActionPlanScreen() {
                 </View>
                 <Text style={s.desc}>{st.description}</Text>
                 {st.link && (
-                  <TouchableOpacity style={s.linkBtn} onPress={() => Linking.openURL(st.link!)}>
+                  <TouchableOpacity style={s.linkBtn} onPress={() => Linking.openURL(st.link!).catch(() => {})}>
                     <Ionicons name="open-outline" size={13} color="#a78bfa" />
                     <Text style={s.linkBtnText}>{st.linkText}</Text>
                   </TouchableOpacity>

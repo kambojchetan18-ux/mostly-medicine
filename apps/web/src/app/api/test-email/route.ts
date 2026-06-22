@@ -1,34 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendBranded, newUnsubToken } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/email-templates";
+import { verifyCronAuth } from "@/lib/cron-auth";
 
-// Tiny no-AI test route — fires a sample branded email to ALERT_EMAIL
-// (the founder's inbox). Used to verify Resend + brandedShell render correctly
-// before the DeepSeek balance is topped up. Auth: optional CRON_SECRET
-// bearer; open if unset.
 export const maxDuration = 30;
 
 export async function GET(req: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  }
+  const authErr = verifyCronAuth(req);
+  if (authErr) return authErr;
 
-  // Recipient: ?to=email override, else ALERT_EMAIL env, else founder fallback.
   const url = new URL(req.url);
-  const to =
-    url.searchParams.get("to") ??
-    process.env.ALERT_EMAIL ??
-    "kamboj.chetan18@gmail.com";
+  const to = process.env.ALERT_EMAIL ?? "noreply@mostlymedicine.com";
 
-  const origin = req.headers.get("origin") ?? new URL(req.url).origin;
+  const origin = "https://www.mostlymedicine.com";
   const token = newUnsubToken();
-  // Optional ?from= override so we can quickly test domain verification
-  // status without redeploying. Format: "Display Name <local@domain>".
-  const fromOverride = url.searchParams.get("from");
   // For a one-off test we don't bother persisting the unsub token — the
   // unsubscribe route just renders an "expired link" page if clicked, which
   // is fine for the test recipient.
@@ -116,7 +101,7 @@ export async function GET(req: NextRequest) {
     bodyHtml: payload.bodyHtml,
     unsubscribeUrl,
     preheader: payload.preheader,
-    from: fromOverride ?? undefined,
+    from: undefined,
   });
 
   return NextResponse.json({
